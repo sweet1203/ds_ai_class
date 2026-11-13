@@ -84,10 +84,9 @@ def check_lesson(c, l):
     if total:
         spread = ' '.join(f'{"①②③④⑤"[i]}{n}' for i, n in enumerate(pos) if n or i < 3)
         print(f'  {lid}: 퀴즈 {total}문항, 정답 위치 {spread}')
-        if max(pos) > total * 0.5:
-            warn(lid, '정답이 한 위치에 몰림')
+        # 보기 순서는 화면에서 학생마다 섞이므로 위치 분포는 참고용
     # 메모
-    memo_keys = set(re.findall(r'data-memo="([^"]+)"', screens)) | set(re.findall(r"chips\('[^']+','([^']+)'", ljs)) | set(re.findall(r"vote\('[^']+','([^']+)'", ljs))
+    memo_keys = set(re.findall(r'data-memo="([^"]+)"', screens)) | set(re.findall(r'MEMO\.(\w+)\s*=', ljs)) | set(re.findall(r"chips\('[^']+','([^']+)'", ljs)) | set(re.findall(r"vote\('[^']+','([^']+)'", ljs))
     m = re.search(r'const MEMOLIST=\[(.*?)\];', ljs, re.S)
     if m:
         for k in re.findall(r"\['([^']+)'", m.group(1)):

@@ -1,0 +1,172 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 2. 탐색과 추론</span>
+      <h1>정보 이용<br>탐색 알고리즘</h1>
+      <p>무작정 모든 길을 가 보는 대신, 「목표에 가까워 보이는가?」라는 힌트를 사용해 더 똑똑하게 탐색하는 방법을 배웁니다.</p>
+      <ol>
+        <li>큰 그림 · 평가 함수</li><li>언덕 등반 탐색</li><li>최상 우선 탐색</li><li>A* 알고리즘</li><li>비교 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🗺️</i><div><b>맹목적 탐색</b><small>정해진 규칙대로 차례차례</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧭</i><div><b>정보 이용 탐색</b><small>목표에 가까워 보이는 곳부터</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>⛰️ ⭐ 🅰️</i><div><b>언덕 등반 · 최상 우선 · A*</b><small>무엇을 좋은 선택으로 보는가</small></div></div>
+    </div>
+  </div>
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>맹목적 탐색과 달리, <b>휴리스틱 정보와 평가 함수</b>를 써서 목표에 가까워 보이는 선택지부터 살펴보는 <b>정보 이용 탐색</b>을 배웁니다. 언덕 등반, 최상 우선, A*가 각각 <b>무엇을 기준으로</b> 다음 길을 고르는지 비교합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why"><span class="kicker">왜 배울까</span><ul><li>길 찾기 앱처럼 선택지가 아주 많을 때, 모든 길을 다 확인하면 시간이 너무 오래 걸려요.</li><li>「좋아 보이는 선택」이 실제로도 좋은지 따져 보는 힘을 길러요.</li></ul></div>
+      <div class="why"><span class="kicker">핵심 질문</span><ul class="uses"><li><b>탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li></ul></div>
+      <div class="why"><span class="kicker">배우고 나면 할 수 있는 것</span><ul class="can"><li>맹목적 탐색과 정보 이용 탐색의 차이를 설명한다.</li><li>언덕 등반, 최상 우선, A*의 선택 기준을 비교한다.</li><li>같은 문제에서도 알고리즘에 따라 경로가 달라질 수 있음을 이해한다.</li></ul></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 큰 그림부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 큰 그림 · 평가 함수 -->
+<section class="page" data-name="평가 함수" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>탐색은 「가능한 길 중 하나를 고르는 일」</h2><p>교과서 36~37쪽 · 맹목적 탐색과 정보 이용 탐색, 평가 함수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>미로에서 출구 찾기, 지도에서 빠른 길 찾기, 8-퍼즐 맞추기처럼 여러 선택지 중 하나를 골라 목표에 도착하는 과정이 탐색이에요. 정보 이용 탐색은 「모든 곳을 다 보자」가 아니라 <b>「목표에 가까워 보이는 곳부터 보자」</b>는 전략이에요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#5b6776"><div class="ic">🗺️</div><h4>맹목적 탐색</h4><p>목표에 가까운지 잘 모른 채 정해진 규칙대로 차례차례 확인합니다. <b>깊이 우선 탐색</b>, <b>너비 우선 탐색</b>이 여기에 속합니다.</p></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🧭</div><h4>정보 이용 탐색</h4><p>목표에 가까워 보이는 정도를 계산해 가능성이 높은 선택지를 먼저 봅니다. 경험이나 지식을 바탕으로 만든 이런 정보를 <b>휴리스틱 정보</b>라 하고, 이 정보로 목표 상태에 도달할 가능성을 계산하는 함수를 <b>평가 함수</b>라고 합니다.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>📏 평가 함수와 휴리스틱</h3>
+    <p style="margin-top:0">정보 이용 탐색은 선택지마다 점수를 매깁니다. 중요한 점은 평가 함수가 <b>「큰 값이 좋다」는 뜻만은 아니라는 것</b>입니다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#1f9d74"><h4>⬆️ 큰 값이 유리한 경우</h4><p>점수가 높을수록 목표에 가까운 상황입니다. 예를 들어 8-퍼즐에서 <b>제 위치에 놓인 조각 수</b>는 많을수록 좋습니다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>⬇️ 작은 값이 유리한 경우</h4><p>비용, 거리, 시간처럼 적을수록 좋은 상황입니다. 지도에서 <b>목표까지 걸릴 예상 시간</b>은 짧을수록 좋습니다.</p></div>
+    </div>
+    <div class="callout" style="margin-top:12px"><b>오해 주의</b> · 평가 함숫값을 볼 때는 먼저 「큰 값이 좋은가, 작은 값이 좋은가?」를 확인해야 합니다.<br><b>쉬운 비유</b> · 시험 공부 시간이 부족할 때 모든 문제를 똑같이 보지 않고, 시험에 잘 나오는 단원부터 보는 것과 비슷합니다.</div>
+  </div>
+  <div class="card">
+    <h3>🤔 생각 질문</h3>
+    <div class="memo"><label>「목표에 가까워 보인다」는 판단이 언제나 맞을까요? 틀리면 어떤 일이 생길까요?</label><textarea data-memo="hThink" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 언덕 등반 -->
+<section class="page" data-name="언덕 등반 탐색" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>언덕 등반 탐색</h2><p>교과서 36~37쪽 · 8-퍼즐, 제 위치에 놓인 조각 수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>현재 위치에서 주변을 보고, 지금보다 더 좋아지는 곳이 있으면 그쪽으로 이동해요. 교과서 예시는 <b>8-퍼즐</b>이고, 평가 함숫값은 <b>제 위치에 놓인 조각 수</b>예요.</span></div>
+  <div class="flow2">
+    <div style="--k:#1f9d74"><b>①</b><span>현재 상태의 점수를 계산한다.</span></div><div class="ar">→</div>
+    <div style="--k:#1f9d74"><b>②</b><span>갈 수 있는 다음 상태들의 점수를 계산한다.</span></div><div class="ar">→</div>
+    <div style="--k:#1f9d74"><b>③</b><span>현재보다 점수가 높은 상태로 이동한다.</span></div><div class="ar">→</div>
+    <div style="--k:#d64535"><b>④</b><span>더 좋아지는 상태가 없으면 멈춘다.</span></div>
+  </div>
+  <div class="cards2" style="margin-top:16px">
+    <div class="kc" style="--k:#2f6fd0"><h4>⛰️ 비유</h4><p>안개 낀 산에서 바로 옆보다 높은 곳으로만 계속 올라가는 방법입니다.</p></div>
+    <div class="kc" style="--k:#d64535"><h4>⚠️ 한계</h4><p>더 좋아지는 상태가 없어 멈춘 곳이 <b>목표 상태가 아닐 수 있습니다</b>.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🤔 생각 질문</h3>
+    <div class="memo"><label>주변이 모두 낮아 보이면, 진짜 산 정상에 도착한 걸까요?</label><textarea data-memo="hillThink" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 최상 우선 -->
+<section class="page" data-name="최상 우선 탐색" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>최상 우선 탐색</h2><p>교과서 38~39쪽 · open·close 리스트, 부산에서 서울까지</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>지금 보이는 후보들 중 평가 함숫값이 가장 좋은 것을 먼저 선택해요. 언덕 등반과 달리 <b>선택하지 않은 후보도 버리지 않고 다시 고려</b>할 수 있어요.</span></div>
+  <div class="card">
+    <h3>📐 f(C) = 목표까지 예측 시간</h3>
+    <p style="margin-top:0">부산에서 서울까지 가는 교과서 예시에서는 목표까지의 예측 시간을 보고 다음 경로를 선택합니다.</p>
+    <table class="isr-tbl" style="min-width:0;margin:8px 0">
+      <tr><th>단계</th><th>open 리스트의 평가 함숫값</th><th>선택</th></tr>
+      <tr><td>1</td><td>f(대구) = 240, f(상주) = 200, f(울산) = 340</td><td>가장 작은 <b>상주</b></td></tr>
+      <tr><td>2</td><td>f(대구) = 240, f(울산) = 340, f(음성) = 100</td><td><b>음성</b></td></tr>
+      <tr><td>3</td><td>음성의 자식 노드 서울이 목표 상태</td><td>탐색 종료</td></tr>
+    </table>
+    <div class="isr-route"><span>부산</span>→<span>상주</span>→<span>음성</span>→<span>서울</span></div>
+    <p class="muted" style="font-size:.88rem">그림 Ⅰ-16처럼 평가 함숫값이 <b>큰</b> 쪽이 좋은 예시도 있어요. 「가장 좋은」 값이 큰 값인지 작은 값인지는 평가 함수에 따라 달라요.</p>
+    <div class="callout" style="margin-top:12px"><b>오해 주의</b> · 「좋아 보임」은 실제 이동 시간까지 모두 계산했다는 뜻이 아닐 수 있습니다.</div>
+  </div>
+  <div class="card">
+    <h3>🤔 생각 질문</h3>
+    <div class="memo"><label>서울과 가까워 보이지만 실제 도로가 오래 걸린다면 어떻게 될까요?</label><textarea data-memo="bestThink" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 A* -->
+<section class="page" data-name="A* 알고리즘" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>A* 알고리즘</h2><p>교과서 40~41쪽 · f(n) = g(n) + h(n)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>A*는 「목표까지 가까워 보이는가?」뿐 아니라 <b>「여기까지 오느라 이미 얼마나 비용을 썼는가?」</b>도 함께 봐요.</span></div>
+  <div class="card">
+    <h3>📐 f(n) = g(n) + h(n)</h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><h4>g(n)</h4><p>출발점에서 현재 위치까지 <b>실제로 사용한 비용</b>입니다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>h(n)</h4><p>현재 위치에서 목표까지 <b>앞으로 남은 비용을 예상한 값</b>입니다.</p></div>
+    </div>
+    <p>같은 부산→서울 문제에서 A*는 실제 비용과 예측 비용을 함께 보므로 다른 경로를 선택합니다.</p>
+    <table class="isr-tbl" style="min-width:0;margin:8px 0">
+      <tr><th>단계</th><th>f(n) = g(n) + h(n)</th><th>선택</th></tr>
+      <tr><td>1</td><td>f(대구) = 60 + 240 = 300, f(상주) = 110 + 200 = 310, f(울산) = 40 + 340 = 380</td><td>가장 작은 <b>대구</b></td></tr>
+      <tr><td>2</td><td>f(대전) = 60 + 90 + 150 = 300, f(상주) = 310, f(울산) = 380</td><td><b>대전</b></td></tr>
+    </table>
+    <div class="isr-route"><span>부산</span>→<span>대구</span>→<span>대전</span>→<span>천안</span>→<span>서울</span></div>
+    <div class="callout" style="margin-top:12px">최상 우선 탐색은 목표와의 남은 거리(예측)만 고려하고, A*는 지금까지의 실제 비용과 남은 예상 비용을 더해 봅니다.</div>
+  </div>
+  <div class="card">
+    <h3>🧪 스스로 해결하기 (41쪽) · 탐색 알고리즘 시뮬레이터</h3>
+    <ol style="margin-top:0">
+      <li><a href="https://clementmihailescu.github.io/Pathfinding-Visualizer/" target="_blank" rel="noopener">Pathfinding Visualizer ↗</a>에 접속한다.</li>
+      <li>상단 [Mazes &amp; patterns] 메뉴에서 [Basic Random Maze]를 선택한다.</li>
+      <li>[Algorithms]에서 [A* Search]와 [Depth-first Search]를 각각 선택하여 [Visualize]를 눌러 동작 결과를 본다.</li>
+    </ol>
+    <div class="memo"><label>A* 알고리즘과 깊이 우선 탐색이 찾은 경로가 다르다면 왜 다를까? (평가 함수를 쓰는지, 어떻게 탐색하는지)</label><textarea data-memo="simCompare" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 비교 정리 -->
+<section class="page" data-name="비교 정리" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>마무리 비교표</h2><p>세 알고리즘은 「무엇을 좋은 선택이라고 판단하는가」가 달라요</p></div></div>
+  <div class="card" style="overflow-x:auto">
+    <table class="isr-tbl">
+      <tr><th>알고리즘</th><th>선택 기준</th><th>평가 함숫값 방향</th><th>교과서 예시</th><th>장점</th><th>주의할 점</th></tr>
+      <tr><td><b>언덕 등반 탐색</b></td><td>현재보다 평가 함숫값이 더 좋아지는 상태로만 이동</td><td><b>큰 값이 유리</b><br>제 위치 조각 수가 많을수록 좋음</td><td>8-퍼즐: 제 위치에 놓인 조각 수</td><td>방법이 단순하고 빠르게 진행할 수 있음</td><td>목표 상태가 아닌 곳에서 멈출 수 있음</td></tr>
+      <tr><td><b>최상 우선 탐색</b></td><td>후보 중 목표에 가장 가까워 보이는 것을 먼저 선택</td><td><b>예시에 따라 다름</b><br>부산→서울 예시는 예측 시간이 짧을수록(작을수록) 좋음</td><td>부산 → 상주 → 음성 → 서울</td><td>선택하지 않은 후보도 다시 고려할 수 있음</td><td>예측만 보고 고르면 실제 비용이 큰 길을 선택할 수 있음</td></tr>
+      <tr><td><b>A* 알고리즘</b></td><td>지금까지 실제 비용 g(n) + 남은 예상 비용 h(n)</td><td><b>작은 값이 유리</b><br>전체 예상 비용 f(n)이 작을수록 좋음</td><td>부산 → 대구 → 대전 → 천안 → 서울</td><td>지나온 비용과 앞으로의 예측을 함께 보아 균형 있게 탐색함</td><td>평가 함숫값을 계산할 정보가 필요하며, h(n)의 품질이 중요함</td></tr>
+    </table>
+  </div>
+  <div class="callout">한 줄 정리: 정보 이용 탐색의 차이는 <b>「무엇을 좋은 선택이라고 판단하는가」</b>에서 나옵니다.</div>
+  <div class="card" style="margin-top:18px">
+    <h3>🧩 어떤 알고리즘일까?</h3>
+    <div id="algGame"></div>
+  </div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 확인 · 질문폼</p></div></div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>8조각 숫자 퍼즐에서 언덕 등반 탐색은 평가 함숫값이 가장 좋은 쪽으로만 움직입니다. 이 방식이 답을 찾지 못하고 도중에 멈춰버리는 경우가 생기는 이유를 자신의 말로 설명하세요.</li><li>부산에서 서울까지 가는 경로를 최상 우선 탐색과 A* 알고리즘으로 각각 찾았더니 서로 다른 길이 나왔습니다(A*는 부산→대구→대전→천안→서울). 두 알고리즘이 무엇을 다르게 계산하기에 경로가 갈렸는지 쓰세요.</li><li>시뮬레이터로 A*와 깊이 우선 탐색을 비교했습니다. A*가 항상 더 좋은 방법일까요? &#x27;그렇다&#x27; 또는 &#x27;아니다&#x27; 중 하나를 고르고, 평가 함수가 하는 역할과 연결해 이유를 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

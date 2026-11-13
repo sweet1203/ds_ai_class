@@ -1,0 +1,326 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <svg id="coverNet" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-2 딥러닝 · ①</span>
+      <h1>붓꽃 한 송이로<br>배우는 인공신경망</h1>
+      <p>퍼셉트론 하나에서 시작해서 여러 층을 쌓은 신경망 구조까지 따라가 봅니다. 틀리면서 스스로 고쳐 나가는 방법은 이어지는 두 시간에 배워요.</p>
+      <ol><li>퍼셉트론</li><li>조정</li><li>신경망 구조</li><li>마무리 · 질문폼</li></ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 배울 내용 보기 ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>붓꽃 데이터를 가지고 <b>인공지능이 어떻게 판단하는지</b>, 그리고 <b>틀렸을 때 어떻게 스스로 고쳐 나가는지</b> 배웁니다. 꽃잎 길이와 너비만 보는 퍼셉트론 하나에서 시작해, 층을 여러 겹 쌓은 딥러닝까지 가 봅니다.</p>
+    </div>
+
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>사진을 알아보고, 말을 알아듣고, 글을 번역하는 인공지능은 대부분 <b>딥러닝</b>으로 만들어졌습니다. 속이 어떻게 돌아가는지 알면 그 결과를 무작정 믿거나 막연히 두려워하지 않고 따져 볼 수 있습니다.</li>
+          <li>"인공지능을 <b>학습시킨다</b>", "인공지능이 <b>틀렸다</b>"는 말이 정확히 무슨 뜻인지 설명할 수 있게 됩니다.</li>
+          <li>다음에 배울 컴퓨터 비전, 음성 인식, 자연어 처리와 4단원 프로젝트의 이미지 분류 모델이 모두 오늘 배우는 원리 위에 있습니다.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">어디에 쓰일까</span>
+        <ul class="uses">
+          <li><b>사진을 보는 인공지능</b> · 휴대폰 얼굴 인식 잠금 해제, 주차장 번호판 인식, 엑스레이 사진에서 이상한 부분 찾기</li>
+          <li><b>소리를 듣는 인공지능</b> · 음성 비서, 회의 내용을 글로 받아 적기, 동영상 자동 자막</li>
+          <li><b>글을 읽는 인공지능</b> · 번역기, 챗봇, 문장 자동 완성</li>
+          <li><b>이어지는 실습</b> · 손으로 쓴 숫자 알아보기 (우편번호나 서류의 손글씨 숫자를 읽는 기술)</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>퍼셉트론에 숫자를 넣어 출력을 직접 계산한다.</li>
+          <li>신경망 그림에서 입력층·은닉층·출력층을 찾고 가중치 개수를 센다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="glossary-head"><span class="kicker">미리 보는 용어</span><span class="muted">카드를 누르면 그 개념 화면으로 갑니다</span></div>
+    <div class="glossary">
+      <div class="gcard" role="button" tabindex="0" style="--g:#2f6fd0" onclick="go(1)"><i>01</i><h4>퍼셉트론</h4>
+        <dl><dt>퍼셉트론</dt><dd>뇌의 신경 세포를 흉내 낸 가장 작은 계산 단위</dd><dt>입력</dt><dd>판단에 쓰는 재료 값 (꽃잎 길이·너비)</dd><dt>가중치</dt><dd>입력마다 붙이는 '중요도'</dd><dt>편향</dt><dd>기준을 올리고 내리는 값</dd><dt>활성화 함수</dt><dd>계산 결과를 보고 출력을 정하는 규칙</dd><dt>출력</dt><dd>퍼셉트론이 내놓는 답</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#1f9d74" onclick="go(2)"><i>02</i><h4>조정</h4>
+        <dl><dt>조정</dt><dd>틀리면 가중치와 편향을 고치는 것</dd><dt>학습</dt><dd>그 고치기를 컴퓨터가 데이터를 보며 스스로 하는 것</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#9b4fc4" onclick="go(3)"><i>03</i><h4>신경망 구조</h4>
+        <dl><dt>인공신경망</dt><dd>퍼셉트론을 여러 개 이어 붙인 것</dd><dt>입력층</dt><dd>데이터가 들어오는 층</dd><dt>은닉층</dt><dd>사이에 숨어 있는 층</dd><dt>출력층</dt><dd>답이 나오는 층</dd><dt>다층 퍼셉트론</dt><dd>층을 여러 겹 쌓은 신경망</dd><dt>심층 신경망</dt><dd>은닉층이 2개 이상인 신경망</dd><dt>딥러닝</dt><dd>심층 신경망으로 하는 학습</dd></dl></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 퍼셉트론부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 퍼셉트론 -->
+<section class="page" data-name="퍼셉트론" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>퍼셉트론</h2><p>우리 뇌의 신경세포(뉴런)를 흉내 내서 만든, 가장 작은 인공지능</p></div></div>
+
+  <div class="card">
+    <h3>① 뉴런과 퍼셉트론, 나란히 놓고 보기</h3>
+    <p class="muted" style="margin-top:0">우리 뇌에는 <b>뉴런</b>이라는 신경세포가 약 860억 개 있어요. 뉴런은 신호를 <b>받고 → 모으고 → 충분히 세면 다음 뉴런으로 보내요.</b> 퍼셉트론은 이 방법을 숫자 계산으로 따라 한 것이에요. 아래 표의 줄을 누르면 두 그림에서 서로 짝인 부분이 빛나요.</p>
+    <div class="vs" id="vs">
+      <div class="pic">
+        <h4>🧠 진짜 뉴런 (신경세포)</h4>
+        <svg viewBox="0 0 440 250" aria-label="뉴런 그림: 가지돌기, 세포체, 축삭돌기, 축삭 말단">
+          <g data-part="in" stroke="var(--pin)" stroke-width="4" stroke-linecap="round" fill="none">
+            <path d="M92 108 L52 70 L22 56 M52 70 L40 38"/>
+            <path d="M86 128 L36 128 L12 112 M36 128 L14 146"/>
+            <path d="M94 150 L56 192 L26 204 M56 192 L52 226"/>
+            <path d="M118 96 L104 52 L78 30 M104 52 L124 22"/>
+            <path d="M120 164 L108 210 L128 236"/>
+          </g>
+          <g data-part="w" fill="var(--pw)">
+            <circle cx="22" cy="56" r="7"/><circle cx="12" cy="112" r="7"/><circle cx="26" cy="204" r="7"/><circle cx="78" cy="30" r="7"/><circle cx="128" cy="236" r="7"/>
+          </g>
+          <g data-part="sum">
+            <circle cx="122" cy="130" r="40" fill="#efe3f7" stroke="var(--psum)" stroke-width="4"/>
+            <circle cx="122" cy="130" r="13" fill="var(--psum)"/>
+          </g>
+          <g data-part="act">
+            <path d="M162 130 L182 130" stroke="var(--pact)" stroke-width="10" stroke-linecap="round"/>
+          </g>
+          <g data-part="out">
+            <path d="M182 130 L360 130" stroke="var(--pout)" stroke-width="7" stroke-linecap="round"/>
+            <g fill="#d8efe5" stroke="var(--pout)" stroke-width="2"><rect x="198" y="120" width="34" height="20" rx="10"/><rect x="242" y="120" width="34" height="20" rx="10"/><rect x="286" y="120" width="34" height="20" rx="10"/></g>
+            <g stroke="var(--pout)" stroke-width="4" stroke-linecap="round" fill="none"><path d="M360 130 L400 96 M360 130 L410 130 M360 130 L400 164"/></g>
+            <g fill="var(--pout)"><circle cx="402" cy="94" r="7"/><circle cx="414" cy="130" r="7"/><circle cx="402" cy="166" r="7"/></g>
+          </g>
+          <g font-size="13" font-weight="700">
+            <text x="140" y="26" fill="var(--pin)">가지돌기</text>
+            <text x="0" y="244" fill="var(--pw)">시냅스(연결 부분)</text>
+            <text x="92" y="190" fill="var(--psum)">세포체</text>
+            <text x="150" y="108" fill="var(--pact)">축삭 둔덕</text>
+            <text x="234" y="110" fill="var(--pout)">축삭돌기</text>
+            <text x="350" y="200" fill="var(--pout)">축삭 말단</text>
+          </g>
+        </svg>
+      </div>
+      <div class="eq">≈</div>
+      <div class="pic">
+        <h4>🤖 퍼셉트론 (인공 뉴런)</h4>
+        <svg viewBox="0 0 440 250" aria-label="퍼셉트론 그림: 입력 x1, x2, 가중치 w1, w2, 더하기, 활성화 함수, 출력 y">
+          <defs><marker id="arP" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#5b6776"/></marker></defs>
+          <g data-part="in">
+            <circle cx="42" cy="70" r="24" fill="#e6eefb" stroke="var(--pin)" stroke-width="3"/><text x="42" y="76" text-anchor="middle" font-size="17" font-weight="900" fill="var(--pin)">x₁</text>
+            <circle cx="42" cy="180" r="24" fill="#e6eefb" stroke="var(--pin)" stroke-width="3"/><text x="42" y="186" text-anchor="middle" font-size="17" font-weight="900" fill="var(--pin)">x₂</text>
+            <text x="42" y="232" text-anchor="middle" font-size="13" font-weight="700" fill="var(--pin)">입력</text>
+          </g>
+          <g data-part="w">
+            <path d="M66 74 L150 118" stroke="var(--pw)" stroke-width="6" stroke-linecap="round"/>
+            <path d="M66 176 L150 142" stroke="var(--pw)" stroke-width="3" stroke-linecap="round"/>
+            <text x="96" y="80" font-size="15" font-weight="900" fill="var(--pw)">× w₁</text>
+            <text x="96" y="186" font-size="15" font-weight="900" fill="var(--pw)">× w₂</text>
+            <text x="78" y="232" font-size="13" font-weight="700" fill="var(--pw)">가중치</text>
+          </g>
+          <g data-part="sum">
+            <circle cx="182" cy="130" r="34" fill="#efe3f7" stroke="var(--psum)" stroke-width="4"/>
+            <text x="182" y="140" text-anchor="middle" font-size="30" font-weight="900" fill="var(--psum)">Σ</text>
+            <text x="182" y="186" text-anchor="middle" font-size="13" font-weight="700" fill="var(--psum)">모두 더하기</text>
+            <text x="182" y="203" text-anchor="middle" font-size="12" fill="var(--psum)">(+ 편향 b)</text>
+          </g>
+          <path d="M216 130 L250 130" stroke="#5b6776" stroke-width="2.5" marker-end="url(#arP)"/>
+          <g data-part="act">
+            <rect x="254" y="104" width="62" height="52" rx="10" fill="#fbe4e1" stroke="var(--pact)" stroke-width="3"/>
+            <path d="M266 144 L285 144 L285 116 L304 116" stroke="var(--pact)" stroke-width="3.5" fill="none"/>
+            <text x="285" y="186" text-anchor="middle" font-size="13" font-weight="700" fill="var(--pact)">활성화 함수</text>
+          </g>
+          <path d="M316 130 L350 130" stroke="#5b6776" stroke-width="2.5" marker-end="url(#arP)"/>
+          <g data-part="out">
+            <circle cx="384" cy="130" r="26" fill="#d8efe5" stroke="var(--pout)" stroke-width="3"/>
+            <text x="384" y="137" text-anchor="middle" font-size="18" font-weight="900" fill="var(--pout)">y</text>
+            <text x="384" y="186" text-anchor="middle" font-size="13" font-weight="700" fill="var(--pout)">출력</text>
+            <text x="384" y="203" text-anchor="middle" font-size="12" fill="var(--pout)">1 또는 0</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <table class="map" id="vsMap">
+      <tr data-p="in" style="--k:var(--pin)"><td><b class="k">가지돌기</b></td><td class="mid">다른 뉴런이 보낸 신호를 <b>받는다</b></td><td><b class="k">입력 (x)</b> · 판단에 쓰는 정보</td></tr>
+      <tr data-p="w" style="--k:var(--pw)"><td><b class="k">시냅스</b></td><td class="mid">연결마다 신호가 <b>세게 또는 약하게</b> 전해진다</td><td><b class="k">가중치 (w)</b> · 입력이 얼마나 중요한지</td></tr>
+      <tr data-p="sum" style="--k:var(--psum)"><td><b class="k">세포체</b></td><td class="mid">들어온 신호를 <b>한데 모은다</b></td><td><b class="k">가중합 (Σ) + 편향</b> · 입력×가중치를 모두 더한 총점</td></tr>
+      <tr data-p="act" style="--k:var(--pact)"><td><b class="k">축삭 둔덕</b></td><td class="mid">모인 신호가 <b>기준보다 세야만</b> 신호를 내보낸다</td><td><b class="k">활성화 함수</b> · 총점을 보고 1 또는 0으로 정함</td></tr>
+      <tr data-p="out" style="--k:var(--pout)"><td><b class="k">축삭돌기 · 말단</b></td><td class="mid">신호를 <b>다음 뉴런으로 보낸다</b></td><td><b class="k">출력 (y)</b> · 최종 결과</td></tr>
+    </table>
+    <div class="callout">퍼셉트론은 뉴런을 그대로 복사한 것이 아니에요. <b>"신호를 받아서 → 중요한 정도만큼 모으고 → 기준을 넘으면 내보낸다"</b>는 아이디어만 빌려 와서 숫자 계산으로 바꾼 것이에요. 1957년 프랭크 로젠블랫이 처음 만들었어요.</div>
+  </div>
+
+  <div class="card">
+    <h3>② 입력 · 가중치 · 출력, 생활 속 예로 알아보기</h3>
+    <p class="muted" style="margin-top:0">"방과 후에 친구랑 <b>떡볶이 먹으러 갈까?</b>" 이것도 퍼셉트론처럼 정할 수 있어요. 입력을 예/아니오로 바꾸고, 가중치를 −/+ 로 바꿔 보세요.</p>
+    <div class="life">
+      <div id="lifeIn"></div>
+      <div>
+        <div class="calc" id="lifeCalc"></div>
+        <div class="callout" style="font-size:.93rem;margin-top:12px">
+          <b>잘 보세요!</b> 입력이 같아도 <b style="color:var(--pw)">가중치</b>를 바꾸면 결과가 달라져요. 용돈 가중치를 5로 올리면 "용돈만 있으면 무조건 간다"가 돼요. 가중치는 사람마다 다른 <b>"생각하는 방식"</b>이에요. 인공지능이 공부한다는 건 <b>알맞은 가중치를 찾아 가는 것</b>이에요.
+        </div>
+      </div>
+    </div>
+    <div class="terms5">
+      <div style="--k:var(--pin)"><b>입력 (x)</b>판단에 쓰는 재료. 숫자로 넣어요. 예 = 1, 아니오 = 0</div>
+      <div style="--k:var(--pw)"><b>가중치 (w)</b>그 입력이 얼마나 중요한지 정하는 점수. 클수록 중요해요</div>
+      <div style="--k:var(--psum)"><b>가중합 + 편향</b>입력 × 가중치를 모두 더한 총점에 편향(기준 조절값)을 더해요</div>
+      <div style="--k:var(--pact)"><b>활성화 함수</b>"0보다 크면 1, 아니면 0"처럼 총점을 보고 결과를 정하는 규칙</div>
+      <div style="--k:var(--pout)"><b>출력 (y)</b>최종 결정. 1 = 간다(예), 0 = 안 간다(아니오)</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>③ 붓꽃에 적용해 보기</h3>
+    <p class="muted" style="margin-top:0">이번에는 입력이 꽃잎 길이와 너비예요. 꽃을 고르고 신호를 보내 보세요.</p>
+    <div class="chips" id="flowerPick"></div>
+    <svg id="percSvg" viewBox="0 0 900 230"></svg>
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:6px">
+      <button class="btn" id="fire">신호 보내기</button>
+      <span class="muted" id="percMsg"></span>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>다섯 가지 이름</h3>
+      <dl class="term">
+        <dt>입력</dt><dd>퍼셉트론에 들어가는 값. 여기서는 꽃잎 길이와 너비.</dd>
+        <dt>가중치</dt><dd>입력마다 곱하는 값. 그 입력을 얼마나 중요하게 볼지 정한다.</dd>
+        <dt>편향</dt><dd>곱해서 더한 값에 마지막으로 더하는 값. 출력이 1이 되기 쉬운지 어려운지 정한다.</dd>
+        <dt>활성화 함수</dt><dd>계산 결과를 보고 출력을 정하는 규칙. 여기서는 0보다 크면 1, 아니면 0.</dd>
+        <dt>출력</dt><dd>1이면 꽃잎이 큰 품종(세토사 아님), 0이면 세토사.</dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>세 송이를 모두 보내 보면</h3>
+      <table>
+        <tr><th>꽃</th><th>길이 · 너비</th><th>계산</th><th>출력</th><th>정답</th></tr>
+        <tr><td>가</td><td>1.4 · 0.2</td><td>1.6</td><td>1</td><td class="ng">0 · 틀림</td></tr>
+        <tr><td>나</td><td>4.7 · 1.4</td><td>6.1</td><td>1</td><td class="ok">1 · 맞음</td></tr>
+        <tr><td>다</td><td>6.0 · 2.5</td><td>8.5</td><td>1</td><td class="ok">1 · 맞음</td></tr>
+      </table>
+      <p>세토사까지 1이 나옵니다. 이 퍼셉트론은 모든 꽃을 "크다"고 하고 있으니 무언가를 고쳐야 합니다.</p>
+      <span class="book">교과서 91쪽 · 가중치 1, 1 · 편향 −10 예시도 같은 구조</span>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 조정 -->
+<section class="page" data-name="조정" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>가중치와 편향 조정</h2><p>값을 바꿔 가며 붓꽃 150송이 중 몇 송이를 틀리는지 봅니다</p></div></div>
+  <div class="case">
+    <h3>🚿 생활 속 사례: 샤워 물 온도 맞추기</h3>
+    <p>처음 물을 틀면 딱 맞는 온도가 나오기 어려워요. 그래서 우리는 이렇게 해요.</p>
+    <div class="flow">
+      <div style="--c:#2f6fd0"><b>① 손을 대 본다</b>"앗, 차가워!" → 결과가 틀렸다는 걸 알아요.</div>
+      <div style="--c:#e0702b"><b>② 손잡이를 조금 돌린다</b>따뜻한 쪽으로 살짝. 너무 뜨거우면 다시 반대로 살짝.</div>
+      <div style="--c:#1f9d74"><b>③ 반복해서 딱 맞춘다</b>몇 번 고치면 알맞은 위치를 찾아요.</div>
+    </div>
+    <p style="margin-top:10px">퍼셉트론도 똑같아요. <b>틀린 결과를 보고 → 가중치와 편향(손잡이)을 조금씩 돌려서 → 맞을 때까지 고쳐요.</b> 아래에서 직접 손잡이를 돌려 보세요.</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <svg id="scatter" viewBox="0 0 440 332"></svg>
+      <div class="legend"><span><i style="background:var(--c0)"></i>세토사</span><span><i style="background:var(--c1)"></i>버시컬러</span><span><i style="background:var(--c2)"></i>버지니카</span><span><i style="background:#fff;border:2px solid var(--red)"></i>틀린 꽃</span><span>색칠된 쪽 = 출력 1</span></div>
+    </div>
+    <div class="card">
+      <div class="ctrl"><label for="w1">가중치 w₁</label><input id="w1" type="range" min="0" max="2" step="0.5" value="1"><output id="w1o"></output></div>
+      <div class="ctrl"><label for="w2">가중치 w₂</label><input id="w2" type="range" min="0" max="2" step="0.5" value="1"><output id="w2o"></output></div>
+      <div class="ctrl"><label for="bb">편향 b</label><input id="bb" type="range" min="-6" max="1" step="0.5" value="0"><output id="bbo"></output></div>
+      <div style="display:flex;align-items:baseline;gap:10px;margin:12px 0 4px"><span class="muted">150송이 중 틀린 꽃</span><span class="big" id="wrong" style="font-size:2.6rem"></span></div>
+      <div style="height:10px;background:#eef0f3;border-radius:6px;overflow:hidden"><div id="wrongBar" style="height:100%;background:var(--red);width:0;transition:width .3s"></div></div>
+      <table id="ptab" style="margin-top:12px"></table>
+    </div>
+  </div>
+  <div class="card">
+    <table>
+      <tr><th>편향 (가중치 1, 1)</th><td>0</td><td>−1</td><td>−2</td><td>−3</td></tr>
+      <tr><th>틀린 꽃</th><td>50</td><td>50</td><td>5</td><td class="ok">0</td></tr>
+    </table>
+    <p>편향 −2에서는 꽃잎이 조금 큰 세토사 5송이가 남습니다. 길이 1.9, 너비 0.4인 꽃은 2.3 − 2 = 0.3 &gt; 0이라 1이 나옵니다. 편향을 −3까지 내리면 150송이를 모두 맞힙니다.</p>
+    <div class="callout">방금 한 일은 <b>틀린 것을 보고 가중치와 편향을 고친 것</b>입니다. 이 일을 컴퓨터가 데이터를 보면서 스스로 하는 것이 <b>학습</b>입니다.</div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 구조 -->
+<section class="page" data-name="신경망 구조" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>인공신경망의 구조</h2><p>품종이 3개라서, 출력이 0과 1뿐인 퍼셉트론 하나로는 부족합니다</p></div></div>
+  <div class="card">
+    <h3>퍼셉트론이 모이면 신경망이 돼요</h3>
+    <p class="muted" style="margin-top:0">퍼셉트론 하나는 "예 / 아니오" 한 가지만 답할 수 있어요. 그래서 뇌의 뉴런들이 서로 연결되어 있듯이, <b>퍼셉트론을 여러 개 연결</b>해요.</p>
+    <div class="build">
+      <div>
+        <span class="st">1단계</span>
+        <h4>퍼셉트론 1개</h4>
+        <svg viewBox="0 0 220 120"><g stroke="#b9c2cd" stroke-width="2"><line x1="30" y1="35" x2="110" y2="60"/><line x1="30" y1="85" x2="110" y2="60"/><line x1="110" y1="60" x2="190" y2="60"/></g><g fill="#e6eefb" stroke="var(--pin)" stroke-width="2.5"><circle cx="30" cy="35" r="13"/><circle cx="30" cy="85" r="13"/></g><circle cx="110" cy="60" r="17" fill="var(--acc)"/><circle cx="190" cy="60" r="12" fill="#d8efe5" stroke="var(--pout)" stroke-width="2.5"/></svg>
+        <p>입력을 받아 답 <b>하나</b>를 내요. "세토사인가?"처럼 한 가지 질문만 할 수 있어요.</p>
+      </div>
+      <div>
+        <span class="st">2단계</span>
+        <h4>나란히 여러 개 = 층(layer)</h4>
+        <svg viewBox="0 0 220 120"><g stroke="#b9c2cd" stroke-width="1.6"><line x1="30" y1="35" x2="110" y2="22"/><line x1="30" y1="35" x2="110" y2="60"/><line x1="30" y1="35" x2="110" y2="98"/><line x1="30" y1="85" x2="110" y2="22"/><line x1="30" y1="85" x2="110" y2="60"/><line x1="30" y1="85" x2="110" y2="98"/></g><g fill="#e6eefb" stroke="var(--pin)" stroke-width="2.5"><circle cx="30" cy="35" r="13"/><circle cx="30" cy="85" r="13"/></g><g fill="var(--acc)"><circle cx="110" cy="22" r="14"/><circle cx="110" cy="60" r="14"/><circle cx="110" cy="98" r="14"/></g><text x="150" y="27" font-size="11" fill="#5b6776">질문 A</text><text x="150" y="65" font-size="11" fill="#5b6776">질문 B</text><text x="150" y="103" font-size="11" fill="#5b6776">질문 C</text></svg>
+        <p>같은 입력을 여러 퍼셉트론이 <b>각자 다른 가중치</b>로 봐요. 한 번에 여러 가지를 살필 수 있어요.</p>
+      </div>
+      <div>
+        <span class="st">3단계</span>
+        <h4>층을 쌓기 = 인공신경망</h4>
+        <svg viewBox="0 0 220 120"><g stroke="#b9c2cd" stroke-width="1.2"><line x1="22" y1="40" x2="80" y2="22"/><line x1="22" y1="40" x2="80" y2="60"/><line x1="22" y1="40" x2="80" y2="98"/><line x1="22" y1="80" x2="80" y2="22"/><line x1="22" y1="80" x2="80" y2="60"/><line x1="22" y1="80" x2="80" y2="98"/><line x1="80" y1="22" x2="140" y2="40"/><line x1="80" y1="22" x2="140" y2="80"/><line x1="80" y1="60" x2="140" y2="40"/><line x1="80" y1="60" x2="140" y2="80"/><line x1="80" y1="98" x2="140" y2="40"/><line x1="80" y1="98" x2="140" y2="80"/><line x1="140" y1="40" x2="198" y2="60"/><line x1="140" y1="80" x2="198" y2="60"/></g><g fill="#e6eefb" stroke="var(--pin)" stroke-width="2.5"><circle cx="22" cy="40" r="11"/><circle cx="22" cy="80" r="11"/></g><g fill="var(--acc)"><circle cx="80" cy="22" r="11"/><circle cx="80" cy="60" r="11"/><circle cx="80" cy="98" r="11"/><circle cx="140" cy="40" r="11"/><circle cx="140" cy="80" r="11"/></g><circle cx="198" cy="60" r="11" fill="#d8efe5" stroke="var(--pout)" stroke-width="2.5"/></svg>
+        <p>앞 층의 <b>출력</b>이 다음 층의 <b>입력</b>이 돼요. 쌓을수록 더 복잡한 것을 판단할 수 있어요.</p>
+      </div>
+    </div>
+    <div class="callout">비유하면 <b>모둠 활동</b>과 같아요. 첫 줄 친구들은 각자 하나씩 살펴보고(꽃잎 길이, 너비, 색…), 다음 줄 친구들은 그 의견을 모아 더 큰 결론을 내고, 마지막 친구가 최종 답을 발표해요. 층이 깊어질수록(deep) 더 어려운 문제를 풀 수 있어서 <b>딥러닝</b>이라고 불러요.</div>
+  </div>
+  <div class="card">
+    <svg id="net" viewBox="0 0 900 360"></svg>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+      <button class="btn" id="netFwd">순전파 보기 →</button>
+      <button class="btn ghost" id="netBack">← 역전파 미리 보기</button>
+      <span class="muted" id="netMsg" style="align-self:center"></span>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <dl class="term">
+        <dt>인공신경망</dt><dd>퍼셉트론(인공 뉴런)을 여러 개 연결한 것</dd>
+        <dt>입력층</dt><dd>데이터가 들어오는 층. 붓꽃은 4칸</dd>
+        <dt>은닉층</dt><dd>입력층과 출력층 사이의 층. 밖에서 직접 보이지 않아 '숨은 층'</dd>
+        <dt>출력층</dt><dd>답이 나오는 층. 붓꽃은 품종 수만큼 3칸</dd>
+        <dt>다층 퍼셉트론</dt><dd>퍼셉트론을 여러 층으로 쌓은 신경망</dd>
+        <dt>심층 신경망</dt><dd>은닉층이 2개 이상인 신경망. 이것으로 학습하는 것이 <b>딥러닝</b></dd>
+      </dl>
+    </div>
+    <div class="card">
+      <h3>선 하나에 가중치 하나</h3>
+      <p>위 그림의 선은 4×8 + 8×3 = <b>56개</b>입니다. 은닉층과 출력층의 동그라미마다 편향이 하나씩 있어 8 + 3 = <b>11개</b>입니다.</p>
+      <div style="display:flex;gap:22px;margin:14px 0;flex-wrap:wrap">
+        <div><div class="muted" style="font-size:.85rem">붓꽃 신경망</div><div class="big" id="cnt1" style="font-size:2.2rem;color:var(--c2)">67</div></div>
+        <div><div class="muted" style="font-size:.85rem">교과서 손글씨 모델 784→100→50→10</div><div class="big" id="cnt2" style="font-size:2.2rem;color:var(--navy)">84,060</div></div>
+      </div>
+      <p class="muted">학습이란 결국 이 숫자들을 알맞게 정하는 일입니다.</p>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">04</div><div><h2>마무리</h2><p>오늘 배운 것 확인 · 질문폼</p></div></div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>떡볶이 예처럼 내 생활 속 결정 하나를 퍼셉트론으로 바꿔 보세요. 입력 2~3개와 각 입력의 가중치, 편향(기준)을 정하고, 왜 그 입력에 그런 가중치를 주었는지 설명하세요.</li><li>수업에서 편향을 0에서 −3까지 바꾸자 붓꽃 150송이 중 틀린 꽃이 50송이 → 5송이 → 0송이로 줄었습니다. 이 과정과 연결해 '인공지능이 스스로 학습한다'는 말이 무슨 뜻인지 자신의 말로 설명하세요.</li><li>퍼셉트론 하나로는 붓꽃 세 품종을 구분할 수 없어서 층을 쌓았습니다. 입력층·은닉층·출력층이 각각 하는 일을 붓꽃 예로 설명하고, 은닉층을 늘려 신경망을 깊게 만들면 좋은 점과 걱정되는 점을 하나씩 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+  </div>
+</section>

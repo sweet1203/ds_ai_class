@@ -19,6 +19,7 @@ import json
 import os
 import pathlib
 import re
+import shutil
 import sys
 import unicodedata
 
@@ -56,7 +57,8 @@ def build_lesson(c, unit, l):
                       .replace('{{PAGES}}', l['pages']).replace('{{TITLE}}', title).replace('{{NO}}', l['no']))
     head = rd(FW / 'shell_head.html').replace('{{TITLE}}', html.escape(title))
     head = head.replace('<meta name="viewport"', '<meta name="robots" content="noindex">\n<meta name="viewport"', 1)
-    css = ''.join(rd(FW / n) for n in ['base.css', 'widgets.css', 'track.css', 'guard.css'])
+    widgets = 'widgets.css' if meta.get('widgetsCss', True) else 'widgets_min.css'
+    css = ''.join(rd(FW / n) for n in ['base.css', widgets, 'track.css', 'guard.css'])
     if (d / 'lesson.css').exists():
         css += rd(d / 'lesson.css')
     top = rd(FW / 'shell_top.html').replace(
@@ -67,12 +69,15 @@ def build_lesson(c, unit, l):
     pep = os.environ.get('DS_PEP') or c.get('progressEndpoint', '')
     pre = f"const LESSON='{l['id']}', PEP='{pep}';\n" + rd(FW / 'track_pre.js')
     keys = f"const QK='ds-{l['id']}-quiz'+WHO.sfx;\nconst MK='ds-{l['id']}-memo'+WHO.sfx;\n"
-    js = (rd(FW / 'core_head.js') + pre + quiz + '\n' + keys + rd(FW / 'core.js') + rd(FW / 'widgets.js')
+    extra = rd(d / 'pre.js') if (d / 'pre.js').exists() else ''
+    js = (rd(FW / 'core_head.js') + extra + pre + quiz + '\n' + keys + rd(FW / 'core.js') + rd(FW / 'widgets.js')
           + rd(d / 'lesson.js') + rd(FW / 'track.js').replace('__TEACH_H__', c.get('teacherHash', '')) + INIT)
     out = head + css + top + sub(rd(d / 'screens.html')) + rd(FW / 'shell_foot.html') + js
     out += rd(FW / 'guard.html') + '</body>\n</html>\n'
     o = SITE / l['id']
     o.mkdir(parents=True, exist_ok=True)
+    if (d / 'assets').is_dir():   # 차시 부속 파일(모델·노트북 등)은 그대로 복사
+        shutil.copytree(d / 'assets', o, dirs_exist_ok=True)
     (o / 'index.html').write_text(out, encoding='utf-8')
     return o / 'index.html'
 
@@ -132,6 +137,10 @@ def main(argv):
             print('lesson', build_lesson(c, u, l).relative_to(ROOT))
         elif want:
             sys.exit(f"{l['id']}: lessons/{l['id']}/screens.html 없음")
+    for p in sorted((ROOT / 'assessments' / 'pages').glob('*/index.html')):
+        o = SITE / p.parent.name; o.mkdir(parents=True, exist_ok=True)
+        (o / 'index.html').write_text(rd(p), encoding='utf-8')
+        print('assessment', p.parent.name)
     print('forms', ', '.join(build_forms()))
     build_teacher(c)
     print('teacher ok')

@@ -1,0 +1,523 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <canvas id="coverSp" width="160" height="90" aria-hidden="true"></canvas>
+    <div class="fade"></div>
+    <div class="capline" aria-hidden="true"><span id="capT"></span><i class="caret"></i></div>
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-2 딥러닝</span>
+      <h1>인공지능은 내 말을<br>어떻게 알아들을까?</h1>
+      <p>사람에게는 쉬운 '듣기'가 인공지능에게는 아주 어려운 일이에요. 말소리를 떨림(주파수)으로 나누어 보고, 가장 작은 소리 단위(음소)를 찾아, 가장 그럴듯한 문장으로 바꾸는 음성 인식을 배워 봅니다.</p>
+      <ol>
+        <li>소리와 주파수</li><li>가장 작은 소리, 음소</li><li>규칙 방식과 딥러닝 방식</li><li>직접 말해 보기</li>
+        <li>음성 인식의 활용</li><li>발음 연습 프로그램 만들기</li><li>한눈에 정리</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 배울 내용 보기 ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>사람의 말소리가 어떤 모양의 <b>떨림</b>인지 눈으로 확인하고, 그 떨림에서 <b>음소</b>를 찾아 <b>텍스트</b>로 바꾸는 음성 인식의 원리를 배웁니다. 규칙을 하나하나 정해 주던 옛 방식과 많은 목소리를 학습한 <b>딥러닝 방식</b>을 비교하고, 마지막에는 내 발음을 확인해 주는 프로그램을 직접 만들어 봅니다.</p>
+    </div>
+
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>AI 스피커도 휴대폰 음성 비서도 먼저 내 말을 <b>글자로 바꿔야</b> 대답할 수 있어요. 음성 인식은 말로 기기를 쓰는 모든 서비스의 첫 단계예요.</li>
+          <li>운전·요리처럼 손을 쓰기 어려울 때, 또 손이나 눈이 불편한 사람도 <b>말만으로</b> 기기를 쓸 수 있게 해 줘요.</li>
+          <li>지난 시간 '보는' 인공지능(컴퓨터 비전)에 쓰인 딥러닝이 '듣는' 인공지능에서는 <b>어떻게 쓰이는지</b> 이어서 알 수 있어요.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">어디에 쓰일까</span>
+        <ul class="uses">
+          <li><b>기기 제어</b> · "불 꺼 줘" 한마디로 조명과 커튼을 움직이는 스마트 홈</li>
+          <li><b>텍스트 기록</b> · 회의 내용을 받아 적는 자동 회의록, 진료 내용을 기록하는 병원 시스템</li>
+          <li><b>외국어 교육</b> · 내 발음을 듣고 맞았는지 알려 주는 어학 앱</li>
+          <li><b>자막 생성</b> · 영상에 자동으로 붙는 자막, 수업 내용을 실시간 글자로 보여 주는 서비스</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>주파수가 무엇인지 말하고, 높은 소리와 낮은 소리를 주파수로 구분한다.</li>
+          <li>낱말을 음소로 나누고, 글자와 실제 소리가 다른 예를 찾는다.</li>
+          <li>if-then 방식과 딥러닝 방식의 음성 인식을 비교해 설명한다.</li>
+          <li>음성 인식이 앞뒤 말(맥락)을 보고 텍스트를 고른다는 것을 체험으로 확인한다.</li>
+          <li>음성 인식의 활용 분야를 실생활 예와 짝짓는다.</li>
+          <li>음성 인식 결과와 원래 문장을 비교하는 발음 연습 프로그램을 설계하고 실행한다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="glossary-head"><span class="kicker">미리 보는 용어</span><span class="muted">카드를 누르면 그 개념 화면으로 갑니다</span></div>
+    <div class="glossary">
+      <div class="gcard" role="button" tabindex="0" style="--g:#2f6fd0" onclick="go(1)"><i>01</i><h4>소리와 주파수</h4>
+        <dl><dt>음성 인식</dt><dd>사람의 말소리를 분석해 텍스트 데이터로 바꾸는 것</dd><dt>주파수</dt><dd>1초 동안 진동하는 수(단위 Hz). 소리의 높낮이를 나타내요</dd><dt>고주파수 · 저주파수</dt><dd>빠르게 반복되면 높은 소리, 느리게 반복되면 낮은 소리</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#1f9d74" onclick="go(2)"><i>02</i><h4>음소</h4>
+        <dl><dt>음소</dt><dd>언어의 가장 작은 소리 단위. 말소리를 이루는 소리의 기본</dd><dt>글자 ≠ 소리</dt><dd>'같이'는 [가치]로 소리 나요. 들리는 대로만 적으면 틀려요</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#9b4fc4" onclick="go(3)"><i>03</i><h4>두 가지 방식</h4>
+        <dl><dt>if-then 방식</dt><dd>미리 저장한 주파수 정보와 규칙대로 텍스트로 바꾸기</dd><dt>딥러닝 방식</dt><dd>많은 음성 데이터로 학습해, 확률이 높은 텍스트로 바꾸기</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#e0702b" onclick="go(4)"><i>04</i><h4>직접 말해 보기</h4>
+        <dl><dt>맥락</dt><dd>앞뒤에 오는 말. 같은 소리를 어떤 글자로 적을지 정하는 단서</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#d64535" onclick="go(5)"><i>05</i><h4>활용</h4>
+        <dl><dt>4가지 활용</dt><dd>기기 제어 · 텍스트 기록 · 외국어 교육 · 자막 생성</dd><dt>융합</dt><dd>사물 인터넷, 자연어 처리와 함께 쓰여요</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#c98a00" onclick="go(6)"><i>06</i><h4>발음 연습</h4>
+        <dl><dt>잰말놀이</dt><dd>발음하기 어려운 문장을 빠르게 말하는 놀이</dd><dt>recognize_google</dt><dd>오디오의 말소리를 텍스트로 바꿔 주는 파이썬 함수</dd></dl></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 소리와 주파수부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 소리와 주파수 -->
+<section class="page" data-name="소리와 주파수" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>소리는 떨림이에요</h2><p>말소리를 숫자로 바꾸는 첫걸음, 주파수</p></div></div>
+
+  <div class="grid2 even">
+    <div class="card">
+      <h3>① 높은 소리, 낮은 소리</h3>
+      <p class="muted" style="margin-top:0">소리는 공기의 떨림이에요. <b>1초 동안 몇 번 떨리는지</b>가 <b>주파수</b>이고, 단위는 Hz(헤르츠)예요. 막대를 움직이고 소리를 들어 보세요. 소리가 작게 나요.</p>
+      <canvas class="wave" id="toneC" width="600" height="200"></canvas>
+      <div class="speclab"><span>0초</span><span>0.01초 동안의 떨림</span><span>0.01초</span></div>
+      <div class="ctrl" style="grid-template-columns:62px 1fr 76px;margin-top:8px"><label>주파수</label><input type="range" id="toneF" min="100" max="1000" step="10" value="200"><output id="toneO">200 Hz</output></div>
+      <div class="row">
+        <button class="btn sm" id="tonePlay">▶ 소리 듣기</button>
+        <button class="chip" data-f="150">낮은 소리 150 Hz</button><button class="chip" data-f="400">400 Hz</button><button class="chip" data-f="900">높은 소리 900 Hz</button>
+      </div>
+      <p id="toneSay" style="font-size:.93rem;margin-top:10px"></p>
+    </div>
+
+    <div class="card">
+      <h3>② 내 목소리를 주파수로 보기</h3>
+      <p class="muted" style="margin-top:0">음성 인식은 말소리를 <b>주파수별로 나누어</b> 분석해요. 마이크를 켜고 "아—", "이—", "우—"를 차례로 길게 말해 보세요. 모음마다 밝은 줄무늬의 위치가 달라져요.</p>
+      <canvas class="wave" id="micW" width="600" height="160" style="aspect-ratio:600/160"></canvas>
+      <canvas class="spec" id="micS" width="300" height="128" style="margin-top:8px"></canvas>
+      <div class="speclab"><span>← 조금 전</span><span>아래 낮은 주파수 · 위 높은 주파수 (0~4,000 Hz)</span><span>지금 →</span></div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn sm" id="micBtn">🎤 마이크 켜기</button>
+        <button class="btn ghost sm" id="vowBtn">예시 목소리로 보기 (아·이·우)</button>
+        <span id="micPeak" class="muted" style="font-size:.9rem"></span>
+      </div>
+      <div class="warnbox" id="micErr"></div>
+      <p class="note">🔒 이 그림은 마이크 소리를 화면에 그리기만 해요. 녹음하거나 어디로 보내지 않아요.</p>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h3>음성 인식은 말소리를 어떻게 텍스트로 바꿀까?</h3>
+    <p class="lead2">교과서 110쪽 01의 한 줄 요약: <b>음성 주파수를 분석하여 음소를 추출하고 텍스트로 변환한다.</b></p>
+    <div class="flow2">
+      <div style="--k:#2f6fd0"><b>① 주파수 분석</b><br><span style="font-size:.9rem">마이크로 들어온 떨림을 주파수별로 나누어 봐요. 위 ② 그림이 바로 그 모습이에요.</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#1f9d74"><b>② 음소 추출</b><br><span style="font-size:.9rem">주파수 무늬를 보고 어떤 소리(음소)인지 찾아요. → 02</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#9b4fc4"><b>③ 텍스트 변환</b><br><span style="font-size:.9rem">음소를 이어 가장 알맞은 낱말과 문장으로 바꿔요. → 03</span></div>
+    </div>
+    <span class="book">교과서 110쪽 · 주파수</span>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 음소 -->
+<section class="page" data-name="음소" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>가장 작은 소리, 음소</h2><p>말소리를 쪼개고 또 쪼개면</p></div></div>
+
+  <div class="card">
+    <h3>① 낱말을 소리 단위로 나누기</h3>
+    <p class="muted" style="margin-top:0"><b>음소</b>는 언어의 가장 작은 소리 단위예요. 한글은 자음·모음 글자가 소리 단위와 거의 하나씩 짝을 이뤄서, 글자를 풀어 보면 소리 단위가 보여요. 낱말이나 문장을 넣어 보세요.</p>
+    <div class="row">
+      <input type="text" id="phIn" value="문이 닫힙니다" maxlength="24" style="flex:1;min-width:180px">
+      <button class="btn sm" id="phGo">나누기</button>
+    </div>
+    <div class="chips" style="margin-top:8px" id="phPre">
+      <button class="chip" data-w="문">문</button><button class="chip" data-w="사과">사과</button><button class="chip" data-w="기린 그림">기린 그림</button><button class="chip" data-w="문이 닫힙니다">문이 닫힙니다</button><button class="chip" data-w="내 이름">내 이름</button>
+    </div>
+    <div class="syls" id="phOut"></div>
+    <div class="legend"><span><i style="background:#2f6fd0"></i>첫소리 자음</span><span><i style="background:#1f9d74"></i>모음</span><span><i style="background:#e0702b"></i>받침 자음</span><span><i style="background:#c9ced6"></i>소리 없는 첫소리 ㅇ</span></div>
+    <p id="phSay" style="margin-top:8px"></p>
+  </div>
+
+  <div class="card">
+    <h3>② 글자대로 소리 나지 않는 말</h3>
+    <p class="muted" style="margin-top:0">음성 인식이 듣는 것은 글자가 아니라 <b>실제 소리</b>예요. 🔊를 눌러 들어 보세요. 글자와 소리가 다르죠?</p>
+    <div class="prons" id="prons"></div>
+    <p class="note" id="ttsNote">🔊은 컴퓨터 목소리로 읽어 줘요. 소리가 나지 않으면 이 브라우저에 한국어 목소리가 없는 거예요.</p>
+    <div class="callout">소리 나는 대로만 받아 적으면 '같이'가 '가치'가 되고, '해돋이'가 '해도지'가 돼요. 게다가 같은 음소도 <b>사람마다 다르게</b> 소리 내요. 그럼 인공지능은 어떻게 바르게 적을까요? <a href="#p3" onclick="go(3);return false">03에서 알아봐요 →</a></div>
+    <span class="book">교과서 110쪽 · 음소</span>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 규칙 vs 딥러닝 -->
+<section class="page" data-name="두 가지 방식" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>규칙 방식 vs 딥러닝 방식</h2><p>음성 인식 기술은 이렇게 바뀌었어요</p></div></div>
+
+  <div class="cx">
+    <h3>엘리베이터 안내 방송을 두 방식으로 알아듣기</h3>
+    <p class="lead2">엘리베이터에서 "문이 닫힙니다."라는 안내 방송이 나와요. 버튼을 눌러 두 방식이 어떻게 텍스트로 바꾸는지 비교해 보세요.</p>
+    <div class="s30">
+      <div>
+        <svg viewBox="0 0 320 230" id="elev" aria-label="엘리베이터 안내 방송">
+          <rect x="40" y="20" width="200" height="200" rx="6" fill="#d7dde6" stroke="#9aa6b5" stroke-width="3"/>
+          <rect x="56" y="40" width="168" height="180" fill="#5b6776"/>
+          <rect id="dL" x="56" y="40" width="40" height="180" fill="#b8c2cf" stroke="#8b97a6"/>
+          <rect id="dR" x="184" y="40" width="40" height="180" fill="#b8c2cf" stroke="#8b97a6"/>
+          <rect x="250" y="110" width="22" height="46" rx="4" fill="#e9edf2" stroke="#9aa6b5"/>
+          <circle cx="261" cy="124" r="5" fill="#f2a516"/><circle cx="261" cy="142" r="5" fill="#c3cad4"/>
+          <g id="bub" opacity="0">
+            <path d="M178 8 h132 a10 10 0 0 1 10 10 v26 a10 10 0 0 1 -10 10 h-96 l-14 14 l2 -14 h-24 a10 10 0 0 1 -10 -10 v-26 a10 10 0 0 1 10 -10z" fill="#fff" stroke="#9b4fc4" stroke-width="2"/>
+            <text x="244" y="37" text-anchor="middle" font-size="15" font-weight="700" fill="#16202c">문이 닫힙니다.</text>
+          </g>
+          <g id="waveG" opacity="0"><path id="waveP" d="" stroke="#9b4fc4" stroke-width="2.5" fill="none"/></g>
+        </svg>
+        <div class="heard" id="heard">&nbsp;</div>
+        <div style="text-align:center"><button class="btn" id="elevGo">▶ 안내 방송 알아듣기</button></div>
+      </div>
+      <div>
+        <div class="way rule" id="wRule">
+          <h4>패턴 인식 if-then 방식</h4>
+          <p style="font-size:.9rem;margin:2px 0">이미 저장되어 있는 주파수 정보에 따라 해당 텍스트로 변환</p>
+          <div class="out" id="oRule">…</div>
+          <p style="font-size:.86rem;margin:2px 0" class="muted" id="sRule"></p>
+        </div>
+        <div class="way dl" id="wDl">
+          <h4>딥러닝 방식</h4>
+          <p style="font-size:.9rem;margin:2px 0">추출된 음소를 바탕으로 다양한 경우를 고려하여 확률이 높은 텍스트로 변환</p>
+          <div id="oDl"></div>
+          <p style="font-size:.86rem;margin:2px 0" class="muted" id="sDl"></p>
+        </div>
+      </div>
+    </div>
+    <span class="book">교과서 110쪽 · 그림 Ⅱ-30 if-then 방식과 딥러닝 방식</span>
+  </div>
+
+  <div class="grid2 even">
+    <div class="card sp4">
+      <h3>① 규칙 방식이 약했던 까닭: 사람마다 다른 목소리</h3>
+      <p class="muted" style="margin-top:0">초기 음성 인식은 음소를 낱말로 만드는 규칙을 if-then으로 하나하나 정해 두었어요. 그런데 같은 음소도 사람마다 <b>높낮이·크기·빠르기</b>가 달라요. 말하는 사람을 바꿔 보세요.</p>
+      <div class="chips" id="spk"></div>
+      <div class="row"><button class="btn ghost sm" id="spkSay">🔊 이 목소리로 들어 보기</button><span class="muted" id="spkTxt" style="font-size:.88rem"></span></div>
+      <div style="margin-top:10px;font-size:.9rem">저장된 주파수 정보와 닮은 정도 <b id="simO"></b></div>
+      <div class="meter"><i id="simM"></i></div>
+      <div class="res2">
+        <div><b style="color:#b07400;font-size:.88rem">if-then 방식 결과</b><div class="out" id="spkRule"></div></div>
+        <div><b style="color:#9b4fc4;font-size:.88rem">딥러닝 방식 결과</b><div class="out" id="spkDl"></div></div>
+      </div>
+      <p style="font-size:.92rem;margin-top:10px">딥러닝 모델은 <b>대량의 음성 데이터</b>로 학습해서, 목소리가 달라도 같은 음소를 알아들어요. 그래서 정확도가 크게 높아졌어요.</p>
+      <p class="note">※ 두 방식의 차이를 보여 주려고 만든 예시 결과예요.</p>
+    </div>
+
+    <div class="card">
+      <h3>② 딥러닝은 확률이 높은 문장을 골라요</h3>
+      <p class="muted" style="margin-top:0">딥러닝 방식은 들린 소리로 만들 수 있는 여러 문장 가운데 <b>가장 그럴듯한(확률이 높은)</b> 문장을 골라요. 인공지능이라면 무엇을 고를지 먼저 눌러 보세요.</p>
+      <div class="chips" id="gzTabs"></div>
+      <div class="heard" id="gzSound"></div>
+      <div class="guess" id="gzOpts"></div>
+      <div id="gzBars"></div>
+      <p id="gzWhy" style="font-size:.93rem;min-height:44px"></p>
+      <p class="note">※ 확률은 원리를 보여 주려고 정한 예시 숫자예요.</p>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h3>여기서 잠깐! 듣기와 이해하기는 다른 기술이에요</h3>
+    <p class="lead2">친구의 말을 듣고 대답을 떠올리는 과정을 인공지능 기술로 나누어 보면 이렇게 돼요.</p>
+    <div class="flow2">
+      <div style="--k:#2f6fd0">🗣️ <b>친구의 말소리</b><br><span style="font-size:.9rem">"오늘 점심 뭐야?"</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#9b4fc4">👂 <b>음성 인식</b><br><span style="font-size:.9rem">말소리를 듣고 텍스트로 바꾸기 (오늘 배우는 것)</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#e0702b">🧠 <b>자연어 처리</b><br><span style="font-size:.9rem">텍스트의 뜻을 이해하고 자연스러운 대답 떠올리기 (다음 시간)</span></div>
+    </div>
+    <span class="book">교과서 110쪽 · 여기서 잠깐!</span>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 직접 말해 보기 -->
+<section class="page" data-name="직접 말해 보기" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>직접 말해 보기</h2><p>말하는 동안 글자가 바뀌는 순간을 잡아라</p></div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>🎤 음성 인식 체험</h3>
+      <p class="muted" style="margin-top:0">읽을 문장을 고르고 버튼을 누른 뒤 또박또박 말해 보세요. 말하는 <b>도중에</b> 화면의 글자가 바뀌는 순간이 있는지 잘 지켜보세요.</p>
+      <div class="chips" id="srPre">
+        <button class="chip" data-t="같이 가자">같이 가자</button>
+        <button class="chip" data-t="이 그림은 가치가 높다">가치가 높다</button>
+        <button class="chip" data-t="내일 해돋이 보러 가자">해돋이</button>
+        <button class="chip" data-t="국물이 너무 뜨거워">국물</button>
+        <button class="chip" data-t="문이 닫힙니다">문이 닫힙니다</button>
+        <button class="chip" data-t="간장 공장 공장장은 강 공장장이다">간장 공장</button>
+      </div>
+      <div class="target" id="srTarget"><span class="muted" style="font-weight:400">위에서 읽을 문장을 고르거나, 자유롭게 말해 보세요.</span></div>
+      <button class="micbtn" id="srBtn">🎤 누르고 말하기</button>
+      <div class="live" id="srLive"><span class="ph">여기에 인식된 글자가 나타나요.</span></div>
+      <p id="srCmp" style="font-weight:700;margin-top:8px;min-height:26px"></p>
+      <div class="warnbox" id="srErr"></div>
+      <p class="note">🔒 말소리는 인식을 위해 브라우저 회사의 서버(크롬은 구글)로 보내져요. 이름·전화번호 같은 개인 정보는 말하지 마세요.</p>
+    </div>
+    <div class="card">
+      <h3>글자가 바뀐 기록</h3>
+      <p class="muted" style="margin-top:0;font-size:.9rem">말하는 동안 인공지능이 적은 글자를 순서대로 모았어요. <span style="background:#fff8e6;padding:0 4px;border-radius:4px">노란 줄</span>은 앞에서 적은 글자를 <b>고친</b> 순간이에요.</p>
+      <ol class="log" id="srLog"><li class="empty">버튼을 누르고 말하면 여기에 차례로 기록돼요.</li></ol>
+      <h3 style="margin-top:14px">실험해 보기</h3>
+      <ul class="checks" id="exps">
+        <li><label><input type="checkbox"> '가치'만 말할 때와 '같이 가자'를 이어 말할 때, 각각 어떤 글자로 적힐까?</label></li>
+        <li><label><input type="checkbox"> 아주 작게, 아주 빠르게, 입을 가리고 말하면 결과가 어떻게 달라질까?</label></li>
+        <li><label><input type="checkbox"> 조용할 때와 주변이 시끄러울 때 결과를 비교해 보자.</label></li>
+        <li><label><input type="checkbox"> 사투리나 줄임말로 말하면 알아들을까?</label></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h3>왜 말하는 도중에 글자가 바뀔까?</h3>
+    <p class="lead2">처음에는 앞부분 소리만 듣고 가장 그럴듯한 글자를 적어요. 뒷말이 들어오면 문장 전체를 다시 보고 <b>확률이 더 높은 문장</b>으로 고쳐요.</p>
+    <div class="qa">
+      <div><b class="q">[가치]만 들었을 때</b>'가치'일까 '같이'일까? 아직은 알 수 없어요. 뒤에 무슨 말이 올지 기다려야 해요.</div>
+      <div><b class="q">[가치 가자]까지 들었을 때</b>'가자' 앞에는 '같이'가 훨씬 자연스러워요. 앞뒤 말, 곧 <b>맥락</b>이 단서가 되어 '같이 가자'로 고쳐요.</div>
+    </div>
+    <p style="margin-top:12px;font-size:.95rem">03에서 본 <b>"확률이 높은 텍스트로 변환"</b>이 지금 눈앞에서 일어난 거예요.</p>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 활용 -->
+<section class="page" data-name="활용" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>음성 인식의 활용</h2><p>손 대신 말로, 소리 대신 글자로</p></div></div>
+
+  <div class="card">
+    <p style="margin-top:0">음성 인식 기술을 활용하면 손을 쓰기 어려운 상황에서 <b>말만으로 기기를 제어</b>하거나, <b>말소리를 텍스트 데이터로 변환</b>할 수 있어요. 카드를 눌러 보세요.</p>
+    <div class="apps" id="apps">
+      <button data-a="0" class="on"><span class="e">🏠</span><b>기기 제어</b><small>말로 움직이기</small></button>
+      <button data-a="1"><span class="e">📝</span><b>텍스트 기록</b><small>말을 글로 남기기</small></button>
+      <button data-a="2"><span class="e">🗣️</span><b>외국어 교육</b><small>발음 확인</small></button>
+      <button data-a="3"><span class="e">🎬</span><b>자막 생성</b><small>소리를 글자로</small></button>
+    </div>
+    <div class="appd on" data-a="0">
+      <h3 style="margin-top:16px">기기 제어 · 손을 쓰지 않고 말로</h3>
+      <div class="grid2">
+        <div>
+          <div class="ex2" style="grid-template-columns:1fr"><div><b>🏠 스마트 홈</b><br>"커튼 닫아 줘" 한마디에 커튼이 닫히고, "불 꺼 줘" 하면 조명이 꺼져요. 음성 인식이 <b>사물 인터넷</b>과 만난 예예요.</div><div><b>🚗 운전 중</b><br>핸들에서 손을 떼지 않고 말로 전화를 걸거나 음악을 바꿔요.</div></div>
+        </div>
+        <div>
+          <svg class="room" viewBox="0 0 360 210" aria-label="말로 움직이는 방">
+            <rect class="wall" id="rmWall" x="0" y="0" width="360" height="210" rx="14" fill="#3a3f4b"/>
+            <rect x="40" y="28" width="150" height="110" fill="#8fc3ea" stroke="#fff" stroke-width="5"/>
+            <line x1="115" y1="28" x2="115" y2="138" stroke="#fff" stroke-width="4"/>
+            <rect class="cur" id="rmCL" x="34" y="22" width="14" height="122" fill="#d64535"/>
+            <rect class="cur" id="rmCR" x="182" y="22" width="14" height="122" fill="#d64535"/>
+            <rect x="30" y="16" width="170" height="8" rx="4" fill="#7a5a3a"/>
+            <circle class="glow" id="rmGlow" cx="270" cy="70" r="46" fill="#ffd65a" opacity="0"/>
+            <line x1="270" y1="0" x2="270" y2="42" stroke="#222" stroke-width="3"/>
+            <path d="M246 42 h48 l-8 18 h-32z" fill="#e6e1d6"/>
+            <circle id="rmBulb" cx="270" cy="66" r="9" fill="#8a8f99"/>
+            <rect x="0" y="168" width="360" height="42" fill="#7a5a3a" opacity=".55"/>
+            <rect x="268" y="128" width="40" height="52" rx="8" fill="#222"/><circle cx="288" cy="148" r="10" fill="#555"/><circle cx="288" cy="170" r="5" fill="#555"/>
+            <text class="notes" id="rmNotes" x="300" y="122" font-size="22" fill="#f2a516">♪ ♫</text>
+          </svg>
+          <div class="cmd">
+            <input type="text" id="cmdIn" placeholder="예: 불 켜 줘, 커튼 닫아, 음악 틀어 줘">
+            <button class="btn sm" id="cmdGo">실행</button>
+            <button class="btn sm" id="cmdMic" style="background:var(--navy)">🎤 말로 하기</button>
+          </div>
+          <div class="cmdres" id="cmdRes"></div>
+        </div>
+      </div>
+    </div>
+    <div class="appd" data-a="1">
+      <h3 style="margin-top:16px">텍스트 기록 · 말소리를 글로 남기기</h3>
+      <div class="ex2"><div><b>🗒️ 자동 회의록</b><br>회의 중에 오간 말을 받아 적어, 누가 무슨 말을 했는지 글로 정리해 줘요.</div><div><b>🏥 진료 기록</b><br>의사가 진료하며 하는 말을 그대로 진료 기록으로 바꿔요. 아래 「스스로 해결하기」의 사례예요.</div></div>
+    </div>
+    <div class="appd" data-a="2">
+      <h3 style="margin-top:16px">외국어 교육 · 내 발음을 확인받기</h3>
+      <div class="ex2"><div><b>🗣️ 발음 연습 앱</b><br>내가 읽은 외국어 문장을 인식해, 원래 문장과 다른 단어를 표시해 줘요.</div><div><b>💬 대화 연습</b><br>인공지능과 외국어로 말을 주고받으며 말하기를 연습해요.</div></div>
+      <div class="try">06 화면에서 이 원리로 <b>우리말 발음 연습 프로그램</b>을 직접 만들어 봐요. <a href="#p6" onclick="go(6);return false">06으로 가기 →</a></div>
+    </div>
+    <div class="appd" data-a="3">
+      <h3 style="margin-top:16px">자막 생성 · 소리를 글자로 보여 주기</h3>
+      <div class="ex2"><div><b>🎬 영상 자동 자막</b><br>동영상 사이트가 영상 속 말소리를 인식해 자막을 붙여 줘요. 외국 영화를 볼 때도 쓰여요.</div><div><b>🧏 실시간 자막</b><br>수업이나 강연의 말소리를 바로 글자로 보여 줘서, 듣기 어려운 사람도 내용을 따라갈 수 있어요.</div></div>
+      <div class="try">04 화면의 체험이 바로 실시간 자막의 원리예요. <a href="#p4" onclick="go(4);return false">04로 가기 →</a></div>
+    </div>
+    <span class="book">교과서 111쪽 · 그림 Ⅱ-31 음성 인식의 활용</span>
+  </div>
+
+  <div class="case">
+    <h3>📰 스스로 해결하기 · 병원에서 쓰이는 음성 인식</h3>
+    <p style="margin-top:0;font-size:.95rem">교과서 111쪽 기사를 읽어 보세요. 한 스타트업이 만든 시스템은 의사가 환자와 이야기하는 동안 그 말소리를 인식해 <b>전자 의무 기록</b>을 바로 작성해 줘요. 어려운 의료 용어도 높은 정확도로 알아듣고, 치아 번호나 처방 계획 같은 내용을 실시간으로 입력해요.</p>
+    <ol style="font-size:.95rem;margin:6px 0 0;padding-left:20px">
+      <li>위 글에서 딥러닝 기술을 사용하여 효과적으로 해결한 문제는 무엇일까?
+        <details class="hint"><summary>힌트</summary>음성 인식이 없을 때 의사는 진료하면서 무엇을 따로 해야 했을지 생각해 보세요. 기록 손실·누락, 의료진의 피로와도 연결해 보세요.</details></li>
+      <li style="margin-top:8px">인터넷 검색으로 음성 인식 기술을 효과적으로 활용한 사례를 한 가지 더 찾아보자.</li>
+    </ol>
+  </div>
+
+  <div class="cx">
+    <h3>음성 인식은 다른 기술과 만나 더 강해져요</h3>
+    <div class="fuse">
+      <div><b class="eq">🎤 음성 인식 + 📡 사물 인터넷</b>말로 집 안의 조명·커튼·가전제품을 움직이는 스마트 홈</div>
+      <div><b class="eq">🎤 음성 인식 + 💬 자연어 처리</b>물어보면 뜻을 이해하고 대답까지 해 주는 AI 스피커와 음성 비서</div>
+    </div>
+    <span class="book">교과서 111쪽</span>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 발음 연습 -->
+<section class="page" data-name="발음 연습" data-acc="#c98a00">
+  <div class="head"><div class="num">06</div><div><h2>발음 연습 프로그램 만들기</h2><p>교과서 112~113쪽 함께 해결하기</p></div></div>
+
+  <div class="grid2 even">
+    <div class="card">
+      <h3>1 · 2 문제 상황 생각하기</h3>
+      <p style="margin-top:0;font-size:.95rem"><b>문제 상황</b> · 발음이 정확하지 않아 발표에 자신감을 잃은 친구를 어떻게 도울 수 있을까?</p>
+      <label style="font-weight:700;font-size:.9rem">1. 도울 방법</label>
+      <textarea id="w1" data-memo="w1" placeholder="예: 친구와 함께 어려운 문장을 소리 내어 읽는 연습을 한다."></textarea>
+      <label style="font-weight:700;font-size:.9rem;display:block;margin-top:8px">2. 음성 인식 기술을 활용하면 좋은 점</label>
+      <textarea id="w2" data-memo="w2" placeholder="사람이 함께 있지 않아도, 언제든지, … "></textarea>
+      <p class="note">쓴 내용은 선생님께도 전달돼요.</p>
+    </div>
+    <div class="card">
+      <h3>3 프로그램 설계하기</h3>
+      <div class="ipo">
+        <div style="--k:#2f6fd0"><b>입력</b><br>잰말놀이 문장을 녹음한 오디오 파일</div>
+        <div class="ar">↓</div>
+        <div style="--k:#c98a00"><b>처리</b><br>오디오의 음성을 인식해, 읽으려던 문장과 일치하는지 확인</div>
+        <div class="ar">↓</div>
+        <div style="--k:#1f9d74"><b>출력</b><br>일치하면 '완벽한 발음입니다!'<br>아니면 '연습이 필요합니다!'</div>
+      </div>
+      <p style="font-size:.93rem;margin-top:12px">아래 ④에서 이 설계를 바로 실행해 볼 수 있어요. 교과서처럼 코랩에서 파이썬으로 만드는 방법은 ⑤에 있어요.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>④ 바로 해 보기 · 잰말놀이 발음 검사기</h3>
+    <div class="chips" id="twPre"></div>
+    <input type="text" id="twIn" style="width:100%;display:none" placeholder="연습할 문장을 직접 입력하세요">
+    <div class="target" id="twT"></div>
+    <div class="row">
+      <button class="micbtn" id="twMic">🎤 누르고 읽기</button>
+      <span class="muted" style="font-size:.9rem">마이크가 없거나 코랩에서 인식했다면 ↓ 결과를 직접 입력해도 돼요.</span>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <input type="text" id="twRec" style="flex:1;min-width:200px" placeholder="음성 인식 결과 (s_text)">
+      <button class="btn sm" id="twCmp">비교하기</button>
+    </div>
+    <div class="warnbox" id="twErr"></div>
+    <div id="twOut" style="display:none;margin-top:12px">
+      <div class="grid2 even">
+        <div>
+          <b style="font-size:.88rem" class="muted">교과서 코드처럼 비교 · <span class="mono">if text == s_text</span></b>
+          <div class="verdict2" id="twV"></div>
+          <p id="twSpace" style="font-size:.92rem"></p>
+        </div>
+        <div>
+          <b style="font-size:.88rem" class="muted">어디가 달랐을까? · 띄어쓰기 빼고 글자 비교</b>
+          <div class="big" id="twSim"></div>
+          <div class="meter"><i id="twSimM"></i></div>
+        </div>
+      </div>
+      <div class="cmp"><small>원래 문장 (text) · <mark class="miss">빨간 글자</mark>는 인식 결과에 없던 글자</small><span id="twA"></span></div>
+      <div class="cmp"><small>인식 결과 (s_text) · <mark class="extra">노란 글자</mark>는 원래 문장에 없던 글자</small><span id="twB"></span></div>
+    </div>
+    <p class="note">🔒 말소리는 인식을 위해 브라우저 회사의 서버로 보내져요. 교과서 코드의 recognize_google도 구글 서버를 써요.</p>
+  </div>
+
+  <div class="card">
+    <h3>⑤ 코랩에서 파이썬으로 만들기</h3>
+    <p class="muted" style="margin-top:0">잰말놀이 문장을 스마트폰으로 녹음해 컴퓨터로 옮기고(play1), 코랩 왼쪽 <b>📁 파일</b> → <b>업로드</b>로 올린 뒤 아래 코드를 차례로 실행해요. 교과서 112쪽 QR에 소스 코드와 실습 데이터가 있어요.</p>
+
+    <b>6. 파일이 m4a라면 wav로 바꾸기</b>
+    <div class="codebox"><button class="btn ghost sm cp">복사</button><pre class="code">!pip install pydub  <span class="c"># pydub 라이브러리 설치</span>
+m4a_file = 'play1.m4a'; wav_file = 'play1.wav'
+from pydub import AudioSegment
+track = AudioSegment.from_file(m4a_file, format = 'm4a')  <span class="c"># 경로와 파일 형식 지정</span>
+file_handle = track.export(wav_file, format = 'wav')  <span class="c"># 'm4a'를 'wav'로 확장자 변환</span></pre></div>
+    <ul class="lines"><li>음성 인식 라이브러리는 wav 파일을 읽어요. 스마트폰 녹음 파일(m4a)은 먼저 바꿔 줘야 해요.</li></ul>
+
+    <b>7. 오디오 파일의 음성 인식하기</b>
+    <div class="codebox"><button class="btn ghost sm cp">복사</button><pre class="code"><span class="c"># 음성 인식</span>
+!pip install speechrecognition  <span class="c"># 음성 인식 모델을 불러올 수 있는 라이브러리 설치</span>
+import speech_recognition as sr
+
+r = sr.Recognizer()
+sound = sr.AudioFile('play1.wav')
+with sound as source:
+  audio = r.record(source)
+print(r.recognize_google(audio, language = 'ko-KR'))</pre></div>
+    <ul class="lines">
+      <li><span class="mono">r.record(source)</span> · 파일의 소리를 읽어 audio에 담아요. <b>입력</b></li>
+      <li><span class="mono">r.recognize_google(audio, language = 'ko-KR')</span> · 구글의 딥러닝 음성 인식 모델에 보내 한국어 텍스트로 바꿔요. <b>처리</b></li>
+    </ul>
+
+    <b>8. 원래 문장과 비교해 결과 출력하기</b>
+    <div class="codebox"><button class="btn ghost sm cp">복사</button><pre class="code"><span class="c"># 음성 인식 결과 비교</span>
+text = '내가 그린 기린 그림은 잘 그린 기린 그림이고 네가 그린 기린 그림은 잘 못 그린 기린 그림이다'
+s_text = r.recognize_google(audio, language = 'ko-KR')
+if text == s_text:
+  print('완벽한 발음입니다!')
+else:
+  print('연습이 필요합니다!')</pre></div>
+    <ul class="lines"><li><span class="mono">==</span>는 두 문장이 <b>글자 하나, 띄어쓰기 하나까지</b> 똑같아야 참이에요. <b>출력</b></li></ul>
+
+    <details class="hint"><summary>더 해 보기: 띄어쓰기가 달라도 통과하게 고치려면?</summary>
+      <p style="font-size:.92rem">④에서 발음은 맞았는데 '잘 못'과 '잘못'처럼 띄어쓰기만 달라 '연습이 필요합니다!'가 나왔다면, 두 문장에서 띄어쓰기를 지우고 비교해 보세요.</p>
+      <div class="codebox"><button class="btn ghost sm cp">복사</button><pre class="code">if text.replace(' ', '') == s_text.replace(' ', ''):
+  print('완벽한 발음입니다!')
+else:
+  print('연습이 필요합니다!')</pre></div>
+    </details>
+  </div>
+
+  <div class="card">
+    <h3>9 친구의 귀 vs 인공지능의 귀</h3>
+    <p class="muted" style="margin-top:0">다른 잰말놀이 문장을 녹음해 친구에게 들려주고, 코랩이나 ④에서 음성 인식 결과도 확인해 비교해 보세요.</p>
+    <table class="t9">
+      <tr><th class="l" style="width:34%">읽은 문장</th><th class="l">친구가 들은 결과</th><th class="l">음성 인식 인공지능이 인식한 결과</th></tr>
+      <tr><td><input type="text" data-k="s1" placeholder="문장"></td><td><input type="text" data-k="f1"></td><td><input type="text" data-k="a1"></td></tr>
+      <tr><td><input type="text" data-k="s2" placeholder="문장"></td><td><input type="text" data-k="f2"></td><td><input type="text" data-k="a2"></td></tr>
+    </table>
+    <p style="font-size:.93rem">친구는 알아들었는데 인공지능은 틀린 부분, 또는 그 반대인 부분이 있나요? 왜 그럴지 이야기해 보세요.</p>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 정리 -->
+<section class="page" data-name="정리" data-acc="#0f2742">
+  <div class="head"><div class="num">07</div><div><h2>한눈에 정리</h2><p>오늘 배운 말을 한 번에</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0"><b>음성 인식</b>은 사람의 말소리를 분석하여 <b>텍스트 데이터</b>로 바꾸는 것을 말한다.</div>
+    <div style="--k:#9b4fc4">규칙을 일일이 정한 <b>if-then 방식</b>은 사람마다 다른 발음에 약했지만, 대량의 음성 데이터로 학습한 <b>딥러닝 방식</b>이 정확도를 크게 높였다.</div>
+    <div style="--k:#d64535">음성 인식은 <b>사물 인터넷</b>이나 <b>자연어 처리</b> 등의 기술과 융합하여 다양한 분야에서 활용되고 있다.</div>
+  </div>
+  <div class="sum">
+    <div style="border-color:#2f6fd0"><b>주파수</b><span>1초 동안 진동하는 수. 빠르게 반복 = 고주파수 = 높은 소리</span><small>🎵 200 Hz = 1초에 200번 떨림</small></div>
+    <div style="border-color:#1f9d74"><b>음소</b><span>언어의 가장 작은 소리 단위. 글자와 실제 소리는 다를 수 있다</span><small>🔤 문 = ㅁ + ㅜ + ㄴ, 같이 → [가치]</small></div>
+    <div style="border-color:#2f6fd0"><b>인식 과정</b><span>주파수 분석 → 음소 추출 → 텍스트 변환</span><small>〰️ → ㅁㅜㄴ → 문</small></div>
+    <div style="border-color:#b07400"><b>if-then 방식</b><span>저장된 주파수 정보와 규칙대로 변환. 목소리가 다르면 틀리기 쉽다</span><small>🚪 문이 다칩니다?</small></div>
+    <div style="border-color:#9b4fc4"><b>딥러닝 방식</b><span>많은 음성 데이터로 학습. 맥락을 고려해 확률이 높은 텍스트를 고른다</span><small>🚪 문이 닫힙니다. ✔</small></div>
+    <div style="border-color:#2f6fd0"><b>음성 인식 vs 자연어 처리</b><span>말소리를 듣고 글자로 바꾸기 vs 뜻을 이해하고 대답하기</span><small>👂 듣기 → 🧠 이해하기</small></div>
+    <div style="border-color:#d64535"><b>활용</b><span>기기 제어 · 텍스트 기록 · 외국어 교육 · 자막 생성</span><small>🏠 📝 🗣️ 🎬</small></div>
+    <div style="border-color:#c98a00"><b>발음 연습 코드</b><span>recognize_google로 인식하고 == 로 원래 문장과 비교</span><small>🦒 내가 그린 기린 그림</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>말소리는 1초 동안 진동하는 수인 주파수로 분석됩니다. 수업 페이지에서 높낮이가 다른 소리를 듣거나 「아·이·우」를 말해 본 결과를 바탕으로 고주파수 소리와 저주파수 소리의 차이를 쓰세요. 그리고 「같이[가치]」처럼 글자와 실제 소리가 다른 낱말을 하나 들어, 소리만 듣고 받아 적으면 왜 틀리기 쉬운지 음소와 연결해 설명하세요.</li><li>엘리베이터 안내 방송 [무니 다침니다]를 if-then 방식은 「문이 다칩니다」로, 딥러닝 방식은 「문이 닫힙니다」로 바꿨습니다. 두 방식이 텍스트를 정하는 방법을 비교하세요. 그리고 수업 페이지에서 직접 말해 볼 때 말하는 도중 글자가 고쳐진 경험이나, 같은 [가치] 소리를 「같이」와 「가치」로 다르게 적는 예를 들어, 딥러닝 방식이 앞뒤 말(맥락)을 어떻게 활용하는지 설명하세요.</li><li>잰말놀이 발음 검사기로 문장 하나를 말해 보거나 인식 결과를 입력해 본 결과를 쓰고, 교과서 코드(if text == s_text:)가 띄어쓰기만 달라도 「연습이 필요합니다!」를 내는 까닭과 고칠 방법을 쓰세요. 그리고 기기 제어·텍스트 기록·외국어 교육·자막 생성 중 한 분야로 내 생활의 불편을 줄일 음성 인식 서비스를 하나 떠올리고, 말소리가 서버로 보내질 때 조심할 점을 함께 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

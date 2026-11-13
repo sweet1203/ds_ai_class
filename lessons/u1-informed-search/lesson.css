@@ -1,0 +1,5 @@
+  .isr-route{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-weight:700;color:var(--muted)}
+  .isr-route span{background:var(--acc-soft);color:var(--acc);border-radius:999px;padding:4px 14px}
+  .isr-tbl{width:100%;min-width:640px;border-collapse:collapse;font-size:.88rem}
+  .isr-tbl th,.isr-tbl td{border:1px solid var(--line);padding:8px 10px;vertical-align:top;text-align:left}
+  .isr-tbl th{background:#fbfaf7}

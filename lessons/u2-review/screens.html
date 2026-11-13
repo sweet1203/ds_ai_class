@@ -1,0 +1,241 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 총정리</span>
+      <h1>2단원을 한 번에<br>정리해 볼까요?</h1>
+      <p>데이터로 규칙을 찾는 기계학습부터, 스스로 특징을 찾는 딥러닝, 그리고 보고·듣고·읽는 인공지능까지. 어려운 기술 용어를 쉬운 말로 다시 정리하고, 교과서 120~121쪽 「AI 역량 키우기」 활동을 해 봅니다.</p>
+      <ol>
+        <li>2단원 지도</li><li>기계학습 용어</li><li>딥러닝 용어</li><li>보고·듣고·읽는 AI</li>
+        <li>어디에 쓰일까?</li><li>층을 늘리면 더 좋아질까?</li><li>숫자 그려 모델에게 묻기</li><li>마무리 퀴즈</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📊</i><div><b>데이터</b><small>모으고, 다듬고, 숫자로 바꾸기</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🔍</i><div><b>기계학습</b><small>데이터와 정답으로 규칙 찾기</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🧠</i><div><b>딥러닝</b><small>은닉층을 쌓아 특징을 스스로 찾기</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>👁️ 👂 💬</i><div><b>보고 · 듣고 · 읽는 AI</b><small>컴퓨터 비전 · 음성 인식 · 자연어 처리</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>2단원 「인공지능과 학습」에서 배운 내용을 <b>한 장의 지도</b>로 다시 보고, 어려웠던 <b>기술 용어를 쉬운 말과 예</b>로 정리합니다. 배운 기술이 <b>생활 어디에 쓰이는지</b> 짝지어 보고, 마지막으로 교과서 「AI 역량 키우기」처럼 <b>층을 늘린 딥러닝 모델이 정말 더 좋은지</b> 결과를 분석하고, 내가 그린 숫자를 두 모델에게 맞혀 보게 합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 정리할까</span>
+        <ul>
+          <li>2단원은 교과서에서 가장 길고(58~127쪽), 3단원 「인공지능의 사회적 영향」과 4단원 「인공지능 프로젝트」의 바탕이 돼요.</li>
+          <li>용어를 외우기보다 <b>「쉽게 말하면 무엇인지」</b>를 내 말로 설명할 수 있어야 프로젝트에서 쓸 수 있어요.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">2단원의 핵심 질문</span>
+        <ul class="uses">
+          <li><b>기계학습</b> · 기계학습으로 해결할 수 있는 문제의 특성과 해결 방법은 무엇일까?</li>
+          <li><b>딥러닝</b> · 복잡한 문제를 효과적으로 해결하기 위한 딥러닝은 어떻게 구현할까?</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">오늘 마지막에 이 두 질문에 내 말로 답해 봐요.</p>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>2단원의 주요 기술 용어를 쉬운 말과 예로 설명한다.</li>
+          <li>생활 속 문제가 어떤 학습 방법과 어떤 인공지능 기술에 해당하는지 고른다.</li>
+          <li>은닉층 수가 다른 두 딥러닝 모델의 성능을 비교하고, 층을 늘리면 항상 좋아지는지 근거를 들어 말한다.</li>
+          <li>손 글씨 이미지가 모델에 들어가기 전에 어떻게 바뀌는지 설명한다.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 2단원 지도부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 2단원 지도 -->
+<section class="page" data-name="2단원 지도" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>2단원 한눈에 보기</h2><p>58~127쪽, 무엇을 배웠는지 지도로 다시 보기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>2단원은 <b>「컴퓨터가 데이터를 보고 스스로 배우는 방법」</b>이에요. 기계학습이 기본이고, 딥러닝은 은닉층을 여러 겹 쌓은 기계학습이며, 그 딥러닝으로 컴퓨터가 보고(비전)·듣고(음성)·읽게(언어) 되었어요.</span></div>
+  <p class="muted" style="margin-top:-6px">주제를 누르면 쉬운 설명이 나와요. 낯선 주제가 있으면 그 용어 화면으로 가서 다시 봐요.</p>
+  <div class="umap" id="umap"></div>
+  <div class="tinfo" id="tinfo"><h4>주제를 하나 눌러 보세요</h4><div class="e">위 세 묶음 중 아무 주제나 눌러 보세요.</div></div>
+</section>
+
+<!-- 2 기계학습 용어 -->
+<section class="page" data-name="기계학습 용어" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>기계학습 용어 정리</h2><p>교과서 58~89쪽 · 데이터와 정답으로 규칙을 찾는 방법</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>전통적인 프로그램은 사람이 규칙을 알려 주지만, 기계학습은 <b>데이터와 정답을 잔뜩 보여 주면 컴퓨터가 규칙을 스스로 찾아요.</b> 문제를 정하고 → 데이터를 모으고 → 다듬고 → 방법을 고르고 → 학습시키고 → 평가해요.</span></div>
+  <p class="muted" style="margin-top:-6px">카드를 누르면 뒤집혀서 <b>쉬운 말</b>과 <b>예</b>가 나와요. 먼저 뜻을 떠올려 보고 뒤집어 확인해요.</p>
+  <div class="row" style="margin-bottom:6px"><button class="btn ghost sm" data-flipall="ml">모두 뒤집기 / 되돌리기</button></div>
+  <div id="cards-ml"></div>
+  <div class="card" style="margin-top:16px"><h3>🎯 쉬운 말 보고 용어 맞히기</h3><div class="guess" id="guess-ml"></div></div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 딥러닝 용어 -->
+<section class="page" data-name="딥러닝 용어" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>딥러닝 용어 정리</h2><p>교과서 90~101쪽 · 은닉층을 여러 겹 쌓은 인공신경망</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>딥러닝은 뇌의 신경 세포를 흉내 낸 <b>퍼셉트론을 여러 층으로 쌓은</b> 기계학습이에요. 문제를 풀어 보고(순전파) → 채점하고(오차 계산) → 틀린 만큼 고치기(역전파)를 반복하며 배우고, <b>특징을 스스로 찾아요.</b></span></div>
+  <p class="muted" style="margin-top:-6px">카드를 누르면 뒤집혀요.</p>
+  <div class="row" style="margin-bottom:6px"><button class="btn ghost sm" data-flipall="dl">모두 뒤집기 / 되돌리기</button></div>
+  <div id="cards-dl"></div>
+  <div class="card" style="margin-top:16px"><h3>🎯 쉬운 말 보고 용어 맞히기</h3><div class="guess" id="guess-dl"></div></div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 응용 -->
+<section class="page" data-name="보고·듣고·읽는 AI" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>보고 · 듣고 · 읽는 인공지능</h2><p>교과서 102~119쪽 · 컴퓨터 비전 · 음성 인식 · 자연어 처리</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>세 기술 모두 <b>사진·소리·글을 숫자로 바꾼 뒤 딥러닝으로 배운다</b>는 점이 같아요. 사진은 픽셀 숫자 표로, 소리는 주파수로, 글은 단어 좌표(임베딩)로 바뀌어요.</span></div>
+  <p class="muted" style="margin-top:-6px">카드를 누르면 뒤집혀요.</p>
+  <div class="row" style="margin-bottom:6px"><button class="btn ghost sm" data-flipall="app">모두 뒤집기 / 되돌리기</button></div>
+  <div id="cards-app"></div>
+  <div class="card" style="margin-top:16px"><h3>🎯 쉬운 말 보고 용어 맞히기</h3><div class="guess" id="guess-app"></div></div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 활용 -->
+<section class="page" data-name="어디에 쓰일까" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>어디에 쓰일까?</h2><p>생활 속 문제를 2단원에서 배운 방법과 기술로 짝짓기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제를 보면 먼저 <b>「정답이 있는가? 맞힐 것이 종류인가, 숫자인가?」</b>를 따지면 학습 방법이 보이고, <b>「사진인가, 소리인가, 글인가?」</b>를 따지면 기술이 보여요.</span></div>
+  <div class="chips" id="sitRound"><button class="chip on" data-r="0">1라운드 · 어떤 학습 방법?</button><button class="chip" data-r="1">2라운드 · 어떤 인공지능 기술?</button></div>
+  <div class="grid2">
+    <div class="sit" id="sit"></div>
+    <div class="card" style="margin:0"><h3 id="hintT"></h3><div id="hintB" style="font-size:.92rem"></div></div>
+  </div>
+  <div class="board" id="board"></div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 AI 역량 ① -->
+<section class="page" data-name="층을 늘리면?" data-acc="#c98a00">
+  <div class="head"><div class="num">06</div><div><h2>은닉층을 늘리면 더 좋아질까?</h2><p>AI 역량 키우기 · 「딥러닝」 정리 · 딥러닝 모델 성능 평가 (교과서 120쪽)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제집을 더 많이, 더 두껍게 산다고 시험 점수가 꼭 오를까요? 딥러닝도 <b>은닉층과 퍼셉트론을 늘리면 가중치(외울 것)가 크게 늘어나지만</b>, 성능이 꼭 좋아지는 것은 아니에요. 직접 결과로 확인해 봐요.</span></div>
+
+  <div class="card">
+    <h3>① 두 모델 살펴보기</h3>
+    <p class="muted" style="margin-top:0">MNIST 손 글씨(0~9) 데이터로 학습한 두 모델이에요. 왼쪽은 교과서 99쪽 모델, 오른쪽은 120쪽에서 은닉층과 퍼셉트론을 늘린 모델(model2)이에요. 막대 높이는 각 층의 퍼셉트론 수예요.</p>
+    <div class="arch" id="arch"></div>
+  </div>
+
+  <div class="card">
+    <h3>② 먼저 예상해 보기</h3>
+    <p class="muted" style="margin-top:0">model2는 은닉층이 5개이고 가중치가 2.7배 많아요. <b>테스트 데이터 정확도</b>는 어떻게 될까요?</p>
+    <div class="pred" id="pred"><button class="btn ghost" data-v="0">model2가 더 좋을 것이다</button><button class="btn ghost" data-v="1">거의 비슷할 것이다</button><button class="btn ghost" data-v="2">model2가 더 나쁠 것이다</button></div>
+    <p id="predSay" style="min-height:26px;margin-top:8px"></p>
+  </div>
+
+  <div class="card">
+    <h3>③ 결과 확인하기 (교과서 120쪽 표 채우기)</h3>
+    <div class="wrapx"><table class="rtab" id="rtab"></table></div>
+    <div class="row"><button class="btn sm" id="reveal">결과 열기</button><span class="muted" style="font-size:.88rem">교과서 코드를 그대로 실행한 결과예요. 실행할 때마다 소수점 아래 값은 조금씩 달라져요.</span></div>
+    <h4 style="margin-top:14px">회차(에포크)마다 테스트 데이터 오차(손실)는?</h4>
+    <svg class="chart" id="chart" viewBox="0 0 640 260"></svg>
+    <p id="chartSay" style="font-size:.93rem"></p>
+  </div>
+
+  <div class="cx">
+    <h3>④ 친구와 이야기 나누기 (교과서 120쪽 ③)</h3>
+    <p class="lead2">은닉층이 2개인 모델과 은닉층·퍼셉트론을 늘린 model2 중 어느 것의 성능이 더 좋은가요? 그 이유는 무엇일까요?</p>
+    <div class="qa">
+      <div><b class="q">생각할 거리 ① 숫자 비교</b>테스트 정확도 차이는 얼마인가요? 그 차이를 얻으려고 가중치는 몇 배 늘었나요? 학습 시간과 컴퓨터 자원도 함께 생각해 봐요.</div>
+      <div><b class="q">생각할 거리 ② 과적합</b>훈련 데이터는 잘 맞히는데 테스트 데이터 오차는 회차가 갈수록 커진다면 무슨 뜻일까요? 2단원 「과적합」을 떠올려 봐요.</div>
+      <div><b class="q">생각할 거리 ③ 알맞은 크기</b>손 글씨 숫자처럼 비교적 단순한 문제에 아주 큰 모델이 꼭 필요할까요? 문제에 맞는 크기의 모델을 고르는 것도 실력이에요.</div>
+      <div><b class="q">생각할 거리 ④ 언제 깊게?</b>사진 속 얼굴, 긴 문장처럼 훨씬 복잡한 문제라면 층을 늘리는 것이 도움이 될 수도 있어요. 다만 그만큼 데이터도 많이 필요해요.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>내 실력 점검하기 (교과서 120쪽)</h3>
+    <ul class="selfck" id="selfck"></ul>
+    <p id="selfSay" style="font-size:.93rem;min-height:24px"></p>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 AI 역량 ② -->
+<section class="page" data-name="숫자 그려 묻기" data-acc="#0e7c86">
+  <div class="head"><div class="num">07</div><div><h2>내가 그린 숫자, 모델은 맞힐까?</h2><p>AI 역량 키우기 · 선택 활동 (교과서 121쪽 보충 · 심화)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델은 <b>28 × 28 흑백 사진만</b> 볼 줄 알아요. 그래서 내가 그린 그림을 흑백으로 바꾸고, 색을 뒤집고, 28 × 28로 줄이고, 숫자 784개로 펴고, 0~1로 나누는 <b>전처리</b>를 거쳐야 해요. 교과서 121쪽 심화 코드가 바로 이 일을 해요.</span></div>
+
+  <div class="card">
+    <h3>① 숫자를 그리고 두 모델에게 물어보기</h3>
+    <div class="drawbox">
+      <div>
+        <canvas id="dCan" width="280" height="280"></canvas>
+        <div class="row" style="margin-top:8px;justify-content:center"><button class="btn sm" id="dAsk">🤖 맞혀 봐!</button><button class="btn ghost sm" id="dClear">지우기</button></div>
+        <p class="note" style="text-align:center">마우스나 손가락으로 0~9 숫자 하나를 크게 그려요.</p>
+      </div>
+      <div>
+        <div class="steps2" id="dSteps"></div>
+        <div class="two">
+          <div style="--k:#1f9d74"><b>model</b> <span class="muted" style="font-size:.82rem">은닉층 2개 · 가중치 84,060개</span><div class="ans" id="ans1">?</div><div id="bars1"></div></div>
+          <div style="--k:#c98a00"><b>model2</b> <span class="muted" style="font-size:.82rem">은닉층 5개 · 가중치 224,760개</span><div class="ans" id="ans2">?</div><div id="bars2"></div></div>
+        </div>
+        <p id="dSay" style="font-size:.93rem;min-height:24px;margin-top:8px"></p>
+        <div class="warnbox" id="dErr"></div>
+      </div>
+    </div>
+    <div class="callout" style="font-size:.92rem">여러 숫자를 그려 보며 기록해 봐요. 두 모델이 다르게 답한 숫자가 있나요? 모델이 자주 틀리는 숫자는 무엇인가요? 숫자를 아주 작게, 또는 한쪽 구석에 그리면 어떻게 되나요?</div>
+  </div>
+
+  <div class="card">
+    <h3>② 심화 코드가 하는 일 (교과서 121쪽)</h3>
+    <p class="muted" style="margin-top:0">교과서 121쪽 심화 활동은 그림판으로 그린 숫자를 Colab에 올려 120쪽에서 만든 모델에 넣어요. 위 ①의 작은 그림 다섯 장이 바로 아래 코드 한 줄 한 줄이 하는 일이에요. 빈칸에 들어갈 말을 생각해 보세요.</p>
+<div class="mycode">img = cv2.imread(file)                          <span class="c"># 이미지 불러오기</span>
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)     <span class="c"># 흑백으로 변환  → 그림 ②</span>
+img = cv2.bitwise_not(img)                      <span class="c"># 반전           → 그림 ③</span>
+img = cv2.resize(img, dsize = (28, 28))         <span class="c"># 크기 조절       → 그림 ④</span>
+img_ary = np.array(<span class="bk">  ①  </span>)                       <span class="c"># 이미지를 numpy로 변환</span>
+img_flatten = img_ary.reshape(1, 784)           <span class="c"># 한 줄로 만들기  → 숫자 784개</span>
+img_scaler = img_flatten.astype(<span class="bk">  ②  </span>) / 255     <span class="c"># 정규화        → 그림 ⑤</span>
+img_predict = np.argmax(model2.predict(img_scaler), axis = 1)  <span class="c"># 분류 실행</span></div>
+    <details class="hint" style="margin-top:6px"><summary>💡 빈칸 힌트</summary><p style="font-size:.92rem">① 바로 위 줄까지 손질한 이미지가 담긴 <b>변수 이름</b>이에요. ② 255로 나누면 0~1 사이 <b>소수</b>가 되니, 정수가 아니라 실수 자료형으로 바꿔야 해요. 99쪽에서 MNIST를 정규화할 때 쓴 자료형과 같아요.</p></details>
+    <p class="note">수업 페이지는 MNIST처럼 숫자를 가운데로 옮기는 단계를 하나 더 해요. MNIST 손 글씨는 모두 숫자가 가운데에 오도록 맞춰져 있어서, 이렇게 해야 모델이 더 잘 맞혀요.</p>
+  </div>
+
+  <div class="card">
+    <h3>내 계획 점검하기 (교과서 121쪽)</h3>
+    <p class="muted" style="margin-top:0">2단원의 핵심 질문에 내 말로 답해 보세요. 오늘 정리한 용어를 넣어서 써 봐요. 적은 내용은 선생님께도 전달돼요.</p>
+    <div class="grid2 even">
+      <div><b style="font-size:.93rem">기계학습으로 해결할 수 있는 문제의 특성과 해결 방법은 무엇일까?</b><textarea id="plan1" data-memo="plan1" rows="4" placeholder="예: 정답이 있는 데이터가 많을 때 … 문제 정의 → …"></textarea></div>
+      <div><b style="font-size:.93rem">복잡한 문제를 효과적으로 해결하기 위한 딥러닝은 어떻게 구현할까?</b><textarea id="plan2" data-memo="plan2" rows="4" placeholder="예: 은닉층을 … 순전파 → …"></textarea></div>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="7"></div>
+</section>
+
+<!-- 8 마무리 -->
+<section class="page" data-name="마무리 퀴즈" data-acc="#0f2742">
+  <div class="head"><div class="num">08</div><div><h2>2단원 마무리</h2><p>핵심 문장과 마무리 퀴즈</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>기계학습</b>은 데이터와 결괏값으로 규칙을 찾으며, 문제 정의 → 데이터 수집 → 전처리 → 유형·알고리즘 선정 → 모델 학습 → 성능 평가·수정 순서로 문제를 해결한다.</div>
+    <div style="--k:#9b4fc4"><b>딥러닝</b>은 다중의 은닉층으로 구성된 인공신경망으로, 순전파 → 오차 계산 → 역전파를 반복하며 스스로 특징을 찾아 복잡한 문제를 해결한다.</div>
+    <div style="--k:#e0702b">딥러닝은 <b>컴퓨터 비전</b>, <b>음성 인식</b>, <b>자연어 처리</b>에 활용되며, 은닉층을 늘린다고 성능이 항상 좋아지는 것은 아니다.</div>
+  </div>
+  <div class="card" style="--acc:#0f2742">
+    <h3>마무리 퀴즈 <span class="muted" style="font-weight:400;font-size:.9rem">(2단원 전체에서 12문제)</span></h3>
+    <div class="quiz" data-quiz="8"></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>2단원 기계학습의 문제 해결 과정(문제 정의 → 데이터 수집 → 데이터 전처리 → 유형·알고리즘 선정 → 모델 학습 → 성능 평가·수정)을 붓꽃 분류 실습을 예로 들어 단계마다 무엇을 했는지 정리하세요. 그리고 이 중 가장 중요하다고 생각하는 단계를 하나 골라 그 이유를 쓰세요.</li><li>기계학습과 딥러닝의 차이를 「특징 추출」과 연결해 설명하고, 딥러닝이 배우는 과정(순전파 → 오차 계산 → 역전파)을 쉬운 말로 쓰세요. 그리고 은닉층과 퍼셉트론을 늘린 model2의 결과를 떠올려, 「층을 많이 쌓을수록 항상 좋아지는가」에 대한 내 생각을 덧붙이세요.</li><li>컴퓨터 비전·음성 인식·자연어 처리 중 하나를 골라, 그 기술이 사진·소리·글을 어떻게 숫자로 바꾸어 학습하는지와 생활 속 활용 예를 설명하세요. 그리고 2단원을 마치며 인공지능이 잘하는 일과 아직 한계가 있는 일(학습 데이터에 없는 것, 과적합, 사실과 다른 문장 등)을 하나씩 들어 내 생각을 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

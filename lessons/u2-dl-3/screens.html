@@ -1,0 +1,233 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <svg id="coverNet" viewBox="0 0 1000 520" preserveAspectRatio="xMidYMid slice"></svg>
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-2 딥러닝 · ③</span>
+      <h1>어느 쪽으로, 얼마나<br>고칠까?</h1>
+      <p>손실이 줄어드는 쪽으로 가중치를 고치는 경사 하강법, 데이터를 나눠 학습하는 배치 사이즈와 에포크를 배우고 딥러닝에서 배운 말을 한 번에 정리해요.</p>
+      <ol><li>경사 하강법</li><li>배치·에포크</li><li>정리</li></ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 배울 내용 보기 ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p><b>지난 시간 복습</b> · 학습은 순전파로 답을 내고 → 손실 함수로 틀린 정도를 재고 → 역전파로 가중치를 고치는 과정을 되풀이하는 것이에요.</p><p>오늘은 가중치를 <b>어느 쪽으로, 얼마나</b> 고칠지 정하는 <b>경사 하강법</b>과, 데이터를 몇 개씩 몇 바퀴 볼지 정하는 <b>배치 사이즈와 에포크</b>를 배우고 딥러닝 전체를 정리합니다.</p>
+    </div>
+
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>사진을 알아보고, 말을 알아듣고, 글을 번역하는 인공지능은 대부분 <b>딥러닝</b>으로 만들어졌습니다. 속이 어떻게 돌아가는지 알면 그 결과를 무작정 믿거나 막연히 두려워하지 않고 따져 볼 수 있습니다.</li>
+          <li>"인공지능을 <b>학습시킨다</b>", "인공지능이 <b>틀렸다</b>"는 말이 정확히 무슨 뜻인지 설명할 수 있게 됩니다.</li>
+          <li>다음에 배울 컴퓨터 비전, 음성 인식, 자연어 처리와 4단원 프로젝트의 이미지 분류 모델이 모두 오늘 배우는 원리 위에 있습니다.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">어디에 쓰일까</span>
+        <ul class="uses">
+          <li><b>사진을 보는 인공지능</b> · 휴대폰 얼굴 인식 잠금 해제, 주차장 번호판 인식, 엑스레이 사진에서 이상한 부분 찾기</li>
+          <li><b>소리를 듣는 인공지능</b> · 음성 비서, 회의 내용을 글로 받아 적기, 동영상 자동 자막</li>
+          <li><b>글을 읽는 인공지능</b> · 번역기, 챗봇, 문장 자동 완성</li>
+          <li><b>다음 시간 실습</b> · 손으로 쓴 숫자 알아보기 (우편번호나 서류의 손글씨 숫자를 읽는 기술)</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>평균 제곱 오차와 경사 하강법 한 걸음을 계산한다.</li>
+          <li>손글씨 실습 화면의 <span class="mono">epochs</span>, <span class="mono">1875/1875</span>가 무슨 뜻인지 읽는다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="glossary-head"><span class="kicker">미리 보는 용어</span><span class="muted">카드를 누르면 그 개념 화면으로 갑니다</span></div>
+    <div class="glossary">
+      <div class="gcard" role="button" tabindex="0" style="--g:#c98a00" onclick="go(1)"><i>01</i><h4>경사 하강법</h4>
+        <dl><dt>경사 하강법</dt><dd>손실이 줄어드는 쪽으로 조금씩 내려가기</dd><dt>학습률</dt><dd>한 번에 내딛는 걸음의 크기</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#2f6fd0" onclick="go(2)"><i>02</i><h4>배치·에포크</h4>
+        <dl><dt>배치 사이즈</dt><dd>한 번 고치기 전에 보는 데이터 수</dd><dt>에포크</dt><dd>전체 데이터를 한 바퀴 본 것</dd></dl></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 경사 하강법부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 7 경사 하강법 -->
+<section class="page" data-name="경사 하강법" data-acc="#c98a00">
+  <div class="head"><div class="num">01</div><div><h2>경사 하강법과 역전파</h2><p>안개 낀 산에서 골짜기로 내려가려면, 발밑이 기운 쪽으로 한 걸음씩</p></div></div>
+  <div class="case">
+    <h3>⛰️ 생활 속 사례: 눈을 가리고 언덕 아래로 내려가기</h3>
+    <p>앞이 안 보이면 어디가 제일 낮은지 알 수 없어요. 하지만 <b>발바닥으로 땅이 기운 쪽</b>은 느낄 수 있죠. 그쪽으로 한 걸음, 또 한 걸음 가면 결국 가장 낮은 곳에 도착해요.</p>
+    <div class="flow">
+      <div style="--c:#c98a00"><b>언덕의 높이 = 손실</b>낮을수록 덜 틀린 것. 목표는 가장 낮은 곳!</div>
+      <div style="--c:#2f6fd0"><b>땅이 기운 방향 = 기울기</b>어느 쪽으로 가야 손실이 줄어드는지 알려 줘요.</div>
+      <div style="--c:#d64535"><b>걸음 크기 = 학습률</b>너무 크면? 샤워 손잡이를 확 돌리면 뜨거웠다 차가웠다 왔다 갔다 하는 것처럼 지나쳐 버려요.</div>
+    </div>
+  </div>
+  <div class="cx">
+    <h3>🧩 개념 쉽게 이해하기: 가중치를 "어느 쪽으로, 얼마나" 고칠까?</h3>
+    <p class="lead2">지난 시간(학습 과정)에 "틀리면 가중치를 고친다"고 했죠? 경사 하강법은 <b>고치는 방향과 크기를 정하는 방법</b>이에요.</p>
+    <ol class="vsteps">
+      <li><b class="t">모든 값을 다 넣어 볼 수는 없어요</b><p>가중치가 하나라면 0.1, 0.2, 0.3… 다 넣어 보면 되지만, 손글씨 모델은 가중치와 편향이 84,060개예요. 전부 시험해 보려면 몇백 년이 걸려요.</p></li>
+      <li><b class="t">"지금 여기서 어느 쪽이 내리막인지"만 알면 돼요</b><p>가중치를 아주 조금 바꿔 봤을 때 손실이 커지는지 작아지는지를 알려 주는 값이 <b>기울기</b>예요.</p>
+        <div class="tri" style="grid-template-columns:1fr 1fr">
+          <div><h4>기울기가 + (오르막)</h4>가중치를 키우면 손실이 커져요 → <b>가중치를 줄여요</b></div>
+          <div><h4>기울기가 − (내리막)</h4>가중치를 키우면 손실이 작아져요 → <b>가중치를 키워요</b></div>
+        </div>
+        <p style="margin-top:8px">즉, 항상 <b>기울기의 반대 방향</b>으로 움직여요. 그래서 공식에 빼기(−)가 들어가요.</p></li>
+      <li><b class="t">공식을 하나씩 뜯어보면</b>
+        <div class="formula">새 w = 지금 w − 학습률 × 기울기<small>아래 실습의 첫 걸음: 1.0 − 0.01 × 30 = 0.7</small></div>
+        <div class="pieces">
+          <div style="--k:#2f6fd0"><b>지금 w</b><br>지금 서 있는 위치 (1.0)</div>
+          <div style="--k:#d64535"><b>기울기</b><br>땅이 얼마나, 어느 쪽으로 기울었나 (30, 오르막이 가파름)</div>
+          <div style="--k:#c98a00"><b>학습률</b><br>한 걸음에 얼마나 크게 갈지 (0.01 = 조심조심)</div>
+        </div></li>
+      <li><b class="t">학습률은 "적당히"가 중요해요</b>
+        <div class="tri">
+          <div><h4>🐢 너무 작으면</h4>한 걸음이 너무 작아서 바닥까지 한참 걸려요. 학습이 아주 느려요.</div>
+          <div class="good"><h4>👍 적당하면</h4>성큼성큼 가다가 바닥 근처에서는 저절로 걸음이 작아져서 잘 도착해요.</div>
+          <div><h4>🦘 너무 크면</h4>바닥을 훌쩍 건너뛰어 반대편으로 가요. 손실이 오히려 커질 수 있어요.</div>
+        </div></li>
+    </ol>
+    <div class="qa">
+      <div><b class="q">Q. 경사 하강법과 역전파는 뭐가 달라요?</b><b>역전파</b>는 가중치 수만 개의 기울기를 끝에서부터 거꾸로 빠르게 <b>계산하는 방법</b>이고, <b>경사 하강법</b>은 그 기울기로 가중치를 <b>고치는 방법</b>이에요. 둘이 짝꿍처럼 함께 일해요.</div>
+      <div><b class="q">Q. 바닥에 가까워지면 왜 걸음이 작아져요?</b>바닥 근처는 땅이 평평해서 기울기가 작아요. 기울기가 작으면 "학습률 × 기울기"도 작아지니까 걸음이 저절로 줄어요. (0.3 → 0.15 → 0.075)</div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <svg id="gdsvg" viewBox="0 0 460 300"></svg>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+        <label>학습률 <select id="lr"><option value="0.01">0.01</option><option value="0.05">0.05 (너무 큼)</option></select></label>
+        <button class="btn" id="step">한 걸음</button><button class="btn ghost" id="reset">처음부터</button>
+      </div>
+    </div>
+    <div class="card">
+      <p>가중치가 하나뿐인 아주 작은 모델 <span class="mono">꽃잎 너비 = w × 꽃잎 길이</span>로 꽃 하나(길이 5cm, 실제 너비 2cm)를 맞힙니다. 정답은 w = 0.4입니다.</p>
+      <p><b>새 w = 지금 w − 학습률 × 기울기</b></p>
+      <table id="gdt"></table>
+    </div>
+  </div>
+  <div class="card">
+    <p>학습률 0.01로 걸으면 손실이 9 → 2.25 → 0.56 → 0.14로 줄고, 정답에 가까워질수록 한 걸음의 폭도 작아집니다(0.3 → 0.15 → 0.075). 학습률 0.05로 바꾸면 보폭이 너무 커서 골짜기를 건너뛰고 손실이 오히려 커집니다.</p>
+    <div class="callout"><b>역전파</b>는 이 일을 신경망 전체에서 하는 것입니다. 출력층의 오차를 거꾸로 전하면서 가중치 하나하나가 손실에 준 영향(기울기)을 계산하고, 경사 하강법으로 한꺼번에 고칩니다.</div>
+    <span class="book">교과서 93~94쪽</span>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 8 배치 -->
+<section class="page" data-name="배치·에포크" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>배치 사이즈와 에포크</h2><p>한 송이 볼 때마다 고칠까, 여러 송이를 보고 한 번에 고칠까</p></div></div>
+  <div class="case">
+    <h3>📒 생활 속 사례: 영어 단어 120개 외우기</h3>
+    <div class="pair">
+      <div><b>배치 사이즈 = 한 번에 외우는 단어 수</b><br>"10개씩 외우고 → 쪽지시험 보고 → 틀린 것 다시 보기". 이때 배치 사이즈는 10이에요. 120개를 다 보려면 쪽지시험을 120 ÷ 10 = <b>12번</b> 봐요.</div>
+      <div><b>에포크 = 단어장을 처음부터 끝까지 한 바퀴</b><br>단어장을 한 번 다 보면 1에포크, 시험 전까지 5번 복습하면 <b>5에포크</b>예요. 여러 바퀴 볼수록 더 잘 외워져요.</div>
+    </div>
+  </div>
+  <div class="cx">
+    <h3>🧩 개념 쉽게 이해하기: 데이터를 왜 나눠서 보고, 왜 여러 번 볼까?</h3>
+    <p class="lead2">학습 데이터는 보통 수만 장이에요. 이걸 <b>몇 개씩 보고 고칠지(배치 사이즈)</b>, <b>몇 바퀴 볼지(에포크)</b>를 사람이 정해 줘야 해요.</p>
+    <ol class="vsteps">
+      <li><b class="t">배치 사이즈: 몇 개를 보고 한 번 고칠까?</b>
+        <div class="tri">
+          <div><h4>1개씩 보고 고치기</h4>한 문제 틀릴 때마다 공부법을 바꾸는 것과 같아요. 자주 고치지만 <b>이랬다저랬다 흔들려요.</b></div>
+          <div class="good"><h4>몇십 개씩 보고 고치기 👍</h4>적당히 모아서 "대체로 이런 걸 틀리는구나"를 보고 고쳐요. <b>빠르면서도 안정적</b>이라 가장 많이 써요. (예: 32개)</div>
+          <div><h4>전부 다 보고 한 번 고치기</h4>6만 장을 다 볼 때까지 한 번도 안 고쳐요. 정확하지만 <b>너무 느리고</b> 컴퓨터 메모리도 많이 필요해요.</div>
+        </div></li>
+      <li><b class="t">에포크: 전체 데이터를 몇 바퀴 볼까?</b><p>한 바퀴만 보고는 다 배우지 못해요. 단어장을 여러 번 복습하듯이 여러 바퀴 보면서 손실을 줄여요. 손글씨 실습에서는 보통 5~10에포크를 돌려요.</p></li>
+      <li><b class="t">그런데 너무 많이 보면?</b><p>같은 문제집만 수십 번 풀면 문제를 이해하는 게 아니라 <b>답을 외워 버려요.</b> 그러면 처음 보는 새 문제는 못 풀어요. 인공지능도 에포크가 너무 많으면 학습 데이터에만 딱 맞고 새 데이터는 못 맞히는 <b>과대적합</b>이 생겨요. 그래서 "적당한 바퀴 수"를 찾는 게 중요해요.</p></li>
+      <li><b class="t">계산 공식 두 개만 기억해요</b>
+        <div class="formula">1에포크에 고치는 횟수 = 데이터 수 ÷ 배치 사이즈<small>붓꽃 120송이 ÷ 10 = 12번 · 손글씨 60,000장 ÷ 32 = 1,875번</small></div>
+        <div class="formula">전체 고치는 횟수 = 1에포크 횟수 × 에포크 수<small>손글씨: 1,875번 × 10에포크 = 18,750번</small></div></li>
+    </ol>
+  </div>
+  <div class="card">
+    <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+      <span>학습 데이터 120송이 · 배치 사이즈</span>
+      <div class="chips" id="bsPick" style="margin:0"></div>
+      <button class="btn" id="bsPlay">1에포크 재생</button>
+    </div>
+    <div class="dots" id="dots"></div>
+    <div style="display:flex;gap:30px;flex-wrap:wrap">
+      <div><span class="muted">가중치를 고친 횟수</span> <span class="big" id="upd">0</span></div>
+      <div><span class="muted">1에포크에 고치는 횟수</span> <span class="big" id="per"></span></div>
+    </div>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <dl class="term">
+        <dt>배치 사이즈</dt><dd>가중치를 한 번 고치기 전에 넣는 데이터의 개수</dd>
+        <dt>에포크</dt><dd>학습 데이터 전체를 처음부터 끝까지 한 바퀴 본 것</dd>
+      </dl>
+      <p style="margin-top:12px">문제집 120문제를 한 문제마다 채점하는 사람, 10문제씩 채점하는 사람, 다 풀고 한 번에 채점하는 사람의 차이와 같습니다.</p>
+    </div>
+    <div class="card">
+      <h3>손글씨 실습에서 보게 될 화면</h3>
+      <p class="mono" style="display:block;padding:10px 12px;line-height:1.5">Epoch 1/10<br>1875/1875 ━━━━━━━━━━━━ 4s</p>
+      <p>학습 데이터 60,000장 ÷ 배치 사이즈 32 = <b>1,875</b>. 한 에포크에 가중치를 1,875번 고친다는 뜻입니다. 에포크 10이면 이것을 10바퀴 반복합니다.</p>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 9 정리 -->
+<section class="page" data-name="정리" data-acc="#0f2742">
+  <div class="head"><div class="num">03</div><div><h2>한눈에 정리</h2><p>딥러닝에서 배운 말을 한 번에</p></div></div>
+  <div class="sum">
+    <div style="border-color:#2f6fd0"><b>퍼셉트론</b><span>입력 × 가중치를 모두 더하고 + 편향 → 활성화 함수 → 출력</span><small>🍢 떡볶이 먹으러 갈까?</small></div>
+    <div style="border-color:#1f9d74"><b>조정</b><span>틀리면 가중치와 편향을 고친다. 컴퓨터가 스스로 하면 학습</span><small>🚿 샤워 물 온도 맞추기</small></div>
+    <div style="border-color:#9b4fc4"><b>구조</b><span>입력층 → 은닉층 → 출력층. 은닉층 2개 이상 = 심층 신경망 = 딥러닝</span><small>👭 모둠 활동으로 의견 모으기</small></div>
+    <div style="border-color:#e0702b"><b>활성화 함수</b><span>은닉층 렐루 · 이진 출력 시그모이드 · 다중 출력 소프트맥스 · 예측 출력 없음</span><small>📧 스팸일 가능성 90%</small></div>
+    <div style="border-color:#1f9d74"><b>학습 과정</b><span>순전파 → 오차 계산 → 역전파, 반복</span><small>📚 문제 풀기 → 채점 → 풀이 거꾸로 고치기</small></div>
+    <div style="border-color:#d64535"><b>손실 함수</b><span>이진 교차 엔트로피 · 범주형 교차 엔트로피 · 평균 제곱 오차</span><small>☔ 일기예보에 매기는 벌점</small></div>
+    <div style="border-color:#c98a00"><b>경사 하강법</b><span>손실이 줄어드는 쪽으로 가중치를 조금씩. 역전파에서 쓴다</span><small>⛰️ 눈 가리고 언덕 내려가기</small></div>
+    <div style="border-color:#2f6fd0"><b>배치·에포크</b><span>배치 = 한 번 고치기 전에 넣는 수 · 에포크 = 전체 한 바퀴</span><small>📒 단어 10개씩 외우기 · 단어장 한 바퀴</small></div>
+  </div>
+  <div class="cx" style="margin-top:18px">
+    <h3>🔗 실습 전에 하나 더: 원-핫 인코딩</h3>
+    <p class="lead2">원-핫 인코딩은 "여러 개 중 하나"인 정답을 <b>해당하는 칸만 1, 나머지는 모두 0</b>인 칸들로 바꾸는 방법이에요. 칸 하나만 켜져(hot) 있어서 <b>원-핫(one-hot)</b>이라고 불러요.</p>
+    <div class="grid2" style="grid-template-columns:1fr 1fr;align-items:start">
+      <div>
+        <h4 style="margin:4px 0 4px">🌸 붓꽃 품종 3개 → 3칸</h4>
+        <table>
+          <tr><th class="l">품종</th><th>세토사 칸</th><th>버시컬러 칸</th><th>버지니카 칸</th></tr>
+          <tr><td class="l">세토사</td><td class="ok">1</td><td>0</td><td>0</td></tr>
+          <tr><td class="l">버시컬러</td><td>0</td><td class="ok">1</td><td>0</td></tr>
+          <tr><td class="l">버지니카</td><td>0</td><td>0</td><td class="ok">1</td></tr>
+        </table>
+      </div>
+      <div>
+        <h4 style="margin:4px 0 4px">✍️ 손글씨 숫자 0~9 → 10칸 (정답이 5일 때)</h4>
+        <div class="ohrow"><div class="oh"><i>0</i><b>0</b></div><div class="oh"><i>1</i><b>0</b></div><div class="oh"><i>2</i><b>0</b></div><div class="oh"><i>3</i><b>0</b></div><div class="oh"><i>4</i><b>0</b></div><div class="oh on"><i>5</i><b>1</b></div><div class="oh"><i>6</i><b>0</b></div><div class="oh"><i>7</i><b>0</b></div><div class="oh"><i>8</i><b>0</b></div><div class="oh"><i>9</i><b>0</b></div></div>
+        <p style="font-size:.9rem;margin:6px 0 0">0부터 세서 <b>여섯 번째 칸(5번 칸)</b>만 1이에요.</p>
+      </div>
+    </div>
+    <div class="qa">
+      <div><b class="q">Q. 그냥 0, 1, 2 번호로 쓰면 안 돼요?</b>번호로 쓰면 컴퓨터는 "버지니카(2)가 세토사(0)보다 2만큼 크다", "버시컬러(1)는 그 중간"처럼 <b>크기와 순서</b>가 있다고 받아들일 수 있어요. 품종에는 그런 순서가 없죠. 원-핫으로 바꾸면 모든 품종이 <b>서로 대등</b>해져요.</div>
+      <div><b class="q">Q. 왜 이런 모양이어야 해요? (손실 함수와 연결)</b>모델의 답은 소프트맥스 확률 <b>(0.12, 0.04, 0.84)</b>처럼 칸으로 나와요. 정답도 <b>(0, 0, 1)</b>처럼 같은 모양이어야 칸끼리 비교해 손실을 계산할 수 있어요. 범주형 교차 엔트로피가 보는 "정답 칸"이 바로 원-핫에서 1인 칸이에요.</div>
+    </div>
+    <div class="ohcode"><span>🐍 다음 실습 노트북에서 만날 코드</span><code>to_categorical(y_train)</code><b>→</b><code>Dense(10, 'softmax')</code><b>→</b><code>loss='categorical_crossentropy'</code><small>정답을 원-핫 10칸으로 → 출력층도 10칸 소프트맥스 → 두 칸을 비교하는 손실 함수. 세 줄이 한 세트예요.</small></div>
+    <span class="book">교과서 자연어 처리 표 Ⅱ-11에도 나와요 · 원-핫 = 대부분이 0인 <b>희소 표현</b></span>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+  <div class="card" style="margin-top:18px">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>경사 하강법을 '눈을 가리고 언덕 내려가기'에 빗대어 설명하세요. 언덕의 높이, 땅이 기운 방향, 걸음 크기가 각각 딥러닝의 무엇에 해당하는지 쓰고, 학습률이 너무 크면 어떤 일이 생기는지 설명하세요.</li><li>'영어 단어 120개 외우기'처럼 내 공부 경험에 빗대어 배치 사이즈와 에포크를 설명하세요. 학습 데이터 60,000장, 배치 사이즈 32일 때 1에포크에 가중치를 몇 번 고치는지 계산 과정과 함께 쓰고, 에포크를 너무 많이 하면 어떤 문제가 생기는지 설명하세요.</li><li>지금까지 배운 딥러닝 개념(퍼셉트론, 활성화 함수, 손실 함수, 순전파·역전파, 경사 하강법, 배치·에포크) 중 세 가지 이상을 넣어, 인공지능이 사진 속 동물을 알아보도록 학습하는 과정을 처음부터 끝까지 순서대로 설명하세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+  </div>
+</section>

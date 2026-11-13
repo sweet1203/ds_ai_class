@@ -1,0 +1,293 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+<div class="tmd">
+<section class="hero">
+    <span class="tag">인공지능 기초 · 딥러닝 실습</span>
+    <h1>마우스로 그려서 가르치는<br>손글씨 숫자 인공지능</h1>
+    <p>종이도 카메라도 필요 없어요. <b>머신러닝 포 키즈(ML4Kids)</b>에서 마우스로 숫자를 직접 그리고, 그 그림으로 딥러닝 모델을 학습시켜 봐요.</p>
+    <div class="digits">012</div>
+  </section>
+<section class="box">
+    <h3 style="margin:0 0 8px">🎯 오늘의 목표</h3>
+    <div class="grid3">
+      <div class="mini"><h4>① 직접 학습시키기</h4><p>내가 그린 0, 1, 2로 인공지능을 학습시켜요.</p></div>
+      <div class="mini"><h4>② 실험해 보기</h4><p>데이터 양을 바꾸고, 헷갈리는 숫자와 낯선 그림을 넣어 보며 결과가 어떻게 달라지는지 관찰해요.</p></div>
+      <div class="mini"><h4>③ 개념과 연결하기</h4><p>오늘 한 일이 데이터 · 레이블 · 학습 · 테스트 · 소프트맥스 중 무엇인지 말할 수 있어요.</p></div>
+    </div>
+    <h3 style="margin:18px 0 8px">🎒 준비물</h3>
+    <div class="grid3">
+      <div class="mini"><h4>💻 컴퓨터와 크롬</h4><p>이 페이지와 ML4Kids를 <b>탭 두 개</b>로 열어 두고 오가며 해요.</p></div>
+      <div class="mini"><h4>🖱️ 마우스</h4><p>터치패드도 되지만 마우스가 그리기 편해요.</p></div>
+      <div class="mini"><h4>🔓 로그인 없이 시작</h4><p>아이디·비밀번호 없이 <b>지금 실행해보기</b>로 들어가요. 오늘 수업 안에 끝까지 해요.</p></div>
+    </div>
+    <div class="tip"><b>💡 각 단계를 마치면</b>단계 아래의 <span class="btnlabel">✔ 다 했어요</span> 버튼을 눌러요. 버튼이 초록색으로 바뀌어요. ML4Kids 화면에는 한국어와 영어가 섞여 나오는 곳이 있어요. 아래 회색 버튼 이름은 화면에 보이는 그대로 적었어요.</div>
+  </section>
+<div style="text-align:center;margin-top:18px"><button class="btn" style="background:var(--navy)" onclick="go(1)">1단계부터 시작하기 →</button></div>
+</div>
+</section>
+
+<!-- 1 -->
+<section class="page" data-name="ML4Kids 들어가기" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s1" style="--c:#1f9d74">
+    <header><span class="n">1</span><div><h2>ML4Kids 들어가기</h2><p>새 이미지 프로젝트를 만들어요</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li>크롬 <b>새 탭</b>에서 <a href="https://machinelearningforkids.co.uk/" target="_blank" rel="noopener"><b>machinelearningforkids.co.uk</b></a> 에 들어가요. 이 페이지는 닫지 말고 그대로 둬요.</li>
+        <li>첫 화면의 <span class="btnlabel">시작해봅시다</span>를 눌러요.</li>
+        <li>맨 아래 <b>등록 건너뛰기</b> 칸의 <span class="btnlabel">지금 실행해보기</span>를 눌러요. (아이디·비밀번호는 필요 없어요)</li>
+        <li><span class="btnlabel">+ 프로젝트 추가</span>를 눌러요.</li>
+        <li>새 프로젝트 화면을 이렇게 채우고 <span class="btnlabel">만들기</span>를 눌러요.<br>· <b>프로젝트 이름</b>: 손글씨숫자<br>· <b>Project Type</b>: <span class="btnlabel">인식 이미지</span><br>· <b>Storage</b> 칸이 보이면: <span class="btnlabel">In your web browser</span></li>
+        <li>만들어진 <b>손글씨숫자</b> 카드를 누르면 <b>훈련 · 학습 &amp; 평가 · 만들기</b> 세 칸이 나와요.</li>
+      </ol>
+      <div class="tm">
+        <div class="cap">ML4Kids 프로젝트 화면 (간단히 그린 그림)</div>
+        <div class="tmflow">
+          <div class="tmtrain"><b>① 훈련</b><div style="color:var(--muted);font-size:.8rem;margin-top:6px">레이블을 만들고<br>예시(그림)를 모아요</div></div>
+          <span class="arr">➜</span>
+          <div class="tmtrain"><b>② 학습 &amp; 평가</b><div style="color:var(--muted);font-size:.8rem;margin-top:6px">모델을 학습시키고<br>새 그림으로 시험해요</div></div>
+          <span class="arr">➜</span>
+          <div class="tmtrain"><b>③ 만들기</b><div style="color:var(--muted);font-size:.8rem;margin-top:6px">스크래치로<br>프로그램 만들기 (오늘은 안 해요)</div></div>
+        </div>
+      </div>
+      <div class="warn"><b>⚠️ 로그인 없이 하는 방법이라 꼭 지켜요</b>만든 프로젝트는 <b>지금 쓰는 컴퓨터의 브라우저</b>에만 남아요. 탭이나 브라우저를 닫거나 다른 컴퓨터로 옮기면 처음부터 다시 해야 할 수 있어요. <b>오늘 수업 안에 실험까지</b> 끝내요.</div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>훈련 → 학습 &amp; 평가 → 만들기 순서가 바로 <b>데이터 모으기 → 학습·평가 → 활용</b>이에요. 모든 인공지능은 이 순서로 만들어져요.</div>
+      <div class="done-row"><button class="done" data-s="1">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 2 -->
+<section class="page" data-name="레이블 만들기: 0, 1, 2" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s2" style="--c:#9b4fc4">
+    <header><span class="n">2</span><div><h2>레이블 만들기: 0, 1, 2</h2><p>인공지능이 구분할 "답의 종류"를 정해요</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li><b>훈련</b> 칸의 <span class="btnlabel">훈련</span> 버튼을 눌러요.</li>
+        <li>오른쪽 위 <span class="btnlabel">+ 새로운 레이블 추가</span>를 누르고 <b>0</b>이라고 써요.</li>
+        <li>같은 방법으로 <b>1</b>, <b>2</b> 레이블을 만들어요. 레이블마다 큰 상자가 하나씩 생겨요.</li>
+      </ol>
+      <div class="tm">
+        <div class="cap">이렇게 되면 성공! (상자 하나 = 레이블 하나, 상자 아래에 버튼 4개)</div>
+        <div class="grid3">
+          <div class="tmcard"><div class="ttl">0</div><div class="btns"><span>웹</span><span>웹캠</span><span class="up">✏️ 그리기</span><span>file</span></div></div>
+          <div class="tmcard"><div class="ttl">1</div><div class="btns"><span>웹</span><span>웹캠</span><span class="up">✏️ 그리기</span><span>file</span></div></div>
+          <div class="tmcard"><div class="ttl">2</div><div class="btns"><span>웹</span><span>웹캠</span><span class="up">✏️ 그리기</span><span>file</span></div></div>
+        </div>
+      </div>
+            <div class="link"><b>🧠 딥러닝 개념과 연결</b>레이블이 3개니까 출력층의 칸도 <b>3칸</b>이에요. 여러 개 중 하나를 고르는 <b>다중 분류</b> 문제라서, 출력층에는 <b>소프트맥스</b>가 쓰여요. (이어서 할 파이썬 실습의 MNIST는 0~9라서 10칸이에요.)</div>
+      <div class="done-row"><button class="done" data-s="2">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 3 -->
+<section class="page" data-name="숫자 그리기: 학습 데이터 모으기" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s3" style="--c:#2f6fd0">
+    <header><span class="n">3</span><div><h2>숫자 그리기: 학습 데이터 모으기</h2><p>레이블마다 숫자를 그려서 넣어요</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li><b>0</b> 상자 아래의 <span class="btnlabel">✏️ 그리기</span>를 눌러요. <b>"데이터를 그려주세요. 0"</b> 그림판이 열려요.</li>
+        <li>마우스로 <b>0</b>을 크게 그리고 <span class="btnlabel">추가</span>를 눌러요. 그림이 0 상자에 들어가요. 잘못 그렸으면 오른쪽 <span class="btnlabel">Erase</span>(지우개)나 <span class="btnlabel">Reset</span>(모두 지우기)을 써요.</li>
+        <li><b>0을 15장</b> 그려요. 한 장 한 장 <b>조금씩 다르게!</b> 크게 · 작게 · 기울여서 · 둥글게 · 길쭉하게</li>
+        <li><b>1</b> 상자에는 1을, <b>2</b> 상자에는 2를 똑같이 <b>15장씩</b> 그려요. 상자 오른쪽 아래 동그라미 숫자가 그림 수예요. 세 상자가 <b>비슷해야</b> 해요.</li>
+      </ol>
+      <div class="cards">
+        <div>0</div><div style="font-style:italic">0</div><div>1</div><div style="transform:rotate(-8deg)">1</div><div>2</div><div style="font-size:2rem">2</div>
+      </div>
+      <p style="margin:0;font-size:.88rem;color:var(--muted)">↑ 같은 숫자도 모양이 다양할수록 좋아요</p>
+      <div class="grid2" style="margin-top:8px">
+        <div class="tip"><b>👍 이렇게 그려요</b>그림판은 가로로 길어요. 숫자를 <b>가운데</b>에 <b>크게</b> 그려요. 잘못 그렸으면 추가하지 말고 Reset 후 다시 그려요.</div>
+        <div class="warn"><b>🚫 상자를 꼭 확인해요</b>1을 0 상자에 넣으면 인공지능이 엉뚱하게 배워요. 잘못 넣은 그림은 지우고 다시 넣어요.</div>
+      </div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>내가 그린 그림 = <b>학습 데이터</b>, 그림을 넣은 상자 이름(0, 1, 2) = <b>레이블(정답)</b>이에요. 다양하게 그릴수록 처음 보는 숫자도 잘 맞혀요. 레이블마다 그림 수가 비슷해야 하는 이유는, 한쪽만 많으면 인공지능이 그쪽으로 <b>치우쳐서(편향)</b> 답하기 때문이에요.</div>
+      <div class="done-row"><button class="done" data-s="3">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 4 -->
+<section class="page" data-name="학습시키기" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s4" style="--c:#c98a00">
+    <header><span class="n">4</span><div><h2>학습시키기</h2><p>버튼 하나로 딥러닝 학습이 시작돼요</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li>왼쪽 위 <span class="btnlabel">&lt; 프로젝트로 돌아가기</span>를 누르고 <span class="btnlabel">학습 &amp; 평가</span>를 눌러요.</li>
+        <li><span class="btnlabel">새로운 머신 러닝 모델을 훈련시켜보세요.</span> 버튼을 눌러요.</li>
+        <li>학습이 끝날 때까지 기다려요. 보통 1~2분 걸려요. 화면에 <b>"모델의 상태"</b>가 표시돼요.</li>
+      </ol>
+      <div class="warn"><b>⚠️ 학습하는 동안 다른 탭으로 가지 마세요!</b>브라우저 탭을 바꾸면 학습이 멈추거나 아주 느려질 수 있어요. 화면을 그대로 두고 기다려요.</div>
+      <div class="tip"><b>💡 학습 버튼이 안 보이면?</b>레이블마다 정해진 수 이상 그림이 있어야 학습할 수 있어요. 화면에 "적어도 ○개 이상의 데이터를 모아야 합니다"라고 나오면 그만큼 더 그려요.</div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>버튼을 누르면 컴퓨터 안에서 <b>순전파 → 오차 계산(손실 함수) → 역전파(경사 하강법)</b>가 계속 반복돼요. 그림 전체를 여러 바퀴(<b>에포크</b>) 보면서, 몇 장씩 묶어(<b>배치</b>) 가중치를 고쳐요. 우리가 수업에서 배운 그 과정이 지금 실제로 일어나고 있어요!</div>
+      <div class="done-row"><button class="done" data-s="4">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 5 -->
+<section class="page" data-name="테스트하기: 처음 보는 숫자로 시험" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s5" style="--c:#d64535">
+    <header><span class="n">5</span><div><h2>테스트하기: 처음 보는 숫자로 시험</h2><p>학습에 넣지 않은 새 그림으로 시험해요</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li>학습이 끝나면 같은 화면 아래에 시험하는 버튼들이 나와요. <span class="btnlabel">그림 그리기로 테스트하기</span>를 눌러요.</li>
+        <li>훈련 때 넣지 않은 <b>새 0</b>을 그려서 시험해요. <b>"○(으)로 인식되었습니다"</b>라는 답과 <b>확신도(%)</b>가 나와요.</li>
+        <li><b>1</b>과 <b>2</b>도 새로 그려서 시험해요.</li>
+        <li>몇 개를 맞혔는지, 확신도는 얼마였는지 확인해요.</li>
+      </ol>
+      <div class="grid2">
+        <div class="tm">
+          <div class="cap">테스트 결과 예시: 새로 그린 "2"를 넣었을 때</div>
+          <div class="bars">
+            <div class="row"><b>2</b><span class="t"><i style="width:87%;background:#9b4fc4">2(으)로 인식 · 확신도 87%</i></span></div>
+          </div>
+          <p style="margin:8px 0 0;font-size:.82rem;color:var(--muted)">"이 그림은 2이고, 87% 확신한다"는 뜻이에요.</p>
+        </div>
+        <div class="mini" style="align-self:center"><h4>확신도는 어디서 나올까?</h4><p>출력층 세 칸이 0, 1, 2에 확률을 나눠 주는데(합 100%), 그중 <b>가장 큰 확률</b>이 답과 확신도로 나와요.</p></div>
+      </div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>훈련에 넣지 않은 새 그림 = <b>테스트 데이터</b>예요. 공부할 때 본 문제가 아니라 처음 보는 문제로 시험해야 진짜 실력을 알 수 있어요. 확률을 합 100%로 나눠 주는 것이 <b>소프트맥스</b>이고, 확신도가 낮으면 인공지능이 "헷갈려" 하는 거예요.</div>
+      <div class="done-row"><button class="done" data-s="5">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 6 -->
+<section class="page" data-name="실험 ①: 데이터가 적으면?" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s6" style="--c:#0f6e8c">
+    <header><span class="n">6</span><div><h2>실험 ①: 데이터가 적으면?</h2><p>공부 자료가 5장뿐이면 어떻게 될까요?</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li><b>예상하기</b>: 레이블마다 그림이 <b>5장</b>뿐이면 결과가 어떻게 될지 먼저 생각해 봐요.</li>
+        <li>위쪽 메뉴 <span class="btnlabel">프로젝트</span>로 가서 새 프로젝트 <b>숫자5장</b>(인식 이미지)을 만들고, 레이블 0 · 1 · 2에 <b>5장씩만</b> 그려요.</li>
+        <li>학습시키고, 5단계와 <b>같은 모양의</b> 숫자를 그려 시험해요. 확신도가 어떻게 달라졌는지 살펴봐요.</li>
+        <li>15장으로 학습한 첫 프로젝트와 비교해요.</li>
+      </ol>
+      <div class="tm">
+        <div class="cap">데이터 양과 정확도의 관계 (보통 이런 모양이에요)</div>
+        <svg viewBox="0 0 420 140" style="max-width:420px;display:block">
+          <line x1="40" y1="110" x2="400" y2="110" stroke="#9aa5b4"/><line x1="40" y1="10" x2="40" y2="110" stroke="#9aa5b4"/>
+          <path d="M40 100 C 90 50, 150 32, 220 24 S 340 17, 400 15" fill="none" stroke="#1f9d74" stroke-width="3.5"/>
+          <text x="46" y="16" font-size="12" fill="#5b6776">정확도</text><text x="320" y="130" font-size="12" fill="#5b6776">데이터 양 →</text>
+        </svg>
+      </div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>공부 자료가 적으면 모양이 조금만 달라도 헷갈려요. 딥러닝은 <b>데이터가 많을수록</b> 더 잘 배워요. 그래서 이어서 할 파이썬 실습의 MNIST는 <b>6만 장</b>으로 학습해요.</div>
+      <div class="done-row"><button class="done" data-s="6">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 7 -->
+<section class="page" data-name="실험 ②: 헷갈리는 숫자 7 추가" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s7" style="--c:#7a3fb0">
+    <header><span class="n">7</span><div><h2>실험 ②: 헷갈리는 숫자 7 추가</h2><p>1과 7을 인공지능이 구분할 수 있을까요?</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li>첫 프로젝트(<b>손글씨숫자</b>)의 <span class="btnlabel">훈련</span>에서 <b>7</b> 레이블을 만들어요.</li>
+        <li><b>7을 15장</b> 그려요. 몇 장은 <b>1과 비슷하게</b>(윗부분을 짧게, 길쭉하게) 그려 봐요.</li>
+        <li><span class="btnlabel">학습 &amp; 평가</span>에서 다시 학습시키고, 새로 그린 <b>1</b>과 <b>7</b>로 시험해요.</li>
+        <li>확신도가 낮게 나오거나 틀린 경우를 찾고, <b>왜 헷갈렸을지</b> 생각해 봐요.</li>
+      </ol>
+      <div class="cards" style="grid-template-columns:repeat(4,1fr);max-width:360px">
+        <div>1</div><div>7</div><div style="transform:scaleX(.7)">1</div><div style="transform:scaleX(.7)">7</div>
+      </div>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>레이블이 4개가 되면 출력층도 4칸이 돼요. 모양이 비슷한 숫자는 사람도 헷갈리죠? 인공지능도 비슷한 데이터끼리는 확률이 나뉘어요. 이럴 때는 <b>더 다양하고 많은 데이터</b>가 필요해요.</div>
+      <div class="done-row"><button class="done" data-s="7">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 8 -->
+<section class="page" data-name="실험 ③ (도전): 낯선 그림으로 시험하기" data-acc="#1f9d74">
+<div class="tmd">
+<section class="step" id="s8" style="--c:#1d6b4f">
+    <header><span class="n">8</span><div><h2>실험 ③ (도전): 낯선 그림으로 시험하기</h2><p>내 그림으로만 공부한 인공지능은 낯선 그림도 알아볼까요?</p></div></header>
+    <div class="body">
+      <ol class="todo">
+        <li><span class="btnlabel">그림 그리기로 테스트하기</span>에서 평소와 다르게 그려 시험해요. ① 칸의 <b>구석에 아주 작게</b> ② <b>아주 가늘고 길게</b> ③ <b>옆 친구</b>가 내 컴퓨터에서 자기 스타일대로</li>
+        <li>어떤 그림을 잘 못 맞혔나요?</li>
+        <li>잘 못 맞힌 종류의 그림을 <span class="btnlabel">훈련</span>에서 <b>몇 장 더 그려 넣고</b> 다시 학습시켜 봐요. 좋아졌나요?</li>
+      </ol>
+      <div class="link"><b>🧠 딥러닝 개념과 연결</b>공부한 문제는 잘 푸는데 처음 보는 문제를 못 풀면 <b>과대적합</b>이에요. 해결 방법은 <b>다양한 데이터</b>를 더 모으는 것! MNIST는 학생과 직원 <b>수백 명</b>의 글씨를 모았고, 모든 숫자를 <b>크기를 맞춰 가운데</b>에 놓아 두었어요. 구석에 작게 그린 숫자를 잘 못 맞혔다면 그 이유를 알 수 있겠죠?</div>
+      <div class="done-row"><button class="done" data-s="8">✔ 다 했어요</button></div>
+    </div>
+  </section>
+</div>
+</section>
+
+<!-- 9 파이썬 -->
+<section class="page" data-name="파이썬으로 MNIST" data-acc="#c98a00">
+  <div class="head"><div class="num">09</div><div><h2>같은 일을 파이썬 코드로 (MNIST)</h2><p>코랩 노트북 · 코드를 짜지 않고 실행 버튼만 눌러요</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>ML4Kids에서 버튼으로 한 일을 이번에는 <b>파이썬 코드</b>로 해요. 손글씨 숫자 <b>6만 장</b>으로 학습하고, 처음 보는 <b>1만 장</b>으로 시험해요. 레이블은 0~9, <b>10개</b>예요.</span></div>
+  <div class="card">
+    <h3>▶ 노트북 열고 실행하기</h3>
+    <ol>
+      <li>아래 버튼을 눌러 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>맨 위 셀부터 차례로 ▶(또는 <b>Shift+Enter</b>)를 눌러요. 셀 아래 「출력 해석」과 「ML4Kids에서는?」을 함께 읽어요.</li>
+      <li>「4. 학습」은 1~2분 걸려요. 에포크(Epoch)가 1/10부터 10/10까지 한 줄씩 나타나는 걸 지켜봐요.</li>
+      <li>결과 숫자를 아래 칸에 적어요. 질문폼에 쓸 근거예요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-dl-digits/assets/mnist-classification-tm.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="mnist-classification-tm.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+  </div>
+  <div class="card">
+    <h3>🗺️ ML4Kids ↔ 파이썬 코드</h3>
+    <div class="tmd"><div class="scroll"><table>
+      <tr><th>ML4Kids에서 한 일</th><th>파이썬 코드</th></tr>
+      <tr><td>숫자를 그려 레이블 상자에 넣기</td><td><span class="mono">mnist.load_data()</span> — 손글씨 6만 장 + 1만 장 불러오기</td></tr>
+      <tr><td>레이블 0 · 1 · 2 만들기</td><td>출력층 <span class="mono">Dense(10, activation='softmax')</span> — 0~9 열 칸</td></tr>
+      <tr><td>「새로운 머신 러닝 모델을 훈련시켜보세요」 버튼</td><td><span class="mono">model.fit(…, epochs=10)</span></td></tr>
+      <tr><td>새로 그린 그림으로 테스트</td><td><span class="mono">model.evaluate()</span> · <span class="mono">model.predict()</span></td></tr>
+    </table></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 결과 기록</h3>
+    <div class="memo"><label>딥러닝 정확도 — 훈련 데이터 / 테스트 데이터</label><textarea data-memo="pyAcc" rows="1" placeholder="예: 0.9xx / 0.9xx"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>에포크 1번 학습한 모델과 10번 학습한 모델의 정확도 비교</label><textarea data-memo="pyEpoch" rows="2"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>테스트 1만 장 중 틀린 개수, 가장 많이 헷갈린 숫자 짝</label><textarea data-memo="pyConfuse" rows="2"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>(더 알아보기) 의사결정트리 정확도 — 훈련 / 테스트, 딥러닝과 비교하면?</label><textarea data-memo="pyTree" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+</section>
+
+<!-- 10 정리 -->
+<section class="page" data-name="정리" data-acc="#0f2742">
+<div class="tmd">
+<section class="box" id="summary">
+    <h3 style="margin:0 0 8px">✅ 오늘 한 일 = 딥러닝 개념</h3>
+    <div class="scroll">
+    <table>
+      <tr><th>오늘 ML4Kids에서 한 일</th><th>딥러닝 개념</th></tr>
+      <tr><td>숫자를 15장씩 그려 넣었다</td><td><b>학습 데이터</b> 모으기</td></tr>
+      <tr><td>레이블 이름을 0, 1, 2로 정했다</td><td><b>레이블(정답)</b>, 출력층 칸 수</td></tr>
+      <tr><td>훈련에 넣지 않은 새 그림으로 시험했다</td><td><b>테스트 데이터</b>로 평가하기</td></tr>
+      <tr><td>「새로운 머신 러닝 모델을 훈련시켜보세요」 버튼을 눌렀다</td><td>순전파 → 손실 계산 → 역전파 <b>반복 = 학습</b></td></tr>
+      <tr><td>5장씩만 넣으니 확신도가 떨어졌다</td><td>데이터 양과 성능의 관계</td></tr>
+      <tr><td>답과 확신도(%)가 나왔다</td><td><b>소프트맥스</b> 출력 중 가장 큰 확률</td></tr>
+      <tr><td>낯선 그림을 잘 못 맞혔다</td><td><b>과대적합</b>, 데이터 다양성의 중요성</td></tr>
+    </table>
+    </div>
+    <div class="tip" style="margin-top:14px"><b>🐍 파이썬 실습과 연결</b>버튼으로 한 일을 파이썬 코드로도 똑같이 실행해 봤어요. "숫자 그림 15장"이 <b>MNIST 손글씨 6만 장</b>으로, "레이블 3개"가 <b>0~9 10개</b>로 커졌어요.</div>
+    <div class="link"><b>📌 4단원 인공지능 프로젝트와 연결</b>4단원 프로젝트에서도 ML4Kids로 이미지·텍스트·소리 분류 모델을 만들 수 있어요. 오늘 해 본 <b>레이블 만들기 → 데이터 모으기 → 학습 → 테스트 → 데이터 더 넣어 개선</b>이 그대로 프로젝트 과정이에요.</div>
+  </section>
+</div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>ML4Kids에서 한 일(레이블 0·1·2 만들기, 숫자를 그려 레이블 상자에 넣기, 「새로운 머신 러닝 모델을 훈련시켜보세요」 버튼, 새로 그린 그림으로 테스트하기) 중 두 가지를 골라, 오늘 실행한 파이썬 코드의 어느 부분(mnist.load_data, 출력층 Dense, model.fit, evaluate·predict 등)과 같은 일인지 짝지어 설명하세요.</li><li>ML4Kids는 숫자마다 15장 정도만 그려도 잘 맞혔는데, 오늘 파이썬 모델은 6만 장으로 학습했습니다. 그 이유를 쓰고, ML4Kids 실험(데이터 5장, 1과 7, 낯선 그림)이나 오늘 코드 결과(에포크 1과 10 비교, 가장 많이 헷갈린 숫자 짝) 중 하나를 골라 무엇을 알게 되었는지 쓰세요.</li><li>의사결정트리는 훈련 데이터 정확도 1.000 → 테스트 0.878, 딥러닝은 0.992 → 0.976이었습니다. 어느 쪽이 더 좋은 모델이라고 보아야 할지 두 숫자의 차이를 근거로 설명하고, '딥러닝은 스스로 특징을 찾는다'는 말과 연결해 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+  <table id="result" hidden></table><button id="quizReset" hidden></button>
+</section>

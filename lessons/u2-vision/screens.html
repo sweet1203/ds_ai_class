@@ -1,0 +1,500 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <canvas id="coverPx" width="40" height="34" aria-hidden="true"></canvas>
+    <div class="fade"></div>
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-2 딥러닝</span>
+      <h1>컴퓨터는<br>무엇을 '보고' 있을까?</h1>
+      <p>사람 눈에는 고양이 사진이지만, 컴퓨터 눈에는 숫자로 가득 찬 표예요. 그 숫자 표에서 고양이를 찾아내는 기술, 컴퓨터 비전을 배워 봅니다.</p>
+      <ol>
+        <li>컴퓨터가 보는 이미지</li><li>컴퓨터 비전의 4대 분야</li><li>왜 합성곱 신경망일까</li><li>합성곱층과 필터</li>
+        <li>풀링층과 완전 연결층</li><li>생성형 인공지능과 GAN</li><li>컴퓨터 비전의 활용</li><li>한눈에 정리</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 배울 내용 보기 ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>컴퓨터가 사진을 <b>어떤 숫자로 저장하는지</b>부터 시작해서, 그 숫자 속에서 <b>선 → 눈·코 → 얼굴</b> 순서로 특징을 찾아내는 <b>합성곱 신경망(CNN)</b>의 원리를 배웁니다. 마지막에는 그림을 새로 만들어 내는 <b>생성형 인공지능</b>과, 우리 주변에서 컴퓨터 비전이 쓰이는 곳을 살펴봅니다.</p>
+    </div>
+
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>사람은 바깥 정보의 대부분을 <b>눈</b>으로 받아들여요. 그래서 '보는 인공지능'은 자율 주행, 의료 영상, 보안처럼 사람의 눈을 대신하는 곳에 가장 먼저 쓰입니다.</li>
+          <li>사진 앱이 인물을 알아서 묶어 주고, 번호판을 읽어 주차비를 계산하는 일이 <b>어떻게 가능한지</b> 설명할 수 있게 됩니다.</li>
+          <li>지난 시간에 배운 신경망(가중치·활성화 함수·학습)이 <b>이미지에 맞게 어떻게 바뀌는지</b> 알게 되고, 이미지 분류 프로젝트의 바탕이 됩니다.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">어디에 쓰일까</span>
+        <ul class="uses">
+          <li><b>글자 읽기</b> · 주차장 번호판 인식, 메뉴판을 읽어 소리로 들려주는 시각 보조 앱</li>
+          <li><b>물건 찾기</b> · 도로 CCTV 교통량 분석, 공항 엑스레이 검색대</li>
+          <li><b>얼굴 알아보기</b> · 휴대폰 얼굴 잠금 해제, 거리 사진 속 행인 얼굴 모자이크</li>
+          <li><b>새로 만들기</b> · 글로 설명하면 그림을 그려 주는 생성형 인공지능</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>픽셀값과 RGB 값을 보고 어떤 색인지 말한다.</li>
+          <li>이미지 분류·객체 위치 식별·객체 탐지·이미지 분할을 구분한다.</li>
+          <li>합성곱 연산을 손으로 계산하고, 최댓값 풀링 결과를 구한다.</li>
+          <li>CNN이 이미지를 분류하는 과정을 합성곱층 → 풀링층 → 완전 연결층으로 설명한다.</li>
+          <li>GAN의 생성자와 감별자가 어떻게 경쟁하며 학습하는지 설명한다.</li>
+          <li>컴퓨터 비전 서비스를 직접 써 보고 어느 분야 기술인지 말한다.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="glossary-head"><span class="kicker">미리 보는 용어</span><span class="muted">카드를 누르면 그 개념 화면으로 갑니다</span></div>
+    <div class="glossary">
+      <div class="gcard" role="button" tabindex="0" style="--g:#2f6fd0" onclick="go(1)"><i>01</i><h4>이미지 데이터</h4>
+        <dl><dt>픽셀</dt><dd>이미지를 이루는 아주 작은 점 하나</dd><dt>픽셀값</dt><dd>0(검은색)~255(흰색) 사이의 밝기 숫자</dd><dt>RGB 채널</dt><dd>빨강·초록·파랑 밝기 3개를 묶어 색 하나를 표현</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#1f9d74" onclick="go(2)"><i>02</i><h4>컴퓨터 비전</h4>
+        <dl><dt>컴퓨터 비전</dt><dd>사진·영상에서 의미 있는 정보를 뽑아내는 인공지능 기술</dd><dt>이미지 분류</dt><dd>이 사진이 무엇인지 하나로 답하기</dd><dt>객체 위치 식별</dt><dd>무엇인지 + 어디 있는지</dd><dt>객체 탐지</dt><dd>여러 객체 각각의 위치와 이름</dd><dt>이미지 분할</dt><dd>객체의 범위를 픽셀 단위로 칠하기</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#9b4fc4" onclick="go(3)"><i>03</i><h4>합성곱 신경망</h4>
+        <dl><dt>CNN</dt><dd>이미지 분류를 특히 잘하는 딥러닝 모델</dd><dt>특징 추출</dt><dd>분류에 도움이 되는 모양(선, 눈, 얼굴)을 찾는 일</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#e0702b" onclick="go(4)"><i>04</i><h4>합성곱층</h4>
+        <dl><dt>필터(커널)</dt><dd>이미지 위를 한 칸씩 움직이는 작은 가중치 묶음</dd><dt>합성곱 연산</dt><dd>같은 자리끼리 곱해서 모두 더하기</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#d64535" onclick="go(5)"><i>05</i><h4>풀링 · 완전 연결</h4>
+        <dl><dt>풀링층</dt><dd>구역마다 대표값 하나만 남겨 크기를 줄이는 층</dd><dt>완전 연결층</dt><dd>찾은 특징을 일렬로 펴서 최종 분류하는 층</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#c98a00" onclick="go(6)"><i>06</i><h4>생성형 AI</h4>
+        <dl><dt>생성형 인공지능</dt><dd>배운 것을 바탕으로 비슷한 콘텐츠를 새로 만드는 인공지능</dd><dt>GAN (Generative Adversarial Network)</dt><dd>생성적 적대 신경망. 생성자와 감별자가 경쟁하며 배우는 알고리즘</dd><dt>프롬프트</dt><dd>원하는 결과를 얻기 위해 입력하는 명령 문구</dd></dl></div>
+      <div class="gcard" role="button" tabindex="0" style="--g:#2f6fd0" onclick="go(7)"><i>07</i><h4>활용 분야</h4>
+        <dl><dt>OCR</dt><dd>이미지 속 글자를 텍스트로 바꾸기</dd><dt>얼굴 인식</dt><dd>얼굴 위치 찾기, 누구인지 알아보기</dd><dt>얼굴 영상 생성</dt><dd>얼굴을 바꾸거나 새로 만들어 영상으로</dd></dl></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 컴퓨터가 보는 이미지부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 픽셀과 RGB -->
+<section class="page" data-name="이미지 데이터" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>컴퓨터가 보는 이미지</h2><p>사람 눈에는 그림, 컴퓨터 눈에는 숫자 표</p></div></div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>① 픽셀: 이미지는 작은 점들의 묶음</h3>
+      <p class="muted" style="margin-top:0">휴대폰 화면을 확대경으로 보면 아주 작은 네모 점들이 보여요. 이 점 하나가 <b>픽셀</b>이에요. 흑백 이미지에서 픽셀 하나는 <b>0~255</b> 사이의 숫자 하나를 저장해요.</p>
+      <div class="chips" id="pxMode">
+        <button class="chip on" data-m="pic">그림으로 보기</button>
+        <button class="chip" data-m="num">숫자로 보기</button>
+        <button class="chip" data-m="draw">직접 칠하기</button>
+      </div>
+      <div class="pxwrap">
+        <div class="pxgrid" id="pxGrid"></div>
+        <div class="pxinfo" id="pxInfo"><span class="muted">칸에 마우스를 올리거나 손가락을 대 보세요.</span></div>
+        <div id="pxBrush" style="display:none">
+          <div class="ctrl"><label>붓 밝기</label><input type="range" id="brushV" min="0" max="255" step="1" value="255"><output id="brushO">255</output></div>
+          <div class="row"><button class="btn ghost sm" id="pxClear">모두 검게</button><button class="btn ghost sm" id="pxReset">공 그림으로</button></div>
+        </div>
+        <div class="scale"></div><div><span>0 검은색</span><span>128</span><span>255 흰색</span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>② RGB 채널: 컬러 픽셀은 숫자 3개</h3>
+      <p class="muted" style="margin-top:0">컬러 이미지는 빛의 삼원색 <b style="color:#d22">빨강(R)</b>, <b style="color:#1a8a4a">초록(G)</b>, <b style="color:#2f6fd0">파랑(B)</b>의 밝기를 묶어서 한 픽셀의 색을 만들어요. 막대를 움직여 색을 섞어 보세요.</p>
+      <div class="rgbbox">
+        <div class="swatch" id="sw"><b id="swT">(255, 255, 0)</b></div>
+        <div>
+          <div class="ctrl r"><label>R 빨강</label><input type="range" id="cR" min="0" max="255" value="255"><output id="oR">255</output></div>
+          <div class="ctrl g"><label>G 초록</label><input type="range" id="cG" min="0" max="255" value="255"><output id="oG">255</output></div>
+          <div class="ctrl b"><label>B 파랑</label><input type="range" id="cB" min="0" max="255" value="0"><output id="oB">0</output></div>
+        </div>
+      </div>
+      <div class="chips" style="margin-top:10px" id="rgbPre">
+        <button class="chip" data-c="255,0,0">빨강</button><button class="chip" data-c="0,255,0">초록</button><button class="chip" data-c="0,0,255">파랑</button>
+        <button class="chip" data-c="255,255,0">노랑</button><button class="chip" data-c="0,0,0">검정</button><button class="chip" data-c="255,255,255">흰색</button>
+      </div>
+      <p style="font-size:.92rem" id="rgbSay"></p>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h3>숫자는 모두 몇 개일까?</h3>
+    <p class="lead2">이미지 한 장 = 가로 × 세로 개의 픽셀. 컬러라면 픽셀마다 숫자가 3개씩이니 ×3을 해요.</p>
+    <div class="count3">
+      <div>✍️ 손글씨 숫자 (흑백 28 × 28)<b>784개</b>지난 시간 실습에서 이미지를 한 줄로 펴니 <span class="mono">784</span>칸이었던 이유예요.</div>
+      <div>🖼️ 같은 크기의 컬러 이미지 (28 × 28 × 3)<b>2,352개</b>R, G, B 세 장의 숫자 표가 겹쳐 있다고 생각하면 돼요.</div>
+      <div>📱 가로 1,000 × 세로 1,000 컬러 사진<b>3,000,000개</b>휴대폰 사진은 이보다 훨씬 커요. 숫자가 정말 많죠?</div>
+    </div>
+    <span class="book">교과서 102쪽 · 이미지 데이터 색 정보, 컬러 이미지 데이터 색 정보</span>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 4대 분야 -->
+<section class="page" data-name="4대 분야" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>컴퓨터 비전의 4대 분야</h2><p>"무엇이야?"에서 "어디부터 어디까지야?"까지</p></div></div>
+
+  <div class="card">
+    <p style="margin-top:0"><b>컴퓨터 비전</b>은 이미지나 비디오 같은 시각 데이터를 처리해 <b>의미 있는 정보를 뽑아내는</b> 인공지능 기술이에요. 같은 사진이라도 무엇을 알려 주느냐에 따라 네 분야로 나뉘어요. 아래 카드를 눌러 보세요.</p>
+    <div class="fields" id="cvFields">
+      <div data-m="0" class="on"><b>① 이미지 분류</b>이 사진은 무엇?</div>
+      <div data-m="1"><b>② 객체 위치 식별</b>무엇 + 어디?</div>
+      <div data-m="2"><b>③ 객체 탐지</b>여러 개 각각 무엇·어디?</div>
+      <div data-m="3"><b>④ 이미지 분할</b>픽셀 단위로 정확한 범위</div>
+    </div>
+    <div class="axis"><span>단일 객체</span><span>다중 객체</span></div>
+    <div class="cvscene" id="cvScene" style="margin-top:10px">
+      <svg viewBox="0 0 600 320" id="cvSvg">
+        <g class="bg"><rect width="600" height="320" fill="#dff0fb"/><rect y="230" width="600" height="90" fill="#cfe6b8"/><circle cx="540" cy="52" r="28" fill="#ffe08a"/></g>
+        <g id="sc1"></g><g id="sc2"></g><g id="cvMarks"></g>
+      </svg>
+    </div>
+    <div class="cvres" id="cvRes"></div>
+    <span class="book">교과서 102쪽 · 그림 Ⅱ-19 컴퓨터 비전 기술의 주요 분야</span>
+  </div>
+
+  <div class="case">
+    <h3>🔎 객체 탐지 인공지능은 무엇이든 찾을 수 있을까? (교과서 103쪽)</h3>
+    <p style="margin:4px 0 0">교과서 103쪽처럼 객체 탐지 인공지능에 사진을 넣으면, 사진 속 물건에 사각형과 이름표를 붙여 줘요. 그런데 눈으로는 또렷이 보이는 물건인데도 <b>사각형이 안 쳐지는 물건</b>이 있어요. 왜 그럴까요?</p>
+    <div class="qa">
+      <div><b class="q">생각할 거리 ① 왜 못 찾았을까?</b>이 인공지능이 배운 객체는 <b>80가지</b>뿐이에요. 사람·자동차·고양이·의자처럼 학습 데이터에 있던 것만 찾을 수 있어요. 아무리 또렷하게 보여도 <b>배운 적 없는 물건은 찾지 못해요.</b></div>
+      <div><b class="q">생각할 거리 ② 어떻게 고칠까?</b>찾게 하고 싶은 물건의 사진을 많이 모으고, 사진마다 <b>어디에 있는지(사각형)</b>와 <b>이름</b>을 표시한 학습 데이터를 만들어 다시 학습시켜요.</div>
+    </div>
+    <h4 style="margin-top:14px">이 물건, 탐지할 수 있을까? <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 QR 「인식 가능한 객체 리스트」에서 찾아 줘요)</span></h4>
+    <div class="objfind"><input type="text" id="objQ" placeholder="예: 연필, 휴대폰, 칠판, 우산"><button class="btn sm" id="objBtn">찾기</button><button class="btn ghost sm" id="objAll">80가지 모두 보기</button></div>
+    <div class="objres" id="objRes"></div>
+    <div class="objlist" id="objList"></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 왜 CNN -->
+<section class="page" data-name="왜 CNN" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>왜 합성곱 신경망일까</h2><p>사진을 그냥 신경망에 넣으면 생기는 두 가지 문제</p></div></div>
+
+  <div class="card">
+    <h3>👶 개와 고양이, 어떻게 구별했어요?</h3>
+    <p style="margin-top:0">그림 카드로 개와 고양이를 배운 아이는 길에서 처음 보는 개와 고양이도 금방 알아봐요. 그런데 "무엇을 보고 알았어?"라고 물으면 제대로 설명하지 못해요. 어른에게도 어려운 질문이죠.</p>
+    <p>이렇게 <b>사람이 특징을 말로 정해 주기 어려운 문제</b>는, 사람이 특징을 뽑아 주는 기존 기계학습보다 <b>스스로 특징을 찾는 딥러닝</b>이 더 잘해요. 그중 이미지 분류를 가장 잘하는 모델이 <b>합성곱 신경망(CNN, Convolutional Neural Network)</b>이에요.</p>
+  </div>
+
+  <div class="grid2 even">
+    <div class="card">
+      <h3>문제 ① 가중치가 너무 많아진다</h3>
+      <p class="muted" style="margin-top:0">지난 시간처럼 이미지를 한 줄로 펴서 완전 연결층(은닉층 뉴런 100개)에 넣으면, 픽셀 하나마다 뉴런 100개와 연결선이 생겨요.</p>
+      <div class="params" id="params"></div>
+      <div class="callout" style="font-size:.92rem">CNN의 필터는 3×3 크기라면 가중치가 <b>9개</b>뿐이에요. 이 9개를 이미지 전체에 <b>돌려 가며 함께 써요(공유)</b>. 이미지가 커져도 필터의 가중치 수는 그대로예요.</div>
+    </div>
+    <div class="card">
+      <h3>문제 ② 위아래 이웃이 멀어진다</h3>
+      <p class="muted" style="margin-top:0">세로선 하나를 그린 6 × 6 그림이에요. 한 줄로 펴면 위아래로 붙어 있던 점들이 어떻게 될까요?</p>
+      <div class="flat" id="flat"></div>
+      <div class="row"><button class="btn sm" id="flatBtn">한 줄로 펴기</button><span class="muted" style="font-size:.88rem" id="flatSay"></span></div>
+      <p style="font-size:.92rem">세로선의 점 6개가 6칸씩 떨어진 곳으로 흩어져요. 한 줄로 펴면 이미지의 <b>2차원(가로·세로) 모양 정보가 무시돼요.</b> CNN은 펴지 않고 <b>2차원 그대로 이웃한 픽셀끼리</b> 살펴봐요.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>CNN은 이렇게 생겼어요</h3>
+    <p class="muted" style="margin-top:0"><b>합성곱층</b>과 <b>풀링층</b>을 여러 번 거치며 특징을 뽑고(특징 추출), 마지막 <b>완전 연결층</b>이 무엇인지 분류해요.</p>
+    <svg viewBox="0 0 900 230" id="cnnSvg" aria-label="합성곱 신경망 구조도"></svg>
+    <p style="margin-bottom:0"><b>층마다 찾는 특징이 달라요.</b> 아래 카드를 눌러 보세요.</p>
+    <div class="layerpick" id="layerPick">
+      <div data-l="1" class="on"><b>층1 · 경계선</b><small>직선, 곡선 같은 가장 작은 모양</small><svg viewBox="0 0 220 90" id="ly1"></svg></div>
+      <div data-l="2"><b>층2 · 작은 부분</b><small>층1의 선을 모아 눈, 코, 귀</small><svg viewBox="0 0 220 90" id="ly2"></svg></div>
+      <div data-l="3"><b>층3 · 큰 부분</b><small>층2를 모아 얼굴, 몸 전체</small><svg viewBox="0 0 220 90" id="ly3"></svg></div>
+    </div>
+    <span class="book">교과서 104쪽 · 그림 Ⅱ-20 얼굴 이미지의 특징을 추출하는 합성곱 신경망의 개념도</span>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 합성곱층 -->
+<section class="page" data-name="합성곱층" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>합성곱층과 필터</h2><p>작은 돋보기가 이미지 위를 한 칸씩 지나가며 특징을 찾는다</p></div></div>
+
+  <div class="card">
+    <h3>① 먼저 쉽게: 필터는 「모양 도장」이에요</h3>
+    <p class="muted" style="margin-top:0">필터(커널)는 <b>찾고 싶은 모양을 새긴 작은 도장</b>이라고 생각해 보세요. 도장을 그림의 왼쪽 위에 대고, <b>한 칸씩</b> 옮기며 찍어요. 찍을 때마다 도장의 색칠된 칸과 그림의 검은 칸이 <b>몇 개 겹치는지</b> 세어 점수로 적어요. 많이 겹칠수록 그 자리에 도장과 같은 모양이 있다는 뜻이에요.</p>
+    <div class="row" style="gap:14px;align-items:flex-start">
+      <div><b style="font-size:.88rem">그림 고르기</b><div class="chips" id="stPic" style="margin-top:4px"></div></div>
+      <div><b style="font-size:.88rem">도장(필터) 고르기</b><div class="fchips" id="stFil" style="margin-top:4px"></div></div>
+    </div>
+    <div class="stamp">
+      <div><h4>그림 8 × 8 <span class="muted" style="font-weight:400">(칸을 눌러 바꿀 수 있어요)</span></h4><div class="sg pic" id="stImg" style="grid-template-columns:repeat(8,auto)"></div></div>
+      <div class="lens">
+        <h4>🔍 지금 찍은 자리</h4>
+        <div class="eq">
+          <div><div class="sg pp" id="stP" style="grid-template-columns:repeat(3,auto)"></div><small>그림 조각</small></div>
+          <span class="op">×</span>
+          <div><div class="sg ff" id="stF" style="grid-template-columns:repeat(3,auto)"></div><small>도장</small></div>
+          <span class="op">=</span>
+          <div><div class="sg ov" id="stO" style="grid-template-columns:repeat(3,auto)"></div><small>겹친 칸</small></div>
+        </div>
+        <div class="sc" id="stSc">▶를 눌러 도장을 찍어 보세요</div>
+      </div>
+      <div><h4>특징 지도 6 × 6</h4><div class="sg map" id="stMap" style="grid-template-columns:repeat(6,auto)"></div></div>
+    </div>
+    <div class="row" style="margin-top:12px">
+      <button class="btn sm" id="stStep">▶ 한 칸 찍기</button>
+      <button class="btn sm" id="stAuto" style="background:var(--navy)">⏩ 끝까지 찍기</button>
+      <button class="btn ghost sm" id="stReset">↺ 처음부터</button>
+    </div>
+    <p class="stsay" id="stSay"></p>
+    <div class="callout" style="font-size:.93rem">💡 <b>겹친 칸 세기 = 같은 자리끼리 곱해서 모두 더하기</b>예요. 그림과 도장이 0과 1뿐이라, 둘 다 1인 칸만 1 × 1 = 1이 되고 나머지는 0이 되거든요. 실제 필터에는 −1, 2 같은 다양한 숫자가 들어가요. 아래 ②에서 교과서 숫자로 같은 계산을 해 봐요.</div>
+    <p style="font-size:.9rem;margin:6px 0 0">8 × 8 그림이 6 × 6이 된 까닭: 3 × 3 도장은 그림 밖으로 나갈 수 없어서, 가로로 6번, 세로로 6번만 자리를 잡을 수 있어요.</p>
+  </div>
+
+  <div class="card">
+    <h3>② 교과서 숫자로 계산하기: 같은 자리끼리 곱하고, 모두 더하기</h3>
+    <p class="muted" style="margin-top:0">①의 도장과 같은 일을 진짜 숫자로 해요. <b>필터(커널)</b>는 작은 가중치 묶음이에요. 이미지의 <b>왼쪽 위</b>에서 시작해 <b>한 칸씩</b> 오른쪽·아래로 움직이며, 겹친 칸끼리 곱해서 모두 더한 값을 출력에 적어요. 오른쪽 아래에 도착할 때까지 반복해요.</p>
+    <div class="chips" id="cvStep">
+      <button class="chip on" data-s="0">1단계</button><button class="chip" data-s="1">2단계</button><button class="chip" data-s="2">3단계 ✏️</button><button class="chip" data-s="3">4단계 ✏️</button>
+    </div>
+    <div class="conv">
+      <div class="mx" id="mxIn" style="grid-template-columns:repeat(4,auto)"></div>
+      <span class="op">⊗</span>
+      <div class="mx f" id="mxF" style="grid-template-columns:repeat(3,auto)"></div>
+      <span class="op">=</span>
+      <div class="mx o" id="mxO" style="grid-template-columns:repeat(2,auto)"></div>
+    </div>
+    <div class="expr" id="expr"></div>
+    <div class="row" id="solveRow" style="margin-top:8px;display:none"><button class="btn sm" id="chk">확인</button><button class="btn ghost sm" id="showSol">식 보기</button><span id="chkSay" style="font-weight:700"></span></div>
+    <span class="book">교과서 105쪽 · 그림 Ⅱ-22 합성곱층의 합성곱 연산 예시 — 3, 4단계를 직접 채워 보세요</span>
+  </div>
+
+  <div class="card">
+    <h3>③ 큰 그림에서: 필터를 바꾸면 찾는 특징이 바뀐다</h3>
+    <p class="muted" style="margin-top:0">맨 왼쪽 칸에 마우스나 손가락으로 그림을 그려 보세요. <b>필터 A</b>는 세로 방향 경계선을, <b>필터 B</b>는 가로 방향 경계선을 찾아요. 밝게 빛나는 곳이 필터가 "찾았다!" 하고 반응한 곳이에요.</p>
+    <div class="chips" id="edgePre">
+      <button class="chip" data-p="sq">네모</button><button class="chip" data-p="ci">동그라미</button><button class="chip" data-p="seven">숫자 7</button><button class="chip" data-p="house">집</button><button class="chip" data-p="clear">지우고 직접 그리기</button>
+    </div>
+    <div class="edge">
+      <figure><canvas id="drawC" width="28" height="28"></canvas><figcaption>원본 (여기에 그리기)</figcaption></figure>
+      <figure><canvas id="edA" width="26" height="26"></canvas><figcaption>필터 A를 통과한 결과</figcaption><div class="fm" id="fmA"></div></figure>
+      <figure><canvas id="edB" width="26" height="26"></canvas><figcaption>필터 B를 통과한 결과</figcaption><div class="fm" id="fmB"></div></figure>
+      <figure><canvas id="edAB" width="26" height="26"></canvas><figcaption>두 결괏값을 합친 결과</figcaption></figure>
+    </div>
+    <p style="font-size:.92rem;margin-top:10px">결과가 원본보다 조금 작죠? 3 × 3 필터는 가장자리 밖으로 나갈 수 없어서, 28 × 28 이미지가 26 × 26이 돼요. (위의 4 × 4 → 2 × 2와 같은 이유예요.)</p>
+    <span class="book">교과서 104쪽 · 그림 Ⅱ-21 이미지에 필터를 적용하여 특징을 추출한 예</span>
+  </div>
+
+  <div class="qa">
+    <div><b class="q">Q. 필터 숫자는 누가 정해요?</b>사람이 정하지 않아요. 처음에는 아무 숫자로 시작해서, 훈련 데이터를 넣고 <b>틀린 만큼 고치는 학습</b>을 하며 특징을 잘 찾는 필터로 바뀌어 가요. 지난 시간에 가중치를 고치던 것과 같아요. 필터의 숫자가 바로 <b>가중치</b>니까요.</div>
+    <div><b class="q">Q. 필터는 하나만 써요?</b>아니요. 필터마다 찾는 특징이 달라서 한 층에 <b>여러 개의 필터</b>를 함께 써요. 그래서 한 이미지에서 세로선, 가로선, 곡선 같은 여러 특징 지도가 동시에 나와요.</div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 풀링 · 완전 연결 -->
+<section class="page" data-name="풀링·완전 연결" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>풀링층과 완전 연결층</h2><p>줄여서 핵심만 남기고, 마지막에 이름을 붙인다</p></div></div>
+
+  <div class="card">
+    <h3>① 먼저 쉽게: 모둠마다 대표 한 명 뽑기</h3>
+    <p class="muted" style="margin-top:0">04 ①에서 만든 특징 지도를 2 × 2씩 네 칸 모둠으로 나눠요. 그리고 모둠마다 <b>가장 큰 수 하나만 대표</b>로 뽑아요. 반을 네 명씩 모둠으로 나누고 모둠마다 대표 한 명만 회의에 보내는 것과 같아요. 이것이 <b>최댓값 풀링</b>이에요.</p>
+    <p id="plFrom" style="font-size:.9rem;margin:0 0 8px"></p>
+    <div class="poolgo">
+      <div><h4 style="text-align:center;font-size:.95rem;margin:0 0 6px">특징 지도 6 × 6 <span class="muted" style="font-weight:400">(36칸)</span></h4><div class="sg map pmap" id="ppIn" style="grid-template-columns:repeat(6,auto)"></div></div>
+      <div class="arr">→<br><span style="font-family:inherit;font-size:.8rem">모둠 대표</span></div>
+      <div><h4 style="text-align:center;font-size:.95rem;margin:0 0 6px">풀링 결과 3 × 3 <span class="muted" style="font-weight:400">(9칸)</span></h4><div class="sg map" id="ppOut" style="grid-template-columns:repeat(3,auto)"></div></div>
+    </div>
+    <div class="row" style="margin-top:12px;justify-content:center">
+      <button class="btn sm" id="ppStep">▶ 한 모둠씩 뽑기</button>
+      <button class="btn sm" id="ppAll" style="background:var(--navy)">⏭ 한꺼번에</button>
+      <button class="btn ghost sm" id="ppReset">↺ 처음부터</button>
+    </div>
+    <p class="stsay" id="ppSay" style="text-align:center"></p>
+    <div class="fcflow" style="margin-top:10px">
+      <div class="bx"><b>그림</b><br>8 × 8 · 64칸</div><span class="ar">→ 도장 찍기 →</span>
+      <div class="bx"><b>특징 지도</b><br>6 × 6 · 36칸</div><span class="ar">→ 대표 뽑기 →</span>
+      <div class="bx"><b>풀링 결과</b><br>3 × 3 · 9칸</div><span class="ar">→ … → 완전 연결층</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="card pool">
+      <h3>② 교과서 숫자로 풀링하기: 구역마다 대표 하나만</h3>
+      <p class="muted" style="margin-top:0">합성곱층을 지난 데이터를 작은 구역(2 × 2)으로 나누고, 구역마다 <b>가장 큰 값 하나</b>만 남겨요(최댓값 풀링). 가장 큰 값은 필터가 가장 강하게 반응한 곳, 즉 <b>가장 중요한 특징</b>이에요.</p>
+      <div class="conv">
+        <div class="mx" id="plIn" style="grid-template-columns:repeat(4,auto)"></div>
+        <span class="op">→</span>
+        <div class="mx o" id="plOut" style="grid-template-columns:repeat(2,auto)"></div>
+      </div>
+      <div class="row" style="justify-content:center"><button class="btn sm" id="plNext">한 구역씩 풀링하기</button><button class="btn ghost sm" id="plReset">처음부터</button></div>
+      <p class="expr" id="plSay" style="margin-top:10px">숫자 16개가 몇 개로 줄어들지 먼저 예상해 보세요.</p>
+      <span class="book">교과서 105쪽 · 그림 Ⅱ-23 풀링 예시</span>
+    </div>
+    <div class="card">
+      <h3>04에서 그린 그림을 풀링하면?</h3>
+      <p class="muted" style="margin-top:0">04 화면의 「두 결괏값을 합친 결과」를 2 × 2 최댓값 풀링한 모습이에요. 크기는 4분의 1로 줄었는데, 경계선 모양은 그대로 남아 있죠?</p>
+      <div class="pool2">
+        <figure><canvas id="poolA" width="26" height="26"></canvas><figcaption>풀링 전 26 × 26<br><span class="muted">숫자 676개</span></figcaption></figure>
+        <span class="op" style="font-family:'Black Han Sans';font-size:1.6rem;color:var(--muted)">→</span>
+        <figure><canvas id="poolB" width="13" height="13"></canvas><figcaption>풀링 후 13 × 13<br><span class="muted">숫자 169개</span></figcaption></figure>
+      </div>
+      <div class="callout" style="font-size:.92rem">데이터가 작아지면 계산할 양이 줄어 <b>학습이 쉬워지고</b>, 특징이 한두 칸 옆으로 움직여도 같은 값이 남아서 <b>조금 비뚤게 쓴 그림도</b> 잘 알아봐요.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>③ 완전 연결층: 찾은 특징으로 최종 분류</h3>
+    <p class="muted" style="margin-top:0">합성곱층과 풀링층을 여러 번 지나며 뽑은 특징만 <b>일렬로</b> 세운 뒤, 지난 시간에 배운 일반 신경망인 <b>완전 연결층</b>에 넣어요. 여기서 이미지 전체의 패턴을 보고 무엇인지 분류해요. 출력층은 여러 개 중 하나를 고르니 <b>소프트맥스</b>를 써요.</p>
+    <div class="fcflow">
+      <div class="bx">풀링 결과<div class="mx" style="grid-template-columns:repeat(2,auto);margin-top:4px"><div style="width:30px;height:30px;font-size:.9rem;background:#fdecea">5</div><div style="width:30px;height:30px;font-size:.9rem;background:#fdecea">4</div><div style="width:30px;height:30px;font-size:.9rem;background:#fdecea">7</div><div style="width:30px;height:30px;font-size:.9rem;background:#fdecea">9</div></div></div>
+      <span class="ar">→ 일렬로 →</span>
+      <div class="bx"><div class="flatrow"><span>5</span><span>4</span><span>7</span><span>9</span></div><small class="muted">(실제로는 수천 개)</small></div>
+      <span class="ar">→ 완전 연결층 →</span>
+      <div class="bx"><div class="prob"><span>강아지</span><i style="width:82%"></i><b>82%</b><span>고양이</span><i style="width:15%"></i><b>15%</b><span>토끼</span><i style="width:3%"></i><b>3%</b></div><small class="muted">소프트맥스 확률 (예시)</small></div>
+    </div>
+  </div>
+
+  <div class="cx">
+    <h3>CNN 전체 흐름 한 번에</h3>
+    <div class="pipe">
+      <div style="--k:#2f6fd0"><b>입력</b>픽셀값 숫자 표 (컬러면 3장)</div>
+      <div style="--k:#e0702b"><b>합성곱층</b>필터로 지역적인 특징 찾기</div>
+      <div style="--k:#d64535"><b>풀링층</b>크기 줄이고 중요한 값만 남기기</div>
+      <div style="--k:#9b4fc4"><b>↻ 여러 번 반복</b>선 → 눈·코 → 얼굴로 점점 큰 특징</div>
+      <div style="--k:#1f9d74"><b>완전 연결층</b>일렬로 펴서 최종 분류</div>
+    </div>
+    <p style="margin-top:12px"><b>CNN의 학습</b> = 특징을 잘 찾는 <b>필터</b>를 만들고, 그 특징으로 분류를 잘하도록 <b>완전 연결층의 가중치</b>를 고치는 과정이에요. 고치는 방법은 지난 시간과 같아요. 순전파 → 오차 계산 → 역전파!</p>
+    <span class="book">교과서 105쪽 · 합성곱 신경망의 학습</span>
+  </div>
+
+  <div class="case">
+    <h3>🧪 스스로 해결하기 · CNN 학습 과정 체험 (교과서 104쪽)</h3>
+    <p style="margin:0 0 6px">CNN Explainer에 들어가서 실제 CNN이 사진을 분류하는 모습을 살펴보세요. <a href="https://poloclub.github.io/cnn-explainer/" target="_blank" rel="noopener">poloclub.github.io/cnn-explainer ↗</a> (영어 사이트예요)</p>
+    <ul style="margin:0;padding-left:20px;font-size:.93rem">
+      <li>위쪽에서 사진 하나를 고르면, 왼쪽부터 층별 결과 그림이 나와요. <span class="mono">conv</span> = 합성곱층, <span class="mono">max_pool</span> = 최댓값 풀링층, <span class="mono">relu</span> = 렐루 활성화 함수예요.</li>
+      <li><span class="mono">conv</span> 층의 작은 그림 하나를 눌러, 필터가 한 칸씩 움직이며 곱하고 더하는 장면을 확인해 보세요.</li>
+      <li>맨 오른쪽 <span class="mono">output</span>에서 어떤 이름의 확률이 가장 높은지 보세요. 층을 지날수록 그림이 점점 작아지는 것도 확인해 보세요.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 생성형 AI -->
+<section class="page" data-name="생성형 AI" data-acc="#c98a00">
+  <div class="head"><div class="num">06</div><div><h2>생성형 인공지능과 GAN</h2><p>알아보는 인공지능에서, 새로 만들어 내는 인공지능으로</p></div></div>
+
+  <div class="card">
+    <p style="margin-top:0"><b>생성형 인공지능</b>은 텍스트, 오디오, 이미지 같은 기존 콘텐츠로 배운 것을 바탕으로 <b>비슷한 콘텐츠를 새롭게 만들어 내는</b> 인공지능이에요. 대표 알고리즘이 <b>생성적 적대 신경망(GAN: Generative Adversarial Network)</b>이에요. 이름의 '적대'는 두 모델이 <b>서로 경쟁한다</b>는 뜻이에요.</p>
+    <div class="qa">
+      <div><b class="q">🎨 생성자 (generator)</b>가짜 데이터를 만드는 쪽. 위조지폐를 만드는 사람처럼, 진짜와 똑같아 보이는 가짜를 만들려고 애써요.</div>
+      <div><b class="q">🔍 감별자 (discriminator)</b>진짜인지 가짜인지 가려내는 쪽. 위조지폐를 잡아내는 경찰처럼, 가짜를 골라내려고 애써요.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>⚔️ GAN 경쟁 지켜보기</h3>
+    <p class="muted" style="margin-top:0">생성자의 목표는 오른쪽 '진짜 그림'과 구별되지 않는 그림을 만드는 거예요. 「한 번 겨루기」를 여러 번 눌러 보세요.</p>
+    <div class="gan">
+      <figure><canvas id="ganG" width="12" height="12"></canvas><figcaption>생성자가 만든 가짜 · <span id="ganRound">0</span>번째</figcaption></figure>
+      <div>
+        <ol class="ganflow" id="ganFlow">
+          <li>① 생성자가 가짜 데이터를 만든다</li>
+          <li>② 감별자가 진짜와 가짜 중 진짜를 골라낸다</li>
+          <li>③ 감별자가 분류 결과로 학습해 더 잘 가려낸다</li>
+          <li>④ 생성자가 감별 결과로 학습해 더 그럴듯하게 만든다</li>
+        </ol>
+        <div class="verdict" id="ganVerdict">감별자: 아직 겨루기 전이에요.</div>
+        <div style="font-size:.85rem">감별자가 가짜를 맞힌 비율 <b id="ganAcc">-</b></div>
+        <div class="meter"><i id="ganMeter" style="width:0"></i></div>
+        <div class="row" style="margin-top:10px"><button class="btn" id="ganBtn">한 번 겨루기</button><button class="btn ghost sm" id="ganAuto">끝까지 자동으로</button><button class="btn ghost sm" id="ganReset">처음부터</button></div>
+      </div>
+      <figure><canvas id="ganR" width="12" height="12"></canvas><figcaption>진짜 데이터</figcaption></figure>
+    </div>
+    <svg viewBox="0 0 600 120" id="ganChart" style="margin-top:12px;max-width:640px"></svg>
+    <div class="callout ganend" id="ganEnd"><b>학습 끝!</b> 감별자가 가짜를 맞힌 비율이 50% 가까이 내려갔어요. 동전 던지기로 찍는 것과 같아졌다는 뜻이에요. 감별자가 더 이상 진짜와 가짜를 구분하지 못하면 학습을 멈추고, 이렇게 학습된 <b>생성자</b>를 새로운 데이터를 만드는 데 써요.</div>
+    <p class="muted" style="font-size:.85rem">실제 GAN은 수천 번 넘게 겨루며 학습해요. 여기서는 흐름이 잘 보이도록 줄여서 보여 줘요.</p>
+    <span class="book">교과서 106쪽 · 그림 Ⅱ-24 GAN 알고리즘</span>
+  </div>
+
+  <div class="card">
+    <h3>✍️ 함께 해결하기 · 글로 그림 만들기 (교과서 107쪽)</h3>
+    <p class="muted" style="margin-top:0">글을 입력하면 그림을 만들어 주는 <b>Text to Image</b> 서비스가 많아졌어요 (교과서 소개: 달리2(DALL-E2)가 적용된 Bing 이미지 크리에이터, AskUp, 뤼튼). 가장 가고 싶은 여행지에서 사진을 찍었다고 상상하고, 그 사진을 <b>글로 자세히</b> 설명해 보세요.</p>
+    <div class="pb" id="pb">
+      <div><label>장소·배경</label><input type="text" data-k="place" placeholder="예: 바다가 내려다보이는 제주도 해안 도로"></div>
+      <div><label>사람 수</label><input type="text" data-k="who" placeholder="예: 친구 두 명"></div>
+      <div><label>머리 모양·옷차림</label><input type="text" data-k="look" placeholder="예: 단발머리에 노란 우비"></div>
+      <div><label>자세·하는 일</label><input type="text" data-k="pose" placeholder="예: 자전거를 타면서 손을 흔드는"></div>
+      <div><label>주변 물건·건물</label><input type="text" data-k="thing" placeholder="예: 돌담과 귤나무"></div>
+      <div><label>하늘·날씨</label><input type="text" data-k="sky" placeholder="예: 비가 그친 뒤 무지개가 뜬 하늘"></div>
+    </div>
+    <div class="ptext empty" id="ptext">빈칸을 채우면 여기에 프롬프트가 만들어져요.</div>
+    <div class="row" style="margin-top:8px"><span style="font-size:.88rem">자세함</span><div class="meter" style="flex:1;max-width:240px;margin:0"><i id="pMeter" style="width:0"></i></div><b id="pCount" style="font-size:.88rem">0 / 6</b><button class="btn sm" id="pCopy">복사하기</button><button class="btn ghost sm" id="pEx">예시 채우기</button></div>
+    <div class="callout" style="font-size:.93rem">원하는 결과가 나오도록 입력하는 명령 문구를 <b>프롬프트</b>라고 하고, 이런 일을 하는 사람을 <b>프롬프트 엔지니어</b>라고 해요. "바다 여행 사진"처럼 짧게 쓰면 인공지능이 나머지를 마음대로 정해요. 결과가 마음에 들지 않으면 <b>어느 부분이 다른지 찾아 그 부분의 설명을 고쳐</b> 다시 만들어 보세요.</div>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 활용 -->
+<section class="page" data-name="활용 분야" data-acc="#2f6fd0">
+  <div class="head"><div class="num">07</div><div><h2>컴퓨터 비전은 어디에 쓰일까</h2><p>사람의 눈을 대신하는 곳이라면 어디든</p></div></div>
+
+  <div class="card">
+    <p style="margin-top:0">사람의 감각 수용기 가운데 <b>약 70%가 눈</b>에 있을 만큼, 보는 일은 주변을 알아차리고 판단하는 데 아주 중요해요. 그래서 눈과 같은 일을 하는 컴퓨터 비전이 여러 곳에 쓰여요. 카드를 눌러 보세요.</p>
+    <div class="apps" id="apps">
+      <button data-a="0" class="on"><span class="e">🔤</span><b>광학 문자 인식</b><small>OCR</small></button>
+      <button data-a="1"><span class="e">📦</span><b>객체 탐지</b><small>무엇이 어디에</small></button>
+      <button data-a="2"><span class="e">🙂</span><b>얼굴 인식</b><small>어디에·누구</small></button>
+      <button data-a="3"><span class="e">🎬</span><b>얼굴 영상 생성</b><small>바꾸고 만들기</small></button>
+    </div>
+    <div class="appd on" data-a="0">
+      <h3 style="margin-top:16px">광학 문자 인식 (OCR) · 이미지 속 글자를 텍스트로</h3>
+      <div class="ex2"><div><b>🚗 자동차 번호판 인식</b><br>주차장에서 번호판을 읽어 주차비를 정산하고, 단속 카메라로 과속·신호 위반 차량을 찾아요.</div><div><b>🦯 시각 보조 서비스</b><br>메뉴판, 간판, 상품 이름의 글자를 읽어 소리로 들려줘서 시각 장애인의 눈이 되어 줘요.</div></div>
+    </div>
+    <div class="appd" data-a="1">
+      <h3 style="margin-top:16px">객체 탐지 · 물체의 위치를 찾고 무엇인지 분류</h3>
+      <div class="ex2"><div><b>🚦 CCTV 교통량 분석</b><br>도로 관제 CCTV 영상을 실시간으로 읽어 차가 얼마나 지나가는지 분석해요.</div><div><b>🧳 엑스레이(X-ray) 분석</b><br>공항이나 보안 구역에서 가방 속 소지 금지 물품이 있는지 찾아요.</div></div>
+    </div>
+    <div class="appd" data-a="2">
+      <h3 style="margin-top:16px">얼굴 인식 · 얼굴 위치를 찾거나 누구인지 분류</h3>
+      <div class="ex2"><div><b>🌫️ 모자이크 처리</b><br>거리 사진 서비스나 동영상 사이트에서 행인 얼굴을 찾아 흐리게 처리해 초상권을 지켜요.</div><div><b>🔐 보안 시스템</b><br>휴대폰 잠금 해제, 금융 거래에서 비밀번호 대신 얼굴로 본인을 확인해요.</div></div>
+    </div>
+    <div class="appd" data-a="3">
+      <h3 style="margin-top:16px">얼굴 영상 생성 · 얼굴을 바꾸거나 새 얼굴을 씌워 영상으로</h3>
+      <div class="ex2"><div><b>🎞️ 영화 촬영</b><br>배우의 얼굴을 인공지능으로 바꿔, 대역 없이 다른 나이대의 모습을 연기할 수 있게 해요.</div><div><b>🏛️ 디지털 복원</b><br>세상을 떠난 작가가 살던 시대와 모습을 실감 나게 되살려요.</div></div>
+      <div class="try"><b>체험해 보기</b> · 얼굴 보정 체험 <a href="https://www.perfectcorp.com/ko/business/showcase/face-reshaping" target="_blank" rel="noopener">perfectcorp.com 얼굴 보정 ↗</a><ol><li>체험하기 → 모델 선택</li><li>메뉴로 얼굴 모양을 바꿔 보기</li></ol></div>
+    </div>
+  </div>
+
+  <div class="callout">🙋 <b>체험할 때 약속</b> · 얼굴 보정 체험은 사이트에 있는 <b>예시 사진</b>으로 해 보세요. 내 사진이나 친구 사진을 올리면 얼굴 정보가 다른 곳에 남을 수 있고, 친구의 초상권을 침해할 수도 있어요.</div>
+  <span class="book">교과서 108~109쪽 · 그림 Ⅱ-26~29 컴퓨터 비전 활용 사례</span>
+  <div class="quiz" data-quiz="7" style="margin-top:14px"></div>
+</section>
+
+<!-- 8 정리 -->
+<section class="page" data-name="정리" data-acc="#0f2742">
+  <div class="head"><div class="num">08</div><div><h2>한눈에 정리</h2><p>오늘 배운 말을 한 번에</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74">컴퓨터 비전의 주요 분야는 <b>이미지 분류, 객체 위치 식별, 객체 탐지, 이미지 분할</b>이다.</div>
+    <div style="--k:#e0702b"><b>합성곱 신경망</b>은 이미지 분류를 잘하며 <b>합성곱층, 풀링층, 완전 연결층</b>으로 이루어진다.</div>
+    <div style="--k:#c98a00"><b>생성형 인공지능</b>은 배운 내용을 바탕으로 기존 콘텐츠와 비슷한 콘텐츠를 새롭게 만든다.</div>
+  </div>
+  <div class="sum">
+    <div style="border-color:#2f6fd0"><b>픽셀 · RGB</b><span>흑백 픽셀 = 0(검정)~255(흰색) 숫자 1개, 컬러 픽셀 = (R, G, B) 숫자 3개</span><small>🟨 (255, 255, 0) = 노랑</small></div>
+    <div style="border-color:#1f9d74"><b>4대 분야</b><span>분류 → 위치 식별 → 탐지 → 분할. 단일 → 다중 객체, 사각형 → 픽셀 단위</span><small>🐱 Cat → Cat + 위치 → Dog, Dog, Cat</small></div>
+    <div style="border-color:#9b4fc4"><b>왜 CNN</b><span>완전 연결층만 쓰면 가중치가 너무 많고 2차원 모양 정보가 사라진다</span><small>👶 설명은 못 해도 알아보는 아이처럼, 스스로 특징 찾기</small></div>
+    <div style="border-color:#e0702b"><b>합성곱층</b><span>필터가 한 칸씩 움직이며 같은 자리끼리 곱해 더한다. 층1 선 → 층2 눈·코 → 층3 얼굴</span><small>🔍 작은 돋보기로 훑어보기</small></div>
+    <div style="border-color:#d64535"><b>풀링층</b><span>구역마다 가장 큰 값만 남겨 크기를 줄이고 중요한 정보는 유지</span><small>📝 문단마다 핵심 문장 하나만 밑줄</small></div>
+    <div style="border-color:#1f9d74"><b>완전 연결층</b><span>뽑은 특징을 일렬로 세워 최종 분류. 출력은 소프트맥스</span><small>🧾 단서를 모아 범인 지목</small></div>
+    <div style="border-color:#c98a00"><b>GAN</b><span>생성자가 가짜를 만들고 감별자가 가려낸다. 감별자가 구분 못 하면 학습 끝</span><small>💵 위조지폐범 vs 경찰</small></div>
+    <div style="border-color:#2f6fd0"><b>활용</b><span>OCR · 객체 탐지 · 얼굴 인식 · 얼굴 영상 생성</span><small>🚗 번호판 · 🧳 엑스레이 · 🔐 얼굴 잠금 · 🎬 영화</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol><li>컴퓨터는 사진을 숫자 표로 봅니다. 가로 100 × 세로 100 크기의 컬러 사진 한 장은 숫자 몇 개로 이루어지는지 계산 과정과 함께 쓰세요. 그리고 내 생활에서 쓰면 좋을 컴퓨터 비전 서비스를 하나 떠올려, 이미지 분류·객체 위치 식별·객체 탐지·이미지 분할 중 어느 분야가 필요한지 이유와 함께 쓰세요.</li><li>사진을 한 줄로 펴서 신경망에 바로 넣으면 가중치가 너무 많아지고, 위아래로 붙어 있던 픽셀이 멀리 흩어집니다. 합성곱 신경망(CNN)은 이 문제를 어떻게 해결하는지, 수업 페이지에서 필터 A·B로 내가 그린 그림의 경계선을 찾은 일과 최댓값 풀링으로 크기를 줄인 일이 각각 어떤 역할을 하는지 넣어 설명하세요.</li><li>생성적 적대 신경망(GAN)에서 생성자와 감별자가 겨루며 가짜 그림이 점점 진짜처럼 바뀌는 과정을 위조지폐범과 경찰에 빗대어 설명하세요. 그리고 얼굴 인식이나 얼굴 영상 생성 기술이 널리 쓰일 때 생길 수 있는 문제를 하나 들고, 이를 줄이려면 어떻게 해야 할지 자신의 생각을 쓰세요.</li></ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 직접 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+  </div>
+</section>

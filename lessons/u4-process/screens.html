@@ -1,0 +1,234 @@
+<!-- 0 표지 -->
+<section class="page" data-name="시작" data-acc="#f2a516">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 1. 지속 가능 발전 문제 해결</span>
+      <h1>수행평가 전에<br>한 바퀴 미리 돌아 보기</h1>
+      <div class="story"><b>남극 연구소의 부상당한 펭귄</b><br>남극 연구소에서 다친 펭귄을 발견했는데 어떤 종인지 알 수 없어요. 종마다 먹이와 치료 방법이 달라 꼭 알아야 하는데, 카메라도 고장 났어요. <b>부리와 날개 같은 생김새만으로</b> 펭귄의 종을 구별하는 인공지능을 만들 수 있을까요?</div>
+      <p>교과서 펭귄 프로젝트로 프로젝트 수행 과정을 익히고, 예시 프로젝트 하나로 <b style="color:#fff">ML4Kids 수행평가의 전 과정</b>을 미리 연습해요. 오늘 연습은 성적에 들어가지 않아요.</p>
+      <ol>
+        <li>프로젝트 수행 과정 (펭귄)</li><li>ML4Kids 따라 하기</li><li>테스트 · 틀린 사례 · 개선</li>
+        <li>Scratch 연결</li><li>성찰 써 보기</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🐧</i><div><b>교과서 펭귄 프로젝트</b><small>역할 5가지 · 수행 과정 6단계</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧠</i><div><b>ML4Kids 예시 프로젝트</b><small>쇼핑 리뷰 긍정 / 부정</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔧</i><div><b>틀린 사례 고치기</b><small>같은 테스트로 개선 전·후 비교</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🐱</i><div><b>Scratch 연결 · 성찰</b><small>결과로 움직이는 프로그램 · 숫자로 근거 쓰기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>교과서 <b>남극 펭귄 프로젝트</b>로 인공지능 프로젝트 수행 과정을 정리하고, <b>쇼핑 리뷰 긍정·부정 분류</b>라는 예시 프로젝트로 수행평가에서 할 일을 순서대로 한 번 해 봅니다. 특히 <b>틀린 사례 찾기 → 개선 → 같은 테스트로 비교</b>와 <b>Scratch 연결</b>을 꼭 해 봐요.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 연습할까</span>
+        <ul>
+          <li>수행평가 시간은 짧아서 도구 사용법을 그때 처음 배우면 시간이 모자라요.</li>
+          <li>오늘 막히는 곳을 미리 찾아 두면 수행평가 때는 <b>내 주제</b>에만 집중할 수 있어요.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">학습 목표 (178쪽)</span>
+        <ul class="uses">
+          <li>인공지능 프로젝트 수행 과정을 설계할 수 있다.</li>
+          <li>인공지능 프로젝트 수행 과정에 따라 문제를 해결할 수 있다.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>프로젝트 수행 과정과 역할을 설명한다.</li>
+          <li>테스트 결과를 숫자로 기록하고 틀린 사례의 원인을 데이터에서 찾는다.</li>
+          <li>모델 결과로 동작하는 Scratch 프로그램의 구조를 안다.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 프로젝트 수행 과정부터 →</button></div>
+  </div>
+</section>
+
+<!-- 1 수행 과정 -->
+<section class="page" data-name="프로젝트 수행 과정" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>인공지능 프로젝트 수행 과정</h2><p>교과서 178~189쪽 · 남극 펭귄 종 분류 프로젝트</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>교과서는 모둠이 <b>다섯 역할</b>을 나눠 프로젝트를 해요. 우리 수행평가는 <b>개별 수행</b>이라, 이 다섯 역할을 <b>나 혼자 모두</b> 맡는다고 생각하면 돼요.</span></div>
+  <div class="roles">
+    <div><i>🧭</i><b>프로젝트 기획자</b>주제를 정하고 일정과 방향을 이끌어요<em>내 문제·계획 정하기</em></div>
+    <div><i>📦</i><b>데이터 수집가</b>필요한 데이터를 모으고 정확한지 확인해요<em>클래스별 예시 모으기</em></div>
+    <div><i>🔍</i><b>데이터 분석가</b>데이터의 패턴과 추세를 살펴요<em>개수 균형·치우침 점검</em></div>
+    <div><i>🛠️</i><b>모델 개발자</b>알맞은 방법으로 모델을 만들고 훈련해요<em>학습 · 테스트 · 개선</em></div>
+    <div><i>🎤</i><b>프로젝트 발표자</b>결과를 요약해 발표하고 보고서를 써요<em>활동지 · 성찰 · 현장 서술</em></div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <h3>🐧 「어떻게 하면 남극 펭귄의 종류를 구별할 수 있는 모델을 만들 수 있을까?」 <span class="muted" style="font-weight:400;font-size:.88rem">(SDGs 14번 해양 생태계 보전)</span></h3>
+    <div class="flow2">
+      <div style="--k:#2f6fd0"><b>문제 정의</b><span>턱끈·젠투·아델리 펭귄을 분류하는 모델</span></div><div class="ar">→</div>
+      <div style="--k:#1f9d74"><b>데이터 수집</b><span>캐글 펭귄 데이터 344마리 (팔머 군도, 2007~2009)</span></div><div class="ar">→</div>
+      <div style="--k:#e0702b"><b>데이터 전처리</b><span>결측치·이상치 처리, 정규화, 훈련·테스트 분리</span></div><div class="ar">→</div>
+      <div style="--k:#9b4fc4"><b>유형·알고리즘</b><span>분류 · k-최근접 이웃과 로지스틱 회귀 비교</span></div><div class="ar">→</div>
+      <div style="--k:#d64535"><b>모델 학습</b><span>훈련 데이터로 학습, 테스트로 평가</span></div><div class="ar">→</div>
+      <div style="--k:#0f8a8a"><b>성능 평가·수정</b><span>만족스럽지 않으면 <b>표준화</b>, k값·트리 깊이 수정</span></div>
+    </div>
+    <p class="note">데이터 속성: 종(species), 섬(island), 부리 길이·깊이(mm), 지느러미 길이(mm), 체질량(g), 성별. 교과서는 파이썬으로 하지만 오늘은 과정만 보고, 실습은 ML4Kids로 해요.</p>
+  </div>
+  <div class="card">
+    <h3>🔎 성능 평가·수정의 예: 왜 「표준화」가 필요할까? <span class="muted" style="font-weight:400;font-size:.88rem">(180쪽)</span></h3>
+    <p class="muted" style="margin-top:0">k-최근접 이웃은 <b>거리</b>로 가장 가까운 이웃을 찾아요. 그런데 체질량은 수천 g, 부리는 수십 mm라서 숫자 크기가 너무 달라요. 버튼을 눌러 비교해 보세요. (펭귄 종별 대표 예시 수치)</p>
+    <div class="penguin">
+      <div style="--k:#e0702b"><b>아델리</b>부리 39mm · 지느러미 190mm · 체질량 3,700g</div>
+      <div style="--k:#9b4fc4"><b>턱끈</b>부리 49mm · 지느러미 196mm · 체질량 3,730g</div>
+      <div style="--k:#1f9d74"><b>젠투</b>부리 48mm · 지느러미 217mm · 체질량 5,080g</div>
+    </div>
+    <p style="margin:10px 0 4px"><b>다친 펭귄</b>: 부리 50mm · 지느러미 196mm · 체질량 3,690g <span class="muted">(실제로는 턱끈 펭귄)</span></p>
+    <div class="row"><button class="btn sm ghost" id="pgRaw">그대로 거리 재기</button><button class="btn sm" id="pgStd">표준화하고 거리 재기</button></div>
+    <table class="dist" id="pgT" style="margin-top:8px"></table>
+    <div class="callout" id="pgMsg" style="font-size:.92rem"></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 ML4Kids 따라 하기 -->
+<section class="page" data-name="ML4Kids 따라 하기" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>ML4Kids 따라 하기</h2><p>예시 프로젝트: 쇼핑 리뷰 긍정 / 부정 (유형 카드 02)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>ML4Kids는 <b>훈련 → 학습 &amp; 평가 → 만들기</b> 세 칸으로 되어 있어요. 데이터를 넣고(훈련), 모델을 만들어 시험해 보고(학습 &amp; 평가), Scratch로 프로그램을 만들어요(만들기). 손글씨 숫자 실습 때와 같은 순서예요.</span></div>
+  <div class="card">
+    <ol class="vsteps">
+      <li><b>새 프로젝트 만들기</b><p>학급 계정으로 로그인 → 「프로젝트」 → 「+ 새 프로젝트 추가」 → 이름(예: 리뷰감정)을 쓰고 인식 대상을 <b>텍스트</b>로 골라 「만들기」.</p></li>
+      <li><b>레이블(클래스) 만들기</b><p>「훈련」 → 오른쪽 위 「+ 새로운 레이블 추가」 → <b>긍정</b>, <b>부정</b> 두 개를 만들어요.</p></li>
+      <li><b>학습 데이터 넣기</b><p>레이블 상자 아래 「데이터 추가」로 아래 문장을 <b>직접 입력</b>해요. 클래스마다 <b>8개씩, 개수를 똑같이</b> 맞춰요.</p></li>
+      <li><b>테스트 문장은 따로 떼어 두기</b><p>3번 화면의 테스트 문장 4개는 <b>절대 학습 데이터에 넣지 않아요.</b> 넣으면 처음 보는 문장을 맞히는지 알 수 없어요.</p></li>
+      <li><b>학습시키기</b><p>「학습 &amp; 평가」 칸에서 학습 버튼을 누르고 끝날 때까지 기다려요.</p></li>
+      <li><b>테스트하기</b><p>같은 화면의 입력 칸에 테스트 문장을 하나씩 넣고, <b>예측 결과와 신뢰도</b>를 표에 적어요.</p></li>
+    </ol>
+  </div>
+  <div class="sim" style="margin-top:4px">
+    <div class="cls" style="--k:#1f9d74"><h4>긍정 <small>8개</small></h4><ul id="d0"></ul></div>
+    <div class="cls" style="--k:#d64535"><h4>부정 <small>8개</small></h4><ul id="d1"></ul></div>
+  </div>
+  <p class="note">유형 카드 02의 시작 예시를 줄여 만든 연습용 문장이에요. 수행평가에서는 시작 예시에 <b>내가 직접 모은 데이터</b>를 더하고, 직접 모은 것과 구분해 기록해요(활동지 2).</p>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 테스트·개선 -->
+<section class="page" data-name="테스트 · 개선" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>테스트 · 틀린 사례 · 개선</h2><p>수행평가의 핵심 · 활동지 3~4번 연습</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>아래는 ML4Kids처럼 <b>문장 속 글자 조각을 보고</b> 긍정·부정을 맞히는 간단한 모의 모델이에요(실제 ML4Kids와 계산 방식은 달라요). 순서대로 ① 1차 학습 → ② 테스트 → ③ 틀린 이유 찾기 → ④ 데이터 고르기 → ⑤ <b>같은 테스트</b>로 다시 확인을 해 봐요.</span></div>
+  <div class="card">
+    <h3>① ② 1차 학습 후 테스트 <span class="muted" style="font-weight:400;font-size:.88rem">테스트 문장은 학습에 쓰지 않은 4개</span></h3>
+    <table class="tt" id="t1"></table>
+    <div class="score2"><div><small>1차 결과</small><b id="s1"></b></div><div><small>개선 후 결과</small><b id="s2">—</b></div></div>
+  </div>
+  <div class="card">
+    <h3>③ 틀린 사례의 원인 찾기</h3>
+    <p class="muted" style="margin-top:0">틀린 문장과 학습 데이터를 비교해 보세요. 힌트 버튼을 누르면 생각할 거리가 나와요.</p>
+    <div class="row"><button class="btn sm ghost" id="hint1">힌트 ①</button><button class="btn sm ghost" id="hint2">힌트 ②</button></div>
+    <div class="callout" id="hintBox" style="display:none;font-size:.92rem"></div>
+    <div class="memo"><label>틀린 사례 하나와 그 원인 <small>(활동지 3-3처럼, 내 학습 데이터와 연결해서)</small></label><textarea data-memo="why" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>④ 어떤 데이터를 더할까? <span class="muted" style="font-weight:400;font-size:.88rem">원인을 고칠 데이터를 최대 3개 골라요</span></h3>
+    <div class="sim">
+      <div class="cls" style="--k:#1f9d74"><h4>긍정에 추가</h4><div class="cand" id="c0"></div></div>
+      <div class="cls" style="--k:#d64535"><h4>부정에 추가</h4><div class="cand" id="c1"></div></div>
+    </div>
+    <div class="row" style="margin-top:10px"><button class="btn" id="retrain">⑤ 다시 학습하고 같은 테스트로 확인</button><button class="btn ghost sm" id="resetSim">처음으로</button></div>
+    <table class="tt" id="t2" style="margin-top:10px"></table>
+    <div class="callout" id="cmpMsg" style="display:none;font-size:.92rem"></div>
+    <div class="memo"><label>무엇을 왜 더했고, 같은 테스트에서 어떻게 달라졌나 <small>(활동지 4처럼, 나아지지 않았다면 그 이유도)</small></label><textarea data-memo="improve" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 Scratch -->
+<section class="page" data-name="Scratch 연결" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>Scratch 연결</h2><p>모델의 예측 결과로 실제로 움직이는 프로그램 · 활동지 5번</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>「만들기」 → Scratch 3을 열면 <b>내 모델 전용 블록</b>이 생겨요. 입력을 모델에 넣어 <b>레이블</b>(예: 긍정)을 받아 오는 블록으로 <b>만약 ~라면</b>을 만들면, 결과에 따라 다르게 움직이는 프로그램이 돼요.</span></div>
+  <div class="grid2">
+    <div class="card">
+      <h3>예시 프로그램: 리뷰를 입력하면 별점 보여 주기</h3>
+      <div class="blocks">
+        <span class="blk ev">깃발을 클릭했을 때</span>
+        <span class="blk lk">「리뷰를 입력하세요」 묻고 기다리기</span>
+        <span class="blk ctl">만약 <i>대답</i> 을 인식한 레이블 = <i>긍정</i> 이라면</span>
+        <span class="blk lk in">「⭐⭐⭐⭐⭐ 좋은 리뷰네요!」 말하기</span>
+        <span class="blk ctl">아니면</span>
+        <span class="blk lk in">「⚠️ 불만 리뷰예요」 말하기</span>
+        <span class="blk ml">신뢰도 보기: <i>대답</i> 을 인식한 신뢰도</span>
+      </div>
+      <p class="note">파란 블록이 ML4Kids가 만들어 주는 내 모델 블록이에요. 화면의 블록 이름은 조금 다를 수 있어요.</p>
+    </div>
+    <div class="card">
+      <h3>✅ 프로그램 점검</h3>
+      <ul style="list-style:none;padding:0;margin:0;line-height:2">
+        <li>☐ 모델 블록의 결과(레이블)로 <b>분기</b>한다 (모델 없이 정해진 대로만 움직이면 안 돼요)</li>
+        <li>☐ <b>모든 클래스</b>에 대해 다른 동작이 있다</li>
+        <li>☐ 테스트 문장을 넣어 실제로 끝까지 실행된다</li>
+        <li>☐ 실행 화면을 캡처하거나 링크를 저장했다</li>
+        <li>☐ (선택) 신뢰도가 낮으면 「잘 모르겠어요」라고 말하게 했다</li>
+      </ul>
+      <p class="note">채점 기준 요소 ①: 「실행 가능한 산출물」이 없거나 실행되지 않으면 40점을 받을 수 없어요.</p>
+    </div>
+  </div>
+  <div class="memo card"><label>내 수행평가 주제라면 Scratch에서 어떤 동작을 만들까? <small>(클래스마다)</small></label><textarea data-memo="myScratch" rows="2" placeholder="예: 조용 → 집중 아이콘, 시끄러움 → 휴식 알림 소리"></textarea><div class="saved"></div></div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 성찰 -->
+<section class="page" data-name="성찰 써 보기" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>성찰 써 보기</h2><p>요소 ② 60점 연습 · 활동지 6번과 현장 서술</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>60점 글은 <b>성능 수치 → 틀린 원인 → 개선 방향과 결과 → 한계 → 사회적 영향</b>이 <b>내 숫자</b>와 함께 5문장 이상 들어간 글이에요. 아래 틀에 오늘 연습 결과를 넣어 한 문장씩 써 봐요.</span></div>
+  <div class="card">
+    <h3>오늘 연습의 내 숫자</h3>
+    <div class="score2" id="myNums"></div>
+  </div>
+  <div class="card">
+    <div class="memo">
+      <label>① 성능 <small>예: 테스트 4개 중 2개를 맞혀 1차 정확도는 50%였다.</small></label><textarea data-memo="r1" rows="2"></textarea>
+      <label>② 틀린 원인 <small>예: 「~예요」로 끝나는 문장이 부정 데이터에만 있어서 칭찬 리뷰도 부정으로 판단했다.</small></label><textarea data-memo="r2" rows="2"></textarea>
+      <label>③ 개선과 결과 <small>예: 긍정에 「가성비 최고예요」를 더하자 같은 테스트 4개 중 4개를 맞혔다.</small></label><textarea data-memo="r3" rows="2"></textarea>
+      <label>④ 한계 <small>예: 학습 데이터가 16개뿐이라 처음 보는 표현에는 여전히 약하다.</small></label><textarea data-memo="r4" rows="2"></textarea>
+      <label>⑤ 사회적 영향 <small>예: 실제 쇼핑몰에서 쓰면 사투리나 줄임말을 쓰는 사람의 리뷰가 잘못 분류되어 불공정할 수 있다.</small></label><textarea data-memo="r5" rows="2"></textarea>
+      <div class="saved"></div>
+    </div>
+  </div>
+  <div class="callout">📝 수행평가 마지막 시간 <b>현장 서술</b>은 인터넷·생성형 AI를 끄고, 내 프로젝트 화면과 활동지만 보고 써요. 문항은 그날 받아요. 오늘처럼 <b>내 숫자와 내 데이터</b>를 근거로 쓰는 연습이 그대로 도움이 돼요.</div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리 · 질문폼" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>핵심 문장 · 수행평가 준비물 · 마무리 퀴즈 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">인공지능 프로젝트는 <b>문제 정의 → 데이터 수집 → 데이터 전처리 → 유형·알고리즘 선정 → 모델 학습 → 성능 평가 및 수정</b> 순서로 수행한다.</div>
+    <div style="--k:#e0702b">테스트 사례는 학습에 쓰지 않고, 틀린 사례의 원인을 <b>학습 데이터</b>에서 찾아 고친 뒤 <b>같은 테스트</b>로 개선 전·후를 비교한다.</div>
+    <div style="--k:#9b4fc4">성능 평가와 성찰은 「충분히」, 「괜찮았다」가 아니라 <b>내 프로젝트의 이름과 숫자</b>를 근거로 쓴다.</div>
+  </div>
+  <div class="card">
+    <h3>🎒 다음 시간(수행평가) 준비물 확인</h3>
+    <div id="ready"></div>
+  </div>
+  <div class="card" style="--acc:#0f2742"><h3>마무리 퀴즈</h3><div class="quiz" data-quiz="6"></div></div>
+  <div class="card"><h3>개념 퀴즈 결과</h3><table id="result"></table><button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button></div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>펭귄 프로젝트의 <b>수행 과정</b>을 정리하고, k-최근접 이웃에서 <b>표준화</b>가 필요한 까닭 쓰기</li>
+      <li>오늘 연습의 <b>테스트 결과(숫자)</b>, 틀린 사례와 원인, 무엇을 고쳤고 <b>같은 테스트</b>에서 어떻게 달라졌는지 쓰기</li>
+      <li>수행평가에서 <b>조심할 점 두 가지</b>와 내 프로젝트에서 어떻게 지킬지 쓰기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
