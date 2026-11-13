@@ -25,7 +25,7 @@
      "title": "Ⅰ단원 도입",
      "pages": "12~15",
      "form": null,
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "02",
@@ -33,7 +33,7 @@
      "title": "인공지능의 개념과 특성",
      "pages": "16~19",
      "form": "ai-01-1-1-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "03-1",
@@ -41,7 +41,7 @@
      "title": "인공지능의 원리",
      "pages": "20~23",
      "form": "ai-02-1-1-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "03-2",
@@ -49,7 +49,7 @@
      "title": "인공지능의 문제 해결",
      "pages": "24~25",
      "form": "ai-02-1-1-2-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "04",
@@ -57,7 +57,7 @@
      "title": "AI 역량 키우기",
      "pages": "26~27",
      "form": "ai-03-1-1-3",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "05",
@@ -65,7 +65,7 @@
      "title": "맹목적 탐색",
      "pages": "28~35",
      "form": "ai-04-1-2-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "06",
@@ -73,7 +73,7 @@
      "title": "정보 이용 탐색",
      "pages": "36~41",
      "form": "ai-04-1-2-1-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "07",
@@ -81,7 +81,7 @@
      "title": "지식의 표현과 규칙 기반 사고",
      "pages": "42~47",
      "form": "07-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "08",
@@ -89,7 +89,7 @@
      "title": "「탐색과 추론」 정리 · 협력적 창의·융합 활동",
      "pages": "48~51",
      "form": "08-1",
-     "status": "draft"
+     "status": "ready"
     }
    ]
   },
