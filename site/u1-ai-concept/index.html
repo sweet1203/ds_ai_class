@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>인공지능의 개념과 특성</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 튜링 테스트 체험 */
+  .tt-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:760px){.tt-flow{grid-template-columns:1fr}}
+  .tt-flow>div{background:#f6f0fb;border-radius:12px;padding:10px 12px;font-size:.92rem}
+  .tt-flow b{color:#9b4fc4;margin-right:4px}
+  .tt-cnt{font-size:.82rem;color:var(--muted);margin-bottom:6px}
+  .tt-q{background:var(--navy);color:#fff;border-radius:14px 14px 14px 4px;padding:10px 14px;display:inline-block;max-width:100%;margin-bottom:10px;font-weight:700}
+  .tt-rooms{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:560px){.tt-rooms{grid-template-columns:1fr}}
+  .tt-room{background:#fbfaf7;border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s,background .2s}
+  .tt-room span{font-size:.8rem;font-weight:700;color:var(--muted)}
+  .tt-room p{margin:0;flex:1}
+  .tt-room.comp{border-color:#9b4fc4;background:#f6f0fb}
+  .tt-room.comp span::after{content:" · 컴퓨터 🖥️";color:#9b4fc4}
+  .tt-room.human span::after{content:" · 사람 🧑";color:#e0702b}
+  .tt-fb{margin-top:10px;min-height:1.4em}
+  .tt-fb .ok{color:var(--mint);font-weight:900}.tt-fb .ng{color:var(--red);font-weight:900}
+  .tt-end{background:#f6f0fb;border-radius:14px;padding:14px 16px}
+  .tt-end>b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:#9b4fc4}
+  /* 일그러진 글자 */
+  .cap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .cap-img{width:220px;max-width:100%;border-radius:10px;overflow:hidden;border:1px solid var(--line);flex:0 0 auto}
+  .cap-img svg{display:block;width:100%;height:auto}
+  .cap-in{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .cap-in input{width:130px;font:inherit;font-size:1.1rem;letter-spacing:.15em;text-transform:uppercase;padding:7px 10px;border:1px solid #c5ccd5;border-radius:10px}
+  .cap-msg{flex-basis:100%;min-height:1.4em;font-size:.93rem}
+  .cap-msg.ok{color:#17694f}.cap-msg.ng{color:var(--red)}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  #featCards{grid-template-columns:repeat(4,1fr)}
+  #featCards .tcard{height:230px}
+  @media (max-width:860px){#featCards{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){#featCards{grid-template-columns:1fr}#featCards .tcard{height:180px}}
+  .tt-rooms+.tt-q{margin-top:14px}
+  .tt-act{margin-top:12px}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 1. 인공지능의 개념과 원리</span>
+      <h1>인공지능은<br>지능적 판단을 할 수 있을까?</h1>
+      <div class="story"><b>시간 여행 자동차가 현실에?</b><br>1987년 영화 「백 투 더 퓨쳐」에는 시간 여행을 하는 자동차가 나와요. 미국의 한 전기 자동차 회사는 이 자동차를 모티브로 <b>자율주행</b>이 가능한 자동차를 만들었어요. 신호등과 차선을 인식해 출발과 정지, 차선 변경을 제어하지요. 운전자의 개입 없이 목적지까지 가려면 라이다 센서와 8대의 카메라로 주변을 인식하는 인공지능 알고리즘이 필요해요.</div>
+      <p>자율주행 기술은 인공지능으로 구현할 수 있는 가장 대표적인 기술로 <b>인식, 추론, 탐색, 학습</b>을 활용해요. 그런데 길을 잘 찾아간다고 해서 자동차가 <b>생각하고 판단한다</b>고 할 수 있을까요? 오늘은 인공지능이 무엇인지, 어떤 특성이 있는지 알아보고, 기계가 지능적 판단을 하는지 가리는 방법을 직접 체험해요.</p>
+      <ol>
+        <li>인공지능이란 무엇일까?</li><li>인공지능의 특성</li><li>튜링 테스트</li>
+        <li>역 튜링 테스트</li><li>스스로 해결하기 · 개념 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📷</i><div><b>인식</b><small>신호등과 차선 인식</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧭</i><div><b>추론 · 탐색</b><small>출발·정지·차선 변경 제어</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>📈</i><div><b>학습</b><small>인공지능 알고리즘</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🤔</i><div><b>그렇다면 생각하는 걸까?</b><small>오늘의 질문</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>인공지능의 <b>개념</b>을 사람의 지능과 비교해 정리하고, 교과서의 <b>네 가지 특성</b>을 사례로 익힙니다. 그리고 <b>튜링 테스트</b>와 <b>역 튜링 테스트</b>를 직접 해 보며, 인공지능이 <b>지능적 판단</b>을 한다는 것이 무슨 뜻인지 내 말로 정리합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기 (16쪽)</span>
+        <p style="margin:0 0 6px;font-size:.9rem">① 앞으로 50년 후에는 어떤 자동차가 나올까? ② 영화 속 자동차의 인공지능 원리는? ③ 이 단원에서 배우고 싶은 것은? — 짝과 이야기해 보고, ②만 적어 봐요.</p>
+        <div class="memo"><label>영화 속 자동차의 인공지능 원리는 무엇일까요?</label><textarea data-memo="carAI" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>인공지능의 개념과 원리</b> · 인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?</li>
+          <li><b>오늘의 질문</b> · 인공지능은 지능적 판단을 할 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>인공지능의 개념과 특성을 설명할 수 있다.</li>
+          <li>인공지능의 지능적 판단을 설명할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 인공지능 개념 · 인공지능 특성 · 지능적 판단</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 인공지능이란 무엇일까부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 인공지능이란 -->
+<section class="page" data-name="인공지능이란" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>인공지능이란 무엇일까?</h2><p>교과서 17쪽 · 인공지능의 개념, 인간 지능과 인공지능</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능은 <b>사람의 지능이 하는 일 전부 또는 일부를 기계가 하도록 만든 것</b>이에요. 사물 인터넷, 클라우드, 빅데이터, 모바일 서비스 속에 이미 들어 있고, 최근에는 <b>생성형 인공지능</b>까지 활용되고 있어요.</span></div>
+  <div class="card">
+    <h3>📖 인공지능의 개념</h3>
+    <p>인공지능(AI: Artificial Intelligence)은 인간의 지적 능력을 컴퓨터로 구현하는 과학 기술로, 상황을 인지해 합리적·논리적으로 판단하고 행동하며 감성적 요소와 창의적인 기능을 수행하는 능력까지 포함한다.</p>
+    <div class="callout">정리하면 인공지능이란 <b>인간의 지능으로 수행할 수 있는 인식, 사고, 학습 활동 등을 기계가 할 수 있도록 구현하는 기술</b>이자 <b>그 기술을 연구하는 학문 분야</b>이다.</div>
+    <p class="muted" style="font-size:.9rem;margin-bottom:0"><b>지능</b>: 인간의 지적 능력을 일컫는 말로, 인간이 생각하고 이해하여 행동하는 능력이다.</p>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#e0702b"><div class="ic">🧑</div><h4>인간 지능</h4><p>주변 환경을 인식하려고 시각·청각·촉각 등 <b>오감</b>을 활용한 경험과, 책·인터넷 등 다양한 대상에서 <b>지식</b>을 얻는다. <b>직감과 통찰</b>로 문제를 해결하고 결론을 내기도 한다.</p></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🤖</div><h4>인공지능</h4><p>다양한 형태의 <b>빅데이터를 지식 베이스</b>로 하여 학습한 결과에 따라 판단하고, 그 결과를 <b>다시 데이터로 저장</b>하여 점차 성능을 향상시킨다.</p><small><b>지식 베이스</b>: 특정 분야의 전문가가 지적 활동과 경험으로 쌓은 전문 지식이나 문제 해결에 필요한 사실과 규칙 등이 저장된 데이터베이스</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🧑 vs 🤖 사람의 방식일까, 인공지능의 방식일까? <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅰ-1)</span></h3>
+    <div id="hvGame"></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 특성 -->
+<section class="page" data-name="인공지능의 특성" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>인공지능의 특성</h2><p>교과서 18쪽 · 네 가지 특성과 쓰이는 분야</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능에는 <b>네 가지 특성</b>이 있고, 이 특성 덕분에 인공지능이 여러 분야에 쓰여요. 카드를 눌러 각 특성이 어디에 쓰이는지 확인해 보세요.</span></div>
+  <div id="featCards" class="tcards"></div>
+  <div class="callout" style="margin-top:12px">이처럼 인공지능은 <b>복잡한 데이터나 개념을 단순화(일반화)하는 능력</b>으로 복잡한 문제 해결에 도움을 준다.</div>
+  <div class="card" style="margin-top:18px">
+    <h3>🔎 이 사례에서 두드러진 특성은? <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 예시 기준)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">실제 인공지능은 여러 특성을 함께 가지고 있어요. 여기서는 교과서가 그 사례를 어느 특성의 예로 들었는지 골라 봐요.</p>
+    <div id="featGame"></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 튜링 테스트 -->
+<section class="page" data-name="튜링 테스트" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>인공지능도 지능적 판단을 할 수 있을까?</h2><p>교과서 19쪽 · 지능적 판단, 튜링 테스트</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>인공지능이 문제를 잘 해결한다고 해서 지능적 판단을 한다고 할 수는 없어요.</b> 컴퓨터가 사람처럼 주어진 문제를 <b>이해하여</b> 해결 방법을 찾는다면, 그때 인공지능도 지능적 판단을 한다고 할 수 있어요.</span></div>
+  <div class="card">
+    <h3>🧪 튜링 테스트 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅰ-2)</span></h3>
+    <p>컴퓨터가 인간 지능을 흉내 낼 수 있을까? <b>앨런 튜링</b>은 질문자가 컴퓨터를 인간인지 컴퓨터인지 구분하지 못하면, 그 컴퓨터가 튜링 테스트를 통과한 것으로 보고 인공지능이 구현된 것으로 봐야 한다고 제안했다.</p>
+    <div class="flow2 tt-flow">
+      <div><b>①</b> 질문자가 각각 다른 방에 있는 <b>인간</b>, <b>컴퓨터</b>와 메시지를 주고받는다.</div>
+      <div><b>②</b> 주고받은 메시지만 보고 어느 쪽이 컴퓨터인지 구별해 본다.</div>
+      <div><b>③</b> 질문자가 인간과 컴퓨터를 <b>구별하지 못하면</b> 컴퓨터는 튜링 테스트를 <b>통과</b>한 것이다.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🎮 내가 질문자! 어느 쪽이 컴퓨터일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">A방과 B방에는 각각 사람과 컴퓨터가 있고, 세 질문 동안 <b>같은 상대</b>가 답해요. 세 답장을 모두 본 뒤 어느 방이 컴퓨터인지 골라 보세요. (체험용으로 만든 대본이에요.)</p>
+    <div id="ttGame"></div>
+  </div>
+  <div class="card">
+    <h3>🤔 통과하면 생각하는 걸까?</h3>
+    <p>컴퓨터가 튜링 테스트를 통과하였다고 해서 <b>인간처럼 생각할 수 있다고 판단하는 것은 어려운 문제</b>이다. 튜링 테스트는 인공지능의 지능적 판단을 고찰하는 <b>하나의 방법</b>으로 쓰일 수 있지만, 완전한 지능적 판단을 하려면 <b>다양한 지능적 능력과 응용 분야에서의 성능을 종합적으로 고려</b>해야 한다.</p>
+    <div class="memo"><label>방금 체험에서 컴퓨터를 잘 가려냈나요? 가려내지 못했다면, 그 컴퓨터가 「생각한다」고 할 수 있을지 내 생각을 써 보세요.</label><textarea data-memo="ttThink" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 역 튜링 테스트 -->
+<section class="page" data-name="역 튜링 테스트" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>컴퓨터는 인간을 판별할 수 있을까?</h2><p>교과서 19쪽 · 역 튜링 테스트(그림 Ⅰ-3)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>튜링 테스트가 <b>사람(질문자)</b>이 상대가 인간인지 컴퓨터인지 판단하는 테스트라면, <b>역 튜링 테스트</b>는 <b>컴퓨터</b>가 상대가 인간인지 컴퓨터인지 판별하는 테스트예요. 판정하는 쪽이 뒤바뀌어요.</span></div>
+  <div class="card">
+    <h3>🔤 직접 해 보기: 이 글자를 읽을 수 있나요?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">인터넷 사이트에 가입하거나 정보를 열람할 때 본 적 있는 화면이에요. (연습용이라 실제 판정은 하지 않아요.)</p>
+    <div class="cap">
+      <div id="capImg" class="cap-img" aria-label="일그러진 글자 그림"></div>
+      <div class="cap-in"><input id="capIn" maxlength="6" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" lang="en" placeholder="영문·숫자 5자"><button class="btn sm" id="capOk">확인</button><button class="btn sm ghost" id="capNew">새 글자</button></div>
+      <div id="capMsg" class="cap-msg"></div>
+    </div>
+    <div class="callout" style="margin-top:12px">일그러뜨린 문자를 찾거나 맞는 사진·그림을 클릭하게 하는 요청은, <b>인간은 쉽게 인식할 수 있지만 컴퓨터는 변형된 이미지를 인식하지 못한다는 특성</b>을 이용한 것이다.</div>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#9b4fc4"><div class="ic">🧑‍⚖️</div><h4>튜링 테스트</h4><p><b>판정하는 쪽: 사람(질문자)</b><br>질문자가 인간과 컴퓨터를 구별하지 못하면 컴퓨터가 통과한다.</p></div>
+    <div class="kc" style="--k:#e0702b"><div class="ic">🖥️</div><h4>역 튜링 테스트</h4><p><b>판정하는 쪽: 컴퓨터</b><br>인간이 테스트를 통과하지 못한다면, 컴퓨터가 인간처럼 행동할 수 있는 수준의 지능을 가지고 있다고 평가한다.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>⚖️ 튜링 테스트일까, 역 튜링 테스트일까?</h3>
+    <div id="revGame"></div>
+  </div>
+  <div class="card">
+    <h3>🧩 그래도 남는 문제</h3>
+    <p style="margin-bottom:0">역 튜링 테스트도 <b>지능의 모든 측면을 평가하지는 않는다.</b> 그러므로 인간이 어떻게 생각하고 판단하고 행동하는가를 정의하는 것은 복잡하고 어렵다.</p>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 스스로 해결하기 · 정리 -->
+<section class="page" data-name="스스로 해결하기" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>스스로 해결하기 · 주요 개념 정리</h2><p>교과서 19쪽 · 탐구 활동, 성취도 평가</p></div></div>
+  <div class="card">
+    <h3>✍️ 스스로 해결하기 · 오늘의 질문에 답하기</h3>
+    <p class="muted" style="margin-top:0">내가 생각하는 인공지능의 <b>지능적 판단</b>이 무엇인지 적어 보자. 이어서 오늘의 질문 「인공지능은 지능적 판단을 할 수 있을까?」에 대한 내 생각도 한 문장 덧붙여 보세요. 오늘 배운 낱말(인식, 학습, 이해, 튜링 테스트 등)을 하나 이상 넣어요.</p>
+    <div class="memo"><label>인공지능의 지능적 판단이란 …</label><textarea data-memo="myJudge" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>인공지능은 인간의 지능으로 수행할 수 있는 <button class="blank" data-a="인식, 사고, 학습">?</button> 활동 등을 기계가 할 수 있도록 구현하는 것이다.</li>
+      <li>인공지능의 네 가지 특성: 스스로 학습하고 개선, <button class="blank" data-a="빅데이터 처리">?</button>, 복잡한 문제 해결에 유용, <button class="blank" data-a="자동화에 최적화">?</button></li>
+      <li>질문자가 인간과 컴퓨터를 구별하지 못하면 컴퓨터는 <button class="blank" data-a="튜링 테스트">?</button>를 통과한 것이다.</li>
+      <li>인공지능이 지능적 판단을 하려면 인간처럼 문제를 <button class="blank" data-a="이해하여">?</button> 해결 방법을 찾아야 하는데, 이는 다양한 지능적 능력과 응용 분야에서의 성능을 <button class="blank" data-a="종합적으로 고려">?</button>해야 한다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 인공지능의 개념과 특성을 이해하였는가? 아래에서 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">인공지능은 인간의 지능으로 하는 <b>인식, 사고, 학습</b> 활동 등을 기계가 할 수 있도록 구현하는 기술이자 학문 분야이고, <b>빅데이터를 지식 베이스</b>로 학습하며 성능을 높인다.</div>
+    <div style="--k:#1f9d74">인공지능은 <b>스스로 학습하고 개선</b>하며, <b>빅데이터를 처리</b>하고, <b>복잡한 문제 해결</b>에 유용하며, <b>자동화에 최적화</b>되어 있다.</div>
+    <div style="--k:#9b4fc4"><b>튜링 테스트</b>(사람이 판정)와 <b>역 튜링 테스트</b>(컴퓨터가 판정)는 지능을 가늠하는 한 방법일 뿐, 지능의 모든 측면을 평가하지는 못한다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>인공지능의 특성 하나를 골라 <b>사람의 지능과 비슷한 점·다른 점</b>을 내 경험과 연결하기</li>
+      <li>오늘 새롭게 이해한 개념 하나를 <b>내 말로</b> 설명하기</li>
+      <li>오늘 내용이 <b>생활·진로·사회 문제</b> 중 어디와 연결되는지 예를 들어 쓰기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/ai-01-1-1-1.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u1-ai-concept', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 16~19쪽) — 보기는 짧은 것부터, 오답도 교과서 표현에서 */
+const QUIZ={
+ 1:[{q:'교과서에서 인공지능은 인간의 지능으로 수행할 수 있는 어떤 활동 등을 기계가 할 수 있도록 구현하는 것이라고 했을까?',o:['직감, 통찰','인식, 사고, 학습','오감을 활용한 경험'],a:1,w:'인공지능은 인식·사고·학습 같은 활동을 기계가 하도록 구현하는 기술이자, 그 기술을 연구하는 학문 분야예요. 직감·통찰과 오감은 인간 지능의 방식이에요.'},
+    {q:'인공지능이 점차 성능을 향상시키는 방식은?',o:['직감과 통찰을 활용해 결론을 도출한다','책, 인터넷 등에서 지식을 습득한다','학습한 결과에 따라 판단하고, 그 결과를 다시 데이터로 저장한다'],a:2,w:'빅데이터를 지식 베이스로 학습해 판단하고, 판단 결과를 다시 데이터로 저장하면서 성능이 좋아져요. 나머지 둘은 교과서가 설명한 인간 지능의 방식이에요.'},
+    {q:'「지식 베이스」의 뜻은?',o:['인간의 지적 능력을 일컫는 말','인간이 생각하고 이해하여 행동하는 능력','문제 해결에 필요한 사실과 규칙 등이 저장된 데이터베이스'],a:2,w:'지식 베이스는 전문 지식이나 문제 해결에 필요한 사실과 규칙을 저장한 데이터베이스예요. 앞의 둘은 「지능」의 뜻이에요.'}],
+ 2:[{q:'추천 시스템이 사용자에게 더 맞춤화된 추천 정보를 주는 것은 어떤 특성의 예일까?',o:['빅데이터 처리','자동화에 최적화','스스로 학습하고 개선'],a:2,w:'교과서는 추천 시스템과 개별화 학습을 「스스로 학습하고 개선하는」 특성의 예로 들어요.'},
+    {q:'반복적인 작업을 빠르고 정확하게 수행해 인간의 개입을 최소화하는 특성은?',o:['자동화에 최적화','스스로 학습하고 개선','복잡한 문제 해결에 유용'],a:0,w:'자동화는 인간의 개입을 최소화하는 기술이에요. 법원의 법률 문제 해석, 산업 현장의 로봇이 교과서 예시예요.'},
+    {q:'예측 모델을 생성하여 방대한 양의 데이터를 처리하고 의사 결정을 도와주는 특성은?',o:['자동화에 최적화','빅데이터 처리','복잡한 문제 해결에 유용'],a:1,w:'교과서는 금융 분야의 주식 가격 예측과 투자 전략 개발을 예로 들어요.'}],
+ 3:[{q:'튜링 테스트에서 컴퓨터가 통과한 것으로 보는 경우는?',o:['컴퓨터가 질문자에게 메시지를 보낼 때','질문자가 인간과 컴퓨터를 구별하지 못할 때','컴퓨터가 상대가 인간인지 컴퓨터인지 판별할 때'],a:1,w:'질문자가 메시지만 보고 어느 쪽이 컴퓨터인지 구별하지 못하면 통과예요. 셋째 보기는 역 튜링 테스트 설명이에요.'},
+    {q:'컴퓨터가 튜링 테스트를 통과한 경우에 대한 교과서의 설명은?',o:['역 튜링 테스트도 통과한 것이다','인간처럼 생각할 수 있다고 판단하는 것은 어려운 문제이다','다양한 지능적 능력을 모두 갖추었다고 판단할 수 있다'],a:1,w:'튜링 테스트는 지능적 판단을 살펴보는 하나의 방법일 뿐이에요. 통과했다고 해서 인간처럼 생각한다고 판단하기는 어려워요.'},
+    {q:'인공지능이 완전한 지능적 판단을 하기 위해 고려해야 할 것은?',o:['대화의 자연스러움','질문자의 판정 결과','다양한 지능적 능력과 응용 분야에서의 성능을 종합적으로 고려'],a:2,w:'한 가지 능력이나 한 번의 판정만으로는 부족해요. 여러 지능적 능력과 여러 분야에서의 성능을 함께 봐야 해요.'}],
+ 4:[{q:'역 튜링 테스트에서 상대가 인간인지 컴퓨터인지 판별하는 쪽은?',o:['컴퓨터','질문자','앨런 튜링'],a:0,w:'튜링 테스트는 사람(질문자)이, 역 튜링 테스트는 컴퓨터가 판정해요.'},
+    {q:'인터넷 사이트에 가입할 때 일그러뜨린 문자를 찾게 하는 요청이 이용하는 특성은?',o:['인간이 변형된 이미지를 인식하지 못하는 특성','컴퓨터가 메시지를 빠르게 주고받는 특성','인간은 쉽게 인식하지만 컴퓨터는 변형된 이미지를 인식하지 못하는 특성'],a:2,w:'사람에게는 쉽고 컴퓨터에게는 어려운 일을 시켜 상대가 인간인지 가려내는 거예요.'},
+    {q:'역 튜링 테스트에 대한 교과서의 설명은?',o:['질문자가 각각 다른 방의 인간, 컴퓨터와 메시지를 주고받는다','이 테스트도 지능의 일부 측면만 평가한다','질문자가 구별하지 못하면 컴퓨터가 통과한 것이다'],a:1,w:'교과서는 「이 테스트도 지능의 모든 측면을 평가하지 않는다」고 해요. 나머지 둘은 튜링 테스트 설명이에요.'}],
+ 5:[{q:'「인공지능이 문제를 잘 해결한다고 해서 ______.」 빈칸에 들어갈 말은?',o:['지능적 판단을 한다고 할 수 없다','지능적 판단을 한다고 할 수 있다','튜링 테스트를 통과한 것이다'],a:0,w:'문제를 잘 푸는 것과, 사람처럼 문제를 이해해 해결 방법을 찾는 것은 달라요.'},
+    {q:'교과서에서 설명한 인공지능의 네 가지 특성에 들어가지 않는 것은?',o:['빅데이터 처리','자동화에 최적화','직감과 통찰을 활용한 결론 도출'],a:2,w:'네 가지 특성은 스스로 학습·개선, 빅데이터 처리, 복잡한 문제 해결, 자동화 최적화예요. 직감과 통찰은 인간 지능의 방식이에요.'}]
+};
+
+const QK='ds-u1-ai-concept-quiz'+WHO.sfx;
+const MK='ds-u1-ai-concept-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${it.o.map((o,j)=>`<button data-j="${j}">${o}</button>`).join('')}</div><div class="why"></div>`;
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      bs[it.a].classList.add('right'); if(j!==it.a){bs[j].classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+
+/* 01 사람의 방식 vs 인공지능의 방식 (그림 Ⅰ-1) */
+sorter('hvGame',{
+  cats:[{n:'🧑 인간 지능',k:'#e0702b'},{n:'🤖 인공지능',k:'#2f6fd0'}],
+  items:[
+    {t:'시각, 청각, 촉각 등 오감을 활용한 경험으로 주변 환경을 인식한다.',short:'오감으로 경험',c:0,ic:'👀',w:'교과서 17쪽: 인간은 오감을 활용한 경험으로 주변 환경을 인식해요.'},
+    {t:'책, 인터넷 등 다양한 대상으로부터 지식을 습득한다.',short:'책·인터넷에서 지식 습득',c:0,ic:'📚',w:'교과서 17쪽: 인간이 지식을 얻는 방법이에요.'},
+    {t:'직감과 통찰을 활용하여 문제를 해결하고 결론을 도출한다.',short:'직감과 통찰',c:0,ic:'💡',w:'교과서 17쪽: 직감과 통찰은 인간 지능의 방식이에요.'},
+    {t:'다양한 형태의 빅데이터를 지식 베이스로 하여 학습한다.',short:'빅데이터를 지식 베이스로',c:1,ic:'🗄️',w:'교과서 17쪽: 인공지능은 빅데이터를 지식 베이스로 학습해요.'},
+    {t:'학습한 결과에 따라 판단한다.',short:'학습 결과로 판단',c:1,ic:'⚙️',w:'교과서 17쪽: 인공지능은 학습한 결과에 따라 판단해요.'},
+    {t:'판단한 결과를 다시 데이터로 저장하여 점차 성능을 향상시킨다.',short:'결과를 다시 데이터로',c:1,ic:'🔁',w:'교과서 17쪽: 결과를 다시 데이터로 저장하며 성능이 좋아져요.'},
+  ],
+  end:'사람은 <b>오감·경험·직감과 통찰</b>로, 인공지능은 <b>빅데이터 → 학습 → 판단 → 다시 데이터로 저장</b>하는 고리로 문제를 해결해요.'
+});
+
+/* 02 네 가지 특성 (교과서 18쪽) — 앞면: 뜻, 뒷면: 교과서 예시 */
+flipCards('featCards',[
+  {ic:'🔁',f:'스스로 학습하고 개선',s:'데이터에서 패턴을 인식하거나 시행착오로 행동을 최적화하여 예측·판단하는 능력을 키운다',b:'방대한 지식을 수집하여 스스로 학습하고 개선한다.',x:'예: 인터넷 쇼핑·동영상·음악 <b>추천 시스템</b>, 학생 수준에 맞는 <b>개별화 학습</b>'},
+  {ic:'🗄️',f:'빅데이터를 처리',s:'예측 모델을 생성하여 방대한 양의 데이터를 처리하고 의사 결정을 돕는다',b:'다양한 분야에서 가치를 창출한다.',x:'예: 금융 분야의 <b>주식 가격 예측</b>, 투자 전략 개발'},
+  {ic:'🧩',f:'복잡한 문제 해결에 유용',s:'복잡한 수식 계산, 이미지 속 대상 인식, 자연어 문맥 이해 등 어려운 문제를 수행한다',b:'복잡하고 어려운 문제를 수행할 수 있다.',x:'예: 의료 분야에서 <b>희귀 질병</b> 찾기, 예상할 수 없는 상황이 생기는 <b>교통 운송</b>'},
+  {ic:'🏭',f:'자동화에 최적화',s:'반복적인 작업을 빠르고 정확하게 수행하며, 인간의 개입을 최소화한다',b:'일상생활이나 비즈니스의 모든 영역에 활용된다.',x:'예: 법원에서 자동화를 사용한 <b>법률 문제 해석</b>, 산업 현장의 <b>로봇·자동화 시스템</b>'},
+]);
+sorter('featGame',{
+  cats:[{n:'🔁 스스로 학습·개선',k:'#1f9d74'},{n:'🗄️ 빅데이터 처리',k:'#2f6fd0'},{n:'🧩 복잡한 문제 해결',k:'#9b4fc4'},{n:'🏭 자동화 최적화',k:'#e0702b'}],
+  items:[
+    {t:'동영상 앱이 사용자에게 더 맞춤화된 추천 정보를 주려고 스스로 학습하고 개선한다.',short:'맞춤 추천',c:0,ic:'📺',w:'교과서 18쪽: 추천 시스템은 「스스로 학습하고 개선하는」 예예요.'},
+    {t:'학생 수준에 맞는 개별화 학습에 적용된다.',short:'개별화 학습',c:0,ic:'🧑‍🎓',w:'교과서 18쪽: 개별화 학습이 중요한 교육 분야에도 「스스로 학습·개선」이 적용돼요.'},
+    {t:'금융 분야에서 예측 모델로 방대한 데이터를 처리해 주식 가격을 예측한다.',short:'주식 가격 예측',c:1,ic:'📈',w:'교과서 18쪽: 「빅데이터를 처리하는」 예로 주식 가격 예측과 투자 전략 개발을 들어요.'},
+    {t:'의료 분야에서 희귀 질병을 찾아낼 때 사용된다.',short:'희귀 질병 찾기',c:2,ic:'🩺',w:'교과서 18쪽: 희귀 질병 찾기는 「복잡한 문제 해결에 유용한」 예예요.'},
+    {t:'예상할 수 없는 다양한 상황이 발생하는 교통 운송에 활용된다.',short:'교통 운송',c:2,ic:'🚦',w:'교과서 18쪽: 교통 운송도 「복잡한 문제 해결에 유용한」 예예요.'},
+    {t:'법원에서 자동화를 사용하여 법률 문제를 해석하고 판단하는 데 활용한 경우가 있다.',short:'법률 문제 해석',c:3,ic:'⚖️',w:'교과서 18쪽: 「자동화에 최적화된」 예로 법원의 사례를 들어요.'},
+    {t:'산업 현장의 로봇이나 자동화 시스템에 사용된다.',short:'산업용 로봇',c:3,ic:'🤖',w:'교과서 18쪽: 산업 현장의 로봇·자동화 시스템은 「자동화에 최적화된」 예예요.'},
+  ],
+  end:'한 인공지능에도 여러 특성이 함께 들어 있어요. 서술할 때는 <b>교과서가 든 예시</b>와 특성을 짝지어 말할 수 있으면 돼요.'
+});
+
+/* 03 튜링 테스트 체험: 세 질문 동안 같은 상대, 다 본 뒤 한 번 판정 (방 배치는 학생마다 무작위) */
+(function(){
+  const Q=['4 곱하기 7은 무엇입니까?','어떤 음식을 좋아합니까?','당신은 컴퓨터인가요?'];
+  const COMP=['음… 28? 구구단 오랜만이라 잠깐 헷갈렸어요.','떡볶이요! 시험 끝나고 친구들이랑 먹으면 제일 맛있어요.','아니요. 왜 그렇게 생각하세요?'];
+  const HUM=['28이요.','딱히 없어요. 배고플 때 아무거나 먹어요.','아니요, 사람이에요. 증명할 방법이 있나요?'];
+  const B=$('ttGame'); let comp, step;
+  function start(){
+    comp=Math.random()<.5?'A':'B'; step=0; draw();
+  }
+  function ans(room,i){ return room===comp?COMP[i]:HUM[i]; }
+  function draw(){
+    const shown=Q.slice(0,step+1).map((q,i)=>`<div class="tt-q">🧑‍⚖️ 질문 ${i+1}: ${q}</div>
+      <div class="tt-rooms"><div class="tt-room"><span>A방 답장</span><p>${ans('A',i)}</p></div><div class="tt-room"><span>B방 답장</span><p>${ans('B',i)}</p></div></div>`).join('');
+    const more=step<Q.length-1;
+    B.innerHTML=shown+`<div class="tt-act">${more?`<button class="btn sm" id="ttMore">다음 질문 하기 → (${step+1}/${Q.length})</button>`
+      :`<b>세 답장을 보고 판정해 보세요. 어느 방이 컴퓨터일까요?</b><div class="row" style="margin-top:8px"><button class="btn sm" data-p="A">A방이 컴퓨터</button><button class="btn sm" data-p="B">B방이 컴퓨터</button><button class="btn sm ghost" data-p="?">구별할 수 없다</button></div>`}</div><div class="tt-fb"></div>`;
+    if(more){ $('ttMore').onclick=()=>{step++; draw();}; return; }
+    B.querySelectorAll('button[data-p]').forEach(b=>b.onclick=()=>reveal(b.dataset.p));
+  }
+  function reveal(p){
+    B.querySelectorAll('button[data-p]').forEach(x=>x.disabled=true);
+    B.querySelectorAll('.tt-rooms').forEach(r=>r.querySelectorAll('.tt-room').forEach((el,j)=>el.classList.add('AB'[j]===comp?'comp':'human')));
+    const pick=p==='?'?'「구별할 수 없다」를 골랐어요.':p===comp?`${p}방을 골랐고, 실제로 컴퓨터였어요.`:`${p}방을 골랐지만, 컴퓨터는 <b>${comp}방</b>이었어요.`;
+    B.querySelector('.tt-fb').innerHTML=`<div class="tt-end">${pick}<p>컴퓨터 쪽 답장은 일부러 망설이거나 경험담처럼 말하도록 <b>선생님이 만든 대본</b>이에요. 실제 테스트에서 컴퓨터가 이렇게 답해 질문자가 인간과 컴퓨터를 <b>구별하지 못한다면</b>, 그 컴퓨터는 튜링 테스트를 <b>통과</b>한 것으로 봐요. 그렇다면 통과한 컴퓨터는 정말 <b>생각하는</b> 걸까요? 아래에 내 생각을 적어 보세요.</p><button class="btn ghost sm" id="ttAgain">새로 해 보기 (방 배치가 바뀌어요)</button></div>`;
+    $('ttAgain').onclick=start;
+  }
+  start();
+})();
+
+/* 04 일그러진 글자 체험 (헷갈리는 5·S, 2·Z, 8·B, U·V 는 뺌) */
+(function(){
+  const CH='ACDEFGHJKLMNPRTWXY34679'; let ans='';
+  const rnd=(a,b)=>a+Math.random()*(b-a);
+  function draw(){
+    ans=Array.from({length:5},()=>CH[Math.random()*CH.length|0]).join('');
+    let s=`<svg viewBox="0 0 220 70" role="img" aria-label="일그러진 글자">`;
+    s+=`<rect width="220" height="70" fill="#f4f1ea"/>`;
+    for(let k=0;k<40;k++) s+=`<circle cx="${rnd(0,220).toFixed(1)}" cy="${rnd(0,70).toFixed(1)}" r="${rnd(.6,1.8).toFixed(1)}" fill="#8a94a3" opacity=".5"/>`;
+    [...ans].forEach((c,k)=>{const x=30+k*40+rnd(-3,3), y=46+rnd(-5,5), r=rnd(-24,24), sk=rnd(-14,14);
+      s+=`<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${r.toFixed(1)}) skewX(${sk.toFixed(1)})"><text x="0" y="0" dy=".35em" font-size="${rnd(30,36).toFixed(0)}" font-family="Georgia,serif" font-weight="700" fill="#0f2742" text-anchor="middle">${c}</text></g>`;});
+    let d=`M0 ${rnd(20,50).toFixed(1)}`; for(let x=20;x<=220;x+=20) d+=` L${x} ${rnd(15,55).toFixed(1)}`;
+    s+=`<path d="${d}" stroke="#d64535" stroke-width="2" fill="none" opacity=".7"/></svg>`;
+    $('capImg').innerHTML=s; $('capIn').value=''; $('capMsg').textContent=''; $('capMsg').className='cap-msg';
+  }
+  function check(){
+    const v=$('capIn').value.trim().toUpperCase(); if(!v) return;
+    const m=$('capMsg');
+    if(v===ans){ m.className='cap-msg ok'; m.innerHTML='통과! 사람은 이렇게 일그러진 글자도 쉽게 읽어요. 교과서는 이런 요청이 <b>컴퓨터는 변형된 이미지를 인식하지 못한다는 특성</b>을 이용한다고 설명해요. 컴퓨터가 상대가 사람인지 판별하니 <b>역 튜링 테스트</b>예요.'; }
+    else { m.className='cap-msg ng'; m.innerHTML='다시 해 보세요. 영문 자판인지 확인하고, 잘 안 보이면 「새 글자」를 눌러요.'; }
+  }
+  $('capOk').onclick=check; $('capNew').onclick=draw;
+  $('capIn').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();check();}});
+  draw();
+})();
+
+sorter('revGame',{
+  cats:[{n:'🧑‍⚖️ 튜링 테스트',k:'#9b4fc4'},{n:'🖥️ 역 튜링 테스트',k:'#e0702b'}],
+  items:[
+    {t:'질문자가 각각 다른 방에 있는 인간, 컴퓨터와 메시지를 주고받은 후 어느 쪽이 컴퓨터인지 구별해 본다.',short:'질문자가 메시지로 구별',c:0,ic:'💬',w:'교과서 19쪽: 사람(질문자)이 판정하니 튜링 테스트예요.'},
+    {t:'앨런 튜링이 컴퓨터가 인간 지능을 흉내 낼 수 있는지 판단하는 방법으로 제안했다.',short:'앨런 튜링의 제안',c:0,ic:'📜',w:'교과서 19쪽: 튜링 테스트를 제안한 사람이 앨런 튜링이에요.'},
+    {t:'인터넷 사이트에 가입할 때 일그러뜨린 문자를 찾아 입력하게 한다.',short:'일그러진 문자 입력',c:1,ic:'🔤',w:'교과서 19쪽: 컴퓨터(사이트)가 상대가 사람인지 판별하니 역 튜링 테스트예요.'},
+    {t:'정보를 열람할 때 맞는 사진이나 그림을 클릭하도록 요청한다.',short:'맞는 그림 클릭',c:1,ic:'🖼️',w:'교과서 19쪽: 이것도 컴퓨터가 판정하는 역 튜링 테스트예요.'},
+  ],
+  end:'핵심은 <b>누가 판정하느냐</b>예요. 튜링 테스트는 사람이, 역 튜링 테스트는 컴퓨터가 판정해요.'
+});
+
+/* 05 빈칸 확인 · 스스로 점검 */
+document.querySelectorAll('.blank').forEach(b=>b.onclick=()=>{ b.textContent=b.dataset.a; b.classList.add('on'); });
+chips('selfCheck','selfCheckPick',['인공지능의 개념을 설명할 수 있다','네 가지 특성을 말할 수 있다','튜링 테스트와 역 튜링 테스트를 구별할 수 있다','지능적 판단이 무엇인지 말할 수 있다'],true);
+
+const MEMOLIST=[['carAI','영화 속 자동차의 인공지능 원리'],['ttThink','튜링 테스트 체험 뒤 내 생각'],['myJudge','스스로 해결하기: 지능적 판단 · 오늘의 질문'],['selfCheckPick','스스로 점검: 할 수 있게 된 것']];
+onShow[6]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

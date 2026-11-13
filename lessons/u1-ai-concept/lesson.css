@@ -1,0 +1,37 @@
+  /* 튜링 테스트 체험 */
+  .tt-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:760px){.tt-flow{grid-template-columns:1fr}}
+  .tt-flow>div{background:#f6f0fb;border-radius:12px;padding:10px 12px;font-size:.92rem}
+  .tt-flow b{color:#9b4fc4;margin-right:4px}
+  .tt-cnt{font-size:.82rem;color:var(--muted);margin-bottom:6px}
+  .tt-q{background:var(--navy);color:#fff;border-radius:14px 14px 14px 4px;padding:10px 14px;display:inline-block;max-width:100%;margin-bottom:10px;font-weight:700}
+  .tt-rooms{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:560px){.tt-rooms{grid-template-columns:1fr}}
+  .tt-room{background:#fbfaf7;border:2px solid var(--line);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;transition:border-color .2s,background .2s}
+  .tt-room span{font-size:.8rem;font-weight:700;color:var(--muted)}
+  .tt-room p{margin:0;flex:1}
+  .tt-room.comp{border-color:#9b4fc4;background:#f6f0fb}
+  .tt-room.comp span::after{content:" · 컴퓨터 🖥️";color:#9b4fc4}
+  .tt-room.human span::after{content:" · 사람 🧑";color:#e0702b}
+  .tt-fb{margin-top:10px;min-height:1.4em}
+  .tt-fb .ok{color:var(--mint);font-weight:900}.tt-fb .ng{color:var(--red);font-weight:900}
+  .tt-end{background:#f6f0fb;border-radius:14px;padding:14px 16px}
+  .tt-end>b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:#9b4fc4}
+  /* 일그러진 글자 */
+  .cap{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+  .cap-img{width:220px;max-width:100%;border-radius:10px;overflow:hidden;border:1px solid var(--line);flex:0 0 auto}
+  .cap-img svg{display:block;width:100%;height:auto}
+  .cap-in{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .cap-in input{width:130px;font:inherit;font-size:1.1rem;letter-spacing:.15em;text-transform:uppercase;padding:7px 10px;border:1px solid #c5ccd5;border-radius:10px}
+  .cap-msg{flex-basis:100%;min-height:1.4em;font-size:.93rem}
+  .cap-msg.ok{color:#17694f}.cap-msg.ng{color:var(--red)}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  #featCards{grid-template-columns:repeat(4,1fr)}
+  #featCards .tcard{height:230px}
+  @media (max-width:860px){#featCards{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){#featCards{grid-template-columns:1fr}#featCards .tcard{height:180px}}
+  .tt-rooms+.tt-q{margin-top:14px}
+  .tt-act{margin-top:12px}

@@ -1,0 +1,24 @@
+{
+ "_설명": "질문폼 원본. 차시 폴더(lessons/)의 마무리 화면이 forms/<id>.html 로 연결한다. classes는 학기마다 바꾼다. 질문은 questions에 그대로 적는다.",
+ "course": "인공지능 기초",
+ "endpoint": "https://script.google.com/macros/s/AKfycbyXgCq6W2zzT7fxPiblqG6wA-e3CpCgztuRKrIQkExMn6oQJ9oxd-U--dVB-5H3_fZF/exec",
+ "classes": [
+  "인공지능C",
+  "인공지능F",
+  "인공지능G"
+ ],
+ "forms": [
+  {
+   "id": "ai-01-1-1-1",
+   "unit": "Ⅰ. 인공지능의 이해",
+   "section": "1-1-1",
+   "pages": "16~19쪽",
+   "title": "인공지능의 개념과 특성",
+   "questions": [
+    "오늘 배운 인공지능의 특성 중 하나를 고르고, 그것이 사람의 지능과 어떻게 비슷하거나 다른지 자신의 경험과 연결해 쓰세요.",
+    "'인공지능의 개념과 특성' 수업에서 새롭게 이해한 개념을 하나 고르고, 그 개념을 자신의 말로 설명하세요.",
+    "'인공지능의 개념과 특성' 내용이 실제 생활, 진로, 사회 문제 중 어디와 연결된다고 생각하는지 구체적인 예를 들어 쓰세요."
+   ]
+  }
+ ]
+}
