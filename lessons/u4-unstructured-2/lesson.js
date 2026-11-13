@@ -8,7 +8,7 @@ const ufOK=t=>`<span class="ok">✓ 실행 완료</span> <span class="muted">${t
 const ufPre=t=>`<pre class="uf-out sm">${t}</pre>`;
 const NEED_PREP=ufErr(`NameError: name 'path' is not defined`,'01 화면의 ① 준비 셀을 먼저 실행하세요. 사진 내려받기와 라이브러리 불러오기가 모두 그 셀에 있어요.');
 const CELLS={
-  prep:{t:'① 준비 — 데이터 내려받기 + 컬러 CNN 모델 학습',c:`ZIP_URL = '(선생님이 알려 준 주소)'
+  prep:{t:'① 준비 — 데이터 내려받기 + 컬러 CNN 모델 학습',c:`ZIP_URL = '(선생님 구글 드라이브 공유 주소)'
 # (주소에서 ID를 꺼내 gdown으로 fire.zip을 내려받아요)
 !unzip -q -o fire.zip
 import os, glob, cv2

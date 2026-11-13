@@ -30,7 +30,7 @@ dense (Dense)                 (None, 128)             9,437,312
 dense_1 (Dense)               (None, 1)                     129
  Total params: 9,451,777 (36.06 MB)`;
 const CELLS={
-  dl:{t:'① 데이터 내려받기 (수업용)',c:`ZIP_URL = '(선생님이 알려 준 주소)'
+  dl:{t:'① 데이터 내려받기 (수업용)',c:`ZIP_URL = '(선생님 구글 드라이브 공유 주소)'
 # (주소에서 ID를 꺼내 gdown으로 fire.zip을 내려받아요)
 !unzip -q -o fire.zip
 !ls /content/fire`,run(){ NB.dl=true; return ufPre('fire  non  test1.jpg  test2.jpg  test3.jpg'); }},

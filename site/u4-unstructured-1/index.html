@@ -596,7 +596,7 @@
     <ol class="uf-steps">
       <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
       <li>메뉴 <b>런타임 → 런타임 유형 변경 → T4 GPU → 저장</b>. GPU를 쓰면 학습이 몇 배 빨라요.</li>
-      <li>첫 코드 셀(데이터 내려받기)의 <span class="mono">ZIP_URL = ''</span> 따옴표 안에 선생님이 알려 준 주소를 붙여 넣고 ▶(또는 <b>Shift + Enter</b>)로 실행해요. 기다리는 동안 아래를 읽어요.</li>
+      <li>첫 코드 셀(데이터 내려받기)을 ▶(또는 <b>Shift + Enter</b>)로 실행해요. 기다리는 동안 아래를 읽어요.</li>
     </ol>
     <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-unstructured-1/assets/fire-cnn.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="fire-cnn.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
     <p class="note">GPU를 고르는 창에서 「사용할 수 없음」이 나오면 그대로 CPU로 해도 돼요. 학습 단계에서 몇 분 더 기다리면 돼요.</p>
@@ -638,7 +638,7 @@
       <figure><img src="img/g-non46.jpg" alt="나무 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
       <figure><img src="img/g-non115.jpg" alt="단풍 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
     </div>
-    <p class="note">사진은 모두 가로·세로 400 픽셀이에요. 수업에서는 시간을 아끼려고 사진 324장을 <b>압축 파일(fire.zip) 하나로 묶어</b> 선생님이 구글 드라이브로 공유해요. 노트북 첫 셀의 <span class="mono">ZIP_URL</span>에 선생님이 알려 준 주소를 붙여 넣고 실행하면 코랩으로 내려받아 풀어요. (파일 크기를 줄이려고 PNG 사진을 JPG로 바꾸었어요.)<br><b>사진 출처</b>: 교과서 제공 실습 데이터(수업용)</p>
+    <p class="note">사진은 모두 가로·세로 400 픽셀이에요. 수업에서는 시간을 아끼려고 사진 324장을 <b>압축 파일(fire.zip) 하나로 묶어</b> 선생님이 구글 드라이브로 공유해요. 노트북 첫 셀을 실행하면 코랩으로 내려받아 풀어요. (파일 크기를 줄이려고 PNG 사진을 JPG로 바꾸었어요.)<br><b>사진 출처</b>: 교과서 제공 실습 데이터(수업용)</p>
     <details class="uf-more"><summary>교과서처럼 구글 드라이브로 할 때</summary>
       <ol style="margin:6px 0 0;padding-left:20px;font-size:.92rem">
         <li>구글 드라이브에 「fire」 폴더를 만들고, 그 안에 「non」과 「fire」 폴더를 만들어 사진을 나누어 저장한다.</li>
@@ -1100,7 +1100,7 @@ dense (Dense)                 (None, 128)             9,437,312
 dense_1 (Dense)               (None, 1)                     129
  Total params: 9,451,777 (36.06 MB)`;
 const CELLS={
-  dl:{t:'① 데이터 내려받기 (수업용)',c:`ZIP_URL = '(선생님이 알려 준 주소)'
+  dl:{t:'① 데이터 내려받기 (수업용)',c:`ZIP_URL = '(선생님 구글 드라이브 공유 주소)'
 # (주소에서 ID를 꺼내 gdown으로 fire.zip을 내려받아요)
 !unzip -q -o fire.zip
 !ls /content/fire`,run(){ NB.dl=true; return ufPre('fire  non  test1.jpg  test2.jpg  test3.jpg'); }},
