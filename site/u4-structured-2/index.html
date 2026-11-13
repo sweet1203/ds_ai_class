@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정형 데이터 프로젝트 ② 모델 학습과 성능 개선</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  /* 카드 격자 칸이 안의 긴 코드·표 때문에 늘어나지 않게 */
+  .cards2>*,.cards3>*,.cards4>*,.grid2>*{min-width:0}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 공통 */
+  .le-scroll{overflow-x:auto}
+  .le-tbl{min-width:480px;font-size:.86rem}
+  .le-tbl th,.le-tbl td{border:1px solid var(--line);padding:3px 7px}
+  .le-tbl th{background:#fbfaf7}
+  .le-tbl td.mono2{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;white-space:nowrap}
+  .le-tbl td.num{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;white-space:nowrap;text-align:right}
+  .le-tbl tr.y td{background:#fff4d6;font-weight:700}
+  .le-tbl.le-ex td{font-size:.84rem;vertical-align:top}
+  .le-sg{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:50%;color:#fff;font-weight:900;font-size:.8rem}
+  .le-sg.pos{background:#d64535}.le-sg.neg{background:#2f6fd0}
+  .btn.ghost.on{background:var(--acc);color:#fff}
+  svg .gl{stroke:#eceae4;stroke-width:1}
+  svg .tk{font-size:10px;fill:var(--muted)}
+  svg .axl{font-size:11px;font-weight:700;fill:var(--muted)}
+  pre{max-width:100%;overflow-x:auto}
+  .le-code{background:#0f2742;color:#e8eef6;border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.55;margin:6px 0;white-space:pre}
+  .le-code .c{color:#9fb3c8}
+  .le-out{background:#f1f3f6;color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.74rem;line-height:1.45;margin:4px 0;white-space:pre;border-left:4px solid #8a94a3}
+  .le-msg{margin-top:8px;font-size:.92rem;background:#fbf3e6;border-radius:10px;padding:8px 12px}
+  .le-int{font-size:.92rem;background:#fbf3e6;border-radius:10px;padding:6px 10px}
+  .le-int b{color:#e0702b;margin-right:4px}
+  .le-more summary{cursor:pointer;font-weight:900}
+  .le-more[open] summary{margin-bottom:6px}
+  .le-meter{background:#fbfaf7;border-radius:10px;padding:6px 10px;margin-bottom:6px}
+  .le-meter small{display:block;color:var(--muted);font-size:.78rem}
+  .le-meter b{font-size:1.45rem;font-weight:900;color:var(--acc);font-variant-numeric:tabular-nums}
+  .le-meter span{color:var(--muted);font-size:.85rem;margin-left:4px}
+  .le-meter .bar{height:8px;background:#eceae4;border-radius:99px;overflow:hidden;margin-top:2px}
+  .le-meter .bar i{display:block;height:100%;background:var(--acc);transition:width .2s}
+  .le-meter.all b{color:#5b6776;font-size:1.15rem}
+  .le-meter.all .bar i{background:#8a94a3}
+  .le-kv{display:flex;gap:12px;flex-wrap:wrap;font-size:.88rem;margin:4px 0}
+  /* 01 유형 투표 */
+  .vote.le-v3{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:640px){.vote.le-v3{grid-template-columns:1fr}}
+  /* 01 셀 흉내 */
+  .le-cell{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px;background:#fff}
+  .le-ct{font-weight:900;font-size:.88rem;margin-bottom:2px}
+  .le-cin{display:flex;gap:8px;align-items:flex-start}
+  .le-cin pre{flex:1;min-width:0;margin:0}
+  .le-run{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:0;background:#2f6fd0;color:#fff;font-size:1rem;cursor:pointer}
+  .le-run:hover{background:#1f4f9e}
+  .le-cout{margin:6px 0 0 44px;font-size:.88rem;min-width:0}
+  @media (max-width:560px){.le-cout{margin-left:0}}
+  .le-err{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;background:#fde8e6;color:#8f2418;border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:pre}
+  .le-why{font-size:.86rem;margin-top:4px}
+  /* 03 비교판 */
+  .le-pv{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;align-items:start}
+  @media (max-width:760px){.le-pv{grid-template-columns:1fr}}
+  .le-svgbox svg{background:#fff;border:1px solid var(--line);border-radius:10px;user-select:none;cursor:pointer}
+  .le-svgbox:focus-visible{outline:3px solid var(--amber);outline-offset:2px;border-radius:10px}
+  .le-tolh{display:flex;justify-content:space-between;align-items:center;font-weight:900;font-size:.9rem}
+  .le-tolh output{font-variant-numeric:tabular-nums}
+  .le-tol{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;margin:2px 0 8px}
+  .le-tol input{width:100%;min-height:32px}
+  .le-tol .btn{min-width:40px;min-height:40px;font-size:1.1rem}
+  .le-tbl tr.gap td{background:#fde8e6}
+  @media (max-width:560px){svg .tk{font-size:15px}svg .axl{font-size:15px}}
+  .le-pick{background:#fff8e6;border:2px solid #f6d58a;border-radius:10px;padding:8px 10px;font-size:.9rem;min-height:60px}
+  /* 04 회귀선 탐색기 */
+  .le-rlb{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .le-rl{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:14px;align-items:start}
+  @media (max-width:760px){.le-rl{grid-template-columns:1fr}}
+  .le-rl svg{background:#fff;border:1px solid var(--line);border-radius:10px}
+  .le-rlinfo p{font-size:.92rem}
+  .le-eq{font-size:.92rem;background:#fbfaf7;border-radius:10px;padding:6px 10px;margin-bottom:6px}
+  .le-eq b{color:#d64535}
+  .le-cmb{margin-top:14px;border-top:2px dashed var(--line);padding-top:10px}
+  .le-tg{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.88rem;cursor:pointer;color:var(--ink)}
+  .le-tg.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .le-tg:focus-visible{outline:3px solid var(--amber)}
+  /* 05 별점 */
+  .le-ev{display:grid;gap:10px}
+  .le-ev>div{display:grid;grid-template-columns:minmax(0,10em) minmax(0,1fr) minmax(0,15em);gap:4px 12px;align-items:center;background:#fbfaf7;border-radius:12px;padding:8px 12px}
+  @media (max-width:760px){.le-ev>div{grid-template-columns:1fr}}
+  .le-ev b{font-size:.95rem}
+  .le-ev span{font-size:.88rem}
+  .vote.le-star{grid-template-columns:repeat(3,1fr);gap:6px;margin-top:0}
+  .vote.le-star button{padding:5px 4px;border-width:2px;border-radius:10px;font-size:.92rem;color:#c98a00}
+  .vote.le-star button small{font-size:.74rem}
+  /* 05 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;cursor:default}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 정형 데이터 인공지능 프로젝트 실제 1</span>
+      <h1>내 모델은 기대 수명을<br>얼마나 잘 예측할까?</h1>
+      <div class="story"><b>앞 단계에서 한 일</b><br>WHO 기대 수명 데이터(2,938행 · 22개 속성)에서 결측치를 지워 <b>1,649행</b>(133개 나라)을 남기고, 개발 상태(Status)를 0과 1로 바꿨어요. 그래프로 보니 <b>교육 기간(0.73)·소득(자원 소득에 대한 국가 개발 정도, 0.72)</b>는 기대 수명과 양의 상관관계, <b>성인 사망률(−0.70)</b>은 음의 상관관계가 컸어요.</div>
+      <p>오늘은 남은 4단계, <b>기계학습 유형과 알고리즘 선정 → 모델 학습 → 성능 평가 → 수정 및 성능 개선</b>을 코랩에서 진행하고, 마지막에 <b>프로젝트 전체를 정리</b>해요.</p>
+      <ol>
+        <li>유형·알고리즘 선정과 데이터 나누기</li><li>모델 학습</li><li>성능 평가</li>
+        <li>수정 및 성능 개선</li><li>프로젝트 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🧭</i><div><b>5 유형과 알고리즘 선정</b><small>지도학습의 예측 · 선형 회귀</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧠</i><div><b>6 모델 학습</b><small>fit() · 가중치와 편향</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🎯</i><div><b>7 성능 평가</b><small>결정 계수 R² · 실제와 예측 비교</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔧</i><div><b>8 수정 및 성능 개선</b><small>회귀선 · 속성 고르기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>기대 수명을 예측하는 문제에 알맞은 <b>기계학습 유형과 알고리즘</b>을 고르고, 데이터를 <b>훈련 데이터와 테스트 데이터</b>로 나눠 <b>선형 회귀 모델</b>을 학습시킵니다. <b>결정 계수</b>와 실제·예측 기대 수명의 <b>차이</b>로 성능을 평가하고, <b>회귀선</b>을 그려 보며 성능을 높일 방법을 찾습니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">기대 수명을 예측하는 모델이 있어요. 실제 기대 수명과 <b>몇 년 차이 안으로</b> 맞히면 쓸 만한 모델이라고 할 수 있을까요?</p>
+        <div class="memo" style="margin-top:0"><label>내 생각과 그 까닭</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>중단원</b> · 정형 데이터로 사회 문제를 해결하기 위한 예측 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 예측 모델의 성능은 무엇으로 평가하고, 어떻게 높일 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>정형 데이터와 관련된 문제를 인공지능을 활용하여 협력적으로 해결할 수 있다.</li>
+          <li>문제 해결 과정에 따라 협력적인 자세로 프로젝트를 수행할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">오늘 쓸 것: 구글 코랩(학교 구글 계정) · 노트북은 01 화면에 있어요.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 유형·알고리즘 선정부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 유형·알고리즘 선정과 데이터 나누기 -->
+<section class="page" data-name="유형 선정·데이터 나누기" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>유형·알고리즘 선정과 데이터 나누기</h2><p>교과서 197쪽 · 기계학습 유형과 알고리즘 선정, 훈련 데이터와 테스트 데이터 분리</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>「기대 수명이 <b>몇 세</b>인가?」처럼 <b>숫자</b>를 내놓는 인공지능은 정답(기대 수명)이 있는 데이터로 배우는 <b>지도학습의 예측</b>이에요. 대표 알고리즘은 <b>선형 회귀</b>예요. 학습에 쓸 데이터와 시험에 쓸 데이터는 미리 <b>나눠</b> 둬요.</span></div>
+  <div class="card">
+    <h3>🧭 기계학습 유형 고르기</h3>
+    <p style="margin-top:0">기대 수명이 몇 세인지를 출력하는 인공지능은 어떤 기계학습 유형일까요? 먼저 골라 보세요.</p>
+    <div id="typeVote" class="vote le-v3"></div>
+    <div class="reveal" id="typeAns">
+      <div class="callout"><b>1 기계학습 유형 선정하기</b> 기대 수명이 몇 세인지를 출력하는 인공지능이므로 <b>지도학습의 예측</b>에 해당한다.<br><b>2 알고리즘 선정하기</b> 지도학습의 예측 알고리즘으로는 <b>선형 회귀</b>가 대표적이다.</div>
+      <p class="note">펭귄의 종류를 맞히는 문제(178~189쪽)는 정해진 범주 중 하나를 고르는 <b>분류</b>였어요. 기대 수명은 정답이 있는 <b>숫자</b>라 예측(회귀)이에요.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>▶ 코랩에서 직접 실행하기</h3>
+    <ol>
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>처음 실행할 때 「Google에서 작성하지 않은 노트북」 경고 창이 뜨면 <b>「무시하고 계속하기」</b>를 눌러요.</li>
+      <li>맨 위 <b>준비 셀</b>은 앞 단계(데이터 수집·전처리)를 한 번에 해요. 실행하면 <span class="mono">(1649, 22)</span>가 나와요. 분홍색 상자의 <b>FutureWarning은 오류가 아니에요</b>.</li>
+      <li>차례로 ▶(또는 <b>Shift + Enter</b>)를 눌러 <b>[5]</b>부터 <b>[8]</b>까지 실행하고, 결과를 02~04 화면과 맞춰 봐요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-structured-2/assets/life-expectancy-2.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="life-expectancy-2.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost" href="../u4-structured-1/life-expectancy-data.csv" download="Life Expectancy Data.csv" style="text-decoration:none">Life Expectancy Data.csv 받기</a></div>
+    <p class="note">노트북은 데이터를 인터넷에서 바로 불러오므로 파일을 올리지 않아도 돼요. 교과서 방식대로 하려면 CSV를 받아 코랩 왼쪽 <b>파일(📁)</b> 창에 끌어다 놓고 <span class="mono">pd.read_csv('Life Expectancy Data.csv')</span>로 읽어요.</p>
+  </div>
+  <div class="card">
+    <h3>✂️ 3 훈련 데이터와 테스트 데이터 분리하기</h3>
+<pre class="le-code"><span class="c"># ① 'Life expectancy'와 'Country'를 제외한 속성은 X, 'Life expectancy'는 y</span>
+X = df.drop(['Life expectancy', 'Country'], axis=1)
+y = df.loc[:, 'Life expectancy']
+<span class="c"># ②③ 8 : 2로 나누기 — 80%로 학습하고 20%로 테스트</span>
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                                                    random_state = 96)
+<span class="c"># ④ 잘 나눠졌는지 확인</span>
+X_train.shape, y_train.shape, X_test.shape, y_test.shape</pre>
+<pre class="le-out">((1319, 20), (1319,), (330, 20), (330,))</pre>
+    <p class="note">국가 이름(Country)은 기대 수명을 계산하는 데 쓸 수 있는 숫자가 아니라서 빼고, 나머지 <b>20개 속성</b>을 X로 써요. 디지털 샘의 Tip · 훈련 데이터와 테스트 데이터 분리는 기계학습 유형과 알고리즘 선정 전에도 할 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 (197~200쪽)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 코드예요. ▶를 눌러 위에서부터 실행해 보세요. 결과는 02~04 화면에서 자세히 살펴봐요.</p>
+    <div id="cellSim"></div>
+  </div>
+  <div class="card">
+    <h3>🙋 해 보기 · 비율을 다르게 하여 데이터를 분리해 보자</h3>
+    <p style="margin-top:0;font-size:.93rem">노트북의 「해 보기」 셀에서 <span class="mono">test_size</span>를 바꿔 실행해 봐요. 시간이 없으면 아래 결과표만 펼쳐 봐도 돼요.</p>
+    <details class="le-more"><summary>test_size별 결과표 펼치기</summary>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th>test_size</th><th>훈련 : 테스트</th><th>X_train.shape</th><th>X_test.shape</th><th>테스트 데이터 결정 계수</th></tr>
+      <tr><td>0.1</td><td>9 : 1</td><td>(1484, 20)</td><td>(165, 20)</td><td>0.820</td></tr>
+      <tr class="y"><td>0.2</td><td>8 : 2</td><td>(1319, 20)</td><td>(330, 20)</td><td>0.794</td></tr>
+      <tr><td>0.3</td><td>7 : 3</td><td>(1154, 20)</td><td>(495, 20)</td><td>0.817</td></tr>
+      <tr><td>0.4</td><td>6 : 4</td><td>(989, 20)</td><td>(660, 20)</td><td>0.820</td></tr>
+      <tr><td>0.5</td><td>5 : 5</td><td>(824, 20)</td><td>(825, 20)</td><td>0.824</td></tr>
+    </table></div>
+    <p class="note">비율을 바꾸면 <b>시험 보는 데이터(테스트 데이터)도 바뀌므로</b> 결정 계수가 조금씩 달라져요. 8 : 2가 가장 높게 나온 것은 아니지만, 결정 계수의 작은 차이를 보고 비율을 고르지는 않아요. 결정 계수는 03 화면에서 살펴봐요.</p>
+    </details>
+    <div class="memo"><label>훈련 데이터와 테스트 데이터의 역할을 한 줄씩 써 보세요.</label><textarea data-memo="splitMemo" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 모델 학습 -->
+<section class="page" data-name="모델 학습" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>모델 학습</h2><p>교과서 198쪽 · 모델 생성하기, 모델 학습하기, 가중치와 편향 확인하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>선형 회귀 모델은 속성 20개에 각각 <b>가중치</b>를 곱해 더하고 <b>편향</b>을 더해 기대 수명을 계산해요. <span class="mono">fit()</span>은 훈련 데이터를 보고 오차가 가장 작아지는 <b>가중치와 편향을 찾는</b> 과정이에요.</span></div>
+  <div class="card">
+    <h3>1 모델 생성하기 · 2 모델 학습하기 · 3 가중치와 편향 확인하기</h3>
+<pre class="le-code">from sklearn.linear_model import LinearRegression   <span class="c"># 선형 회귀 알고리즘 불러오기</span>
+linear_reg = LinearRegression()
+lin_results = linear_reg.fit(X_train, y_train)      <span class="c"># 훈련 데이터로 학습</span>
+<span class="c"># 가중치와 편향 확인</span>
+w = lin_results.coef_          <span class="c"># coef_: 가중치(기울기)</span>
+b = lin_results.intercept_     <span class="c"># intercept_: 편향(절편)</span>
+print(w)
+print(b)</pre>
+<pre class="le-out">[-1.31023639e-01  8.05549399e-01 -1.65366218e-02  9.23302716e-02
+ -1.26094468e-01  2.58412695e-04 -5.05864100e-03 -1.25064885e-05
+  3.46114488e-02 -6.89182089e-02  1.01705848e-02  7.40012348e-02
+  1.29221179e-02 -4.31593007e-01  2.94598705e-05 -6.76973582e-10
+  1.49973922e-02 -8.43760109e-02  1.13449331e+01  8.60720103e-01]
+315.6817315128982</pre>
+    <p class="note"><span class="mono">8.05e-01</span>은 8.05 × 10⁻¹ = 0.805라는 뜻이에요. 교과서 198쪽 출력에는 몇 자리가 조금 다르게 실려 있어요(3번째 …271, 14번째 −4.34…). 노트북에서 나온 값을 기준으로 해요. 끝자리는 실행 환경마다 조금 다를 수 있어요. 노트북에는 모델 생성 셀 다음에 <b>버전 맞춤 한 줄</b>이 더 있어요(몰라도 돼요, 실행만 하면 돼요).</p>
+  </div>
+  <div class="card">
+    <h3>🧾 가중치를 속성 이름과 나란히 보기 <small class="muted" style="font-weight:400">(노트북에 더한 셀)</small></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">학습한 모델의 식: <b>예측 기대 수명 = w1 × Year + w2 × Status + … + w20 × Schooling + b</b>. 「부호」 칸의 배지는 가중치가 +(빨강)인지 −(파랑)인지를 나타내요.</p>
+    <div class="le-scroll"><table class="le-tbl" id="wTbl"></table></div>
+  </div>
+  <details class="card le-more">
+    <summary>🔎 더 알아보기 · 가중치가 클수록 중요한 속성일까?</summary>
+    <p>꼭 그렇지는 않아요. 가중치는 <b>속성값이 1 늘 때</b> 예측이 얼마나 바뀌는지를 나타내므로, 속성값의 <b>단위</b>에 따라 크기가 달라져요. 소득(Income composition, 자원 소득에 대한 국가 개발 정도)은 0~1 사이 값이라 가중치가 11.3처럼 커 보이고, 인구수(Population)는 수억 명까지 커지는 값이라 가중치가 0.0000000007처럼 아주 작아요.</p>
+    <p style="margin-bottom:0">그래서 가중치의 크기만 보고 「어떤 속성이 더 중요하다」고 말하기는 어려워요. 모든 속성을 평균 0, 표준편차 1로 맞추는 <b>표준화</b>를 한 뒤 학습하면 가중치끼리 비교하기 쉬워져요(04 화면 더 알아보기).</p>
+  </details>
+  <details class="card le-more">
+    <summary>🛠 더 알아보기 · 결정 계수가 0.79가 아니라 0.56쯤 나온다면?</summary>
+    <p>교과서 소스 코드 노트북을 <b>집 컴퓨터나 새 버전(1.9 이상)의 사이킷런(scikit-learn)</b>에서 실행하면 가중치가 위와 전혀 다르고 결정 계수가 <b>약 0.5577</b>로 나올 수 있어요. 새 버전의 LinearRegression은 크기가 아주 다른 속성(인구수는 수억, 소득은 0~1)이 섞인 데이터에서 아주 작은 값을 버리고 계산하기 때문이에요.</p>
+    <p style="margin-bottom:0">이 수업의 노트북은 모델 생성 셀 다음에 「버전 맞춤」 셀(<span class="mono">if 'tol' in linear_reg.get_params(): linear_reg.set_params(tol = 0)</span>)을 두어 어느 버전에서나 교과서와 같은 결과가 나오게 했어요. 버전이 낮으면 이 줄은 아무 일도 하지 않아요.</p>
+  </details>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 성능 평가 -->
+<section class="page" data-name="성능 평가" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>성능 평가</h2><p>교과서 199쪽 · 결정 계수 확인하기, 테스트 데이터로 평가하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델이 처음 보는 <b>테스트 데이터 330개</b>로 시험을 봐요. <b>결정 계수(R²)</b>는 1에 가까울수록 성능이 높고, 실제 기대 수명과 예측 기대 수명의 <b>차이(오차)</b>를 보면 몇 년쯤 빗나가는지 알 수 있어요.</span></div>
+  <div class="card">
+    <h3>1 결정 계수 확인하기</h3>
+<pre class="le-code">from sklearn.metrics import r2_score
+y_pred = lin_results.predict(X_test)        <span class="c"># 테스트 데이터의 예측 기대 수명</span>
+print('결정 계수(R^2) = ', r2_score(y_test, y_pred))</pre>
+<pre class="le-out">결정 계수(R^2) =  0.7935432521020239</pre>
+    <p style="margin-bottom:0"><span class="mono">r2_score(y_test, y_pred)</span>는 회귀 모델의 결정 계수를 계산하는 함수예요. y_test는 테스트 데이터의 실제 종속 변숫값, y_pred는 모델이 예측한 값이에요. R²가 <b>1에 가까울수록 성능이 높고</b>, 0에 가까울수록 낮아요.</p>
+    <div class="callout"><b>R²(결정 계수)</b> 독립 변수가 종속 변수를 <b>얼마만큼 설명해 주는지</b>를 나타내는 비율로, 1에 가까울수록 성능이 우수하다(87쪽). → 0.79는 20개 속성으로 기대 수명이 나라마다 다른 정도의 약 79%를 설명한다는 뜻이에요.</div>
+  </div>
+  <div class="card">
+    <h3>2 테스트 데이터로 평가하기</h3>
+<pre class="le-code">Y_prediction = y_pred.flatten()
+for i in range(6):
+    label = y_test.values[i]
+    prediction = Y_prediction[i]
+    print('실제 기대 수명: {:.3f}, 학습 후 예측 기대 수명: {:.3f}, 차이: {:.3f}'
+          .format(label, prediction, label - prediction))</pre>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th>순서</th><th>나라 · 연도</th><th>실제 기대 수명</th><th>학습 후 예측 기대 수명</th><th>차이</th><th>교과서 199쪽</th></tr>
+      <tr><td>1</td><td>피지 2011</td><td>69.200</td><td>73.752</td><td>−4.552</td><td>1행</td></tr>
+      <tr><td>2</td><td>잠비아 2014</td><td>61.100</td><td>64.036</td><td>−2.936</td><td>2행</td></tr>
+      <tr><td>3</td><td>아르헨티나 2002</td><td>74.100</td><td>77.582</td><td>−3.482</td><td>3행</td></tr>
+      <tr class="gap"><td>4</td><td>코모로 2003</td><td>59.600</td><td>57.100</td><td>2.500</td><td>없음</td></tr>
+      <tr class="gap"><td>5</td><td>피지 2009</td><td>68.900</td><td>76.178</td><td><b>−7.278</b></td><td>없음</td></tr>
+      <tr class="gap"><td>6</td><td>투르크메니스탄 2012</td><td>65.600</td><td>71.837</td><td><b>−6.237</b></td><td>없음</td></tr>
+      <tr class="gap"><td>7</td><td>엘살바도르 2006</td><td>75.000</td><td>69.793</td><td><b>5.207</b></td><td>없음</td></tr>
+      <tr><td>8</td><td>가봉 2013</td><td>64.600</td><td>66.247</td><td>−1.647</td><td>4행</td></tr>
+      <tr><td>9</td><td>보스니아 헤르체고비나 2012</td><td>76.800</td><td>74.504</td><td>2.296</td><td>5행</td></tr>
+      <tr><td>10</td><td>아르헨티나 2003</td><td>74.100</td><td>77.272</td><td>−3.172</td><td>6행</td></tr>
+    </table></div>
+    <p class="note">코드의 <span class="mono">range(6)</span>은 처음 6개(1~6번째)를 출력해요. 교과서의 4~6행은 <b>8~10번째 행</b>이에요. <span class="mono">range(10)</span>으로 바꾸면 보여요(노트북에 그 셀을 더해 두었어요). 교과서 1행의 73.725는 73.752의 자리가 바뀐 것이에요. 나라 이름은 이해를 돕기 위해 붙였고, 차이가 −이면 실제보다 <b>높게</b> 예측한 거예요.</p>
+    <p style="margin-bottom:0">교과서는 6개를 보고 「<b>2~5년 내외</b>의 오차」라고 했지만, 그 사이의 4~7번째 행에는 5~7년 차이가 나는 행이 섞여 있어요. <b>몇 개만 골라 보면</b> 모델이 실제보다 좋아 보이거나 나빠 보일 수 있어요. 학습에 쓴 데이터도 193개 나라 중 결측치가 없는 133개 나라였지요. 그렇다면 테스트 데이터 330개 전체는 어떨까요?</p>
+  </div>
+  <div class="card">
+    <h3>🎯 예측과 실제 비교판 · 테스트 데이터 330개</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">점 하나가 테스트 데이터 한 행이에요. 가로는 실제, 세로는 예측 기대 수명이라 <b>대각선 위에 있으면 정확히 맞힌</b> 거예요. 슬라이더로 「몇 년 차이까지 맞힌 것으로 볼지」 정해 보세요. 점을 누르거나 ◀ ▶ 버튼(또는 그림을 누른 뒤 ←→ 키)으로 하나씩 살펴볼 수 있어요.</p>
+    <div id="pvLab"></div>
+  </div>
+  <div class="card">
+    <h3>🙋 해 보기 · 성능 평가</h3>
+    <p style="margin-top:0;font-size:.93rem">1. 예측 모델 성능 평가를 사용하여 정확도를 구해 보자. 2. 나라별 실제 기대 수명과 예측 기대 수명을 비교해 보자. <small class="muted">(정확도와 오차의 차이를 알아보자 — 비교판에서 기준을 바꾸면 「맞힌 비율」이 어떻게 달라졌나요?)</small></p>
+    <div class="memo"><label>결정 계수 0.79와 실제·예측의 차이를 함께 보면, 이 모델을 얼마나 믿을 수 있을까요? 크게 빗나간 나라가 있다면 그 까닭도 짐작해 보세요.</label><textarea data-memo="errMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 수정 및 성능 개선 -->
+<section class="page" data-name="성능 개선" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>수정 및 성능 개선</h2><p>교과서 200쪽 · 선형 회귀 알고리즘으로 회귀선과 모델의 성능 확인하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>속성 하나(교육 기간)로만 학습해 <b>회귀선</b>을 그려 보면 모델이 데이터의 <b>경향</b>을 어떻게 배웠는지 눈으로 볼 수 있어요. 어떤 속성을 쓰느냐에 따라 성능이 달라지므로, 속성을 바꿔 보는 것도 <b>성능 개선</b> 방법이에요.</span></div>
+  <div class="card">
+    <h3>1~4 교육 기간(Schooling)으로 회귀선 그리기</h3>
+<pre class="le-code">lin1 = LinearRegression()                                     <span class="c"># 1 선형 회귀 알고리즘 불러오기</span>
+lin1.fit(X_train['Schooling'].values.reshape(-1, 1),          <span class="c"># 2 교육 기간 하나로 학습하기</span>
+         y_train.values.reshape(-1, 1))
+x_array = np.arange(min(X_train['Schooling']),                <span class="c"># 3 최솟값부터 최댓값까지 만들고</span>
+                    max(X_train['Schooling'])).reshape(-1, 1)
+y_head = lin1.predict(x_array)                                <span class="c">#   예측값 생성하기</span>
+plt.scatter(X_train['Schooling'], y_train)                    <span class="c"># 4 산점도와</span>
+plt.plot(x_array, y_head, color = 'red')                      <span class="c">#   빨간 회귀선</span>
+plt.xlabel('Schooling'); plt.ylabel('Life expectancy'); plt.show()</pre>
+    <p class="note"><span class="mono">reshape(-1, 1)</span>은 배열을 2D로 바꿔요. 열의 수는 1로 고정하고 행의 수는 자동으로 정하라는 뜻이에요. 교과서의 축 이름 'Scooling', 'Life excpectancy'는 오타라서 바로잡았어요.</p>
+    <p class="le-int"><b>해석</b> 교육 수준이 증가함에 따라 기대 수명이 증가하는 회귀선을 확인할 수 있다.</p>
+  </div>
+  <div class="card">
+    <h3>📈 회귀선 탐색기 · 속성을 바꿔 다시 학습하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">위: 속성 <b>하나</b>를 고르면 훈련 데이터 1,319개의 산점도와 그 속성으로 학습한 <b>회귀선</b>이 나와요. 아래: 속성을 <b>여러 개</b> 골라 함께 학습하면 테스트 데이터 결정 계수가 어떻게 되는지 비교해요.</p>
+    <div id="rlLab"></div>
+  </div>
+  <div class="card">
+    <h3>🧹 데이터를 바꿔 성능 높이기 · 앞 단계의 결측치 처리 실험실과 이어 보기</h3>
+    <p style="margin-top:0;font-size:.93rem">속성만 고르면 결정 계수가 20개 전체(0.794)를 넘지 못했어요. 이번에는 <b>데이터</b>를 바꿔 봐요. 결측치가 많은 속성을 <b>먼저 지우고</b> <span class="mono">dropna()</span>를 하면 남는 행이 늘어나요. 같은 코드(8 : 2, random_state = 96)로 다시 학습한 결과예요. <small class="muted">(노트북의 마지막 「더 알아보기」 셀에서 직접 바꿔 볼 수 있어요.)</small></p>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th class="l">먼저 지운 속성</th><th>남는 행</th><th>나라</th><th>속성 수(X)</th><th>테스트 데이터 결정 계수</th></tr>
+      <tr class="y"><td class="l">없음(교과서 그대로)</td><td>1,649</td><td>133</td><td>20</td><td>0.794</td></tr>
+      <tr><td class="l">Population</td><td>1,853</td><td>147</td><td>19</td><td>0.799</td></tr>
+      <tr><td class="l">Population, Hepatitis B</td><td>2,301</td><td>155</td><td>18</td><td><b>0.824</b></td></tr>
+      <tr><td class="l">Population, Hepatitis B, GDP</td><td>2,556</td><td>171</td><td>17</td><td>0.816</td></tr>
+    </table></div>
+    <p class="note">인구수는 기대 수명과 관계가 거의 없는 속성(상관계수 −0.02)이라, 지워도 손해가 적고 데이터는 늘어요. 다만 지울 때마다 <b>테스트 데이터도 달라지므로</b> 결정 계수를 똑같은 시험으로 비교한 것은 아니에요. 그래도 「데이터를 어떻게 준비하느냐」가 성능을 바꾼다는 것은 확인할 수 있어요.</p>
+  </div>
+  <details class="card le-more">
+    <summary>🔎 더 알아보기 · 표준화를 하면 성능이 오를까?</summary>
+    <p>표준화는 모든 속성을 평균 0, 표준편차 1로 맞추는 전처리예요(펭귄 분류 프로젝트에서 성능 개선에 썼어요). 이 데이터를 표준화한 뒤 선형 회귀로 학습해도 결정 계수는 <b>0.794로 같아요</b>. 선형 회귀는 속성값에 곱하는 가중치가 단위에 맞춰 바뀔 뿐이라 예측값이 그대로이기 때문이에요.</p>
+    <p style="margin-bottom:0">대신 표준화하면 가중치끼리 크기를 비교하기 쉬워지고, 크기가 아주 다른 속성 때문에 생기던 사이킷런 버전 문제도 사라져요.</p>
+  </details>
+  <div class="callout">선형 회귀 분석 결과를 해석할 때 독립 변수(x)의 크기가 예측의 정확도에 영향을 미칠 수 있어요. 만약 x값이 <b>이상치</b>처럼 아주 커지면, 예측이 정확하지 않을 수 있어요. (GDP 산점도의 오른쪽 끝 점들을 살펴보세요.)</div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>교육 기간 하나로 학습한 모델과 속성 20개를 모두 쓴 모델의 결정 계수는 어떻게 달랐나요? 이 모델의 성능을 더 높이려면 속성이나 데이터를 어떻게 바꿔 보고 싶은지 써 보세요.</label><textarea data-memo="improveMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 프로젝트 정리 -->
+<section class="page" data-name="프로젝트 정리" data-acc="#c98a00">
+  <div class="head"><div class="num">05</div><div><h2>프로젝트 정리</h2><p>교과서 201쪽 · 단계별 수행 과정을 평가해 보고, 나의 활동을 되돌아보자</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제 정의부터 성능 개선까지 <b>내 프로젝트</b>를 한 단계씩 돌아봐요. 잘한 점과 아쉬운 점, <b>내가 한 일</b>과 <b>쓴 함수</b>를 정리하고, 이 모델이 세상에 어떤 도움이 될지 생각해요.</span></div>
+  <div class="card">
+    <h3>1 프로젝트 수행 과정을 돌아보기 <small class="muted" style="font-weight:400">(수행 정도에 맞는 별을 골라요)</small></h3>
+    <div class="le-ev">
+      <div><b>문제 정의</b><span>지속가능발전목표와 관련 있는 주제를 선정하고, 문제를 명확하게 정의하였는가?</span><div id="ev1" class="vote le-star"></div></div>
+      <div><b>데이터 수집 및 전처리</b><span>모델을 학습시키기 위해 필요한 데이터를 수집하고 모델에 입력할 수 있도록 전처리할 수 있는가?</span><div id="ev2" class="vote le-star"></div></div>
+      <div><b>기계학습 유형과 알고리즘 선정</b><span>선정한 알고리즘의 사용법을 잘 알고 있는가?</span><div id="ev3" class="vote le-star"></div></div>
+      <div><b>모델 학습</b><span>훈련 데이터와 테스트 데이터를 사용하여 적합한 모델을 생성하였는가?</span><div id="ev4" class="vote le-star"></div></div>
+      <div><b>성능 평가 및 수정</b><span>평가 지표로 성능을 평가한 후, 성능을 높이기 위한 성능 개선 방법을 이해하였는가?</span><div id="ev5" class="vote le-star"></div></div>
+    </div>
+    <p class="note">모둠으로 했다면 모둠원과 함께 모둠의 별점도 이야기 나눠 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>2 단계마다 내가 한 일과 쓴 모듈·함수</h3>
+    <details class="le-more"><summary>교과서 예시 펼치기</summary>
+    <div class="le-scroll"><table class="le-tbl le-ex">
+      <tr><th>과정</th><th class="l">예시 · 내가 한 일</th><th class="l">예시 · 모듈 또는 라이브러리</th></tr>
+      <tr><td>데이터 수집 및 전처리</td><td class="l">데이터셋 속성을 관찰하였다. 결측치가 발견되어 제거하였다. 속성 간 관계를 파악하는 다양한 시각화 방법을 알아보았다.</td><td class="l">info( ), dropna( ), isna( ).sum( ), seaborn</td></tr>
+      <tr><td>알고리즘 선정</td><td class="l">선형 회귀 알고리즘, 훈련 데이터와 테스트 데이터로 나누었다.</td><td class="l">train_test_split( )</td></tr>
+      <tr><td>모델 학습</td><td class="l">모델을 생성하고, 가중치와 편향을 확인하였다.</td><td class="l">LinearRegression( )</td></tr>
+      <tr><td>성능 평가 및 수정</td><td class="l">회귀 평가 지표로 결정 계수를 사용, 테스트 데이터로 평가하였다.</td><td class="l">r2_score( ), predict( )</td></tr>
+    </table></div>
+    </details>
+    <div class="memo"><label>내가 한 일 중 <b>가장 기억에 남는 단계 하나</b>와, 그때 쓴 함수를 적어 보세요.</label><textarea data-memo="doneMemo" rows="2" placeholder="예: 성능 평가 - range(10)으로 바꿔 교과서에 없는 행을 찾았다 (predict, r2_score)"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>3 이 프로젝트로 얻게 되는 기대 효과</h3>
+    <p style="margin-top:0;font-size:.93rem">기대 수명을 예측하는 것은 <b>개인</b>(건강 관리와 삶의 질), <b>사회</b>(의료 서비스가 부족한 지역 지원), <b>의료</b>(기대 수명이 낮은 집단의 원인 분석과 예방) 등 여러 분야에서 쓸 수 있어요.</p>
+    <div class="memo"><label>이 모델을 누가, 어떤 일에 쓸 수 있을까요? 결측치를 지우며 대한민국을 포함한 60개 나라의 데이터가 빠졌다는 점을 생각해, 쓸 때 조심할 점도 한 가지 적어 보세요.</label><textarea data-memo="effectMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>기대 수명이 몇 세인지를 출력하는 인공지능은 <button class="blank" data-a="지도학습의 예측">?</button>에 해당하고, 대표 알고리즘은 <button class="blank" data-a="선형 회귀">?</button>이다.</li>
+      <li><span class="mono">train_test_split( )</span>으로 데이터를 <button class="blank" data-a="훈련 데이터">?</button>와 <button class="blank" data-a="테스트 데이터">?</button>로 나눈다.</li>
+      <li>선형 회귀 모델의 <span class="mono">coef_</span>는 <button class="blank" data-a="가중치(기울기)">?</button>, <span class="mono">intercept_</span>는 <button class="blank" data-a="편향(절편)">?</button>이다.</li>
+      <li><button class="blank" data-a="결정 계수(R²)">?</button>는 1에 가까울수록 회귀 모델의 성능이 높다.</li>
+    </ol>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">기대 수명처럼 <b>숫자</b>를 출력하는 문제는 <b>지도학습의 예측</b>이고, <b>선형 회귀</b>로 해결한다. 데이터는 <span class="mono">train_test_split()</span>으로 훈련 데이터 1,319행, 테스트 데이터 330행(8 : 2)으로 나눴다.</div>
+    <div style="--k:#9b4fc4"><span class="mono">fit()</span>으로 속성 20개의 <b>가중치</b>와 <b>편향</b>을 찾았고, 테스트 데이터의 <b>결정 계수는 약 0.79</b>였다. 실제와 예측의 차이는 평균 약 2.9년, 330개 중 약 85%가 5년 안이었지만 크게 빗나간 나라도 있었다. 몇 개만 골라 보면 성능을 잘못 판단할 수 있다.</div>
+    <div style="--k:#e0702b">교육 기간 하나로 그린 <b>회귀선</b>은 교육 기간이 긴 나라일수록 기대 수명이 높은 경향을 보여 줬지만 결정 계수는 약 0.51이었다. 결측치가 많은 속성(Population, Hepatitis B)을 먼저 지워 데이터를 늘리자 결정 계수가 약 0.82로 올랐다. 어떤 <b>속성</b>과 <b>데이터</b>를 쓰는지가 성능을 바꾼다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>기대 수명을 예측하는 선형 회귀 모델의 결정 계수(R²)는 약 0.79였습니다. 이 값이 무엇을 뜻하는지 쓰고, 테스트 데이터에서 실제 기대 수명과 예측 기대 수명의 차이를 살펴본 결과와 연결해 이 모델을 얼마나 믿을 수 있을지 설명하세요.</li>
+      <li>교육 기간(Schooling) 하나로 학습한 회귀선과 속성 20개를 모두 쓴 모델의 결정 계수를 비교했습니다. 결과가 어떻게 달랐는지 쓰고, 이 모델의 성능을 더 높이려면 속성이나 데이터를 어떻게 바꿔 볼지 제안하세요.</li>
+      <li>이 기대 수명 예측 모델을 누가, 어떤 일에 활용할 수 있을지 기대 효과를 쓰고, 결측치를 지우며 대한민국을 포함한 여러 나라의 데이터가 빠졌다는 점을 생각해 활용할 때 조심해야 할 점을 한 가지 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/ai-33-4-2-1.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u4-structured-2', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 197~201쪽) — 오답도 교과서 문장에서, 극단어 피하기, 보기는 짧은 것부터 */
+const QUIZ={
+ 1:[{q:'기대 수명이 몇 세인지를 출력하는 인공지능에 해당하는 기계학습 유형은?',o:['비지도학습','지도학습의 예측','지도학습의 분류'],a:1,w:'기대 수명이 몇 세인지를 출력하는 인공지능이므로 지도학습의 예측에 해당하고, 대표 알고리즘은 선형 회귀예요(197쪽). 정해진 범주 중 하나를 고르는 것은 분류예요.'},
+    {q:'train_test_split( )에서 test_size = 0.2로 정한 뜻은?',o:['20%의 데이터로 테스트한다','전체 속성 중 20%를 골라 학습에 쓴다','20%의 데이터로 학습하고 80%로 테스트한다'],a:0,w:'비율은 8 : 2로 80%의 데이터로 학습하고 20%의 데이터로 테스트해요(197쪽). 1,649행이 훈련 데이터 1,319행과 테스트 데이터 330행으로 나뉘었어요.'}],
+ 2:[{q:'선형 회귀 알고리즘을 쓰기 위해 불러온 라이브러리는?',o:['시본','사이킷런','맷플롯립'],a:1,w:'from sklearn.linear_model import LinearRegression처럼 사이킷런(scikit-learn) 라이브러리에서 선형 회귀 알고리즘을 불러와요(198쪽). 시본과 맷플롯립은 시각화 라이브러리예요.'},
+    {q:'lin_results.coef_와 lin_results.intercept_가 나타내는 것은?',o:['가중치와 편향','결정 계수와 오차','훈련 데이터와 테스트 데이터'],a:0,w:'coef_는 가중치(기울기), intercept_는 편향(절편)이에요(198쪽). 속성이 20개라 가중치도 20개가 나왔어요.'},
+    {q:'선형 회귀 모델을 훈련 데이터로 학습시키는 코드는?',o:['r2_score(y_test, y_pred)','linear_reg.fit(X_train, y_train)','train_test_split(X, y, test_size = 0.2)'],a:1,w:'선형 회귀 알고리즘을 훈련 데이터인 X_train과 y_train으로 학습하는 코드는 linear_reg.fit(X_train, y_train)이에요(198쪽). r2_score는 결정 계수 계산, train_test_split은 데이터 나누기예요.'}],
+ 3:[{q:'결정 계수(R²)에 대한 설명으로 옳은 것은?',o:['1에 가까울수록 성능이 높다','0에 가까울수록 성능이 높다','값이 클수록 예측과 실제의 차이가 크다'],a:0,w:'R²는 1에 가까울수록 성능이 높고 0에 가까울수록 낮아요(199쪽, 87쪽 결정 계수). 이 모델의 결정 계수는 약 0.79예요.'},
+    {q:'테스트 데이터를 넣어 예측 기대 수명을 출력하는 함수는?',o:['fit( )','dropna( )','predict( )'],a:2,w:'predict( ) 함수를 사용하여 테스트 데이터를 넣으면 예측 기대 수명이 출력돼요(199쪽). fit( )은 학습, dropna( )는 결측치 삭제예요.'},
+    {q:'r2_score(y_test, y_pred)에서 y_test가 뜻하는 것은?',o:['테스트 데이터의 실젯값','모델이 예측한 기대 수명','훈련 데이터로 학습한 가중치'],a:0,w:'y_test는 테스트 데이터의 실제 종속 변숫값(실제 기대 수명)이고, y_pred는 모델이 예측한 종속 변숫값이에요. 두 값을 넣어 회귀 모델의 결정 계수를 계산해요(199쪽).'}],
+ 4:[{q:'교육 기간(Schooling) 하나로 학습한 회귀선의 기울기가 약 2.34라는 뜻은?',o:['교육 기간이 2.34년인 나라는 예측 기대 수명이 1세이다','교육 기간이 1년 더 긴 나라는 예측 기대 수명이 약 2.34세 높다','예측 기대 수명이 1세 더 높은 나라는 교육 기간이 2.34년 더 길다'],a:1,w:'기울기는 x(교육 기간)가 1 다를 때 예측값(기대 수명)이 얼마나 다른지를 나타내요. 교육 기간이 긴 나라일수록 기대 수명이 높은 경향이라는 뜻이고, 교육 기간이 원인이라는 뜻은 아니에요(200쪽).'},
+    {q:'교육 기간 하나로 학습한 모델과 속성 20개를 모두 쓴 모델의 결정 계수를 비교한 결과는?',o:['둘이 같다','결정 계수를 비교할 수 없다','속성 20개를 쓴 모델이 더 높다'],a:2,w:'테스트 데이터 결정 계수는 교육 기간 하나로 약 0.51, 속성 20개로 약 0.79였어요. 회귀선은 경향을 눈으로 보기 좋고, 여러 속성을 함께 쓰면 성능이 더 높았어요.'}],
+ 5:[{q:'프로젝트 정리 표에서 r2_score( )와 predict( ) 함수를 쓴 과정은?',o:['모델 학습','데이터 수집','성능 평가 및 수정'],a:2,w:'성능 평가 및 수정 단계에서 회귀 평가 지표로 결정 계수(r2_score)를 사용하고 테스트 데이터로 평가(predict)했어요(201쪽). 모델 학습 단계에서는 LinearRegression( )을 썼어요.'},
+    {q:'200쪽 코드의 reshape(-1, 1)이 하는 일은?',o:['데이터를 섞는다','결측치를 지운다','배열을 2D로 바꾼다'],a:2,w:'reshape(-1, 1)은 배열을 2D로 변환하는데, 열의 수는 1로 고정하고 행의 수는 자동으로 조정하라는 의미예요(200쪽). 속성 하나를 사이킷런 모델에 넣으려면 2D 모양이어야 해요.'}],
+};
+
+const QK='ds-u4-structured-2-quiz'+WHO.sfx;
+const MK='ds-u4-structured-2-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* 기대 수명 데이터(dropna 뒤 1,649행, random_state = 96, 8 : 2) — 교과서 노트북 코드를 파이썬으로 실행해 미리 계산한 값 */
+/* 테스트 데이터 330개: [실제, 예측, 나라 번호, 연도] (y_test 순서 그대로) */
+const LE_CN=["Afghanistan","Albania","Algeria","Angola","Argentina","Armenia","Austria","Azerbaijan","Bangladesh","Belarus","Belgium","Belize","Bhutan","Bosnia and Herzegovina","Botswana","Brazil","Bulgaria","Burkina Faso","Cabo Verde","Cameroon","Canada","Central African Republic","Chile","China","Colombia","Comoros","Costa Rica","Croatia","Cyprus","El Salvador","Eritrea","Estonia","Ethiopia","Fiji","France","Gabon","Georgia","Germany","Ghana","Greece","Guatemala","Guinea","Guyana","Honduras","India","Indonesia","Iraq","Ireland","Israel","Italy","Jamaica","Jordan","Kazakhstan","Kenya","Kiribati","Latvia","Lebanon","Liberia","Lithuania","Luxembourg","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Montenegro","Morocco","Mozambique","Myanmar","Nepal","Netherlands","Nicaragua","Niger","Nigeria","Pakistan","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Romania","Russian Federation","Rwanda","Samoa","Sao Tome and Principe","Senegal","Serbia","Seychelles","Sierra Leone","Solomon Islands","South Africa","Spain","Sri Lanka","Suriname","Swaziland","Sweden","Syrian Arab Republic","Tajikistan","Thailand","Timor-Leste","Togo","Tonga","Trinidad and Tobago","Tunisia","Turkmenistan","Uganda","Ukraine","Uruguay","Uzbekistan","Vanuatu","Zambia","Zimbabwe"];
+const LE_CNK=["아프가니스탄","알바니아","알제리","앙골라","아르헨티나","아르메니아","오스트리아","아제르바이잔","방글라데시","벨라루스","벨기에","벨리즈","부탄","보스니아 헤르체고비나","보츠와나","브라질","불가리아","부르키나파소","카보베르데","카메룬","캐나다","중앙아프리카 공화국","칠레","중국","콜롬비아","코모로","코스타리카","크로아티아","키프로스","엘살바도르","에리트레아","에스토니아","에티오피아","피지","프랑스","가봉","조지아","독일","가나","그리스","과테말라","기니","가이아나","온두라스","인도","인도네시아","이라크","아일랜드","이스라엘","이탈리아","자메이카","요르단","카자흐스탄","케냐","키리바시","라트비아","레바논","라이베리아","리투아니아","룩셈부르크","마다가스카르","말라위","말레이시아","몰디브","말리","몰타","모리타니","모리셔스","멕시코","몬테네그로","모로코","모잠비크","미얀마","네팔","네덜란드","니카라과","니제르","나이지리아","파키스탄","파나마","파푸아뉴기니","파라과이","페루","필리핀","폴란드","포르투갈","루마니아","러시아","르완다","사모아","상투메 프린시페","세네갈","세르비아","세이셸","시에라리온","솔로몬 제도","남아프리카 공화국","스페인","스리랑카","수리남","에스와티니(스와질란드)","스웨덴","시리아","타지키스탄","태국","동티모르","토고","통가","트리니다드 토바고","튀니지","투르크메니스탄","우간다","우크라이나","우루과이","우즈베키스탄","바누아투","잠비아","짐바브웨"];
+const LE_T=[[69.2,73.752172,33,2011],[61.1,64.035929,116,2014],[74.1,77.582332,4,2002],[59.6,57.099541,25,2003],[68.9,76.177964,33,2009],[65.6,71.837401,110,2012],[75.0,69.793405,29,2006],[64.6,66.246907,35,2013],[76.8,74.50376,13,2012],[74.1,77.272293,4,2003],[75.4,75.861989,113,2007],[66.8,68.0139,83,2000],[54.2,57.004433,19,2008],[72.8,72.979206,1,2003],[79.4,79.240626,6,2005],[79.3,78.900972,34,2003],[73.8,76.562738,55,2012],[78.5,78.181991,65,2003],[69.6,72.69985,87,2012],[72.5,69.39543,75,2007],[73.6,74.560338,24,2009],[69.6,74.001459,33,2013],[74.3,75.832319,86,2011],[81.0,81.282692,47,2013],[75.0,65.336151,13,2005],[55.3,55.147793,17,2007],[63.7,62.527744,78,2004],[58.3,64.076847,38,2004],[81.0,81.95149,20,2005],[69.0,56.083636,76,2013],[72.7,69.975162,102,2001],[72.4,73.044665,107,2006],[74.4,72.741126,23,2007],[48.5,49.442112,61,2007],[66.0,63.412883,91,2013],[70.0,73.22511,9,2009],[61.0,61.709356,88,2009],[76.5,76.120354,113,2012],[75.6,76.42899,31,2010],[65.3,73.080849,54,2010],[76.2,73.097359,1,2010],[73.0,76.502923,58,2013],[59.2,60.232702,72,2008],[73.8,74.063789,15,2010],[69.0,65.556058,96,2013],[74.8,73.206476,62,2014],[55.3,58.086622,0,2001],[74.5,73.204495,36,2013],[65.0,57.952874,12,2005],[64.6,63.198303,78,2008],[74.2,75.010226,36,2012],[44.5,39.18533,117,2003],[71.6,69.320813,104,2004],[65.8,68.695425,90,2009],[78.3,81.720538,10,2003],[77.0,75.997954,112,2012],[72.5,74.672632,107,2009],[68.5,72.922089,52,2011],[71.0,67.678574,43,2000],[78.6,72.781859,26,2005],[77.2,74.965155,1,2013],[67.5,71.89324,112,2000],[62.1,66.130661,38,2014],[74.4,76.273386,109,2006],[72.9,71.985452,2,2005],[65.7,68.098744,88,2014],[78.2,75.65599,28,2001],[46.4,47.501945,14,2003],[73.0,70.865935,81,2009],[65.3,67.418966,45,2004],[65.1,74.628143,87,2001],[54.0,51.089288,96,2003],[80.0,77.812191,28,2012],[68.7,66.685884,95,2012],[76.2,77.845942,4,2014],[74.5,71.507299,98,2010],[77.8,75.045198,1,2015],[68.0,69.62728,44,2014],[62.2,65.015584,25,2011],[76.1,78.528356,31,2011],[79.4,81.519176,39,2007],[66.4,75.700918,87,2006],[72.3,74.834089,51,2003],[79.4,78.119109,49,2000],[74.4,76.112218,55,2014],[78.8,80.852037,34,2000],[71.0,69.489206,70,2006],[75.4,70.442307,63,2007],[72.5,72.958228,7,2014],[68.8,69.165537,103,2012],[73.0,74.584259,107,2012],[66.6,65.994268,90,2011],[72.8,71.648594,67,2009],[74.0,69.452043,46,2009],[68.4,71.158301,7,2004],[74.4,75.871552,86,2012],[77.0,68.577728,40,2010],[66.7,69.039513,103,2009],[69.6,69.33195,103,2014],[81.2,83.440595,20,2010],[69.3,69.886763,99,2006],[61.7,61.558024,66,2009],[72.4,75.138297,51,2005],[78.0,75.431567,26,2006],[77.7,73.337796,26,2004],[63.0,60.971629,53,2010],[51.4,45.043148,100,2008],[74.6,72.003948,24,2014],[71.6,69.011922,115,2013],[81.7,84.088364,101,2012],[86.0,83.620916,47,2010],[57.3,55.715113,96,2000],[74.9,73.349503,82,2012],[57.3,59.970388,0,2006],[57.9,63.257532,38,2003],[81.3,82.545836,97,2008],[58.3,67.471037,106,2011],[61.8,64.831592,25,2010],[57.8,59.617023,64,2014],[65.4,68.08932,110,2013],[67.3,67.349577,83,2006],[77.1,78.159122,27,2012],[68.5,72.834747,33,2006],[72.1,76.702071,16,2005],[63.3,61.316366,110,2002],[72.5,69.587366,104,2005],[76.8,76.541344,113,2013],[67.7,69.899762,45,2008],[72.9,72.283421,67,2007],[81.6,81.481592,97,2009],[66.5,68.721938,45,2001],[74.9,73.92104,23,2009],[63.3,57.147741,12,2003],[58.0,57.85402,117,2013],[48.1,49.551255,14,2004],[59.2,61.579142,116,2012],[78.9,78.943966,48,2000],[73.6,73.028512,67,2011],[68.3,72.801973,33,2005],[62.1,63.163602,53,2012],[82.0,81.858992,97,2012],[81.8,82.997548,49,2010],[73.0,74.478102,93,2014],[58.0,53.892271,21,2014],[73.0,68.210789,56,2001],[78.9,77.6893,22,2007],[57.6,60.636203,100,2013],[66.0,69.957577,44,2009],[72.9,74.715701,86,2007],[73.3,70.038243,50,2004],[69.3,69.285906,103,2013],[79.9,83.604797,37,2008],[74.5,70.674015,98,2011],[74.2,71.913242,50,2007],[71.4,78.527876,58,2002],[81.0,77.374045,65,2012],[55.9,60.362646,19,2012],[81.1,76.936997,59,2012],[74.2,71.297117,98,2005],[49.1,56.76304,3,2009],[67.4,67.622141,95,2005],[79.2,73.337693,26,2009],[66.5,67.441497,95,2002],[44.8,50.022511,117,2002],[65.0,70.389482,54,2006],[73.0,69.186578,115,2007],[71.0,70.446347,67,2000],[81.5,79.635941,49,2008],[63.5,62.365205,72,2004],[56.2,59.14563,106,2008],[64.3,67.558092,103,2002],[77.9,72.40081,63,2013],[81.1,77.328568,65,2013],[75.0,73.097466,68,2001],[66.9,68.158888,105,2010],[82.2,80.871681,34,2014],[68.7,76.049711,33,2008],[66.8,71.600167,46,2005],[67.2,68.050442,105,2011],[65.1,73.553108,54,2008],[65.4,65.758476,90,2008],[64.4,63.350257,78,2007],[79.7,80.510253,48,2003],[69.0,61.990687,60,2005],[78.3,80.167994,37,2001],[81.4,84.304751,74,2013],[45.3,61.933771,94,2007],[72.2,71.443496,93,2007],[65.2,64.015692,44,2007],[49.5,56.43983,71,2001],[79.6,78.388351,85,2010],[69.3,61.187946,115,2002],[83.0,78.031039,85,2012],[72.3,70.873838,98,2008],[82.0,81.046887,34,2013],[58.8,61.652586,0,2010],[55.3,55.878804,53,2006],[54.1,54.582666,53,2005],[75.4,73.352359,92,2014],[74.1,71.40333,104,2011],[72.6,71.471471,5,2001],[75.6,71.889515,68,2010],[59.7,60.024035,91,2004],[71.3,71.285799,99,2012],[67.6,72.271503,112,2003],[75.3,75.860167,84,2007],[68.4,67.294075,73,2011],[71.7,76.888451,9,2013],[73.5,72.258976,24,2008],[77.8,80.176088,59,2000],[74.6,75.197849,69,2008],[75.0,76.235095,55,2006],[73.6,71.318336,70,2012],[64.1,60.469319,110,2007],[75.7,75.226036,13,2006],[79.3,78.742022,48,2002],[54.8,56.957823,19,2009],[71.8,70.696075,98,2009],[71.1,72.909349,86,2003],[64.6,64.800467,88,2012],[65.2,71.345336,42,2006],[82.3,79.857337,101,2014],[48.1,59.490314,94,2014],[76.9,73.646952,13,2011],[78.0,69.613796,63,2001],[78.8,84.001432,10,2004],[67.6,68.4853,44,2013],[59.3,61.067077,80,2002],[84.0,78.981474,48,2007],[67.0,57.609797,30,2008],[75.3,73.70478,92,2013],[75.0,70.914569,50,2010],[65.0,62.040998,0,2015],[80.0,77.432452,48,2005],[61.4,56.443447,76,2014],[67.7,71.01189,112,2008],[49.3,52.305417,116,2005],[59.0,62.806246,17,2013],[82.0,77.193487,65,2009],[73.3,74.086498,107,2014],[67.1,69.991772,114,2002],[67.9,69.934429,45,2009],[58.6,61.900966,57,2008],[63.3,59.38976,32,2012],[62.4,63.951177,80,2013],[67.7,71.625619,112,2001],[74.7,76.187726,109,2008],[89.0,81.055537,10,2014],[73.3,69.995162,104,2007],[73.0,72.360586,89,2011],[75.7,78.039854,4,2011],[68.9,72.850089,99,2005],[72.1,70.385008,93,2004],[73.0,71.862675,7,2008],[69.5,64.852755,8,2009],[75.4,75.995719,69,2011],[66.2,63.704468,95,2001],[69.0,70.106068,29,2000],[55.3,55.031532,96,2008],[79.1,81.376741,37,2004],[72.0,76.728028,15,2004],[76.0,72.197555,89,2002],[55.3,62.26646,88,2005],[57.3,57.579275,41,2009],[74.6,71.517889,98,2013],[78.5,76.248496,28,2003],[57.0,57.680451,0,2004],[81.7,76.235333,34,2011],[69.6,67.773709,73,2014],[75.5,73.424009,79,2001],[73.9,66.533531,56,2005],[73.0,74.966777,55,2002],[61.2,62.080153,66,2007],[65.4,66.96448,73,2005],[74.5,72.22308,50,2008],[81.0,79.293736,20,2009],[56.8,57.964504,53,2007],[75.5,65.48962,13,2004],[73.7,76.210857,84,2000],[52.0,60.425894,88,2003],[74.7,77.038461,84,2003],[68.5,70.362865,114,2011],[46.0,56.322041,61,2005],[63.5,62.401911,78,2003],[72.3,71.239082,93,2009],[66.0,62.014576,66,2005],[65.3,71.996978,52,2007],[69.1,61.178928,115,2001],[63.8,65.45625,90,2004],[76.0,69.626744,46,2010],[70.0,69.460189,29,2004],[73.5,71.387577,50,2005],[59.2,61.904366,0,2011],[79.2,78.118792,39,2004],[74.0,74.072958,50,2006],[69.4,72.276912,87,2011],[73.0,71.802048,29,2013],[67.0,66.751476,83,2005],[69.0,61.741738,66,2006],[72.8,79.217607,55,2010],[71.2,68.937001,75,2005],[76.0,77.951679,4,2013],[67.3,69.06625,103,2010],[69.8,73.745446,11,2013],[75.4,77.009017,113,2004],[72.1,73.033495,82,2003],[82.1,81.791804,97,2011],[74.7,79.35478,4,2004],[57.5,57.24407,111,2009],[80.0,82.911457,37,2009],[55.0,47.121143,77,2007],[72.4,70.082575,18,2009],[79.8,76.635543,6,2006],[68.2,66.037121,8,2006],[66.7,66.943948,45,2002],[83.0,80.001029,39,2010],[79.2,81.780958,37,2005],[62.0,64.25237,80,2011],[74.9,74.582561,2,2011],[68.1,72.055814,9,2005],[68.0,67.939456,83,2009],[73.3,73.875636,15,2007],[73.0,73.532866,92,2004],[72.8,74.766282,107,2010],[69.3,70.602689,108,2003],[66.9,67.17427,90,2012],[66.5,58.955912,12,2007],[73.6,75.738432,55,2011],[71.8,71.17333,24,2002],[67.4,68.599327,105,2012]];
+/* 훈련 데이터 1,319개: 속성 6개(LE_A) + 기대 수명 */
+const LE_A=["Schooling","Income composition of resources","Adult Mortality","HIV/AIDS","BMI","GDP"];
+const LE_TR=[[13.7,0.762,96,0.1,58.5,1570,79.4],[9.1,0.444,278,1.8,22.0,82,57.6],[13.5,0.757,127,0.1,57.7,6423,74.6],[8.1,0.468,371,2.6,19.3,3869,48.7],[9.0,0.478,263,0.6,16.3,292,61.4],[14.9,0.714,195,0.1,6.2,4547,69.4],[13.5,0.759,125,0.1,55.3,4430,74.5],[13.7,0.729,154,0.1,3.1,5860,74.3],[14.2,0.73,148,0.1,53.6,12291,74.5],[10.3,0.508,23,0.4,19.5,462,64.7],[10.2,0.464,247,1.3,18.9,617,63.8],[13.6,0.737,152,0.1,32.4,5942,74.6],[15.2,0.804,88,0.1,59.3,1781,79.6],[6.4,0.415,242,0.7,19.5,774,65.0],[13.1,0.711,158,0.2,27.9,575,73.9],[9.7,0.504,225,1.6,22.2,649,63.4],[11.7,0.0,217,0.1,69.7,827,64.6],[10.6,0.44,633,30.0,28.3,918,46.2],[9.7,0.495,63,49.1,27.8,2874,46.0],[9.1,0.409,375,4.1,22.2,623,56.7],[12.7,0.706,131,0.1,54.8,1728,71.9],[15.5,0.777,11,0.1,5.1,1152,76.6],[20.3,0.915,66,0.1,62.0,36118,81.2],[10.4,0.438,282,3.7,17.1,6,68.0],[14.4,0.732,113,0.1,56.1,5565,75.1],[11.1,0.497,23,0.8,23.7,853,63.2],[7.6,0.439,314,1.5,4.4,637,59.9],[13.2,0.636,121,0.3,29.0,348,72.7],[12.9,0.713,16,0.1,57.5,1765,71.6],[10.8,0.592,138,0.1,5.8,3159,71.4],[7.3,0.396,273,1.5,2.7,78,56.5],[10.0,0.486,194,0.2,14.9,394,66.6],[10.4,0.0,245,0.1,41.3,2137,63.7],[13.4,0.752,98,0.1,56.5,9187,79.0],[8.8,0.515,29,0.5,19.8,988,65.4],[11.5,0.703,175,0.1,51.4,1668,77.0],[12.7,0.649,271,0.1,43.0,1335,65.0],[14.8,0.787,138,0.1,65.1,7853,74.3],[15.2,0.836,72,0.1,56.4,22197,80.0],[8.9,0.461,432,13.2,15.9,459,53.0],[7.6,0.484,214,1.2,27.4,123,62.0],[14.3,0.793,114,0.1,58.7,13547,75.8],[5.0,0.427,289,3.3,31.3,1215,62.0],[12.7,0.778,171,0.3,46.0,19325,71.1],[12.8,0.695,15,0.1,54.2,626,73.6],[8.7,0.433,287,0.1,15.7,373,58.1],[13.7,0.773,256,0.2,57.5,1675,68.4],[13.2,0.74,18,0.1,33.5,185,72.4],[12.7,0.739,12,0.1,54.1,3995,74.6],[9.9,0.557,171,1.6,39.6,113,71.3],[10.7,0.603,11,0.1,53.6,2834,72.8],[8.3,0.462,271,0.7,14.7,262,59.3],[11.3,0.577,139,0.1,15.2,2183,69.6],[12.8,0.688,151,0.3,47.2,322,74.2],[10.5,0.508,51,40.7,28.5,347,50.0],[8.9,0.463,4,5.4,19.3,88,49.2],[16.7,0.826,18,0.1,6.5,14358,72.8],[8.2,0.371,397,7.7,14.9,237,53.4],[14.4,0.712,14,0.1,73.3,445,72.9],[12.8,0.696,168,0.1,27.5,5230,71.9],[16.3,0.877,57,0.1,63.1,35397,82.5],[13.2,0.733,322,0.4,54.7,2975,64.6],[11.9,0.745,121,0.1,5.6,7876,72.2],[12.2,0.736,19,1.0,36.8,130,69.4],[9.7,0.4,277,2.1,24.0,34,59.2],[12.8,0.695,191,0.8,43.8,3933,69.0],[9.8,0.454,251,1.4,23.5,826,59.1],[12.9,0.609,498,29.5,43.6,5415,53.8],[12.8,0.765,12,0.1,55.6,1590,77.2],[12.5,0.565,328,4.8,22.3,186,63.0],[10.2,0.618,221,0.4,42.4,326,65.9],[16.8,0.802,121,0.1,59.8,1276,75.5],[9.3,0.404,328,6.2,15.9,342,57.6],[9.6,0.512,183,0.1,49.7,30,68.8],[9.6,0.476,21,0.2,14.4,349,66.0],[19.0,0.918,66,0.1,62.5,4992,81.3],[12.3,0.538,167,0.2,17.4,682,68.9],[11.8,0.601,112,0.1,16.7,3432,72.7],[15.8,0.876,85,0.1,61.6,4489,79.8],[7.2,0.455,235,0.1,37.9,155,65.8],[10.4,0.649,144,0.1,56.5,5855,77.0],[10.2,0.521,22,1.2,24.0,844,64.7],[8.2,0.501,28,1.1,29.4,146,62.7],[11.6,0.659,15,0.1,49.0,2246,72.4],[8.2,0.456,394,7.2,23.8,13,53.3],[11.9,0.597,2,0.1,77.1,1685,66.1],[11.8,0.637,274,0.1,42.1,999,64.5],[10.6,0.572,161,0.1,45.7,248,71.0],[7.2,0.433,321,1.4,39.6,588,59.6],[11.5,0.657,192,0.7,2.2,297,71.4],[11.8,0.651,183,0.2,4.0,1213,68.0],[13.3,0.744,177,0.1,34.2,12190,72.6],[12.3,0.736,133,0.1,32.5,7269,73.7],[11.4,0.625,221,0.1,18.7,2,66.8],[10.1,0.424,295,5.0,16.5,45,59.6],[9.6,0.485,286,1.1,44.9,1367,61.8],[15.2,0.761,29,0.1,56.3,5135,78.0],[16.1,0.829,189,0.1,56.3,16586,73.0],[15.5,0.78,111,0.1,61.8,14166,77.0],[15.0,0.782,28,0.1,51.4,1390,69.5],[10.0,0.478,325,4.0,17.6,662,67.0],[11.5,0.612,268,4.7,32.5,57,64.3],[11.8,0.56,679,37.2,3.5,3129,46.7],[12.1,0.696,196,0.6,54.1,7444,70.0],[11.4,0.604,299,6.2,31.8,5192,63.0],[13.3,0.749,16,0.1,55.5,8199,78.1],[7.3,0.387,366,3.1,18.2,986,52.2],[14.3,0.718,137,0.1,74.3,4267,73.2],[10.9,0.586,181,0.3,34.7,52,66.1],[7.1,0.362,39,2.8,14.5,243,58.5],[10.7,0.54,186,0.3,17.6,95,67.4],[9.1,0.519,28,2.6,23.6,20,59.9],[14.2,0.735,9,0.1,54.7,536,77.0],[6.3,0.467,252,2.1,34.4,175,63.0],[14.7,0.712,231,0.1,49.2,4369,67.8],[11.7,0.671,219,0.1,24.3,276,68.1],[10.0,0.458,251,1.3,24.1,838,59.3],[10.3,0.527,217,1.2,24.7,895,65.1],[11.9,0.644,184,0.3,39.3,182,67.9],[15.4,0.79,11,0.1,54.1,18785,77.7],[14.4,0.754,19,0.1,64.5,12543,75.2],[11.1,0.562,191,0.2,3.1,1822,67.3],[17.2,0.822,12,0.1,61.0,12970,75.9],[12.5,0.704,187,0.1,55.5,8319,76.0],[10.8,0.645,134,0.1,47.8,783,72.6],[13.2,0.751,13,0.1,56.5,4384,73.8],[13.6,0.714,119,0.1,53.9,4463,74.7],[13.3,0.763,99,0.1,65.4,8161,74.8],[10.7,0.67,15,0.1,46.9,1454,73.3],[15.7,0.878,61,0.1,63.0,3662,81.7],[12.7,0.682,148,0.3,46.5,279,74.4],[12.0,0.673,184,0.1,42.2,174,68.8],[11.9,0.585,26,0.1,75.7,1693,65.5],[10.9,0.681,17,0.1,48.9,2417,73.0],[7.2,0.475,217,1.3,26.1,1168,61.4],[15.2,0.823,81,0.1,59.2,18478,79.1],[15.8,0.851,66,0.1,58.2,31959,88.0],[15.9,0.892,66,0.1,57.1,51323,81.4],[9.9,0.47,268,0.1,18.1,632,59.9],[16.7,0.907,76,0.1,59.9,41786,81.0],[12.7,0.736,123,0.1,53.3,3844,74.4],[12.3,0.692,184,0.6,44.4,4187,69.4],[12.7,0.721,142,0.6,49.7,4293,74.7],[13.5,0.88,85,0.1,57.5,89740,79.4],[15.6,0.833,79,0.1,59.9,24919,81.0],[8.0,0.519,16,0.1,44.8,1332,68.6],[12.1,0.712,185,0.1,3.1,1193,72.2],[11.4,0.696,99,0.1,5.8,35,74.2],[11.3,0.603,157,0.5,45.9,1815,73.4],[10.0,0.477,339,4.6,17.2,648,60.0],[15.8,0.804,92,0.1,56.5,24816,79.0],[11.4,0.614,154,0.1,5.2,1526,73.2],[6.6,0.422,236,0.7,19.9,90,61.3],[11.3,0.607,183,0.3,36.4,396,67.2],[12.4,0.664,152,0.1,46.4,3226,73.2],[13.7,0.733,121,0.1,58.6,2537,72.8],[12.6,0.677,178,1.8,49.3,3836,72.3],[12.4,0.703,89,0.1,3.0,6338,75.4],[9.3,0.494,192,0.1,45.5,1158,68.1],[12.2,0.651,176,2.5,43.1,282,72.0],[11.7,0.707,132,0.1,49.7,3139,73.5],[10.9,0.668,132,0.1,48.4,1192,73.0],[13.9,0.737,294,0.1,46.3,3771,64.6],[12.3,0.685,284,0.1,44.4,150,64.4],[7.3,0.381,367,3.6,17.9,973,51.8],[15.9,0.889,6,0.1,63.8,32570,81.8],[11.9,0.725,137,0.1,5.7,2994,73.3],[14.4,0.706,12,0.1,55.6,4130,74.7],[13.3,0.681,254,0.1,54.9,1244,67.7],[10.8,0.58,193,0.2,16.4,1462,66.8],[11.1,0.597,159,0.6,45.1,1752,73.2],[12.9,0.709,163,0.1,57.0,169,71.1],[15.4,0.872,75,0.1,55.2,46658,84.0],[13.4,0.725,121,0.1,52.8,675,76.0],[12.9,0.682,179,0.3,26.5,3492,68.9],[5.8,0.338,29,1.9,18.0,488,53.6],[12.1,0.63,436,13.4,33.7,5714,56.9],[12.1,0.713,185,0.1,28.7,8525,72.1],[13.8,0.761,282,0.3,56.1,911,67.3],[12.0,0.713,1,0.1,52.6,438,75.3],[8.9,0.582,274,0.1,38.5,474,62.8],[13.6,0.754,131,0.1,56.4,5821,74.1],[10.1,0.562,192,0.4,42.8,116,73.0],[9.0,0.488,365,2.5,2.4,3530,49.6],[6.8,0.361,443,5.8,2.7,494,49.8],[15.5,0.826,84,0.1,61.8,15432,79.9],[13.9,0.695,253,0.1,55.8,1820,67.7],[16.4,0.812,24,0.1,59.0,12298,72.0],[13.5,0.762,172,0.1,35.5,15687,72.9],[11.4,0.636,123,0.1,48.5,1762,73.7],[13.6,0.739,119,0.1,6.1,3386,73.1],[12.6,0.7,133,0.1,54.0,1658,71.7],[11.1,0.653,14,0.1,54.3,3120,78.0],[13.8,0.768,152,0.1,62.1,6956,73.2],[11.0,0.469,52,10.5,3.2,1352,52.3],[14.8,0.0,15,0.1,59.7,5426,73.5],[12.2,0.673,177,0.1,25.8,3792,71.5],[12.8,0.7,181,0.6,45.0,4325,69.6],[8.8,0.372,45,12.6,19.7,53,53.2],[13.1,0.74,98,0.1,62.5,713,74.5],[10.0,0.483,38,3.2,18.1,719,61.5],[8.9,0.434,281,0.1,16.2,446,58.6],[11.8,0.742,123,0.1,49.7,7496,71.9],[7.2,0.309,355,3.4,14.8,18,54.8],[13.9,0.683,14,0.1,52.2,3195,74.2],[17.2,0.862,73,0.1,66.0,21674,88.0],[9.5,0.408,7,26.8,27.9,415,45.4],[9.6,0.4,525,16.9,16.9,373,50.0],[12.4,0.668,163,0.3,43.6,1451,72.8],[14.4,0.737,112,0.1,57.2,5472,75.3],[11.9,0.576,28,0.1,74.6,1297,65.2],[10.8,0.591,141,0.1,49.9,3276,71.2],[14.6,0.813,64,0.1,66.6,21929,80.0],[15.2,0.86,8,0.1,53.7,46587,81.0],[15.0,0.747,121,0.1,57.0,3623,75.4],[16.4,0.86,64,0.1,63.5,3736,81.9],[12.9,0.657,23,0.3,5.8,335,71.2],[13.9,0.794,84,0.1,57.4,1243,78.2],[13.3,0.738,88,0.1,55.1,4437,76.6],[7.5,0.521,172,0.1,21.9,14,65.1],[6.4,0.363,282,1.7,19.0,596,55.0],[8.1,0.393,274,2.0,15.3,380,68.0],[12.3,0.697,124,0.1,59.3,979,73.2],[4.2,0.307,263,1.1,16.9,341,57.1],[16.4,0.872,6,0.1,61.5,38335,82.0],[12.8,0.727,136,0.6,52.7,56,75.6],[5.1,0.331,232,0.7,18.1,392,63.0],[7.9,0.371,33,2.3,19.8,437,56.8],[16.2,0.886,78,0.1,62.6,4475,83.0],[10.4,0.569,196,0.2,15.9,1346,66.4],[12.4,0.678,325,5.5,35.7,7645,62.2],[12.0,0.714,178,0.1,52.4,2125,77.0],[11.8,0.651,75,0.1,21.2,597,76.3],[16.3,0.827,79,0.1,6.2,21619,86.0],[14.7,0.794,138,0.1,59.2,9585,74.6],[10.1,0.452,464,13.3,29.9,840,54.9],[12.5,0.722,12,0.1,49.9,2492,74.4],[11.1,0.492,487,13.6,19.2,115,52.6],[10.3,0.0,231,0.1,39.4,1284,63.4],[10.2,0.622,11,0.1,23.4,159,73.5],[13.5,0.679,155,0.1,67.0,1842,71.9],[13.3,0.706,14,0.3,51.5,4167,73.8],[14.6,0.692,176,0.1,45.3,2820,71.4],[7.9,0.319,35,2.9,15.2,196,55.3],[7.2,0.384,271,0.8,17.7,674,58.6],[16.3,0.792,24,0.1,58.1,677,71.6],[14.7,0.774,214,0.1,5.6,12387,69.1],[12.1,0.675,65,0.1,24.1,6542,77.6],[15.6,0.777,118,0.1,61.2,11938,76.3],[11.7,0.668,196,0.3,4.8,3364,68.3],[13.6,0.758,97,0.1,57.5,9985,79.2],[14.6,0.717,13,0.1,58.3,4138,74.9],[12.2,0.719,126,0.1,56.4,7987,75.3],[14.9,0.817,97,0.1,62.5,13575,77.7],[16.0,0.879,86,0.1,6.1,473,81.3],[10.0,0.57,132,0.1,17.7,185,71.4],[11.4,0.694,129,0.1,52.4,673,74.8],[12.0,0.675,132,0.1,56.8,65,72.0],[5.9,0.356,283,1.1,16.1,553,56.9],[14.1,0.849,6,0.1,57.3,3216,79.3],[13.2,0.739,117,0.1,61.7,3679,73.4],[14.5,0.698,145,0.1,71.5,3393,72.6],[15.1,0.799,19,0.1,6.7,7186,75.8],[5.3,0.405,329,1.3,14.7,317,62.0],[14.2,0.728,228,0.1,55.7,3573,69.9],[10.1,0.599,263,0.1,39.8,572,63.8],[9.9,0.419,587,18.1,29.0,66,50.0],[7.8,0.491,29,1.2,28.8,1364,62.5],[10.5,0.656,147,0.1,57.2,6651,76.0],[10.8,0.685,15,0.1,49.9,279,73.5],[9.4,0.491,259,0.5,17.1,48,62.3],[11.2,0.563,257,0.9,26.7,1630,61.6],[10.3,0.442,41,8.4,15.2,42,55.5],[10.1,0.561,169,1.5,4.4,1133,71.6],[16.1,0.877,88,0.1,59.1,45414,89.0],[16.5,0.856,127,0.1,59.0,1930,76.9],[13.6,0.643,12,0.2,29.7,3559,72.8],[14.6,0.701,235,0.1,48.0,3770,67.3],[10.3,0.659,17,0.1,57.8,6925,69.5],[13.7,0.752,143,0.1,21.2,336,74.5],[10.0,0.436,527,15.7,29.4,714,52.4],[13.0,0.704,168,0.1,28.0,5116,72.1],[13.0,0.774,13,0.1,36.3,145,74.3],[12.5,0.66,294,7.0,33.5,8754,62.3],[14.0,0.738,131,0.1,55.0,6872,75.1],[12.8,0.755,127,0.1,53.4,7430,76.8],[12.9,0.682,149,0.1,7.9,323,72.2],[12.8,0.734,133,0.1,51.3,277,73.2],[14.7,0.78,159,0.1,55.6,1136,73.1],[14.3,0.693,25,0.1,46.9,265,66.3],[12.8,0.638,413,8.5,47.9,850,58.9],[10.3,0.633,218,0.3,45.0,3944,65.9],[15.0,0.813,14,0.1,57.2,141,75.5],[10.0,0.521,362,3.9,24.7,3222,53.6],[6.5,0.373,295,0.1,13.4,199,56.7],[9.1,0.405,46,5.1,21.8,66,55.3],[9.8,0.603,21,0.1,51.9,1392,67.2],[6.2,0.418,335,1.1,37.5,632,58.9],[9.4,0.492,69,50.3,27.4,2530,45.6],[10.9,0.473,362,8.0,16.3,595,58.4],[20.4,0.936,6,0.1,66.1,62215,82.7],[13.1,0.705,123,0.1,52.8,3869,74.4],[15.8,0.877,65,0.1,62.1,29657,81.0],[7.9,0.446,37,1.5,41.1,78,64.0],[10.7,0.579,183,0.3,34.1,44,65.9],[9.5,0.583,115,0.1,2.5,959,71.7],[12.5,0.687,3,4.4,36.2,729,63.4],[12.5,0.664,289,6.0,34.1,1716,62.8],[12.2,0.617,16,0.1,17.3,3853,73.4],[13.6,0.762,125,0.1,57.2,5957,74.2],[13.5,0.874,9,0.1,57.0,8290,78.8],[12.0,0.47,287,1.5,23.1,579,59.4],[10.3,0.509,225,0.3,2.0,452,65.1],[11.9,0.602,126,0.6,25.5,3112,72.3],[15.1,0.803,17,0.1,61.3,7378,75.9],[10.3,0.599,134,0.1,46.0,1253,73.0],[10.0,0.486,371,4.9,26.6,1296,55.6],[6.2,0.311,416,14.5,17.3,263,49.8],[16.1,0.835,167,0.1,56.7,1895,74.2],[13.2,0.73,135,0.1,53.9,3528,73.0],[13.9,0.892,65,0.1,6.9,119173,81.7],[14.8,0.797,144,0.1,55.5,821,75.0],[9.1,0.483,261,0.6,16.7,378,61.9],[16.3,0.792,126,0.1,58.6,8953,75.4],[9.8,0.463,272,0.1,17.6,670,59.5],[12.7,0.697,146,0.1,15.6,989,73.9],[11.9,0.691,196,1.2,53.3,6858,69.8],[9.3,0.551,146,0.1,47.3,1722,69.9],[12.2,0.661,393,9.0,34.7,5186,59.2],[11.8,0.574,211,0.1,73.4,1358,65.0],[13.2,0.707,143,0.1,55.7,7885,74.3],[10.7,0.439,666,34.6,26.9,782,44.8],[10.4,0.57,193,0.4,43.5,144,73.0],[12.4,0.767,185,0.3,4.2,21188,69.9],[6.7,0.36,364,4.1,17.1,897,51.2],[11.6,0.708,14,0.1,45.9,3851,73.0],[13.4,0.735,125,0.1,54.9,6492,75.3],[12.9,0.74,99,0.1,53.4,6911,78.9],[11.4,0.541,382,7.3,31.8,3464,58.4],[11.9,0.61,491,14.4,33.2,5375,54.8],[13.2,0.746,95,0.1,63.0,84,74.7],[13.4,0.739,133,0.1,54.5,4130,73.6],[11.8,0.641,81,0.1,2.3,5829,75.9],[9.5,0.492,374,4.8,22.2,2327,52.0],[9.5,0.397,47,9.6,2.9,527,54.3],[10.9,0.429,446,8.7,14.5,316,53.2],[12.9,0.758,121,0.1,54.9,928,77.3],[16.6,0.877,6,0.1,62.1,34814,82.0],[14.5,0.763,236,0.1,49.2,98,67.8],[12.6,0.774,176,0.4,43.0,1954,76.0],[19.8,0.927,63,0.1,64.4,62245,82.0],[11.6,0.615,219,0.4,46.2,2339,68.9],[14.9,0.739,226,0.1,57.7,4735,69.8],[12.9,0.662,191,0.3,52.8,3474,72.0],[11.4,0.0,129,0.1,46.0,692,71.8],[9.6,0.5,375,4.7,22.8,2528,52.3],[12.3,0.675,15,0.1,47.1,3988,73.4],[12.9,0.735,115,0.1,63.2,388,73.7],[14.7,0.72,13,0.1,59.3,4199,74.9],[5.5,0.333,296,2.0,17.5,439,52.8],[10.8,0.596,134,0.1,52.5,3148,71.7],[8.5,0.396,288,1.9,21.7,52,58.4],[11.2,0.526,438,15.7,3.2,3934,55.0],[10.6,0.542,24,0.5,26.9,1130,66.2],[8.3,0.367,441,1.9,2.7,46,46.2],[8.5,0.457,268,0.7,15.0,317,59.9],[9.6,0.567,28,0.4,43.8,278,69.2],[16.8,0.824,188,0.1,6.0,11985,72.4],[9.6,0.403,272,1.8,24.5,327,59.7],[18.0,0.869,11,0.1,58.1,2327,77.6],[9.4,0.588,266,0.1,39.1,524,63.2],[15.6,0.876,63,0.1,62.6,27796,81.5],[13.5,0.723,125,0.1,57.0,261,72.5],[12.9,0.734,135,0.1,3.7,5594,73.4],[11.6,0.614,15,0.4,49.3,2137,74.3],[9.1,0.526,27,0.5,2.5,1186,65.6],[13.2,0.676,181,0.2,55.4,3989,73.3],[11.2,0.692,141,0.1,49.2,2158,72.9],[15.9,0.812,189,0.1,55.5,1338,72.8],[11.9,0.596,129,0.6,24.9,234,72.1],[7.9,0.465,224,0.5,16.4,247,63.9],[10.8,0.613,189,0.1,17.5,165,66.9],[13.0,0.661,26,0.1,43.9,1635,65.9],[15.1,0.797,11,0.1,6.2,6587,75.6],[11.1,0.574,14,0.8,23.7,1976,71.4],[10.7,0.533,19,0.3,17.0,882,67.0],[17.6,0.877,58,0.1,66.0,296,82.6],[8.7,0.384,424,1.6,21.7,45,48.1],[9.1,0.483,192,0.3,23.8,152,66.4],[15.8,0.837,77,0.1,6.5,2652,81.0],[15.8,0.891,75,0.1,61.9,4387,85.0],[9.7,0.421,632,20.5,28.6,326,48.2],[14.6,0.758,235,0.1,48.5,7165,67.8],[12.8,0.644,48,7.6,48.7,7548,59.2],[10.2,0.636,227,0.1,53.8,3129,65.9],[14.8,0.809,66,0.1,65.6,16672,79.3],[16.1,0.885,83,0.1,61.1,4838,81.5],[12.3,0.745,189,0.5,37.6,12323,69.5],[11.9,0.572,225,0.5,21.1,2458,68.3],[15.4,0.833,96,0.1,5.1,24517,78.1],[15.7,0.884,7,0.1,56.1,48334,88.0],[20.3,0.933,61,0.1,65.5,67792,82.5],[13.3,0.716,97,0.1,52.6,4698,76.1],[6.2,0.341,3,0.1,13.0,188,56.2],[13.6,0.755,128,0.1,57.0,5412,74.4],[12.2,0.615,124,0.4,26.2,3639,72.4],[12.7,0.677,153,0.1,7.3,288,72.0],[13.1,0.681,221,0.1,5.2,276,67.7],[11.3,0.572,144,0.9,23.2,1769,71.1],[15.6,0.849,13,0.1,55.2,22527,79.0],[20.5,0.899,75,0.1,59.0,19518,79.9],[13.2,0.739,184,0.1,31.8,11123,72.2],[10.4,0.542,271,2.1,24.9,187,66.0],[14.6,0.799,229,0.2,59.3,15544,70.0],[11.0,0.587,194,0.3,45.7,192,71.0],[10.4,0.501,364,4.0,27.8,1365,56.4],[11.1,0.608,166,0.2,37.4,835,68.1],[14.6,0.785,117,0.1,58.5,6699,75.0],[18.1,0.921,62,0.1,6.5,49475,81.1],[9.1,0.533,25,0.5,21.3,1172,65.9],[5.3,0.405,336,1.4,14.3,298,59.7],[15.7,0.77,119,0.1,6.1,962,76.4],[10.1,0.578,192,0.4,45.2,2490,75.0],[9.2,0.477,288,1.1,44.2,1167,61.6],[13.2,0.758,93,0.1,64.0,8735,75.0],[14.7,0.784,149,0.1,53.6,4981,74.2],[7.6,0.529,165,0.1,23.2,1261,65.7],[12.9,0.611,497,29.7,42.9,4864,53.7],[9.7,0.48,37,5.5,26.0,1183,55.3],[15.8,0.789,15,0.1,52.5,15773,77.3],[10.7,0.597,188,0.1,15.4,79,66.3],[13.4,0.673,225,0.1,44.9,2140,67.4],[8.9,0.401,288,6.0,22.5,544,56.3],[11.2,0.621,284,0.1,41.3,798,64.0],[15.6,0.793,194,0.1,6.5,694,71.9],[10.8,0.484,237,0.8,22.6,789,62.5],[12.3,0.679,148,0.1,47.9,3856,73.6],[10.0,0.588,136,0.1,43.9,1178,72.6],[9.4,0.497,186,0.1,47.2,1643,68.5],[9.2,0.502,587,49.9,26.7,1325,46.4],[14.7,0.837,88,0.1,51.7,3213,78.8],[14.2,0.752,86,0.1,55.8,4248,76.9],[13.2,0.696,133,0.3,5.2,3611,74.0],[18.1,0.923,58,0.1,61.6,52157,81.7],[13.5,0.877,82,0.1,57.9,1618,79.7],[16.3,0.85,77,0.1,61.2,2481,79.7],[15.9,0.791,216,0.1,57.0,7559,76.0],[13.1,0.675,247,0.1,54.4,1276,68.0],[7.6,0.0,29,0.1,14.4,88,61.7],[8.3,0.463,2,0.4,22.7,136,65.6],[13.5,0.749,132,0.1,55.8,672,74.0],[7.6,0.378,289,2.4,14.9,325,59.8],[12.2,0.703,128,0.1,48.6,154,73.9],[13.7,0.683,153,0.1,67.8,230,72.0],[11.8,0.631,184,0.3,38.7,83,67.8],[11.5,0.625,157,0.1,51.7,1792,73.9],[10.6,0.665,217,0.1,45.0,5650,65.6],[11.9,0.712,99,0.1,47.3,462,78.3],[12.6,0.745,124,0.1,6.8,9834,76.1],[4.5,0.312,252,0.9,17.3,348,58.2],[11.3,0.59,19,0.2,17.0,1447,67.3],[12.3,0.679,148,0.2,48.6,4480,73.8],[5.8,0.36,278,1.6,19.6,690,55.5],[10.4,0.589,19,0.4,45.9,2794,79.0],[4.7,0.0,343,1.9,13.3,233,58.8],[12.9,0.701,128,0.1,74.3,4179,73.8],[15.9,0.853,77,0.1,62.4,31997,79.9],[15.0,0.787,115,0.1,59.1,6682,75.3],[13.4,0.854,96,0.1,54.6,48179,78.0],[10.5,0.609,271,0.1,4.5,647,64.0],[8.1,0.459,29,0.1,41.3,818,67.1],[12.0,0.597,124,0.1,16.2,32,71.8],[11.4,0.648,216,0.1,21.1,1673,67.5],[14.9,0.734,24,0.2,59.0,3570,75.0],[11.4,0.0,228,0.5,2.3,2179,67.9],[11.6,0.613,183,0.3,37.0,465,67.8],[10.6,0.662,14,0.1,46.0,1327,73.6],[12.1,0.648,161,0.2,43.5,190,72.3],[14.9,0.803,225,0.1,59.9,14126,73.0],[10.9,0.464,527,13.4,29.7,1173,51.1],[10.5,0.502,183,0.2,15.9,49,67.5],[13.1,0.728,185,0.1,3.7,1214,72.2],[13.3,0.708,14,0.2,52.2,522,73.7],[11.9,0.581,24,0.1,76.2,1764,65.7],[9.6,0.0,245,0.3,17.4,1335,65.8],[12.9,0.695,157,1.2,52.6,4953,73.6],[13.6,0.728,166,0.1,29.7,84,72.7],[13.6,0.733,153,0.1,31.3,6171,74.5],[5.5,0.338,321,0.1,12.2,115,54.8],[11.6,0.703,127,0.1,54.1,717,75.0],[8.3,0.456,4,7.4,23.3,952,52.8],[10.0,0.565,135,0.1,17.0,952,71.0],[13.1,0.632,122,0.3,28.2,367,72.6],[10.7,0.437,675,34.8,27.4,863,44.5],[7.9,0.484,161,0.1,11.6,433,66.8],[12.0,0.475,285,1.0,23.7,62,59.7],[10.0,0.581,128,0.1,5.8,2494,71.4],[7.0,0.332,429,15.9,18.1,336,54.0],[14.3,0.8,116,0.1,59.4,15894,76.0],[14.5,0.714,13,0.1,57.4,4257,74.8],[6.5,0.501,179,0.1,19.5,874,64.2],[8.2,0.45,437,14.5,15.5,437,52.4],[9.5,0.509,182,0.1,48.9,189,68.8],[7.2,0.343,415,8.0,14.1,197,57.0],[16.3,0.868,61,0.1,6.5,36977,81.6],[10.8,0.491,522,9.4,32.0,1175,52.1],[14.9,0.734,231,0.3,58.0,2545,69.2],[12.7,0.748,123,0.1,61.5,983,76.3],[11.3,0.569,148,0.8,22.6,1374,77.0],[12.9,0.609,496,28.1,44.3,5632,54.0],[12.8,0.7,91,0.1,29.0,5634,75.2],[10.7,0.477,347,6.8,16.7,584,59.3],[16.2,0.814,221,0.1,57.7,1444,78.0],[12.6,0.693,286,2.8,36.8,78,64.2],[14.2,0.803,19,0.1,6.0,14157,76.3],[11.9,0.725,144,0.1,27.0,3915,72.7],[10.6,0.519,192,0.5,16.4,786,66.6],[15.8,0.904,57,0.1,58.5,6283,81.9],[13.5,0.86,95,0.1,55.2,5294,78.3],[13.0,0.7,144,0.1,55.0,7228,74.2],[12.5,0.709,118,0.1,61.1,936,73.9],[10.0,0.0,222,0.1,67.9,797,64.1],[15.9,0.909,67,0.1,65.8,52414,81.8],[10.3,0.508,358,2.6,21.5,4598,56.0],[15.5,0.787,232,0.1,59.9,6520,72.0],[17.5,0.874,6,0.1,65.4,2922,82.4],[9.3,0.361,33,1.9,16.1,231,56.8],[10.1,0.483,216,1.1,14.3,540,64.1],[11.1,0.484,518,9.6,31.4,1196,52.1],[12.4,0.0,214,0.1,71.4,114,64.8],[11.5,0.669,147,0.1,51.3,380,73.1],[11.9,0.668,135,0.1,55.9,4719,71.6],[14.6,0.811,81,0.1,58.6,1411,79.0],[8.9,0.405,287,5.9,23.1,544,56.7],[9.2,0.4,48,6.9,21.3,567,54.8],[12.6,0.772,174,0.4,44.0,19153,78.0],[16.5,0.85,135,0.1,58.5,17422,76.3],[11.0,0.559,192,0.2,29.3,1620,67.1],[9.8,0.464,429,8.8,3.3,956,56.6],[12.9,0.691,172,0.1,72.0,335,76.0],[16.4,0.85,12,0.1,61.1,14342,77.3],[5.5,0.441,273,3.1,32.2,1326,61.3],[13.1,0.737,116,0.1,62.4,387,73.6],[10.4,0.0,173,0.1,43.3,159,69.4],[12.0,0.694,134,0.1,48.1,127,72.3],[12.6,0.697,126,0.1,51.8,495,74.1],[13.5,0.667,17,0.1,5.6,2762,73.7],[12.5,0.612,155,0.1,17.0,1154,68.0],[16.6,0.898,82,0.1,58.5,41815,79.8],[6.3,0.464,256,2.1,33.8,1623,62.7],[16.5,0.841,169,0.1,61.9,16555,73.4],[15.3,0.834,125,0.1,59.7,13145,76.8],[10.5,0.398,33,1.0,17.6,283,58.6],[15.9,0.912,65,0.1,66.4,544,82.0],[12.2,0.684,21,1.5,42.6,3680,68.4],[12.5,0.702,189,0.1,48.5,4674,69.4],[10.3,0.362,613,24.2,15.2,26,44.6],[4.5,0.416,296,3.5,3.9,148,59.8],[12.7,0.7,276,0.1,44.8,1658,64.7],[9.4,0.516,536,46.4,25.9,1637,48.4],[13.8,0.761,155,0.1,61.5,7296,72.9],[12.8,0.734,93,0.1,52.4,613,78.9],[12.3,0.686,132,0.1,49.8,3465,73.4],[15.7,0.805,195,0.1,55.2,885,72.3],[13.5,0.643,117,0.2,3.5,3530,73.0],[11.7,0.708,1,0.1,46.4,3982,77.5],[12.8,0.722,139,0.6,51.2,514,75.2],[13.2,0.712,154,0.3,57.9,6269,73.6],[14.9,0.828,75,0.1,55.7,25,79.8],[9.6,0.377,587,21.1,16.2,298,47.1],[6.6,0.422,331,1.3,38.2,539,59.1],[6.1,0.487,2,0.1,18.9,711,62.9],[12.4,0.665,162,0.1,68.9,2351,71.4],[12.8,0.727,313,0.3,54.5,2376,64.8],[13.5,0.755,157,0.1,6.9,5933,72.6],[10.3,0.589,123,0.1,51.7,2885,71.8],[15.7,0.796,199,0.1,61.7,8318,72.0],[9.9,0.557,137,0.1,16.4,856,77.0],[16.3,0.872,9,0.1,56.6,3360,78.5],[9.3,0.506,568,48.8,26.3,1438,47.1],[14.0,0.745,2,0.1,56.9,3297,71.6],[13.1,0.754,122,0.1,62.8,1452,76.6],[9.2,0.582,32,4.4,24.0,193,57.9],[13.0,0.715,116,0.1,61.9,1673,74.2],[11.2,0.62,232,1.9,4.3,2328,65.7],[7.5,0.444,219,0.5,21.2,13,63.5],[13.5,0.826,65,0.1,55.3,25324,78.7],[11.8,0.621,24,0.4,47.0,248,73.0],[13.1,0.703,134,0.1,5.7,4657,75.0],[12.1,0.599,165,0.1,15.1,757,66.6],[12.4,0.7,188,0.5,47.8,4516,69.4],[9.1,0.401,411,0.9,22.7,562,49.7],[14.2,0.742,123,0.1,55.7,6281,75.2],[14.7,0.757,21,0.1,57.2,353,71.2],[10.7,0.514,317,5.0,18.4,93,59.1],[13.5,0.725,287,0.1,45.8,2874,64.7],[8.1,0.423,285,2.1,2.1,583,56.1],[15.2,0.0,17,0.1,59.1,5437,73.2],[13.3,0.738,157,0.1,59.1,3382,72.2],[14.4,0.808,65,0.1,66.1,19376,79.6],[10.5,0.0,234,0.4,18.8,1795,67.0],[12.5,0.666,214,2.1,47.2,2422,69.3],[11.9,0.694,166,2.3,44.5,3465,73.1],[10.6,0.0,211,0.1,44.2,4439,65.8],[11.1,0.629,19,0.1,19.0,127,67.2],[10.0,0.459,259,0.1,2.1,73,66.0],[13.0,0.693,134,0.4,49.5,3171,74.2],[11.9,0.672,97,0.1,26.5,3471,74.5],[8.9,0.535,142,0.1,15.2,758,69.9],[12.4,0.652,31,8.0,33.0,764,61.7],[15.7,0.82,86,0.1,57.6,14677,79.1],[13.8,0.737,114,0.1,62.8,11341,74.5],[13.6,0.687,262,0.1,55.3,1479,67.2],[16.0,0.849,72,0.1,61.7,3279,89.0],[12.3,0.545,162,0.1,18.0,689,69.3],[7.1,0.37,451,5.1,21.6,337,49.9],[12.9,0.688,146,0.1,71.4,360,72.5],[7.5,0.404,271,1.5,21.3,836,56.8],[14.3,0.685,179,0.1,44.5,3147,71.0],[11.9,0.708,127,0.1,54.9,6752,75.0],[10.7,0.682,154,0.1,45.3,2474,69.2],[14.7,0.765,147,0.1,32.3,9637,74.1],[10.3,0.466,251,1.2,24.6,915,59.5],[11.5,0.57,254,0.9,27.3,1814,61.9],[14.6,0.693,151,0.1,68.6,2284,72.2],[11.0,0.609,244,2.3,37.1,97,65.3],[11.9,0.558,699,34.6,31.1,356,46.0],[6.0,0.338,394,4.7,16.4,930,49.6],[8.5,0.509,26,0.9,3.1,1327,63.0],[15.9,0.863,69,0.1,6.1,19888,81.0],[7.6,0.484,31,3.5,2.7,39,57.6],[12.1,0.634,97,0.1,56.5,3112,73.9],[9.2,0.518,214,0.3,13.0,621,64.0],[10.9,0.606,247,1.7,36.4,926,65.4],[13.6,0.741,321,0.3,55.0,412,64.9],[13.5,0.755,174,0.1,34.8,12845,72.7],[13.4,0.691,218,0.1,54.2,3333,68.1],[6.7,0.37,365,3.9,17.5,989,51.6],[9.8,0.57,24,0.4,44.5,2257,69.7],[11.1,0.53,278,3.4,19.5,987,61.2],[14.0,0.737,121,0.1,53.5,6432,76.0],[8.0,0.453,215,0.1,4.4,745,66.8],[13.0,0.629,429,24.0,4.9,2682,56.0],[15.4,0.814,161,0.1,6.2,1532,74.1],[8.7,0.466,267,0.6,15.4,245,64.0],[14.3,0.778,139,0.1,63.9,7378,73.9],[14.2,0.775,144,0.1,63.3,7814,73.7],[16.0,0.901,58,0.1,57.7,59593,81.7],[14.1,0.703,247,0.1,56.2,2378,68.2],[15.8,0.874,87,0.1,61.3,48425,79.5],[7.1,0.435,225,0.6,2.8,11,62.8],[11.5,0.619,232,3.7,33.3,5749,65.8],[10.6,0.444,441,11.2,18.0,512,54.1],[15.6,0.839,81,0.1,6.5,22552,79.3],[13.3,0.738,132,0.1,52.0,2964,73.8],[14.7,0.722,12,0.1,6.2,4272,75.1],[10.9,0.0,232,0.4,19.5,177,67.4],[13.0,0.692,148,0.4,48.8,2755,72.8],[9.5,0.406,266,1.5,25.0,380,62.0],[10.6,0.651,146,0.1,43.1,764,67.8],[13.6,0.736,12,0.1,59.3,2763,73.0],[12.9,0.698,136,0.1,73.4,4235,73.2],[12.6,0.671,16,0.1,69.7,2571,71.6],[10.7,0.577,197,0.4,44.2,11,75.0],[10.7,0.611,189,0.4,49.3,3453,71.4],[12.3,0.646,163,0.2,42.8,157,72.1],[11.6,0.0,215,0.1,7.6,115,64.7],[11.2,0.649,194,0.8,19.4,1893,71.2],[11.9,0.675,144,0.1,52.0,4674,73.5],[14.7,0.716,267,0.8,56.8,233,67.7],[13.5,0.836,63,0.1,56.3,31387,78.9],[12.5,0.691,92,0.1,28.1,457,75.0],[12.0,0.723,14,0.1,27.9,4167,72.9],[12.9,0.744,125,0.1,51.1,5349,76.2],[12.3,0.721,14,0.1,5.1,41,73.2],[13.2,0.709,157,0.3,56.8,628,73.4],[10.6,0.442,336,4.3,2.9,500,56.7],[12.8,0.662,23,0.3,52.1,3366,71.4],[12.3,0.0,188,0.1,27.1,7579,71.8],[15.2,0.744,198,0.2,6.1,430,71.0],[14.6,0.819,62,0.1,67.6,2188,83.0],[12.9,0.697,166,0.9,53.6,5452,72.7],[9.7,0.507,374,4.4,23.5,2755,52.7],[16.2,0.841,83,0.1,63.1,14817,83.0],[9.1,0.487,245,0.5,48.8,83,63.1],[10.1,0.658,199,0.1,58.5,674,67.9],[15.5,0.791,117,0.1,63.4,16738,76.8],[7.1,0.385,276,1.6,2.2,697,56.0],[12.8,0.699,181,0.1,45.7,447,69.6],[8.1,0.491,158,0.1,12.0,47,67.3],[8.6,0.513,151,0.1,13.5,542,68.6],[10.3,0.465,251,0.1,21.1,779,61.3],[11.0,0.404,523,10.0,13.6,24,48.8],[8.1,0.499,296,3.1,22.4,498,58.9],[13.4,0.721,133,0.2,52.9,5772,74.5],[7.3,0.514,175,0.1,21.3,17,64.8],[7.7,0.538,163,0.1,23.9,1272,66.0],[14.4,0.741,11,0.1,58.4,548,75.4],[12.3,0.662,185,0.3,23.8,3634,68.3],[16.1,0.782,127,0.1,57.5,5879,75.2],[14.8,0.729,225,0.1,51.5,4182,68.4],[8.2,0.454,299,1.5,41.9,854,68.0],[8.0,0.474,22,0.6,17.0,297,64.2],[13.6,0.865,92,0.1,55.8,65446,78.6],[14.3,0.747,295,0.1,46.8,5292,65.0],[16.5,0.83,176,0.1,6.9,14342,73.0],[9.0,0.41,289,5.7,23.7,693,57.1],[15.8,0.894,74,0.1,62.5,44545,85.0],[15.4,0.82,86,0.1,61.2,1476,79.8],[10.7,0.459,394,6.3,18.8,333,56.7],[16.8,0.858,76,0.1,64.9,22243,84.0],[15.8,0.78,22,0.1,57.8,556,71.6],[13.4,0.713,165,0.1,28.6,5696,71.8],[9.9,0.502,564,43.7,28.2,2937,47.8],[10.1,0.492,189,0.2,15.4,474,67.0],[14.2,0.742,89,0.1,55.3,5194,77.2],[11.6,0.636,148,0.1,53.2,1975,74.5],[12.5,0.691,197,0.8,43.2,3832,68.7],[12.8,0.685,151,0.4,48.1,2448,72.2],[12.2,0.714,187,0.1,27.6,7663,72.0],[9.1,0.415,279,4.5,25.0,62,58.1],[5.0,0.405,286,0.7,16.5,583,62.9],[12.4,0.646,288,10.7,31.4,728,61.4],[14.6,0.853,59,0.1,57.8,3818,79.5],[10.1,0.553,182,0.3,32.5,236,65.2],[11.9,0.589,22,0.1,76.7,1724,65.8],[12.4,0.651,298,8.9,32.4,194,61.6],[15.5,0.857,94,0.1,57.0,33875,82.0],[15.2,0.727,19,0.1,61.9,546,69.7],[12.8,0.764,131,0.1,35.3,971,74.1],[10.7,0.589,149,0.1,48.2,2643,78.0],[15.4,0.841,72,0.1,57.0,27387,79.9],[9.6,0.416,261,1.2,25.6,415,67.0],[8.2,0.411,249,1.4,16.0,355,62.6],[19.5,0.927,64,0.1,63.9,51875,81.9],[9.6,0.414,67,23.7,28.2,397,46.6],[15.9,0.792,99,0.1,53.3,1846,78.0],[14.9,0.728,212,0.2,58.5,2965,69.8],[11.6,0.728,132,0.1,47.3,495,78.0],[13.1,0.735,128,0.1,5.5,3175,73.9],[14.7,0.746,124,0.1,56.3,489,75.4],[14.7,0.72,227,0.1,5.4,4385,68.1],[16.9,0.919,71,0.1,61.4,4654,86.0],[9.1,0.493,6,50.6,27.1,23,45.9],[12.3,0.7,19,0.5,54.8,833,73.0],[15.5,0.86,93,0.1,57.5,34880,81.0],[12.3,0.69,129,0.1,5.8,3935,73.8],[11.9,0.657,183,0.2,4.7,1378,68.3],[10.8,0.683,217,0.1,47.7,7962,66.0],[12.4,0.7,186,0.2,47.0,4344,69.5],[14.0,0.724,152,0.1,52.8,13167,74.1],[16.7,0.86,76,0.1,64.3,25916,85.0],[15.5,0.78,222,0.1,59.3,63,73.0],[11.0,0.624,127,0.1,47.6,1577,73.5],[10.4,0.0,219,0.1,68.8,735,64.3],[10.2,0.43,462,13.7,17.6,459,52.9],[12.6,0.687,237,2.8,35.8,9692,65.5],[13.8,0.694,163,0.1,47.8,477,72.7],[9.7,0.5,254,0.5,17.6,416,62.8],[12.8,0.705,197,0.1,16.1,175,69.1],[18.2,0.873,1,0.1,58.5,23122,78.0],[12.9,0.677,181,0.3,25.6,363,68.7],[18.8,0.875,99,0.1,59.0,2552,78.0],[12.0,0.681,185,0.1,43.0,198,69.1],[12.9,0.779,128,0.1,38.5,1882,74.6],[11.0,0.597,17,0.3,47.1,125,73.0],[12.3,0.669,349,6.2,35.2,6346,61.1],[11.4,0.653,165,0.1,47.5,2396,71.5],[12.1,0.64,18,0.1,65.6,155,72.0],[13.3,0.717,94,0.1,53.1,4611,76.4],[12.4,0.686,168,0.5,23.6,3369,73.0],[4.7,0.325,32,2.0,14.6,423,54.3],[16.2,0.798,222,0.1,58.4,7863,78.0],[13.2,0.733,1,0.1,61.4,5373,74.1],[16.4,0.821,184,0.1,58.5,12219,72.6],[16.1,0.87,92,0.1,58.0,36545,86.0],[14.3,0.695,12,0.1,53.9,3778,74.6],[14.6,0.758,258,0.1,47.9,8514,66.6],[10.6,0.453,41,8.2,15.6,450,56.3],[9.1,0.54,22,0.4,22.1,1169,66.2],[13.3,0.689,22,0.1,53.2,2836,68.0],[11.9,0.678,199,0.1,42.0,3557,68.5],[12.6,0.725,125,0.2,47.8,4126,75.7],[10.5,0.596,116,0.1,52.7,2862,72.3],[11.5,0.669,218,0.1,23.1,2353,68.0],[12.4,0.645,291,10.0,31.9,8353,61.6],[12.8,0.646,112,0.1,48.1,2214,72.9],[13.7,0.716,218,0.1,55.4,3353,71.0],[9.9,0.451,262,0.1,19.6,648,63.0],[10.0,0.366,615,23.4,15.5,274,45.1],[8.0,0.0,282,0.1,14.9,886,62.5],[11.0,0.449,323,3.8,21.4,488,57.4],[10.3,0.566,166,1.4,41.2,1157,71.9],[10.9,0.679,137,0.1,48.8,1644,73.0],[7.7,0.487,212,1.2,28.1,1393,62.2],[9.6,0.0,18,0.1,41.1,1470,69.0],[14.7,0.769,148,0.1,32.8,1154,74.2],[11.9,0.687,126,0.1,58.5,835,72.8],[8.9,0.438,283,2.0,21.5,77,57.1],[8.1,0.484,217,0.6,17.6,41,64.5],[16.1,0.847,9,0.1,51.2,26351,78.7],[14.4,0.781,14,0.1,64.5,7675,74.1],[6.4,0.345,453,7.3,19.8,450,48.6],[7.3,0.407,283,2.1,19.2,419,55.6],[12.3,0.72,132,0.1,51.2,3218,73.5],[13.0,0.712,129,0.1,55.5,1812,72.1],[11.9,0.681,129,0.1,57.6,7384,72.4],[9.0,0.482,2,0.1,43.8,147,67.6],[6.1,0.35,288,1.8,18.5,522,54.3],[11.7,0.632,242,2.2,34.9,5421,65.9],[9.3,0.413,47,0.8,23.3,72,54.0],[14.9,0.0,112,0.1,57.9,5335,72.7],[15.8,0.871,86,0.1,6.9,4444,79.5],[8.4,0.427,237,0.9,16.8,52,63.7],[6.3,0.365,279,1.0,16.6,575,57.5],[8.3,0.38,291,2.2,2.8,439,57.8],[9.1,0.416,285,5.3,24.3,68,57.6],[10.7,0.475,252,1.1,25.2,944,59.7],[10.6,0.61,131,0.1,46.8,149,73.2],[12.7,0.644,213,0.2,49.4,2835,71.0],[9.2,0.489,193,0.1,44.7,126,68.0],[12.9,0.696,14,0.2,48.6,360,74.7],[11.8,0.666,189,0.6,2.9,2359,71.7],[11.5,0.644,121,0.1,49.4,258,73.8],[8.4,0.385,29,2.0,21.2,459,58.1],[18.5,0.895,69,0.1,6.5,49231,85.0],[15.7,0.88,73,0.1,55.7,51127,88.0],[11.1,0.611,237,2.1,37.8,987,65.3],[13.8,0.847,57,0.1,58.3,32234,79.7],[10.4,0.388,67,24.7,14.8,30,44.0],[12.0,0.543,366,6.3,21.2,1645,58.2],[9.8,0.427,686,42.1,25.9,549,45.3],[13.0,0.78,119,0.1,57.1,12594,77.6],[12.9,0.69,144,0.1,72.5,3453,72.6],[8.9,0.469,29,1.3,43.4,1179,61.4],[10.3,0.393,312,1.2,17.1,265,58.0],[8.7,0.51,288,2.9,23.0,923,59.4],[10.5,0.44,648,33.8,26.4,64,45.5],[14.8,0.805,67,0.1,65.0,15835,79.0],[10.9,0.64,194,0.8,18.7,28,71.1],[14.3,0.75,112,0.1,63.7,1172,74.8],[11.1,0.541,258,3.0,2.7,1229,62.6],[11.3,0.65,167,0.1,46.7,2472,71.4],[7.6,0.364,36,2.4,19.4,49,56.4],[12.5,0.773,183,0.2,41.1,1459,71.0],[10.4,0.507,366,3.7,28.4,1441,56.7],[12.4,0.665,22,2.3,46.1,2373,73.0],[15.2,0.815,89,0.1,6.6,1286,79.1],[7.3,0.0,312,0.1,13.9,766,62.0],[10.6,0.616,189,0.4,48.6,3300,71.3],[14.0,0.767,126,0.1,58.3,5659,74.9],[10.7,0.641,143,0.1,53.5,4317,74.0],[4.8,0.323,241,0.7,17.7,376,59.4],[7.9,0.396,291,0.1,14.2,25,57.3],[12.4,0.67,158,0.3,44.3,194,73.4],[15.0,0.79,145,0.1,54.0,5197,74.5],[15.1,0.755,224,0.1,58.2,6376,70.0],[20.1,0.93,61,0.1,65.0,67678,82.3],[10.3,0.624,229,0.4,43.2,3440,65.6],[11.3,0.534,412,12.2,3.7,3852,56.5],[8.1,0.401,261,1.7,15.6,341,61.8],[15.7,0.782,11,0.1,5.9,11729,76.9],[20.6,0.905,71,0.1,6.3,23465,83.0],[11.7,0.673,14,0.1,47.9,2599,72.3],[14.5,0.698,146,0.1,7.8,2932,72.5],[12.6,0.697,268,2.3,37.3,7498,65.1],[12.9,0.703,16,0.1,51.5,418,75.4],[16.3,0.889,77,0.1,63.0,4651,87.0],[12.1,0.712,186,0.1,28.1,8331,72.1],[8.5,0.504,211,0.6,19.1,742,65.2],[13.9,0.77,147,0.1,62.7,6843,73.4],[13.1,0.723,86,0.1,31.9,7684,75.8],[12.7,0.729,128,0.1,51.9,3527,73.9],[13.2,0.7,138,0.3,5.8,429,73.9],[10.7,0.618,218,0.8,4.9,2576,66.3],[15.1,0.864,76,0.1,54.2,51386,84.0],[11.9,0.654,157,0.1,44.9,360,72.7],[16.3,0.867,91,0.1,56.1,2525,78.4],[15.1,0.85,74,0.1,58.7,236,79.3],[6.7,0.318,424,15.3,17.7,284,51.0],[20.1,0.902,73,0.1,59.6,282,79.9],[13.4,0.731,125,0.1,54.2,6583,75.3],[14.5,0.759,17,0.1,65.3,12127,75.5],[13.1,0.71,98,0.1,52.1,575,76.0],[14.2,0.698,29,0.1,56.6,479,68.6],[14.1,0.677,183,0.1,43.7,3739,75.0],[10.8,0.583,161,0.8,43.5,1438,72.8],[12.1,0.676,292,0.1,43.9,1230,63.9],[11.6,0.625,232,2.5,34.1,5488,66.1],[8.4,0.435,234,0.6,17.2,571,64.2],[13.0,0.698,139,0.1,49.3,4275,74.6],[11.7,0.708,179,0.1,51.9,1840,78.0],[13.8,0.85,54,0.1,59.2,2798,81.0],[10.5,0.52,195,0.6,15.9,738,66.1],[13.0,0.703,16,0.7,54.7,5760,73.1],[12.5,0.772,179,0.4,42.0,16684,74.0],[11.7,0.566,168,0.1,14.7,644,66.2],[17.2,0.911,63,0.1,59.9,5355,81.1],[9.5,0.0,269,0.1,18.8,616,59.8],[16.1,0.862,63,0.1,59.4,37699,81.3],[10.5,0.511,199,0.7,15.3,746,65.6],[13.2,0.725,146,0.1,17.9,1645,73.7],[13.7,0.748,327,0.3,55.3,5323,65.0],[13.7,0.676,158,0.1,65.5,263,71.6],[10.9,0.632,191,0.1,19.7,1586,67.3],[11.6,0.666,217,0.1,23.7,2582,68.1],[13.7,0.844,62,0.1,56.8,3540,79.1],[10.3,0.636,217,0.3,45.9,44,66.0],[9.8,0.419,258,1.1,26.1,454,61.1],[12.6,0.589,219,0.6,22.7,236,69.1],[8.6,0.52,147,0.1,14.0,616,69.1],[14.6,0.706,2,0.1,58.7,3652,69.1],[12.8,0.725,138,0.5,52.0,521,75.3],[9.8,0.569,137,0.1,49.1,214,77.0],[12.3,0.688,147,0.2,49.4,4713,73.9],[12.8,0.692,161,1.4,51.5,511,73.3],[16.0,0.809,9,0.1,57.3,2364,79.3],[12.4,0.64,37,10.9,3.8,6741,65.0],[8.2,0.499,155,0.1,12.5,484,67.8],[11.8,0.684,132,0.1,47.5,928,72.7],[10.6,0.404,297,0.7,18.2,313,59.1],[15.9,0.878,81,0.1,61.9,4438,80.0],[16.0,0.879,88,0.1,59.6,41631,81.1],[11.4,0.662,218,0.1,22.6,2129,67.9],[13.9,0.769,278,0.3,56.6,11635,67.5],[7.7,0.398,268,0.6,18.8,75,59.3],[14.0,0.85,53,0.1,59.8,2735,83.0],[7.7,0.416,285,2.1,19.7,519,55.8],[10.7,0.0,169,0.1,44.1,1788,69.6],[12.9,0.743,124,0.2,51.9,669,76.4],[13.3,0.766,97,0.1,64.9,846,74.9],[11.9,0.593,566,20.6,32.7,5351,51.7],[10.3,0.0,248,0.1,4.7,175,63.3],[10.2,0.461,255,0.1,2.6,796,61.0],[11.2,0.612,14,0.1,54.6,340,73.3],[15.4,0.795,158,0.1,56.3,822,73.1],[16.2,0.818,85,0.1,58.8,23196,82.0],[11.0,0.638,19,0.2,2.5,1856,67.5],[12.9,0.7,131,0.1,73.8,4220,73.6],[8.5,0.43,285,2.1,2.5,62,56.5],[9.7,0.434,266,0.1,19.2,622,60.0],[8.5,0.451,437,15.7,15.1,396,52.1],[15.7,0.825,84,0.1,58.2,15324,79.4],[16.1,0.884,8,0.1,62.3,4773,83.0],[12.7,0.732,134,0.1,31.6,6223,73.6],[10.6,0.63,22,0.3,44.1,3786,65.8],[5.1,0.404,298,0.9,16.0,482,62.1],[11.4,0.622,221,0.1,18.3,957,66.8],[11.8,0.533,363,6.8,2.7,1463,58.0],[13.1,0.654,11,0.1,48.9,2255,73.2],[13.5,0.887,8,0.1,58.4,114294,80.0],[6.3,0.343,37,4.4,16.7,84,57.0],[12.3,0.659,169,0.1,68.2,197,79.0],[10.8,0.519,46,33.7,29.3,333,52.6],[10.9,0.554,263,1.3,26.1,1575,61.2],[10.5,0.0,215,0.1,43.4,436,65.6],[10.7,0.656,11,0.1,45.0,1176,72.6],[15.0,0.789,22,0.1,52.3,1287,69.9],[12.5,0.62,158,0.1,16.6,118,67.7],[4.4,0.0,343,1.9,13.1,22,58.5],[11.7,0.741,125,0.1,48.8,7190,71.6],[9.3,0.487,376,4.9,21.6,198,51.6],[10.5,0.609,193,0.4,47.9,3188,71.1],[8.0,0.456,395,7.0,24.4,112,53.6],[15.9,0.844,73,0.1,61.1,28483,88.0],[9.9,0.426,329,0.9,26.7,458,58.1],[11.1,0.658,144,0.1,5.5,3386,73.1],[9.7,0.536,28,0.3,13.9,792,64.8],[12.3,0.66,189,2.4,45.1,38,71.4],[14.7,0.797,135,0.1,59.9,12,74.8],[9.7,0.6,16,0.1,21.9,1149,72.7],[11.7,0.559,647,38.8,29.9,3350,47.8],[15.3,0.816,91,0.1,59.9,1243,79.3],[14.0,0.74,163,0.2,3.7,8,73.3],[11.7,0.673,121,0.1,46.5,734,73.0],[12.6,0.679,151,0.3,45.8,244,74.4],[15.2,0.756,117,0.1,58.9,5878,76.2],[13.8,0.698,161,0.1,48.6,586,73.0],[15.6,0.831,84,0.1,62.5,15941,81.0],[13.9,0.683,256,0.9,55.4,879,67.6],[10.7,0.466,377,5.1,19.2,355,57.6],[9.2,0.481,386,5.0,21.0,1384,59.0],[12.8,0.727,133,0.5,53.5,4856,75.8],[5.3,0.436,279,3.2,31.7,1254,69.0],[8.4,0.47,2,0.1,43.0,949,67.6],[12.1,0.715,1,0.1,48.3,4168,78.0],[12.1,0.714,124,0.1,55.7,7200,75.4],[12.5,0.669,276,4.9,34.6,9774,63.5],[16.1,0.836,156,0.1,57.1,14726,74.9],[13.8,0.714,157,0.1,51.1,8553,73.6],[15.7,0.861,89,0.1,6.2,36967,78.9],[11.4,0.523,355,2.3,22.1,485,51.1],[7.7,0.449,212,0.4,21.7,12,64.3],[12.0,0.464,294,1.7,22.6,564,58.9],[8.8,0.0,263,0.3,16.1,197,64.2],[13.9,0.894,72,0.1,59.6,115762,88.0],[15.5,0.753,123,0.1,58.3,523,75.7],[11.5,0.62,147,0.1,5.9,1683,74.5],[15.5,0.774,118,0.1,6.7,9415,76.6],[13.1,0.706,174,0.4,55.8,5969,72.1],[13.3,0.752,94,0.1,63.5,8764,74.9],[11.6,0.703,9,0.1,51.7,363,75.9],[15.7,0.87,68,0.1,61.1,2195,84.0],[7.1,0.366,439,5.1,21.2,486,53.0],[9.4,0.495,361,2.5,21.0,4299,51.0],[6.6,0.352,446,6.6,2.2,446,49.2],[13.3,0.687,22,0.1,52.2,2260,67.9],[11.4,0.619,238,1.8,39.0,198,65.0],[12.6,0.669,183,0.3,24.7,3688,68.5],[15.4,0.838,12,0.1,6.4,1379,77.1],[13.2,0.71,131,0.1,51.4,5223,75.3],[10.7,0.447,592,27.3,28.8,934,47.8],[11.3,0.613,163,0.2,49.4,1464,73.2],[10.2,0.503,248,0.5,18.0,413,63.3],[10.5,0.547,267,1.9,25.5,1313,69.0],[8.5,0.375,433,1.7,21.2,395,47.1],[15.9,0.907,68,0.1,65.3,52497,81.6],[15.5,0.776,26,0.1,56.6,6352,71.0],[13.5,0.743,132,0.1,55.1,5458,73.8],[12.8,0.705,177,0.2,5.1,4852,70.0],[12.9,0.729,155,0.1,58.6,271,72.0],[12.7,0.693,62,0.1,26.2,7716,78.2],[13.3,0.742,127,0.1,52.8,3726,73.9],[9.2,0.419,282,3.4,25.6,643,58.4],[10.8,0.485,233,0.5,2.1,689,65.2],[12.1,0.69,184,0.1,43.9,25,69.2],[15.7,0.828,83,0.1,58.8,1720,79.5],[14.6,0.7,267,1.0,56.1,1367,67.4],[14.0,0.76,141,0.1,22.7,383,74.7],[12.3,0.735,127,0.1,58.7,9690,75.6],[8.6,0.412,299,0.5,22.7,562,58.1],[10.2,0.631,249,0.1,53.2,2352,64.7],[12.9,0.62,459,26.6,41.6,2518,54.9],[12.7,0.7,184,0.3,46.3,4259,69.5],[16.5,0.892,84,0.1,58.0,36448,79.6],[12.1,0.656,187,0.3,22.9,3113,68.1],[12.8,0.622,449,19.0,46.4,5889,56.5],[14.5,0.707,278,0.9,56.4,1829,67.0],[8.0,0.421,275,1.6,22.5,778,57.3],[12.1,0.64,96,0.1,57.5,3155,74.1],[12.3,0.731,123,0.1,57.9,933,76.0],[12.9,0.74,122,0.1,5.3,4917,75.8],[9.3,0.448,259,1.6,22.5,793,58.4],[11.4,0.618,149,0.3,5.2,2243,74.5],[12.8,0.63,428,11.0,47.2,7363,58.0],[11.0,0.583,198,0.3,44.9,116,76.0],[13.5,0.888,76,0.1,58.8,13199,83.0],[7.7,0.411,27,1.5,21.9,777,57.2],[9.5,0.451,254,1.4,23.0,758,58.7],[12.1,0.646,427,12.7,34.2,5623,57.5],[12.4,0.76,187,0.7,39.3,1653,69.7],[10.9,0.479,526,15.9,18.8,13,58.0],[11.4,0.527,348,2.0,22.7,479,51.7],[10.0,0.511,278,0.7,47.9,2183,62.7],[12.0,0.622,88,0.1,18.7,4429,75.0],[14.6,0.694,15,0.1,69.4,2595,72.3],[11.2,0.613,237,1.9,38.4,146,65.1],[12.7,0.627,123,0.4,27.5,3313,72.5],[14.2,0.0,13,0.1,6.2,5424,73.7],[9.6,0.561,142,0.1,48.2,1949,72.0],[13.5,0.867,92,0.1,56.4,75716,78.7],[14.3,0.847,55,0.1,69.2,2619,81.4],[18.5,0.909,7,0.1,59.7,52568,84.0],[10.5,0.0,235,0.1,42.7,394,64.5],[11.0,0.646,98,0.1,24.9,299,74.2],[10.4,0.596,198,0.4,46.5,2636,76.0],[11.0,0.479,513,9.0,3.8,1282,52.2],[7.9,0.455,26,0.4,22.2,18,64.9],[15.5,0.837,92,0.1,5.6,24490,78.6],[16.2,0.857,78,0.1,63.1,2972,80.0],[12.5,0.596,216,0.5,23.6,2523,69.4],[10.0,0.514,222,1.6,23.4,82,64.3],[10.6,0.634,99,0.1,24.1,1753,73.9],[5.2,0.318,299,2.2,17.0,392,52.0],[12.0,0.649,159,0.1,44.2,2312,72.5],[13.4,0.659,194,0.3,51.4,357,71.7],[16.9,0.916,71,0.1,6.9,4465,86.0],[16.1,0.822,188,0.1,55.9,12595,73.0],[12.2,0.0,213,0.1,72.1,1215,64.9],[14.2,0.803,16,0.1,6.6,1356,76.6],[12.1,0.625,93,0.1,18.0,3488,74.3],[10.9,0.49,233,0.8,23.2,834,62.9],[15.8,0.883,61,0.1,63.4,33657,81.8],[12.9,0.7,162,0.3,25.7,4379,73.5],[11.4,0.504,45,11.9,19.7,1370,55.7],[10.9,0.59,16,0.7,44.3,1593,73.0],[7.3,0.341,434,16.2,18.5,369,58.0],[11.2,0.582,134,0.8,24.3,248,71.8],[9.4,0.526,211,0.3,13.5,78,64.4],[14.5,0.808,14,0.1,61.3,14539,77.0],[9.8,0.53,275,2.2,24.2,1224,63.0],[11.8,0.663,67,0.1,23.1,6498,77.3],[10.5,0.618,218,0.3,41.6,2716,66.1],[11.7,0.62,192,0.3,37.5,547,67.3],[6.8,0.425,23,0.7,2.3,95,62.1],[12.5,0.683,179,0.1,26.4,3958,71.5],[10.8,0.59,145,0.1,49.1,2966,71.0],[10.7,0.437,654,34.1,27.9,916,45.3],[16.2,0.855,95,0.1,55.1,23719,78.0],[11.8,0.677,21,0.4,41.4,3419,68.2],[12.8,0.693,144,0.3,47.9,336,74.4],[13.4,0.745,162,0.1,53.9,4676,71.9],[16.6,0.825,192,0.1,59.7,11837,72.2],[13.8,0.686,235,0.1,45.9,1718,66.9],[8.2,0.36,425,14.1,19.3,422,52.1],[5.4,0.345,288,1.5,15.6,570,56.1],[13.1,0.737,114,0.1,64.0,3993,73.9],[15.5,0.851,11,0.1,55.8,24275,79.2],[20.3,0.91,67,0.1,61.5,3417,81.0],[12.2,0.723,125,0.1,57.2,8768,75.8],[15.2,0.747,144,0.1,55.3,1227,74.8],[12.7,0.722,178,0.4,57.7,9564,71.4],[12.9,0.723,157,0.1,58.1,288,71.8],[10.2,0.506,235,0.4,19.0,444,64.3],[10.8,0.657,134,0.1,48.1,93,72.7],[11.8,0.677,142,0.1,47.0,779,71.7],[11.7,0.611,153,0.4,47.6,213,73.9],[12.1,0.639,165,0.2,42.0,149,71.9],[12.7,0.713,88,0.1,3.9,778,75.6],[13.3,0.662,19,0.1,49.7,2347,73.5],[16.5,0.82,224,0.1,59.3,14962,71.1],[15.1,0.818,136,0.1,57.8,11528,75.7],[12.6,0.756,131,0.1,34.4,7327,74.0],[15.4,0.829,128,0.1,59.1,13893,76.7],[15.2,0.746,23,0.2,6.7,315,78.0],[9.1,0.547,21,0.3,22.9,1263,66.4],[16.4,0.807,229,0.1,58.7,925,76.0],[10.6,0.434,41,8.6,14.8,336,54.9],[10.3,0.638,167,0.1,54.5,4521,69.3],[9.9,0.61,13,0.1,22.6,1289,73.1],[15.7,0.865,85,0.1,6.6,38852,79.4],[7.9,0.353,434,16.3,18.9,386,51.2],[12.9,0.776,129,0.1,37.4,1779,74.5],[10.3,0.498,371,6.3,31.3,127,59.2],[12.8,0.733,123,0.2,49.5,4592,75.8],[14.6,0.723,243,0.1,57.2,3848,68.9],[13.1,0.737,113,0.1,64.8,467,74.0],[20.7,0.908,69,0.1,6.9,3472,86.0],[13.7,0.884,73,0.1,59.2,14965,86.0],[11.1,0.515,178,0.2,16.4,592,68.0],[12.3,0.656,188,2.5,44.1,2862,71.2],[15.8,0.797,153,0.1,56.9,8297,73.4],[12.0,0.628,29,0.3,47.8,2520,69.9],[11.7,0.737,13,0.1,48.0,5843,71.1],[10.6,0.0,165,0.1,44.9,1886,69.9],[13.7,0.755,157,0.1,54.4,5829,72.5],[11.5,0.418,53,9.4,13.9,238,51.0],[12.8,0.75,127,0.1,52.7,6974,76.5],[13.6,0.742,118,0.1,6.9,3492,73.3],[19.1,0.921,66,0.1,62.9,49665,81.3],[9.2,0.457,22,0.1,12.9,254,64.3],[11.5,0.655,217,0.1,21.6,1919,67.5],[11.8,0.626,185,0.4,38.1,654,67.6],[16.3,0.78,127,0.1,56.9,577,74.9],[13.1,0.702,137,0.1,5.0,4256,75.1],[15.1,0.82,97,0.1,63.1,13467,77.8],[13.3,0.717,127,0.1,52.1,572,75.5],[11.5,0.606,156,0.4,46.8,1933,73.6],[15.6,0.846,66,0.1,57.6,31175,89.0],[11.2,0.675,162,0.1,44.7,1578,68.4],[12.8,0.756,122,0.1,54.2,7937,76.5],[13.4,0.829,64,0.1,55.8,27170,78.8],[13.1,0.718,145,0.1,17.2,1449,73.8],[9.0,0.466,396,5.3,19.9,120,49.8],[10.6,0.572,194,0.3,33.5,337,65.5],[9.3,0.406,717,30.3,27.5,445,44.6],[9.8,0.434,665,43.5,25.5,547,46.0],[14.2,0.761,8,0.1,57.2,4576,77.5],[14.3,0.756,154,0.1,31.8,9291,73.9],[7.8,0.542,162,0.1,24.7,1317,66.2],[12.2,0.721,91,0.1,53.5,4114,76.1],[12.8,0.728,126,0.1,48.6,4267,75.5],[5.2,0.402,311,1.0,15.5,44,61.4],[6.7,0.377,275,0.9,17.1,667,58.1],[11.5,0.63,157,0.1,52.4,1847,73.9],[14.2,0.797,69,0.1,64.5,1520,78.7],[7.7,0.454,375,2.6,18.8,2879,48.2],[9.6,0.592,11,0.1,21.2,153,72.2],[10.2,0.556,23,0.3,14.9,991,65.5],[11.6,0.631,217,0.1,19.2,12,67.2],[10.0,0.476,271,0.1,18.6,613,59.9],[14.9,0.796,91,0.1,58.1,9485,78.9],[5.0,0.0,342,1.8,13.6,287,59.1],[15.8,0.881,77,0.1,6.6,31980,80.0],[15.1,0.822,13,0.1,58.4,12600,76.3],[12.5,0.738,13,0.1,59.4,7748,75.7],[10.8,0.546,183,0.2,18.2,128,67.8],[15.4,0.797,94,0.1,55.7,2279,78.7],[12.7,0.731,137,0.1,29.8,4955,73.2],[12.5,0.798,7,0.1,52.8,14673,78.1],[9.3,0.492,188,0.1,46.4,1272,68.3],[8.8,0.54,15,0.1,46.5,1414,69.5],[12.5,0.805,68,0.1,53.8,16372,78.4],[11.1,0.607,169,0.2,48.6,1519,72.5],[12.7,0.685,164,1.6,5.4,4647,72.9],[10.4,0.506,339,6.4,17.9,917,57.9],[9.9,0.415,491,14.9,17.3,43,51.5],[12.6,0.714,126,0.1,49.2,1873,73.9],[5.9,0.451,268,2.7,32.7,144,61.8],[13.2,0.674,157,0.1,66.2,1838,71.8],[10.0,0.454,26,2.3,18.3,563,62.8],[16.5,0.86,122,0.1,59.4,19941,77.3],[10.9,0.553,179,0.2,18.9,199,68.3],[10.3,0.495,24,0.9,14.8,632,65.0],[12.7,0.642,166,0.1,41.3,1175,71.7],[8.5,0.53,155,0.1,45.7,1337,69.0],[11.0,0.523,459,21.6,29.7,369,53.6],[10.5,0.563,177,0.3,33.0,39,65.9],[13.2,0.683,221,0.1,51.2,239,67.8],[12.9,0.612,486,26.4,45.0,6125,54.5],[8.4,0.415,295,0.1,15.2,370,57.5],[8.6,0.336,338,2.4,15.7,25,56.2],[9.8,0.514,367,3.9,24.1,2997,53.2],[15.8,0.897,74,0.1,63.0,46596,87.0],[14.8,0.699,172,0.1,46.1,360,71.8],[12.9,0.731,98,0.1,61.9,614,74.4],[15.7,0.887,68,0.1,56.6,555,81.1],[16.3,0.788,129,0.1,58.0,7194,74.8],[11.5,0.658,138,0.1,55.1,367,71.2],[5.4,0.0,34,1.6,13.9,277,59.4],[11.6,0.427,485,8.9,14.2,288,51.3],[14.8,0.826,59,0.1,68.0,22822,87.0],[15.4,0.793,96,0.1,54.9,19821,78.5],[15.9,0.788,17,0.1,51.7,12882,77.2],[10.4,0.571,165,1.2,42.0,1218,72.2],[11.6,0.614,151,0.4,48.4,2178,74.1],[16.5,0.876,58,0.1,62.6,3537,82.3],[10.2,0.596,135,0.1,45.3,1263,72.8],[11.2,0.639,142,0.1,47.1,623,72.0],[15.3,0.87,77,0.1,54.7,47654,82.0],[10.6,0.577,163,0.9,42.8,1312,72.5],[10.7,0.454,42,8.3,18.4,375,55.3],[16.8,0.837,78,0.1,6.9,2278,89.0],[13.3,0.763,93,0.1,64.4,8788,75.0],[11.6,0.518,368,9.1,2.2,1139,57.4],[15.9,0.903,68,0.1,64.7,5282,81.5],[9.9,0.501,284,1.0,46.4,271,62.2],[16.3,0.819,199,0.1,58.1,16349,71.9],[15.8,0.877,78,0.1,6.0,28172,79.7],[16.0,0.895,6,0.1,64.6,37583,82.2],[11.3,0.658,148,0.1,49.8,274,72.8],[13.4,0.823,65,0.1,54.8,23932,78.6],[8.5,0.406,284,1.0,22.2,54,58.8],[9.2,0.382,4,11.3,2.1,464,53.8],[17.1,0.86,74,0.1,65.4,21875,86.0],[9.3,0.39,47,10.8,2.5,419,54.0],[7.7,0.445,231,0.5,15.2,220,63.2],[11.6,0.636,218,0.1,19.6,179,67.3],[14.2,0.801,83,0.1,58.0,12538,78.7],[11.6,0.653,73,0.1,22.1,634,76.7],[12.9,0.753,12,0.1,62.1,1299,76.6],[12.9,0.733,165,0.1,53.4,3553,71.7],[13.6,0.673,15,0.1,51.4,3113,74.0],[5.2,0.279,378,4.8,13.8,127,52.6],[7.5,0.525,167,0.1,22.5,1226,65.5],[11.6,0.715,149,0.1,26.0,445,72.4],[15.6,0.83,83,0.1,59.3,21496,79.4],[14.8,0.723,277,0.7,57.2,369,67.5],[12.0,0.645,175,0.1,66.5,1555,75.0],[6.3,0.46,263,1.9,33.2,1536,62.2],[11.7,0.676,214,0.1,24.8,2843,68.4],[16.5,0.794,126,0.1,59.2,8161,75.6],[16.8,0.912,74,0.1,6.4,4681,85.0],[13.0,0.706,16,0.3,26.8,4213,73.7],[9.3,0.463,218,0.2,13.4,287,64.7],[12.5,0.675,157,0.3,45.1,2184,73.6],[14.0,0.776,261,0.3,57.0,8563,68.2],[15.9,0.891,61,0.1,64.2,36394,82.1],[14.4,0.71,12,0.1,56.5,414,74.8],[16.0,0.856,65,0.1,58.8,3342,81.2],[10.8,0.659,154,0.1,43.6,884,67.8],[9.9,0.385,321,1.5,16.6,26,57.4],[13.2,0.67,181,0.3,54.1,3828,73.0],[13.1,0.714,282,0.1,45.3,268,64.4],[12.5,0.747,132,0.1,33.4,8514,73.8],[13.3,0.704,158,0.1,5.3,8788,73.4],[13.0,0.666,197,0.3,53.4,3737,72.0],[5.9,0.29,361,3.8,14.5,166,54.1],[8.7,0.434,284,2.0,21.0,626,56.8],[11.1,0.546,255,2.9,21.3,1336,62.9],[10.3,0.0,238,0.1,4.0,1454,63.5],[14.7,0.841,86,0.1,52.2,36693,79.3],[13.5,0.75,161,0.1,6.3,4513,72.2],[12.3,0.581,223,0.6,21.9,2423,68.7],[14.2,0.734,146,0.1,54.5,12217,74.7],[10.2,0.504,241,0.4,18.5,455,63.8],[9.1,0.483,253,0.5,47.7,81,62.7],[7.3,0.39,362,2.9,18.7,126,52.6],[16.1,0.873,89,0.1,58.6,417,89.0],[18.6,0.91,66,0.1,62.1,5553,81.2],[11.6,0.702,98,0.1,45.4,388,77.6],[5.6,0.286,369,4.3,14.1,16,53.4],[15.0,0.803,144,0.1,56.0,95,75.2],[10.7,0.582,153,0.1,47.4,2698,75.0],[12.1,0.724,138,0.1,28.8,4464,73.1],[9.2,0.407,723,33.6,27.1,454,44.3],[13.9,0.892,68,0.1,6.5,113752,81.4],[15.5,0.8,143,0.1,55.0,6681,74.9],[8.6,0.461,295,1.4,42.7,957,61.1],[12.6,0.668,28,2.0,48.2,3682,69.7],[13.0,0.66,347,3.7,5.3,6480,62.0],[12.7,0.773,172,0.3,45.0,1968,71.0],[12.7,0.719,179,0.4,57.0,9485,71.2],[9.4,0.545,14,0.1,15.8,836,73.0],[11.9,0.721,192,2.0,35.2,750,69.2],[11.7,0.684,22,0.8,52.6,5761,69.5],[10.8,0.453,566,18.2,29.2,923,49.4],[12.9,0.773,118,0.1,56.3,11686,77.5],[13.9,0.768,96,0.1,59.5,1647,79.5],[12.5,0.705,121,0.1,6.2,186,73.5],[8.9,0.392,418,1.3,22.2,446,48.9],[17.0,0.92,69,0.1,61.9,4793,89.0],[12.7,0.732,121,0.1,52.6,3685,74.4],[12.3,0.751,188,0.6,38.4,1496,69.6],[10.7,0.614,187,0.4,49.9,3688,71.7],[13.3,0.712,145,0.1,56.4,84,74.4],[10.8,0.592,178,0.3,35.3,77,66.4],[12.6,0.687,174,0.1,26.9,4623,71.5],[19.1,0.925,66,0.1,63.4,42743,81.7]];
+/* 속성 하나로 학습: [기울기, 절편, 테스트 R², 훈련 R²] · 속성 조합(비트) 테스트 R² · 20개 전체 R² */
+const LE_SG={"Schooling":[2.3370879824437965,40.9767059682068,0.5089,0.533],"Income composition of resources":[36.145221038096714,46.394018639728785,0.4178,0.5401],"Adult Mortality":[-0.049744941130635184,77.6243868992174,0.4463,0.503],"HIV/AIDS":[-0.8565986236579961,70.93236350805782,0.3424,0.3516],"BMI":[0.24210064990674424,60.01430542191619,0.3217,0.2869],"GDP":[0.0003276962221241003,67.35826771431866,0.23,0.1857]};
+const LE_CB=[null,0.5089,0.4178,0.5333,0.4463,0.6813,0.6337,0.6979,0.3424,0.7229,0.6355,0.7359,0.5142,0.7614,0.7024,0.7747,0.3217,0.5291,0.4731,0.5473,0.5605,0.6863,0.6544,0.7006,0.5526,0.7308,0.6699,0.7411,0.6279,0.7652,0.7227,0.7768,0.23,0.5219,0.449,0.5418,0.5374,0.6875,0.65,0.702,0.5216,0.7353,0.6662,0.7449,0.6149,0.7697,0.723,0.7807,0.4068,0.5397,0.4964,0.5548,0.6051,0.6915,0.6672,0.7041,0.6292,0.7415,0.6942,0.7493,0.6802,0.7726,0.7396,0.7823], LE_ALL=0.7935432521020239;
+const LE_W=[-0.1310236386281035,0.8055493993467121,-0.016536621752454742,0.09233027156337002,-0.12609446750527425,0.00025841269454439614,-0.00505864100287535,-1.2506488472234702e-05,0.034611448845992064,-0.0689182089334464,0.01017058475604394,0.07400123476706866,0.012922117915980027,-0.43159300733575884,2.9459870512505274e-05,-6.769735821247601e-10,0.014997392210417355,-0.0843760108504847,11.344933065205735,0.8607201026222521], LE_B=315.6817315128982;
+const LE_XC=["Year","Status","Adult Mortality","infant deaths","Alcohol","percentage expenditure","Hepatitis B","Measles","BMI","under-five deaths","Polio","Total expenditure","Diphtheria","HIV/AIDS","GDP","Population","thinness  1-19 years","thinness 5-9 years","Income composition of resources","Schooling"];
+
+/* 속성 이름(교과서 194쪽 속성 안내) */
+const LE_KO={'Year':'연도','Status':'개발 상태(0 · 1)','Adult Mortality':'성인 사망률','infant deaths':'유아 사망 수','Alcohol':'1인당 알코올 소비량','percentage expenditure':'건강에 대한 지출','Hepatitis B':'B형 간염 예방 접종률','Measles':'홍역 환자 수','BMI':'평균 체질량 지수','under-five deaths':'5세 미만 사망 수','Polio':'소아마비 예방 접종률','Total expenditure':'정부 보건 관련 지출','Diphtheria':'디프테리아 예방 접종률','HIV/AIDS':'HIV/AIDS 사망 수','GDP':'1인당 국내 총생산','Population':'국가 총 인구수','thinness  1-19 years':'1~19세 야윔 유병률','thinness 5-9 years':'5~9세 야윔 유병률','Income composition of resources':'소득(자원 소득에 대한 국가 개발 정도)','Schooling':'국가 교육 기간'};
+const LE_SHORT={'Income composition of resources':'Income composition'};
+const LE_KO2={'Income composition of resources':'소득'};
+const sname=c=>LE_SHORT[c]||c;
+
+/* 01 유형 고르기 */
+vote('typeVote','typeVote',[['지도학습의 분류','정해진 범주 중 하나 고르기'],['지도학습의 예측','정답이 있는 숫자 내놓기'],['비지도학습의 군집','비슷한 것끼리 묶기']],()=>{ $('typeAns').classList.add('on'); });
+
+/* 01 셀 실행 흉내 (197~200쪽) */
+(function(){
+  const B=$('cellSim');
+  const CELLS=[
+    {t:'준비 · 데이터 불러오기와 전처리',c:`<span class="c"># (import는 생략)</span>
+df = pd.read_csv('Life Expectancy Data.csv')
+df = df.dropna()
+df = df.replace({'Developing': 0, 'Developed': 1})
+df.shape`},
+    {t:'[5] ③ X와 y 정하기',c:`X = df.drop(['Life expectancy', 'Country'], axis=1)
+y = df.loc[:, 'Life expectancy']`},
+    {t:'[5] ③ 훈련 데이터와 테스트 데이터로 나누기',c:`from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                                                    random_state = 96)`},
+    {t:'[5] ④ 잘 나눠졌는지 확인',c:`X_train.shape, y_train.shape, X_test.shape, y_test.shape`},
+    {t:'[6] 1 모델 생성하기',c:`from sklearn.linear_model import LinearRegression
+linear_reg = LinearRegression()`},
+    {t:'[6] 2 모델 학습하기',c:`lin_results = linear_reg.fit(X_train, y_train)`},
+    {t:'[6] 3 가중치와 편향 확인하기',c:`w = lin_results.coef_
+b = lin_results.intercept_
+print(w)
+print(b)`},
+    {t:'[7] 1 결정 계수 확인하기',c:`from sklearn.metrics import r2_score
+y_pred = lin_results.predict(X_test)
+print('결정 계수(R^2) = ', r2_score(y_test, y_pred))`},
+    {t:'[7] 2 테스트 데이터로 평가하기',c:`Y_prediction = y_pred.flatten()
+for i in range(6):
+    label = y_test.values[i]
+    prediction = Y_prediction[i]
+    print('실제 기대 수명: {:.3f}, 학습 후 예측 기대 수명: {:.3f}, 차이: {:.3f}'
+          .format(label, prediction, label - prediction))`},
+    {t:'[8] 교육 기간으로 회귀선 학습하기',c:`lin1 = LinearRegression()
+lin1.fit(X_train['Schooling'].values.reshape(-1, 1), y_train.values.reshape(-1, 1))`},
+  ];
+  let st;
+  const OK='<span class="ok">✓ 실행 완료</span> <span class="muted">(출력 없음)</span>';
+  const ERR=(e,why)=>`<div class="le-err">${e}</div><div class="le-why">${why}</div>`;
+  const OUT=s=>`<pre class="le-out">${s}</pre>`;
+  const NE=(n,why)=>ERR(`NameError: name '${n}' is not defined`,why);
+  function run(i){
+    const o=st.out;
+    if(i===0){ st.df=true; o[0]=OUT('(1649, 22)')+'<div class="le-why">결측치를 지운 1,649행, 22개 속성이에요.</div>'; }
+    else if(i===1){ if(!st.df) o[1]=NE('df','준비 셀을 먼저 실행해 데이터를 불러오세요.'); else { st.xy=true; o[1]=OK; } }
+    else if(i===2){ if(!st.xy) o[2]=NE('X','X와 y를 먼저 정해야 나눌 수 있어요. 바로 위 셀을 실행하세요.'); else { st.split=true; o[2]=OK; } }
+    else if(i===3){ if(!st.split) o[3]=NE('X_train','아직 데이터를 나누지 않았어요.'); else o[3]=OUT('((1319, 20), (1319,), (330, 20), (330,))')+'<div class="le-why">훈련 데이터 1,319행, 테스트 데이터 330행, 속성 20개예요.</div>'; }
+    else if(i===4){ st.lr=true; o[4]=OK; }
+    else if(i===5){ if(!st.lr) o[5]=NE('linear_reg','모델을 먼저 생성하세요. 바로 위 셀을 실행하세요.'); else if(!st.split) o[5]=NE('X_train','훈련 데이터가 아직 없어요. [5] 셀들을 먼저 실행하세요.'); else { st.fit=true; o[5]=OK+' <span class="muted">→ 훈련 데이터로 학습 완료</span>'; } }
+    else if(i===6){ if(!st.fit) o[6]=NE('lin_results','아직 모델을 학습시키지 않았어요.'); else o[6]=OUT(`[-1.31023639e-01  8.05549399e-01 -1.65366218e-02  9.23302716e-02
+ -1.26094468e-01  2.58412695e-04 -5.05864100e-03 -1.25064885e-05
+  3.46114488e-02 -6.89182089e-02  1.01705848e-02  7.40012348e-02
+  1.29221179e-02 -4.31593007e-01  2.94598705e-05 -6.76973582e-10
+  1.49973922e-02 -8.43760109e-02  1.13449331e+01  8.60720103e-01]
+315.6817315128982`)+'<div class="le-why">가중치 20개(속성마다 하나)와 편향 1개예요. 02 화면에서 속성 이름과 나란히 볼 수 있어요.</div>'; }
+    else if(i===7){ if(!st.fit) o[7]=NE('lin_results','아직 모델을 학습시키지 않았어요.'); else { st.pred=true; o[7]=OUT('결정 계수(R^2) =  0.7935432521020239'); } }
+    else if(i===8){ if(!st.pred) o[8]=NE('y_pred','결정 계수 셀에서 y_pred(예측값)를 먼저 만들어야 해요.'); else o[8]=OUT(LE_T.slice(0,6).map(t=>`실제 기대 수명: ${t[0].toFixed(3)}, 학습 후 예측 기대 수명: ${t[1].toFixed(3)}, 차이: ${(t[0]-t[1]).toFixed(3)}`).join('\n')); }
+    else if(i===9){ if(!st.lr) o[9]=NE('LinearRegression','[6] 1 셀에서 LinearRegression을 먼저 불러오세요.'); else if(!st.split) o[9]=NE('X_train','훈련 데이터가 아직 없어요.'); else o[9]=OUT('LinearRegression()')+'<div class="le-why">교육 기간 하나로 학습했어요. 회귀선은 04 화면의 탐색기에서 볼 수 있어요.</div>'; }
+    draw();
+  }
+  function reset(){ st={df:false,xy:false,split:false,lr:false,fit:false,pred:false,out:CELLS.map(()=>'')}; draw(); }
+  function draw(){
+    B.innerHTML=CELLS.map((c,i)=>`<div class="le-cell"><div class="le-ct">${c.t}</div><div class="le-cin"><button class="le-run" data-i="${i}" aria-label="${c.t} 실행">▶</button><pre class="le-code">${c.c}</pre></div>${st.out[i]?`<div class="le-cout">${st.out[i]}</div>`:''}</div>`).join('')
+      +`<div class="row" style="margin-top:6px"><button class="btn sm ghost" id="csReset">처음부터</button>${st.pred?'<span class="ok">학습과 평가까지 끝났어요. 02·03 화면에서 결과를 살펴봐요.</span>':''}</div>`;
+    B.querySelectorAll('.le-run').forEach(b=>b.onclick=()=>run(+b.dataset.i));
+    $('csReset').onclick=reset;
+  }
+  reset();
+})();
+
+/* 02 가중치 표 */
+(function(){
+  $('wTbl').innerHTML='<tr><th>#</th><th class="l">속성</th><th class="l">뜻</th><th>가중치</th><th>부호</th></tr>'+LE_XC.map((c,i)=>{
+    const w=LE_W[i], e=w.toExponential(3).replace('e',' × 10^').replace(/\^\+?(-?\d+)/,(m,p)=>'<sup>'+p+'</sup>');
+    return `<tr><td>w${i+1}</td><td class="l mono2">${c}</td><td class="l">${LE_KO[c]}</td><td class="num">${e}</td><td><span class="le-sg ${w<0?'neg':'pos'}">${w<0?'−':'+'}</span></td></tr>`;}).join('')
+    +`<tr class="y"><td>b</td><td class="l mono2">intercept_</td><td class="l">편향(절편)</td><td class="num">${LE_B.toFixed(4)}</td><td></td></tr>`;
+})();
+
+/* 03 예측과 실제 비교판 */
+(function(){
+  const B=$('pvLab'), n=LE_T.length, o={W:460,H:380,L:44,R:14,T:12,B:40}, v0=35, v1=95;
+  const sx=v=>o.L+(v-v0)/(v1-v0)*(o.W-o.L-o.R), sy=v=>o.H-o.B-(v-v0)/(v1-v0)*(o.H-o.T-o.B);
+  const order=[...Array(n).keys()].sort((a,b)=>LE_T[a][0]-LE_T[b][0]||a-b);
+  const worst=[...Array(n).keys()].reduce((m,k)=>Math.abs(LE_T[k][0]-LE_T[k][1])>Math.abs(LE_T[m][0]-LE_T[m][1])?k:m,0);
+  const mae=LE_T.reduce((s,t)=>s+Math.abs(t[0]-t[1]),0)/n;
+  let tol=5, sel=0, hl=null;
+  const HL={first:[0,1,2,3,4,5],book:[0,1,2,7,8,9]};
+  B.innerHTML=`<div class="le-pv"><div><div class="le-svgbox" id="pvBox" tabindex="0" aria-label="예측과 실제 비교판. 왼쪽 오른쪽 방향키로 점을 고릅니다"></div></div>
+    <div class="le-pvside"><div class="le-tolh"><label for="pvTol">허용 차이</label><output id="pvTolO">±5년</output></div>
+    <div class="le-tol"><button class="btn sm ghost" id="pvMinus" aria-label="허용 차이 줄이기">−</button><input type="range" id="pvTol" min="0.5" max="10" step="0.5" value="5"><button class="btn sm ghost" id="pvPlus" aria-label="허용 차이 늘리기">+</button></div>
+    <div class="le-meter"><small>차이가 <span id="pvTolT">±5</span>년 안인 행</small><b id="pvCnt"></b><span>/ 330</span><div class="bar"><i id="pvBar"></i></div></div>
+    <div class="le-kv"><span>결정 계수 <b>0.794</b></span><span>차이 절댓값 평균 <b>${mae.toFixed(2)}년</b></span></div>
+    <div class="row" style="margin:6px 0"><button class="btn sm ghost" id="pvFirst" aria-pressed="false">처음 6개</button><button class="btn sm ghost" id="pvBook" aria-pressed="false">교과서 6개(1~3, 8~10번째)</button><button class="btn sm ghost" id="pvWorst">가장 크게 빗나간 점</button></div>
+    <div class="row" style="margin:0 0 6px"><button class="btn sm ghost" id="pvPrev" aria-label="이전 점">◀ 이전 점</button><button class="btn sm ghost" id="pvNext" aria-label="다음 점">다음 점 ▶</button></div>
+    <div class="le-pick" id="pvPick" aria-live="polite"></div></div></div>
+    <p class="le-msg" id="pvMsg"></p>`;
+  function draw(){
+    let g=`<svg viewBox="0 0 ${o.W} ${o.H}" id="pvSvg" role="img" aria-label="실제 기대 수명과 예측 기대 수명 산점도">`;
+    for(let v=40;v<=90;v+=10) g+=`<line class="gl" x1="${o.L}" x2="${o.W-o.R}" y1="${sy(v)}" y2="${sy(v)}"/><line class="gl" y1="${o.T}" y2="${o.H-o.B}" x1="${sx(v)}" x2="${sx(v)}"/><text class="tk" x="${o.L-6}" y="${sy(v)+3}" text-anchor="end">${v}</text><text class="tk" x="${sx(v)}" y="${o.H-o.B+14}" text-anchor="middle">${v}</text>`;
+    g+=`<polygon points="${sx(v0)},${sy(v0+tol)} ${sx(v1-tol)},${sy(v1)} ${sx(v1)},${sy(v1)} ${sx(v1)},${sy(v1-tol)} ${sx(v0+tol)},${sy(v0)} ${sx(v0)},${sy(v0)}" fill="#1f9d74" opacity=".12"/>`;
+    g+=`<line x1="${sx(v0)}" y1="${sy(v0)}" x2="${sx(v1)}" y2="${sy(v1)}" stroke="#16202c" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+    let c=0;
+    const mark=hl?HL[hl]:[];
+    LE_T.forEach((t,k)=>{ const inn=Math.abs(t[0]-t[1])<=tol; if(inn) c++; const h=mark.includes(k);
+      g+=`<circle cx="${sx(t[0])}" cy="${sy(t[1])}" r="${h?5:3}" fill="${inn?'#1f9d74':'#d64535'}" opacity="${h?1:.6}" ${h?'stroke="#16202c" stroke-width="1.5"':''}/>`; });
+    const s=LE_T[sel];
+    g+=`<line x1="${sx(s[0])}" y1="${sy(s[0])}" x2="${sx(s[0])}" y2="${sy(s[1])}" stroke="#c98a00" stroke-width="2"/><circle cx="${sx(s[0])}" cy="${sy(s[1])}" r="7" fill="none" stroke="#c98a00" stroke-width="3"/>`;
+    g+=`<text class="axl" x="${(o.L+o.W-o.R)/2}" y="${o.H-6}" text-anchor="middle">실제 기대 수명(세)</text><text class="axl" x="12" y="${(o.T+o.H-o.B)/2}" transform="rotate(-90 12 ${(o.T+o.H-o.B)/2})" text-anchor="middle">예측 기대 수명(세)</text><text class="tk" x="${sx(88)}" y="${sy(91)}" text-anchor="end">대각선 = 정확히 맞힘</text></svg>`;
+    $('pvBox').innerHTML=g;
+    $('pvCnt').textContent=c; $('pvBar').style.width=(c/n*100)+'%';
+    $('pvTolO').textContent='±'+tol+'년'; $('pvTolT').textContent='±'+tol;
+    const d=s[0]-s[1];
+    $('pvPick').innerHTML=`<b>${LE_CNK[s[2]]}</b> <span class="muted">(${LE_CN[s[2]]})</span> <b>${s[3]}</b> · 테스트 데이터 ${sel+1}번째 행<br>실제 <b>${s[0].toFixed(1)}</b>세 · 예측 <b>${s[1].toFixed(1)}</b>세 · 차이 <b class="${Math.abs(d)<=tol?'ok':'ng'}">${d>0?'+':''}${d.toFixed(2)}</b>${d<0?' (실제보다 높게 예측)':' (실제보다 낮게 예측)'}`;
+    $('pvMsg').innerHTML=`±${tol}년 안을 「맞힘」으로 보면 330개 중 <b>${c}개(${(c/n*100).toFixed(1)}%)</b>를 맞힌 셈이에요. ${tol<=1?'기준을 엄격하게 잡으면 맞힌 비율이 크게 줄어요. ':''}${tol>=8?'기준을 느슨하게 잡으면 거의 다 맞힌 것처럼 보여요. ':''}${hl==='book'?'교과서에 실린 6개(1~3, 8~10번째)는 차이가 모두 5년 안이지만, <b>처음 6개</b>에는 6~7년 차이가 나는 행이 2개 있어요. ':''}${hl==='first'?'처음 6개 중 2개(5·6번째)는 차이가 6년을 넘어요. ':''}이렇게 숫자를 예측하는 모델은 <b>기준을 어떻게 잡느냐</b>에 따라 「정확도」가 달라지므로, <b>결정 계수</b>나 <b>차이(오차)의 크기</b>로 평가해요.`;
+  }
+  const setTol=v=>{ tol=Math.max(0.5,Math.min(10,v)); $('pvTol').value=tol; draw(); };
+  $('pvTol').oninput=e=>setTol(+e.target.value);
+  $('pvMinus').onclick=()=>setTol(tol-0.5); $('pvPlus').onclick=()=>setTol(tol+0.5);
+  const setHl=k=>{ hl=hl===k?null:k; ['first','book'].forEach(x=>{ const b=$(x==='first'?'pvFirst':'pvBook'); b.classList.toggle('on',hl===x); b.setAttribute('aria-pressed',hl===x?'true':'false'); }); if(hl) sel=HL[hl][0]; draw(); };
+  $('pvFirst').onclick=()=>setHl('first'); $('pvBook').onclick=()=>setHl('book');
+  $('pvWorst').onclick=()=>{ sel=worst; draw(); };
+  const step=dlt=>{ const p=order.indexOf(sel), q=Math.max(0,Math.min(n-1,p+dlt)); sel=order[q]; draw(); };
+  $('pvPrev').onclick=()=>step(-1); $('pvNext').onclick=()=>step(1);
+  const box=$('pvBox');
+  box.addEventListener('click',e=>{ const svg=$('pvSvg'); const r=svg.getBoundingClientRect(); if(!r.width) return;
+    const x=(e.clientX-r.left)/r.width*o.W, y=(e.clientY-r.top)/r.height*o.H; let best=-1, bd=1e9;
+    LE_T.forEach((t,k)=>{ const dd=(sx(t[0])-x)**2+(sy(t[1])-y)**2; if(dd<bd){bd=dd; best=k;} }); if(best>=0&&bd<900){ sel=best; draw(); } });
+  box.addEventListener('keydown',e=>{ if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight') return; e.preventDefault(); step(e.key==='ArrowRight'?1:-1); });
+  draw();
+})();
+
+/* 04 회귀선 탐색기 */
+(function(){
+  const B=$('rlLab'), Yi=LE_A.length;
+  const UNIT={'Schooling':['교육 기간이 1년 더 긴','1'],'Income composition of resources':['소득 지수가 0.1 더 높은','0.1'],'Adult Mortality':['성인 사망률(1,000명당)이 100 더 높은','100'],'HIV/AIDS':['HIV/AIDS 사망 수(1,000명당)가 1 더 많은','1'],'BMI':['평균 체질량 지수가 1 더 높은','1'],'GDP':['1인당 GDP가 1,000달러 더 많은','1000']};
+  let a=0, mask=1;
+  const nice=v=>Math.abs(v)>=1e4?Math.round(v/1e3)+'k':Math.abs(v)>=100?Math.round(v):(Math.round(v*100)/100);
+  B.innerHTML=`<div class="le-rlb" id="rlBtns" role="group" aria-label="회귀선에 쓸 속성">${LE_A.map((c,i)=>`<button class="btn sm ghost" data-i="${i}" aria-pressed="false">${sname(c)}</button>`).join('')}</div>
+    <div class="le-rl"><div id="rlPlot" class="le-svgbox"></div><div class="le-rlinfo" id="rlInfo"></div></div>
+    <div class="le-cmb"><h4>여러 속성 함께 쓰기 <small class="muted">(눌러서 켜고 끄기)</small></h4><div class="le-rlb" id="cbBtns">${LE_A.map((c,i)=>`<button class="le-tg" data-i="${i}" aria-pressed="false">${sname(c)}</button>`).join('')}</div>
+    <div id="cbOut"></div></div>`;
+  function plot(){
+    const c=LE_A[a], xs=LE_TR.map(r=>r[a]), x0=Math.min(...xs), x1=Math.max(...xs), y0=40, y1=90, o={W:460,H:300,L:44,R:14,T:12,B:40};
+    const sx=v=>o.L+(v-x0)/(x1-x0)*(o.W-o.L-o.R), sy=v=>o.H-o.B-(v-y0)/(y1-y0)*(o.H-o.T-o.B);
+    const [m,b,r2]=LE_SG[c];
+    let g=`<svg viewBox="0 0 ${o.W} ${o.H}" role="img" aria-label="${c}와 기대 수명 산점도와 회귀선"><defs><clipPath id="rlClip"><rect x="${o.L}" y="${o.T}" width="${o.W-o.L-o.R}" height="${o.H-o.T-o.B}"/></clipPath></defs>`;
+    for(let v=40;v<=90;v+=10) g+=`<line class="gl" x1="${o.L}" x2="${o.W-o.R}" y1="${sy(v)}" y2="${sy(v)}"/><text class="tk" x="${o.L-6}" y="${sy(v)+3}" text-anchor="end">${v}</text>`;
+    for(let t=0;t<=4;t++){ const v=x0+(x1-x0)*t/4; g+=`<text class="tk" x="${sx(v)}" y="${o.H-o.B+14}" text-anchor="middle">${nice(v)}</text>`; }
+    g+='<g clip-path="url(#rlClip)">';
+    LE_TR.forEach(r=>{ g+=`<circle cx="${sx(r[a])}" cy="${sy(r[Yi])}" r="2.2" fill="#2f6fd0" opacity=".35"/>`; });
+    g+=`<line x1="${sx(x0)}" y1="${sy(m*x0+b)}" x2="${sx(x1)}" y2="${sy(m*x1+b)}" stroke="#d64535" stroke-width="3"/></g>`;
+    g+=`<text class="axl" x="${(o.L+o.W-o.R)/2}" y="${o.H-6}" text-anchor="middle">${sname(c)} (${LE_KO2[c]||LE_KO[c]})</text><text class="axl" x="12" y="${(o.T+o.H-o.B)/2}" transform="rotate(-90 12 ${(o.T+o.H-o.B)/2})" text-anchor="middle">기대 수명(세)</text></svg>`;
+    $('rlPlot').innerHTML=g;
+    const u=UNIT[c], eff=m*(+u[1]);
+    $('rlInfo').innerHTML=`<div class="le-eq">예측 기대 수명 = <b>${m.toPrecision(4)}</b> × ${sname(c)} + <b>${b.toFixed(2)}</b></div>
+      <p>기울기의 뜻: ${u[0]} 나라는 예측 기대 수명이 약 <b>${Math.abs(eff).toFixed(2)}세 ${eff<0?'낮아요':'높아요'}</b>. (원인이 아니라 데이터의 경향이에요)</p>
+      <div class="le-meter"><small>테스트 데이터 결정 계수 (속성 1개)</small><b>${r2.toFixed(3)}</b><div class="bar"><i style="width:${Math.max(0,r2)*100}%"></i></div></div>
+      <div class="le-meter all"><small>속성 20개를 모두 쓴 모델</small><b>${LE_ALL.toFixed(3)}</b><div class="bar"><i style="width:${LE_ALL*100}%"></i></div></div>
+      <p class="note">${c==='GDP'?'GDP는 오른쪽 끝에 아주 큰 값이 있어 직선이 데이터를 잘 따라가지 못해요. 이런 이상치 같은 값은 예측을 부정확하게 만들 수 있어요.':c==='Schooling'?'교과서 200쪽과 같은 회귀선이에요. 교육 기간이 긴 나라일수록 기대 수명이 높은 경향을 기울기로 읽을 수 있어요.':'점들이 직선 주변에 얼마나 모여 있는지 보면 결정 계수를 짐작할 수 있어요.'}</p>`;
+    B.querySelectorAll('#rlBtns button').forEach(x=>{ const on=+x.dataset.i===a; x.classList.toggle('on',on); x.setAttribute('aria-pressed',on?'true':'false'); });
+  }
+  function combo(){
+    B.querySelectorAll('#cbBtns .le-tg').forEach(x=>{ const on=mask>>+x.dataset.i&1; x.classList.toggle('on',!!on); x.setAttribute('aria-pressed',on?'true':'false'); });
+    const names=LE_A.filter((_,i)=>mask>>i&1).map(sname);
+    const r=mask?LE_CB[mask]:null;
+    $('cbOut').innerHTML=mask?`<div class="le-meter"><small>고른 속성 ${names.length}개: ${names.join(', ')}</small><b>${r.toFixed(3)}</b><div class="bar"><i style="width:${r*100}%"></i></div></div>
+      <div class="le-meter all"><small>속성 20개 모두</small><b>${LE_ALL.toFixed(3)}</b><div class="bar"><i style="width:${LE_ALL*100}%"></i></div></div>
+      <p class="le-msg">${names.length===1?'속성을 하나 더 켜 보세요. 결정 계수가 얼마나 오르나요?':r>=LE_ALL-0.02?`속성 <b>${names.length}개</b>로도 20개를 모두 쓴 모델(${LE_ALL.toFixed(3)})과 거의 비슷해요. 꼭 필요한 속성을 고르는 것도 성능 개선이에요.`:`20개 모두 쓴 모델보다 <b>${(LE_ALL-r).toFixed(3)}</b> 낮아요. 어떤 속성을 더하면 가장 많이 오를까요?`}</p>`
+      :'<p class="le-msg">속성을 하나 이상 켜 주세요.</p>';
+  }
+  B.querySelectorAll('#rlBtns button').forEach(x=>x.onclick=()=>{ a=+x.dataset.i; plot(); });
+  B.querySelectorAll('#cbBtns .le-tg').forEach(x=>x.onclick=()=>{ mask^=1<<+x.dataset.i; combo(); });
+  plot(); combo();
+})();
+
+/* 05 별점 · 빈칸 */
+const STARS=[['☆','조금'],['☆☆','보통'],['☆☆☆','잘함']];
+vote('ev1','ev1',STARS); vote('ev2','ev2',STARS); vote('ev3','ev3',STARS); vote('ev4','ev4',STARS); vote('ev5','ev5',STARS);
+document.querySelectorAll('.blank').forEach(b=>{ b.setAttribute('aria-label','빈칸, 눌러서 답 보기'); b.onclick=()=>{ b.textContent=b.dataset.a; b.classList.add('on'); b.setAttribute('aria-label','답: '+b.dataset.a); }; });
+
+const MEMOLIST=[['planMemo','학습 계획 · 몇 년 차이 안이면 쓸 만한 모델일까'],['typeVote','고른 기계학습 유형'],['splitMemo','훈련·테스트 데이터의 역할과 비율'],['errMemo','결정 계수와 오차로 본 모델의 믿음직함'],['improveMemo','교육 기간 하나 vs 속성 20개, 성능 개선 방법'],['ev1','돌아보기 · 문제 정의'],['ev2','돌아보기 · 데이터 수집 및 전처리'],['ev3','돌아보기 · 유형과 알고리즘 선정'],['ev4','돌아보기 · 모델 학습'],['ev5','돌아보기 · 성능 평가 및 수정'],['doneMemo','가장 기억에 남는 단계와 쓴 함수'],['effectMemo','기대 효과와 조심할 점']];
+onShow[6]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

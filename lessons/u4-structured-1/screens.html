@@ -1,0 +1,244 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 정형 데이터 인공지능 프로젝트 실제 1</span>
+      <h1>인공지능은 기대 수명을<br>어떻게 예측할까?</h1>
+      <div class="story"><b>핵심 아이디어</b><br>세계보건기구(WHO)가 세계보건관측소(GHO)의 데이터를 바탕으로 발표한 2020년 기준 세계 기대 수명은 <b>73.2세</b>로, 2000년 66.5세보다 6.7세 높아졌어요. 우리나라는 <b>84.4세</b>로 12위예요. 그런데 기대 수명이 가장 높은 나라는 85.4세, 가장 낮은 나라는 <b>54.3세</b>예요. 나라마다 건강과 경제 수준, 문화·지리적 특성, 의료 시스템, 교육 수준 등이 다르기 때문이에요.</div>
+      <p>오늘은 WHO의 기대 수명 데이터로 <b>기대 수명을 예측하는 인공지능 프로젝트</b>를 시작해요. 프로젝트 수행 과정 8단계 중 <b>문제 정의 → 데이터 수집 → 데이터 전처리 → 데이터 시각화 및 분석</b>까지 코랩에서 직접 해 봐요.</p>
+      <ol>
+        <li>문제 정의</li><li>데이터 수집</li><li>데이터 전처리</li>
+        <li>데이터 시각화 및 분석</li><li>해 보기 · 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🎯</i><div><b>1 문제 정의</b><small>SDGs 3번 · 기대 수명 예측</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>📥</i><div><b>2 데이터 수집</b><small>WHO 기대 수명 데이터 · info()</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🧹</i><div><b>3 데이터 전처리</b><small>isna() · dropna() · replace()</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>📊</i><div><b>4 데이터 시각화 및 분석</b><small>히스토그램 · 히트맵 · 산점도</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>지속가능발전목표 3번과 관련된 <b>기대 수명 예측</b>을 문제로 정하고, WHO가 제공하는 <b>정형 데이터</b>를 코랩으로 불러와 살펴봅니다. <b>결측치</b>를 확인하고 지우면 데이터가 얼마나 줄어드는지 확인하고, 여러 가지 그래프로 <b>기대 수명에 영향을 미치는 속성</b>을 찾습니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <div class="memo" style="margin-top:0"><label>1. 기대 수명과 지속가능발전목표의 관계는 무엇일까요?</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+        <div class="memo"><label>2. 이 단원에서 나는 다음 내용을 배우고 싶어요. <small>(선택)</small></label><textarea data-memo="wantMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>중단원</b> · 정형 데이터로 사회 문제를 해결하기 위한 예측 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 기대 수명에 영향을 미치는 속성은 무엇이고, 데이터를 어떻게 준비해야 할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>정형 데이터와 관련된 문제를 인공지능을 활용하여 협력적으로 해결할 수 있다.</li>
+          <li>문제 해결 과정에 따라 협력적인 자세로 프로젝트를 수행할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 정형 데이터 · 협력적 프로젝트 수행 과정 · 오늘 쓸 것: 구글 코랩(학교 구글 계정)</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 문제 정의부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 문제 정의 -->
+<section class="page" data-name="문제 정의" data-acc="#d64535">
+  <div class="head"><div class="num">01</div><div><h2>문제 정의</h2><p>교과서 191쪽 · 주제를 선정하고 해결할 문제를 정의해 보자</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>프로젝트는 <b>「무엇을 해결할까?」</b>를 정하는 것부터 시작해요. 지속가능발전목표(SDGs) 17개 중 하나를 고르고, 그 목표를 위해 인공지능이 <b>무엇을 예측하거나 분류할지</b> 한 문장으로 정해요.</span></div>
+  <div class="card">
+    <h3>🗺️ 프로젝트 수행 과정 8단계</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">178~189쪽에서 펭귄 분류로 해 본 과정을 이번에는 기대 수명 <b>예측</b>에 적용해요. 오늘은 1~4단계까지 해요.</p>
+    <div class="le-steps" id="stepMap"></div>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#4c9f38"><div class="ic">❶</div><h4>17개 목표에서 주제 선정 · 사례 찾기</h4><p><b>목표</b>: 3번 「모든 연령층을 위한 건강한 삶 보장과 복지 증진」</p><p><b>사례</b>: 위 목표를 수행하기 위한 사례로, 「인간의 기대 수명 예측」과 관련한 주제를 찾아본다.</p></div>
+    <div class="kc" style="--k:#d64535"><div class="ic">❷</div><h4>사례 분석으로 해결할 문제 정의</h4><p>수명과 관련된 데이터를 전처리하여 SDGs 3번을 위한 측정 지표인 <b>기대 수명을 예측하는 인공지능 모델</b>을 제작해 본다.</p></div>
+  </div>
+  <div class="callout"><b>프로젝트 주제 선정</b> 인공지능을 활용하여 프로젝트를 수행하는 과정에서 주제 선정은 매우 중요한 과정이다. 하지만 모둠에서 정한 주제와 관련된 데이터가 없거나 부족한 경우가 대부분이다. 그래서 이때는 SDGs 영역을 선정하고 이와 관련된 데이터를 탐색한 후 <b>데이터를 중심으로 주제를 정할</b> 수 있다.</div>
+  <div class="card">
+    <h3>🙋 해 보기 · 문제 정의 및 모둠원 역할 정하기</h3>
+    <p style="margin-top:0">모둠별로 프로젝트를 수행할 문제를 정의하고, 모둠원의 역할을 적어 보자. <small class="muted">(혼자 할 때는 내가 맡고 싶은 역할을 골라 적어요.)</small></p>
+    <div class="roles">
+      <div><i>🧭</i><b>프로젝트 기획자</b>문제와 일정 정하기</div>
+      <div><i>📥</i><b>데이터 수집가</b>데이터 찾고 내려받기</div>
+      <div><i>🔎</i><b>데이터 분석가</b>전처리 · 시각화</div>
+      <div><i>🛠️</i><b>모델 개발자</b>학습 · 성능 평가</div>
+      <div><i>🎤</i><b>프로젝트 발표자</b>결과 정리 · 발표</div>
+    </div>
+    <div class="memo"><label>문제 정의 한 문장과, 모둠원(또는 나)의 역할을 적어 보세요. <small>(선택 · 모둠 활동일 때)</small></label><textarea data-memo="roleMemo" rows="3" placeholder="문제 정의: …&#10;역할: ○○ - 데이터 분석가, …"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 데이터 수집 -->
+<section class="page" data-name="데이터 수집" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>데이터 수집</h2><p>교과서 192쪽 · 데이터셋 내려받기, 데이터셋 정보 확인하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>WHO가 모아 둔 <b>표 모양의 데이터(정형 데이터)</b>를 코랩으로 불러와요. 불러온 다음에는 <span class="mono">info()</span>로 <b>어떤 속성이 몇 개씩, 어떤 자료형</b>으로 들어 있는지부터 확인해요.</span></div>
+  <div class="card">
+    <h3>▶ 코랩에서 직접 실행하기</h3>
+    <ol>
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>처음 실행할 때 「Google에서 작성하지 않은 노트북」 경고 창이 뜨면 <b>「무시하고 계속하기」</b>를 눌러요.</li>
+      <li>맨 위 셀부터 차례로 ▶(또는 <b>Shift + Enter</b>)를 눌러 <b>[2] 데이터 수집</b>과 <b>[3] 데이터 전처리</b>까지 실행해요. Status를 바꾸는 셀에서 분홍색 상자의 <b>FutureWarning이 떠도 오류가 아니에요</b>. 그대로 다음 셀로 넘어가요.</li>
+      <li>출력된 숫자를 이 화면과 03 화면의 결과와 맞춰 봐요. [4] 시각화 셀은 04 화면에서 실행해요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-structured-1/assets/life-expectancy-1.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="life-expectancy-1.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost" href="life-expectancy-data.csv" download="Life Expectancy Data.csv" style="text-decoration:none">Life Expectancy Data.csv 받기</a></div>
+    <p class="note">이 노트북은 데이터를 인터넷에서 바로 불러오므로 파일을 올리지 않아도 돼요. <b>교과서 방식</b>: 캐글(kaggle.com)에서 「Life Expectancy」를 검색해 WHO의 기대 수명 데이터셋을 내려받거나 위의 CSV를 받은 뒤, 코랩 왼쪽 <b>파일(📁)</b> 창에 「Life Expectancy Data.csv」를 끌어다 놓고 <span class="mono">pd.read_csv('Life Expectancy Data.csv')</span>로 읽어요. (교과서의 「kaggel」은 kaggle의 오타예요.)</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 (192~193쪽)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem"><b>코랩이 안 될 때만</b> 쓰세요. 교과서 코드예요. ▶를 눌러 위에서부터 실행해 보세요. 순서를 바꿔 실행하면 어떤 일이 생기는지도 확인해 봐요.</p>
+    <div id="cellSim"></div>
+  </div>
+  <div class="card">
+    <h3>📋 기대 수명의 각 속성 안내 (194쪽)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem"><span class="mono">info()</span> 결과: 2,938개 행, 22개 속성. Non-Null Count가 2,938보다 작은 속성은 비어 있는 칸(결측치)이 있다는 뜻이에요.</p>
+    <div class="le-scroll"><table class="le-tbl" id="attrTbl"></table></div>
+    <p class="note">디지털 샘의 Tip · 데이터셋 속성 정보를 확인하면 <b>속성명에 빈칸이 들어가 있는지</b> 확인해요. 이 데이터의 BMI는 실제 이름이 <span class="mono">' BMI'</span>(앞에 빈칸)라서 <span class="mono">df['BMI']</span>로 쓰면 오류가 나요. 「thinness  1-19 years」도 가운데 빈칸이 두 칸이에요.</p>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 데이터 전처리 -->
+<section class="page" data-name="데이터 전처리" data-acc="#1f9d74">
+  <div class="head"><div class="num">03</div><div><h2>데이터 전처리</h2><p>교과서 193쪽 · 결측치 확인하기, 결측치 제거하기, 범주형 데이터를 숫자로</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>비어 있는 칸(결측치)이 있으면 모델이 학습할 수 없어요. 그래서 <b>결측치를 확인하고 지우고</b>, 글자로 된 <b>Status</b>(개발도상국·선진국)는 <b>0과 1</b>로 바꿔요. 그런데 지우면 <b>무엇이 함께 사라지는지</b>도 봐야 해요.</span></div>
+  <div class="cards3">
+    <div class="kc" style="--k:#1f9d74"><div class="ic">❶</div><h4>결측치 확인하기</h4><p><span class="mono">df.shape</span> → (2938, 22)<br><span class="mono">df.isna().sum()</span> → 속성별 결측치 개수</p></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">❷</div><h4>결측치 제거하기</h4><p><span class="mono">df = df.dropna()</span><br>결측치가 있는 행을 삭제하고 <span class="mono">isna().sum()</span>으로 모두 0인지 확인</p></div>
+    <div class="kc" style="--k:#c98a00"><div class="ic">❸</div><h4>범주형 데이터를 숫자로</h4><p><span class="mono">astype(object)</span>로 Status를 범주형으로, <span class="mono">replace({'Developing': 0, 'Developed': 1})</span></p><small>문자로 된 데이터를 학습할 수 없으므로 0과 1의 숫자로 바꿔 주는 작업을 한다. Status는 이미 object라 astype 줄은 생략할 수 있어요. 코랩에서 replace를 실행하면 분홍색 <b>FutureWarning</b>이 뜰 수 있는데, 오류가 아니에요.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🧪 결측치 처리 실험실</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">막대는 <span class="mono">isna().sum()</span> 결과예요. 그대로 <span class="mono">dropna()</span>를 하면 결측치가 <b>하나라도</b> 있는 행이 모두 지워져요. 결측치가 많은 속성을 눌러 <b>「속성 전체를 먼저 지우기」</b>(68쪽 결측치 처리 방법 (가))를 골라 보고, 남는 데이터가 어떻게 달라지는지 비교해 보세요.</p>
+    <div id="naLab"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 생각 정리</h3>
+    <div class="memo" style="margin-top:0"><label>그대로 dropna()를 하면 어떤 데이터가 사라지나요? 결측치가 있는 행을 지우는 방법과, 결측치가 많은 속성을 먼저 지우는 방법 중 기대 수명 예측에는 어느 쪽이 나을지 실험 결과를 근거로 써 보세요.</label><textarea data-memo="naMemo" rows="3"></textarea><div class="saved"></div></div>
+    <p class="note">생각해 보기 · 데이터를 그대로 믿기 전에: 이 데이터에서 대한민국(Republic of Korea)은 Status가 「Developing(개발도상국)」으로 적혀 있어요. 또 Polio(소아마비 예방 접종률)가 20% 미만인 98행은 값이 모두 3~9뿐이라, 실제 접종률이라기보다 <b>입력 오류</b>일 가능성이 커요. 확인할 점은 없을까요?</p>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 데이터 시각화 및 분석 -->
+<section class="page" data-name="시각화·분석" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>데이터 시각화 및 분석</h2><p>교과서 194~196쪽 · 히스토그램, 히트맵, 산점도, 바이올린 그래프</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>숫자 표만 봐서는 어떤 속성이 기대 수명과 관계있는지 알기 어려워요. <b>그래프</b>로 그려 보면 <b>분포</b>(값이 어떻게 퍼져 있는지)와 <b>상관관계</b>(함께 커지거나 작아지는지)가 한눈에 보여요.</span></div>
+  <div class="card">
+    <h3>🤔 먼저 예상해 보기</h3>
+    <p style="margin-top:0">기대 수명과 관계가 클 것 같은 속성을 <b>3개쯤</b> 골라 보세요. 그래프를 본 뒤 내 예상과 비교해요.</p>
+    <p class="note">코랩에서는 노트북의 [4] 셀을 실행해요. 히트맵·pairplot 셀은 10~20초쯤 걸리니, 기다리는 동안 아래 탐색기를 살펴봐요.</p>
+    <div id="guessPick"></div>
+  </div>
+  <div class="card">
+    <h3>🔍 상관관계 탐색기 · 히트맵의 「기대 수명」 줄 펼쳐 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">막대는 각 속성과 기대 수명의 <b>상관계수</b>예요(1,649행 전체로 계산, 노트북 히트맵의 Life expectancy 줄과 같아요). 막대를 누르면 그 속성과 기대 수명의 <b>산점도</b>와 그 속성의 <b>히스토그램</b>이 나와요. 내가 예상한 속성은 ★로 표시돼요.</p>
+    <div id="corrLab"></div>
+  </div>
+  <details class="card le-more">
+    <summary>📚 교과서 코드와 해석 보기 (194~196쪽 ① 히스토그램 ~ ⑤ 바이올린 그래프)</summary>
+  <div class="le-viz" style="margin-top:10px">
+    <div class="le-vc">
+      <h3>① 기대 수명 히스토그램 · <span class="mono">hist()</span></h3>
+<pre class="le-code">df['Life expectancy'].hist()    <span class="c"># 종속 변수에 대한 히스토그램</span></pre>
+      <p class="le-int"><b>해석</b> 기대 수명이 약 70~75세까지는 급격히 증가하고 약 75세 이후 급격히 감소한다. 기대 수명이 약 75세 부근인 경우가 가장 많다.</p>
+      <p class="note">막대의 높이는 나라 수가 아니라 <b>행(나라 · 연도) 수</b>예요. 한 나라가 2000~2015년 여러 해의 행을 가지고 있어요.</p>
+    </div>
+    <div class="le-vc">
+      <h3>② 소아마비 예방 접종률 · <span class="mono">sns.displot()</span></h3>
+<pre class="le-code">import seaborn as sns
+sns.displot(x = df['Polio'], kde = True)  <span class="c"># 밀도 추정 곡선과 히스토그램</span></pre>
+      <p class="le-int"><b>해석</b> 소아마비 예방 접종률이 20% 미만으로 낮은 나라도 존재한다.</p>
+      <p class="note">교과서에는 「소아마비 발생률이 높은 나라가 다수」라는 해석도 실려 있지만, Polio 속성은 발생률이 아니라 <b>1세 아동의 예방 접종률(%)</b>이에요. 이 그래프에서는 접종률이 <b>90% 이상</b>인 경우가 가장 많다고 읽는 것이 맞아요. 탐색기에서 Polio를 눌러 확인해 보세요.</p>
+    </div>
+    <div class="le-vc">
+      <h3>③ 히트맵 · <span class="mono">sns.heatmap()</span></h3>
+<pre class="le-code">plt.figure(figsize = (15, 12))   <span class="c"># 표 사이즈 설정</span>
+sns.heatmap(df.corr(numeric_only = True), linewidth = 0.1, vmax = 1,
+            cmap = plt.cm.YlOrRd, linecolor = 'white', annot = True)</pre>
+      <p class="le-int"><b>해석</b> 교육과 소득은 기대 수명과 상관관계가 높다. 국가 총 인구수와 정부 보건 관련 지출은 기대 수명과 상관관계가 낮다.</p>
+    </div>
+    <div class="le-vc">
+      <h3>④ 산점도 · <span class="mono">sns.pairplot()</span> ⑤ 바이올린 · <span class="mono">px.violin()</span></h3>
+<pre class="le-code">sns.pairplot(data = df[['Measles', 'GDP', 'Status', 'Life expectancy']],
+             hue = 'Status', palette = 'bright');
+fig = px.violin(df, x = 'Status', y = 'Life expectancy', color = 'Status', box = True)</pre>
+      <p class="le-int"><b>해석</b> 선진국(1)이 GDP가 높고 기대 수명도 높다. 홍역은 개발도상국(0)에서 주로 발생한다. 선진국이 개발도상국에 비해 평균 기대 수명이 높고, 기대 수명이 65세 미만인 선진국은 존재하지 않는다.</p>
+      <p class="note">바이올린 그래프는 데이터의 분포와 밀도를 보여 주는 그래프로, 바이올린의 너비가 밀도를 나타내요.</p>
+    </div>
+  </div>
+  </details>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 해 보기 · 정리 -->
+<section class="page" data-name="해 보기·정리" data-acc="#c98a00">
+  <div class="head"><div class="num">05</div><div><h2>해 보기 · 정리</h2><p>교과서 196쪽 · 해 보기 「데이터 시각화」</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>지금까지 다양한 방법으로 데이터를 시각화해 보면서 속성 간의 상관관계를 알아보았어요. 이제 <b>시각화 방법 하나</b>를 골라 <b>기대 수명에 영향을 미치는 속성</b>을 내 말로 정리해요.</span></div>
+  <div class="card">
+    <h3>📊 해 보기 · 데이터 시각화</h3>
+    <p style="margin-top:0">다양한 시각화 방법 중 한 개를 선택하여 시각화해 보고, 기대 수명에 영향을 미치는 속성을 적어 보자. <small class="muted">(코랩 노트북의 「해 보기」 셀에서 속성 이름을 바꿔 산점도를 그려 볼 수 있어요. 시각화 방법이 더 필요하면 70~72쪽을 살펴봐요.)</small></p>
+    <div class="memo"><label>시각화 방법 · 속성 · 그래프에서 본 모습을 함께 적어 보세요.</label><textarea data-memo="vizMemo" rows="3" placeholder="시각화 방법: …&#10;속성: …&#10;그래프에서 본 모습: …"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>교육 기간(Schooling)과 기대 수명의 상관계수는 0.73이에요. 그렇다면 「교육 기간을 늘리면 기대 수명이 늘어난다」고 말할 수 있을까요? <small>(교육 기간이 긴 나라는 어떤 특징이 함께 있을지 생각해 봐요)</small></label><textarea data-memo="causeMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>데이터셋의 속성명, 속성별 데이터 개수, 자료형을 확인하는 함수는 <button class="blank" data-a="info( )">?</button>이다.</li>
+      <li>속성별 결측치 개수는 <button class="blank" data-a="isna( ).sum( )">?</button>으로 확인하고, 결측치가 있는 행은 <button class="blank" data-a="dropna( )">?</button>로 삭제한다.</li>
+      <li>문자로 된 데이터는 학습할 수 없으므로 <button class="blank" data-a="replace( )">?</button> 함수로 개발도상국과 선진국을 0과 1의 숫자로 바꾼다.</li>
+      <li><button class="blank" data-a="히트맵">?</button>은 속성 간 상관관계를 색상으로 나타내고, <button class="blank" data-a="바이올린 그래프">?</button>는 데이터의 분포와 밀도를 너비로 나타낸다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#d64535">프로젝트는 <b>문제 정의</b>부터 시작한다. SDGs 3번(건강한 삶 보장과 복지 증진)을 위해 측정 지표인 <b>기대 수명을 예측하는 인공지능 모델</b>을 만들기로 정했다.</div>
+    <div style="--k:#1f9d74"><span class="mono">info()</span>·<span class="mono">isna().sum()</span>으로 데이터를 확인하고 <span class="mono">dropna()</span>로 결측치를 지웠다. 2,938행이 <b>1,649행</b>으로 줄고 대한민국을 포함한 <b>60개 나라</b>가 빠졌으므로, 전처리 방법은 남는 데이터까지 살펴보고 골라야 한다.</div>
+    <div style="--k:#9b4fc4">히스토그램·히트맵·산점도·바이올린 그래프로 보니 <b>교육 기간·소득(자원 소득에 대한 국가 개발 정도)</b>은 기대 수명과 양의 상관관계, <b>성인 사망률·HIV/AIDS</b>는 음의 상관관계가 크고, 인구수는 관계가 거의 없었다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>기대 수명 데이터에 dropna()를 실행하자 2,938행이 1,649행으로 줄고, 대한민국을 포함한 60개 나라의 데이터가 모두 사라졌습니다. 결측치가 있는 행을 지우는 방법과 결측치가 많은 속성을 먼저 지우는 방법을 비교해, 기대 수명을 예측하는 모델에는 어떤 방법이 더 나을지 실험 결과를 근거로 쓰세요.</li>
+      <li>히스토그램, 히트맵, 산점도, 바이올린 그래프 중 한 가지 시각화 방법을 골라 기대 수명에 영향을 미치는 속성을 찾아보았습니다. 고른 방법과 찾은 속성을 쓰고, 그래프의 어떤 모습을 보고 그렇게 판단했는지 설명하세요.</li>
+      <li>히트맵에서 교육 기간(Schooling)과 기대 수명의 상관관계가 높게 나왔습니다. 이것만 보고 「교육 기간을 늘리면 기대 수명이 늘어난다」고 말할 수 있을지, 여러분의 생각과 그 이유를 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

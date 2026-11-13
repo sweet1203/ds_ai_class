@@ -1,0 +1,306 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 3. 비정형 데이터 인공지능 프로젝트 실제 2 · 심화 활동</span>
+      <h1>빨간색 건물도<br>산불일까?</h1>
+      <div class="story"><b>우리가 만든 산불 판별 모델, 믿어도 될까?</b><br>산불 사진과 산불이 아닌 사진으로 학습한 모델은 학습 데이터에서 정확도가 0.98 가까이 나왔어요. 그런데 이 모델에 <b>빨간색 건물</b> 사진을 보여 주었더니 「Fire Image」라고 답했어요. 불은 어디에도 없는데 말이에요. 모델은 무엇을 보고 산불이라고 판단한 걸까요?</div>
+      <p>오늘은 인공지능의 판단을 왜곡하는 <b>데이터 편향성</b>을 우리 모델에서 직접 찾아내고, 이미지를 <b>회색조</b>로 바꾸어 다시 학습시키며 편향을 줄이는 방법을 탐구해요. 마지막으로 산불 이미지 분류 프로젝트 전체를 돌아봐요.</p>
+      <ol>
+        <li>데이터 편향성이란?</li><li>빨간색 건물로 확인하기</li><li>회색조로 바꾸기</li>
+        <li>다시 학습하고 평가하기</li><li>내 프로젝트 돌아보기</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🧱</i><div><b>빨간색 건물 테스트</b><small>test3.jpg → Fire Image?</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>⚖️</i><div><b>데이터 편향성 발견</b><small>산불 사진 = 붉은색이 많다</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔳</i><div><b>회색조로 다시 학습</b><small>BGR2GRAY · epoch 15</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>📋</i><div><b>프로젝트 돌아보기</b><small>단계별로 내가 한 일</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>자율주행 자동차 사고 이야기로 <b>데이터 편향성</b>의 뜻을 알아보고, 산불 이미지 분류 모델이 <b>빨간색</b>에 기대어 판단하고 있지 않은지 빨간색 건물 사진으로 확인합니다. 학습 데이터 324장의 색을 직접 따져 본 뒤, 이미지를 <b>회색조(BGR2GRAY)</b>로 바꾸고 학습 횟수를 늘려 다시 평가합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">모델은 사진의 무엇을 보고 산불이라고 판단할까요? 예상을 적어 봐요.</p>
+        <div class="memo"><label>내가 생각하는 「산불 사진」의 단서는?</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>단원</b> · 비정형 데이터로 사회 문제를 해결하기 위한 분류 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 우리가 만든 모델은 데이터 편향성이 없는 신뢰성 높은 모델일까? 편향은 어떻게 줄일까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>데이터 편향성이 무엇인지 설명하고, 학습한 모델에서 편향을 찾을 수 있다.</li>
+          <li>인공지능에서 편향을 줄이는 방법을 제안하고 직접 적용해 볼 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">오늘의 핵심: 데이터 편향성 · 회색조 변환 · 프로젝트 수행 과정 정리</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 데이터 편향성이란?부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 데이터 편향성이란 -->
+<section class="page" data-name="데이터 편향성" data-acc="#d64535">
+  <div class="head"><div class="num">01</div><div><h2>데이터 편향성이란 무엇일까?</h2><p>교과서 214쪽 · 1 데이터 편향성 확인하기 ①</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능은 <b>보여 준 데이터만큼만</b> 배워요. 데이터가 어떤 쪽으로 <b>치우쳐</b> 모이면, 모델은 그 치우친 세상이 전부인 줄 알고 판단해요. 이것이 데이터 편향성이에요.</span></div>
+  <div class="card">
+    <h3>▶ 먼저 노트북 준비 셀부터 실행해 두기</h3>
+    <ol class="uf-steps">
+      <li>아래 버튼으로 코랩 노트북을 열어요.</li>
+      <li>메뉴 <b>런타임 → 런타임 유형 변경 → T4 GPU → 저장</b>. 오늘은 학습을 두 번 해서 GPU가 꼭 필요해요.</li>
+      <li><b>준비 셀</b> 맨 위 <span class="mono">ZIP_URL = ''</span> 따옴표 안에 선생님이 알려 준 주소(지난 시간과 같은 주소)를 붙여 넣고 실행해요. 사진을 내려받고 산불 이미지 분류 모델(컬러)을 8 epoch 학습시켜요. GPU에서 1분 안팎 걸리니 기다리는 동안 아래를 읽어요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-unstructured-2/assets/fire-bias.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="fire-bias.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+    <p class="note">코랩은 창을 닫으면 학습한 모델이 사라져요. 그래서 준비 셀이 「산불 이미지 분류하기」에서 한 일(데이터 내려받기 → CNN 모델 학습)을 한 번에 다시 해요. 준비 셀 출력에 <span class="mono">fire  non  test1.jpg  test2.jpg  test3.jpg</span>가 보이지 않으면 선생님께 알려 주세요.<br><b>GPU가 잡히지 않으면</b> 준비 셀(과 02의 빨간색 건물 셀)만 실행하고, 03~04의 회색조 학습은 화면의 「셀 실행 흉내」로 따라가요. CPU로는 15 epoch가 10분 넘게 걸려요.<br><b>사진 출처</b>: 교과서 제공 실습 데이터(수업용)</p>
+  </div>
+  <div class="card uf-news">
+    <h3>📰 「자율주행 자동차의 판단」</h3>
+    <p style="margin-top:0">2016년 7월 미국에서 자율주행 자동차 모델의 첫 사망 사고가 발생했다. 자율주행 중 좌회전하는 트럭에 그대로 충돌하였기 때문이다. 이 사고의 원인은 <b>하얀색 트럭을 「밝게 빛나고 있던 하늘」로 인식</b>했기 때문이다.</p>
+    <p style="margin-bottom:0">자율주행의 인공지능은 도로 상황에 대한 데이터를 수집하여 모델을 학습시킨다. 그러나 데이터가 <b>특정 조건에 한정되어 수집</b>된다면 모델은 그 조건에서 운전하는 것을 배운 것과 같게 되어 이러한 사고를 일으킨다.</p>
+  </div>
+  <div class="card">
+    <h3>📖 데이터 편향성</h3>
+    <div class="uf-defbox">데이터 수집 과정에서 특정 그룹이나 성향을 지닌 데이터가 다른 그룹이나 성향을 지닌 데이터보다 <b>과도하게 포함된 상황</b>을 <b>「데이터 편향성」</b>이라고 한다. 이는 인공지능 모델의 <b>성능을 왜곡</b>시키고, 예측 결과의 <b>신뢰성을 떨어뜨릴</b> 수 있다.</div>
+    <blockquote class="uf-quote">“데이터 편향은 인공지능 시스템의 문제이기도 하지만 사회의 불공정한 편향과 차별도 문제가 된다. 이를 예방하기 위해 사회 전반이 변화하고 있으며, 이러한 편향은 점점 줄어들 것이다.” <small>(교과서 215쪽)</small></blockquote>
+    <details class="uf-more"><summary>더 알아보기 · 다른 분야의 데이터 편향성 사례</summary>
+      <ul style="margin:6px 0 0;padding-left:20px;font-size:.92rem">
+        <li><b>얼굴 인식</b> · 2018년 한 연구에서 얼굴 인식 소프트웨어가 피부색이 어두운 사람의 얼굴에서 오류율이 훨씬 높게 나왔다. 학습 데이터에 백인 남성 얼굴이 많고 흑인이나 여성의 데이터가 부족했기 때문이다.</li>
+        <li><b>의료</b> · 2019년 미국의 한 의료 인공지능이 의료비 지출 기록으로 학습한 탓에, 그동안 의료비를 적게 썼던 아프리카계 미국인 환자에게 필요한 의료 서비스를 낮게 판단하는 문제가 발견되었다.</li>
+      </ul>
+      <p class="note" style="margin-bottom:0">데이터의 편향이 사회 불평등을 키울 수 있어서, 다양한 데이터를 모아 균형 잡힌 데이터셋을 만드는 것이 중요해요. (「데이터 수집 · 편향성」에서 배운 정확성과 공정성을 떠올려 보세요.)</p>
+    </details>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ①</h3>
+    <div id="sim1"></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 빨간색 건물로 확인하기 -->
+<section class="page" data-name="빨간색 건물 테스트" data-acc="#e0702b">
+  <div class="head"><div class="num">02</div><div><h2>빨간색 건물로 편향성 확인하기</h2><p>교과서 214쪽 · 1 데이터 편향성 확인하기 ②</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>산불 사진에는 <b>빨간색·주황색</b>이 아주 많아요. 그렇다면 모델이 불꽃이나 연기를 보는 게 아니라 <b>「얼마나 빨간가」</b>로 판단하고 있을지도 몰라요. 불이 없는 빨간색 건물로 시험해 보면 알 수 있어요.</span></div>
+  <div class="card">
+    <h3>📖 편향된 데이터로 데이터 편향성 확인하기</h3>
+    <p style="margin-top:0">우리가 만든 화재 이미지 분류 모델은 데이터 편향성이 존재하지 않는 신뢰성 높은 모델일까? 산불 데이터를 살펴보면 불을 상징하는 빨간색이 많다는 것을 알 수 있으며, 따라서 산불 이미지 분류가 단순히 빨간색의 정도를 통해 이루어지는 것은 아닌지 의심할 수 있다.</p>
+    <div class="uf-row2">
+      <figure class="uf-fig"><img src="img/test3.jpg" alt="빨간색 건물 사진 test3.jpg" width="160" height="160"><figcaption>test3.jpg · 빨간색 건물</figcaption></figure>
+<pre class="uf-code">img3 = Image.open(path + '/test3.jpg')     <span class="c"># 교과서: files.upload() 후 '/content/test3.jpg'</span>
+img_resize3 = img3.resize((400, 400))
+test_img3 = image.img_to_array(img_resize3) / 255   <span class="c"># (더한 부분)</span>
+test_img3 = np.expand_dims(test_img3, axis = 0)
+images3 = np.vstack([test_img3])
+classes3 = model.predict(images3, batch_size = 10)
+print(classes3[0])
+if classes3[0][0] &lt; 0.5:                <span class="c"># (고친 부분)</span>
+    print('Fire Image')
+else:
+    print('Non Fire Image')</pre>
+    </div>
+    <div class="callout" style="margin-bottom:0"><b>교과서 결과</b> 빨간색 건물 이미지인 test3.jpg 파일을 테스트해 본 결과, 단순한 빨간색 건물 이미지임에도 불구하고 <b>산불 이미지로 판별</b>했다. 따라서 우리가 만든 산불 이미지 분류 모델에도 <b>학습 데이터에 편향성</b>이 있었음을 알 수 있다.<br><small class="muted">÷255와 0.5 기준을 더한 까닭은 「산불 이미지 분류」의 새 이미지 평가와 같아요(학습 때와 같은 0~1 범위, 0.5보다 작으면 산불). 출력이 <span class="mono">[3.1e-12]</span>처럼 나오면 <b>e-12</b>는 소수점 아래 0이 11개인 아주 작은 수, 곧 <b>거의 0</b>이라 산불로 판별한 거예요. 내 노트북에서는 어떤 값이 나왔나요?</small></div>
+  </div>
+  <div class="card">
+    <h3>🎨 색만 보고 판별하면 어떻게 될까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">학습에 쓴 사진 324장마다 <b>붉은 픽셀의 비율</b>(빨강·주황으로 보이는 점이 사진의 몇 %인지)을 계산해 점으로 찍었어요. 「붉은 비율이 기준 이상이면 산불」이라는 <b>아주 단순한 규칙</b>을 만들어 보세요. 기준 막대를 끌거나, 슬라이더를 움직이거나, 막대를 누른 뒤 ←→ 키를 써요.</p>
+    <div id="redGame"></div>
+    <p class="note" style="margin-bottom:0">CNN이 실제로 이 규칙을 쓴다는 뜻은 아니에요. 하지만 <b>색 하나만 봐도</b> 학습 데이터를 이만큼 맞힐 수 있으니, 모델이 모양보다 쉬운 「색」이라는 지름길을 배우기 쉬워요. 붉은 픽셀 비율은 수업용 zip의 사진으로 직접 계산한 값이에요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ②</h3>
+    <div id="sim2"></div>
+  </div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>모델이 빨간색 건물을 산불로 판단한 까닭은 무엇일까요? 위 점그림에서 본 <b>산불 사진과 산불이 아닌 사진의 특징</b>을 들어 「데이터 편향성」이라는 말을 써서 설명해 보세요.</label><textarea data-memo="biasWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 회색조로 바꾸기 -->
+<section class="page" data-name="회색조로 바꾸기" data-acc="#5b6776">
+  <div class="head"><div class="num">03</div><div><h2>회색조로 바꾸어 편향 줄이기</h2><p>교과서 215쪽 · 2 데이터 편향성 해결하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델이 <b>색</b>에 기대고 있다면, 아예 색을 없애 버리면 어떨까요? 사진을 <b>회색조(흑백)</b>로 바꾸면 밝기만 남아서, 모델은 빨간색 대신 <b>불꽃의 모양, 연기의 결, 밝고 어두운 무늬</b> 같은 다른 단서를 찾아야 해요.</span></div>
+  <div class="card">
+    <h3>📖 BGR2RGB → BGR2GRAY</h3>
+    <p style="margin-top:0">앞서 빨간색 건물 이미지로 테스트한 결과, 산불 이미지로 잘못 분류하고 데이터 편향성이 있다는 것을 발견하였다. 이를 해결하기 위해 205쪽 코드에서 이미지 데이터의 색상을 모두 <b>회색조</b>로 전처리해 보자.</p>
+    <div class="uf-two">
+<pre class="uf-code">def read_img(file_path):
+  img_arr = cv2.imread(file_path)
+  return cv2.cvtColor(img_arr, cv2.COLOR_<b class="hl">BGR2RGB</b>)</pre>
+      <span class="uf-ar">→</span>
+<pre class="uf-code">def read_img(file_path):
+  img_arr = cv2.imread(file_path)
+  return cv2.cvtColor(img_arr, cv2.COLOR_<b class="hl">BGR2GRAY</b>)</pre>
+    </div>
+    <p>RGB 형식은 세 가지 기본 색상 채널을 사용하는데, GRAY 형식으로 변환하면 <b>색상 없이 휘도와 밝기 정보</b>만 나타내도록 데이터가 단순화된다. 따라서 이미지를 BGR2GRAY로 변환하면 <b>데이터의 편향성을 감소</b>시킬 수 있고 모델의 <b>학습 속도도 향상</b>시킬 수 있다.</p>
+    <div class="cards3">
+      <div class="kc" style="--k:#d64535"><h4>편향성 감소</h4><p>색상 정보가 없으면 특정 색에 기대는 편향이 줄어, 모델이 <b>형태나 패턴</b>에 기반하여 학습하게 돕는다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>계산 효율성</h4><p>채널이 3개 → 1개라 처리할 데이터가 1/3로 준다. 첫 합성곱층의 매개 변수도 448 → <b>160</b>개로 줄어든다(전체 약 945만 개 중 일부라 효과는 조금).</p></div>
+      <div class="kc" style="--k:#c98a00"><h4>잃는 정보</h4><p>색이 꼭 필요한 단서였다면 그만큼 정보를 잃는다. 불꽃의 주황색도 함께 사라지므로 모델이 더 많이 학습해야 한다.</p></div>
+    </div>
+  </div>
+  <div class="card uf-fix">
+    <h3>⚠️ 여기서 잠깐! read_img만 바꾸면 학습 데이터는 그대로 컬러예요</h3>
+    <p style="margin-top:0"><span class="mono">read_img</span>는 사진을 <b>화면에 보여 줄 때만</b> 쓰는 함수예요. 모델이 학습하는 데이터는 <span class="mono">flow_from_directory</span>가 폴더에서 다시 읽어 오는데, 기본값이 컬러(<span class="mono">color_mode = 'rgb'</span>)예요. 교과서 소스 노트북의 gray_model도 입력이 <span class="mono">(400, 400, 3)</span>이라 실제로는 컬러 사진으로 학습했어요. 정말 회색조로 학습하려면 세 곳을 바꿔요.</p>
+<pre class="uf-code">gray_generator = gray_datagen.flow_from_directory(
+                 path, target_size = (400,400),
+                 batch_size = 9, class_mode = 'binary',
+                 <b class="hl">color_mode = 'grayscale'</b>,     <span class="c"># ① 회색조로 읽기</span>
+                 seed = 3)
+gray_model = tf.keras.models.Sequential([
+      tf.keras.layers.Conv2D(16, (3, 3), activation = 'relu', input_shape = <b class="hl">(400, 400, 1)</b>),   <span class="c"># ② 채널 1개</span>
+      …(나머지 층은 같음)…
+])
+img_gray3 = img3.<b class="hl">convert('L')</b>.resize((400, 400))   <span class="c"># ③ 테스트 사진도 회색조로</span></pre>
+    <p class="note" style="margin-bottom:0">CNN 모델을 만들 때 model이 아니라 <b>gray_model</b>처럼 다른 이름을 쓰면 컬러 모델과 헷갈리지 않아요. 수업용 노트북은 이렇게 고쳐 두었어요. gray_model 셀에서 <span class="mono">input_shape</span>에 관한 경고(UserWarning)가 한 줄 나올 수 있는데, 오류가 아니라서 그대로 진행해요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ③~⑤</h3>
+    <div id="sim3"></div>
+    <p class="note" style="margin-bottom:0">교과서 215쪽 그림의 회색조 사진이 초록·보라색으로 보이는 것은 <span class="mono">plt.imshow</span>에 <span class="mono">cmap = 'gray'</span>를 넣지 않았기 때문이에요. 숫자는 회색조가 맞아요.</p>
+  </div>
+  <div class="card">
+    <h3>🧩 해 보기 2</h3>
+    <div class="memo" style="margin-top:0"><label>「BGR2GRAY」 명령어로 이미지 데이터의 편향을 줄였어요. 이 명령어가 편향을 줄인 까닭을 정리하고, 이때 <b>잃는 정보</b>도 함께 써 보세요.</label><textarea data-memo="grayMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 다시 학습하고 평가하기 -->
+<section class="page" data-name="다시 학습·평가" data-acc="#2f6fd0">
+  <div class="head"><div class="num">04</div><div><h2>다시 학습하고 평가하기</h2><p>교과서 216쪽 · 3 편향된 데이터로 성능 평가하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>색이라는 쉬운 단서가 사라졌으니 모델은 더 오래 배워야 해요. 그래서 학습 횟수를 <b>8 → 15</b>로 늘려요. 그다음 빨간색 건물을 다시 보여 줘요.</span></div>
+  <div class="card">
+    <h3>📖 학습 횟수 늘려 다시 학습하기</h3>
+    <p style="margin-top:0">색상 특징이 없으므로 이미지 학습 단계에서 학습 횟수(epochs)를 더 늘려 준다.</p>
+<pre class="uf-code">history = gray_model.fit(gray_generator, steps_per_epoch = 36, epochs = <b class="hl">15</b>, verbose = 1)   <span class="c"># 교과서: epochs = 8 → 15</span></pre>
+    <p>회색조로 이미지 데이터를 변환한 후 충분히 학습한 산불 이미지 분류 모델로 빨간색 건물을 테스트해 본다. 수업에서는 <b>진짜 산불 사진(test1.jpg)도 꼭 함께</b> 테스트해요. 빨간 건물만 맞히고 진짜 산불을 놓친다면 편향이 풀린 것이 아니니까요.</p>
+<pre class="uf-code">classes4 = gray_model.predict(images4, batch_size = 10)   <span class="c"># images4: 회색조로 바꾼 test3</span>
+print(classes4[0])                <span class="c"># (고친 부분) 교과서: print(classes2[0])</span>
+if classes4[0][0] &lt; 0.5:
+    print('Fire Image')
+else:
+    print('Non_Fire Image')</pre>
+<pre class="uf-out">[1.]
+Non_Fire Image      ← 교과서 216쪽 결과</pre>
+    <p class="note">교과서 코드는 <span class="mono">classes4</span>를 만들고 <span class="mono">classes2</span>를 출력해요. classes2는 숲 사진(test2.jpg)의 결과라서 늘 「Non_Fire Image」가 나와요. 빨간색 건물의 결과를 보려면 <b>classes4</b>를 출력해야 해요.</p>
+<pre class="uf-code">img_gray1 = Image.open(path + '/test1.jpg').convert('L').resize((400, 400))   <span class="c"># (더한 부분) 진짜 산불도 확인</span>
+test_gray1 = np.expand_dims(image.img_to_array(img_gray1) / 255, axis = 0)
+classes5 = gray_model.predict(test_gray1, batch_size = 10)
+print(classes5[0])</pre>
+    <div class="uf-fix" style="background:#fffaf0;border-radius:10px;padding:10px 14px"><b>⚠️ 빨간 건물은 맞혔지만 진짜 산불을 놓칠 수도 있어요</b><br>회색조 모델을 여러 번 학습시켜 보면, 빨간색 건물을 「산불 아님」으로 맞히면서 <b>진짜 산불(test1)도 「산불 아님」으로 놓치는</b> 경우가 꽤 나와요(검토에서 6번 중 3번). 회색조 모델은 학습 데이터 정확도가 1.000에 가까워져 학습 사진을 <b>외워 버리기</b> 쉽고, 불꽃의 주황색이라는 중요한 단서까지 버렸기 때문이에요. 이것이 <b>색 정보를 버린 대가</b>예요. 그래서 근본적인 해결은 단풍·노을·빨간 건물처럼 <b>붉지만 산불이 아닌 사진을 학습 데이터에 더하는 것</b>이에요.</div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑥~⑦</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">흉내의 학습 기록과 확률은 예시예요.</p>
+    <div id="sim4"></div>
+  </div>
+  <div class="card">
+    <h3>🗳️ 내 노트북의 결과는?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">회색조로 학습한 gray_model의 결과를 두 가지 모두 골라 보세요.</p>
+    <p style="margin:4px 0;font-weight:700">① 빨간색 건물(test3.jpg)은?</p>
+    <div id="grayVote" class="vote"></div>
+    <div id="grayVoteMsg"></div>
+    <p style="margin:10px 0 4px;font-weight:700">② 진짜 산불(test1.jpg)은?</p>
+    <div id="grayVote1" class="vote"></div>
+    <div id="grayVoteMsg1"></div>
+  </div>
+  <div class="card">
+    <h3>➕ 이 데이터를 더하면 편향이 줄어들까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">회색조 변환 말고도 편향을 줄이는 방법이 있어요. 바로 <b>데이터를 바꾸는 것</b>이에요. 각 카드를 학습 데이터에 더하면 「색으로 판단하는 편향」이 줄어들지 골라 보세요.</p>
+    <div id="dataSort"></div>
+  </div>
+  <div class="card">
+    <h3>🧩 해 보기 1</h3>
+    <div class="memo" style="margin-top:0"><label><b>일상생활 속에서</b> 데이터 편향성과 관련된 사례를 하나 찾아 쓰고, 그 편향을 줄이려면 데이터를 어떻게 모으거나 바꾸어야 할지 써 보세요.</label><textarea data-memo="biasCase" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="callout">데이터 편향성은 모델의 <b>공정성</b>에 영향을 미치며, 사용자의 <b>신뢰성</b>을 떨어뜨릴 수 있다. 따라서 데이터 편향성을 최소화하는 것은 매우 중요하다.</div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 내 프로젝트 돌아보기 -->
+<section class="page" data-name="프로젝트 돌아보기" data-acc="#1f9d74">
+  <div class="head"><div class="num">05</div><div><h2>내 프로젝트 돌아보기</h2><p>교과서 216~217쪽 · 프로젝트 정리 · 스스로 해결하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제를 정하고, 데이터를 모으고, 학습시키고, 평가하고, 편향을 찾아 고쳤어요. 단계마다 <b>내가 무엇을 했고 어떤 도구(라이브러리·함수)를 썼는지</b> 정리하면 다음 프로젝트에서 그대로 쓸 수 있어요.</span></div>
+  <div class="card">
+    <h3>📖 프로젝트 정리</h3>
+    <p style="margin:0">이렇게 우리는 데이터를 수집하며 학습하여 문제를 해결하는 인공지능을 제작해 보았다. 과거의 데이터로부터 학습하여 미래를 예측하는 인공지능은 앞으로 우리 삶에서 빼놓을 수 없는 기술이 될 것이다. 지속가능발전목표 17개를 탐색해 보고 문제를 해결하기 위해 인공지능 프로젝트 수행 과정을 다시 한번 확인해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>⭐ 1 프로젝트 수행 과정 돌아보기 <span class="muted" style="font-weight:400;font-size:.88rem">(217쪽 · 수행 정도에 별을 칠해 보세요 · 나 / 모둠)</span></h3>
+    <div id="stars"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 2 단계별로 내가 한 일 · 3 기대 효과</h3>
+    <div class="uf-scroll"><table class="uf-ex"><tr><th>과정</th><th>예시: 내가 한 일</th><th>예시: 모듈·라이브러리·명령어</th></tr>
+      <tr><td>문제 정의</td><td>문제를 해결한 후의 기대 효과에 관한 의견을 냈다.</td><td>–</td></tr>
+      <tr><td>데이터 수집 및 전처리</td><td>데이터를 내려받고, 학습시키기 위해 색상을 변경하였다.</td><td>os, glob, cv2.cvtColor( )</td></tr>
+      <tr><td>알고리즘 선정</td><td>비정형 데이터를 분류하기 위해 딥러닝 알고리즘(CNN)을 설계하였다.</td><td>tf.keras.models.Sequential</td></tr>
+      <tr><td>모델 학습</td><td>모델을 생성하고, 컴파일 및 학습을 진행하였다.</td><td>ImageDataGenerator(rescale = 1/255), model.fit( )</td></tr>
+      <tr><td>성능 평가 및 수정</td><td>오차와 정확도를 시각화하고, 새로운 이미지로 분류해 보았다. 편향을 찾아 회색조로 다시 학습했다.</td><td>loss, accuracy, model.predict( ), COLOR_BGR2GRAY</td></tr>
+    </table></div>
+    <div class="memo"><label>예시를 참고해 <b>내가 가장 많이 한 단계</b>에서 한 일과 사용한 명령어를 적어 보세요.</label><textarea data-memo="myWork" rows="2"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>이 프로젝트로 얻게 되는 <b>기대 효과</b>를 적어 보세요. (산불 예방, 대피, 생태계 보호 등)</label><textarea data-memo="effectMemo" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>데이터 수집 과정에서 특정 그룹이나 성향의 데이터가 과도하게 포함된 상황을 <button class="blank" data-a="데이터 편향성">?</button>이라고 한다.</li>
+      <li>cv2.cvtColor( )에 <button class="blank" data-a="COLOR_BGR2GRAY">?</button>를 쓰면 컬러 이미지를 회색조로 바꾼다.</li>
+      <li>색상 특징이 없으므로 학습 횟수인 <button class="blank" data-a="epochs">?</button>를 8에서 15로 늘렸다.</li>
+      <li>데이터 편향성은 모델의 <button class="blank" data-a="공정성">?</button>에 영향을 미치고 사용자의 신뢰성을 떨어뜨릴 수 있다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 성취도 평가</h3>
+    <p style="margin-top:0">할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#d64535"><b>데이터 편향성</b>은 특정 그룹이나 성향의 데이터가 과도하게 포함된 상황이에요. 산불 사진은 붉은색이 많고, 산불이 아닌 사진은 거의 숲(초록)이라 모델이 <b>빨간색 건물도 산불</b>로 판단했어요.</div>
+    <div style="--k:#5b6776"><b>BGR2GRAY</b>로 회색조로 바꾸면 색 없이 밝기만 남아 모델이 형태·패턴을 보게 되고, 색 단서가 없으니 <b>epochs를 8 → 15</b>로 늘려요. 학습 데이터도 <span class="mono">color_mode = 'grayscale'</span>로 읽어야 정말 회색조로 학습해요.</div>
+    <div style="--k:#2f6fd0">회색조 모델은 빨간 건물을 맞혀도 <b>진짜 산불을 놓칠 수 있어요</b>(색 정보를 버린 대가). 단풍·노을·빨간 건물처럼 <b>붉지만 산불이 아닌 사진</b>을 더해 데이터의 균형을 맞추는 것이 편향을 줄이는 근본적인 방법이에요.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>산불 이미지 분류 모델이 빨간색 건물 사진(test3.jpg)을 산불 이미지로 판별했습니다. 학습에 쓴 산불 이미지와 산불이 아닌 이미지가 어떤 특징을 가졌는지 들어, 모델이 이런 판단을 한 까닭을 데이터 편향성이라는 말을 써서 설명하세요.</li>
+      <li>데이터 편향성을 줄이려고 이미지를 BGR2GRAY로 회색조로 바꾸고 학습 횟수를 8에서 15로 늘렸습니다. 회색조로 바꾸면 모델이 무엇을 보고 판단하게 되는지 쓰고, 이때 잃는 정보와 학습 횟수를 늘린 까닭을 진짜 산불 사진(test1.jpg)의 판별 결과와 연결해 설명하세요.</li>
+      <li>데이터 편향성은 이미지 분류뿐 아니라 일상생활의 인공지능에서도 생깁니다. 일상생활 속 데이터 편향성 사례를 하나 들고, 그 편향을 줄이려면 데이터를 어떻게 모으거나 바꾸어야 할지 구체적으로 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

@@ -1,0 +1,361 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 3. 비정형 데이터 인공지능 프로젝트 실제 2</span>
+      <h1>인공지능은 산불 예방을<br>어떻게 할까?</h1>
+      <div class="story"><b>불타는 숲, 사진으로 먼저 알아챌 수 있다면?</b><br>2019년 가을 호주에서 사상 최악의 산불이 나서 약 <b>1,860만 헥타르</b>, 대한민국 국토 면적의 85%에 해당하는 땅이 타 버렸어요. 우리나라도 2004년 4월 강원도 동해안을 따라 번진 산불로 <b>23,794 헥타르</b>(서울 종로구의 10배)가 피해를 입었어요. 지구 온난화와 기상 이변으로 대형 산불은 점점 잦아지고 있어요.</div>
+      <p>오늘은 <b>산불 사진과 산불이 아닌 사진</b>을 모아 컴퓨터가 구별하도록 학습시키는 <b>이미지 분류 프로젝트</b>를 처음부터 끝까지 해 봐요. 사진처럼 형식이 정해지지 않은 <b>비정형 데이터</b>는 <b>합성곱 신경망(CNN)</b>으로 학습시켜요.</p>
+      <ol>
+        <li>문제 정의 · 데이터 수집</li><li>데이터 전처리 · 시각화</li><li>알고리즘 선정 · CNN 모델</li>
+        <li>모델 학습</li><li>새 이미지로 평가</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🎯</i><div><b>문제 정의</b><small>SDGs 13 · 기후 변화 대응</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🖼️</i><div><b>데이터 수집 · 전처리</b><small>산불 162장 · 산불 아님 162장</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🧠</i><div><b>CNN 모델 학습</b><small>합성곱층 · 풀링층 · epoch(에포크) 8</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔥</i><div><b>새 이미지로 평가</b><small>산불일까, 아닐까?</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>인공지능 프로젝트 수행 과정 7단계(<b>문제 정의 → 데이터 수집 → 데이터 전처리 → 데이터 시각화 및 분석 → 알고리즘 선정 → 모델 학습 → 성능 평가 및 수정</b>)를 따라 코랩에서 산불 이미지 분류 모델을 직접 만듭니다. 사진이 컴퓨터 안에서 어떤 숫자로 저장되는지, CNN이 층을 지나며 사진을 어떻게 줄여 가는지 확인하고, 학습에 쓰지 않은 새 사진으로 모델을 시험합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">교과서 202쪽 질문이에요. 내 생각을 한두 문장으로 적어 봐요.</p>
+        <div class="memo"><label>산불 발생과 기후 변화와의 관계는 무엇일까요?</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>단원</b> · 비정형 데이터로 사회 문제를 해결하기 위한 분류 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 인공지능은 어떻게 기후 변화를 감지하고 분류해서 대비할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>비정형 데이터와 관련된 문제를 인공지능을 활용하여 협력적으로 해결할 수 있다.</li>
+          <li>문제 해결 과정에 따라 협력적인 자세로 프로젝트를 수행할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 비정형 데이터 · 협력적 프로젝트 수행 과정</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 문제 정의 · 데이터 수집부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 문제 정의 · 데이터 수집 -->
+<section class="page" data-name="문제 정의·데이터 수집" data-acc="#d64535">
+  <div class="head"><div class="num">01</div><div><h2>문제 정의와 데이터 수집</h2><p>교과서 203~204쪽 · 프로젝트 수행 과정 1·2단계</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>먼저 <b>무엇을 해결할지</b> 한 문장으로 정해요(문제 정의). 그다음 그 문제를 풀 <b>재료</b>를 모아요(데이터 수집). 오늘의 재료는 <b>산불 사진</b>과 <b>산불이 아닌 사진</b>이에요.</span></div>
+  <div class="card">
+    <h3>▶ 먼저 노트북부터 열어 두기</h3>
+    <ol class="uf-steps">
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>메뉴 <b>런타임 → 런타임 유형 변경 → T4 GPU → 저장</b>. GPU를 쓰면 학습이 몇 배 빨라요.</li>
+      <li>첫 코드 셀(데이터 내려받기)의 <span class="mono">ZIP_URL = ''</span> 따옴표 안에 선생님이 알려 준 주소를 붙여 넣고 ▶(또는 <b>Shift + Enter</b>)로 실행해요. 기다리는 동안 아래를 읽어요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-unstructured-1/assets/fire-cnn.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="fire-cnn.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+    <p class="note">GPU를 고르는 창에서 「사용할 수 없음」이 나오면 그대로 CPU로 해도 돼요. 학습 단계에서 몇 분 더 기다리면 돼요.</p>
+  </div>
+  <div class="card">
+    <h3>🎯 1 문제 정의 <span class="muted" style="font-weight:400;font-size:.88rem">(203쪽)</span></h3>
+    <p style="margin-top:0">지속가능발전목표(SDGs) 17개 목표를 탐색해 보고, 인공지능으로 해결할 수 있는 주제를 선정하여 해결할 문제를 정의한다.</p>
+    <div class="uf-def"><span class="uf-sdg">13</span><div><b>목표</b> 13번 「기후 변화에 대한 영향 방지와 긴급 조치」<br><b>사례</b> 화재 예방을 위한 이미지 분류<br><b>문제 정의</b> 화재 예방을 위해 산불 관련 이미지 데이터를 학습하는 인공지능 모델을 제작해 본다.</div></div>
+    <details class="uf-more"><summary>왜 이 프로젝트가 필요할까? (사회·경제·환경, 교과서 지도 TIP)</summary>
+    <div class="cards3" style="margin-top:8px">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🏘️</div><h4>사회적 측면</h4><p>재난 예방이나 대응에 효과적이고 주민들의 안전을 확보할 수 있다.</p></div>
+      <div class="kc" style="--k:#c98a00"><div class="ic">💰</div><h4>경제적 측면</h4><p>산림 자원의 피해를 줄여 국가 경제에 미치는 부정적인 영향을 줄일 수 있다.</p></div>
+      <div class="kc" style="--k:#1f9d74"><div class="ic">🌳</div><h4>환경적 측면</h4><p>산불로부터 생태계를 보호하고 기후 변화에 대응할 수 있다.</p></div>
+    </div></details>
+  </div>
+  <details class="card uf-more">
+    <summary>👥 해 보기 · 문제 정의 및 모둠원 역할 정하기 <span class="muted" style="font-weight:400;font-size:.88rem">(모둠 활동을 할 때)</span></summary>
+    <p style="margin-top:0">역할 예시: <b>프로젝트 기획자</b> · <b>데이터 수집가</b> · <b>데이터 분석가</b> · <b>모델 개발자</b> · <b>프로젝트 발표자</b> 등. 혼자 할 때도 단계마다 어떤 역할을 하고 있는지 생각하며 진행해요.</p>
+    <div class="memo"><label>우리 모둠(또는 짝)의 문제 정의를 한 문장으로 쓰고, 내가 맡은 역할을 적어 보세요.</label><textarea data-memo="roleMemo" rows="2"></textarea><div class="saved"></div></div>
+  </details>
+  <div class="card">
+    <h3>🖼️ 2 데이터 수집 <span class="muted" style="font-weight:400;font-size:.88rem">(204쪽)</span></h3>
+    <p style="margin-top:0">학습을 위한 이미지 데이터는 직접 또는 인터넷에서 수집할 수 있다. 산불 이미지는 인터넷에서 검색하여 수집하고, 산불 이미지가 아닌 것도 인터넷 검색 또는 주변의 모습을 촬영하여 수집한다.</p>
+    <div class="uf-tree">
+      <div class="uf-dir">📁 fire</div>
+      <div class="uf-sub">
+        <div><span class="uf-dir f">📁 fire</span> 산불 이미지 <b>162장</b> <small>fire.1 ~ fire.162</small></div>
+        <div><span class="uf-dir n">📁 non</span> 산불이 아닌 이미지 <b>162장</b> <small>non_fire.1 ~ non_fire.162</small></div>
+        <div><span class="uf-file">🖼️ test1.jpg · test2.jpg · test3.jpg</span> 학습에 쓰지 않는 새 이미지</div>
+      </div>
+    </div>
+    <div class="uf-gal" aria-label="데이터 사진 예시">
+      <figure><img src="img/g-fire8.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire13.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire37.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire64.jpg" alt="건물 화재 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-non1.jpg" alt="안개 낀 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non31.jpg" alt="초록 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non46.jpg" alt="나무 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non115.jpg" alt="단풍 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+    </div>
+    <p class="note">사진은 모두 가로·세로 400 픽셀이에요. 수업에서는 시간을 아끼려고 사진 324장을 <b>압축 파일(fire.zip) 하나로 묶어</b> 선생님이 구글 드라이브로 공유해요. 노트북 첫 셀의 <span class="mono">ZIP_URL</span>에 선생님이 알려 준 주소를 붙여 넣고 실행하면 코랩으로 내려받아 풀어요. (파일 크기를 줄이려고 PNG 사진을 JPG로 바꾸었어요.)<br><b>사진 출처</b>: 교과서 제공 실습 데이터(수업용)</p>
+    <details class="uf-more"><summary>교과서처럼 구글 드라이브로 할 때</summary>
+      <ol style="margin:6px 0 0;padding-left:20px;font-size:.92rem">
+        <li>구글 드라이브에 「fire」 폴더를 만들고, 그 안에 「non」과 「fire」 폴더를 만들어 사진을 나누어 저장한다.</li>
+        <li>코랩에서 <span class="mono">from google.colab import drive</span>, <span class="mono">drive.mount('/gdrive', force_remount = True)</span>를 실행해 드라이브를 연결한다(Mounted at /gdrive).</li>
+        <li>노트북의 <span class="mono">path</span>를 <span class="mono">'/gdrive/MyDrive/fire'</span>로 바꾼다. 경로의 슬래시(/)와 폴더 이름을 정확히 쓴다.</li>
+      </ol>
+      <p class="note" style="margin-bottom:0"><span class="mono">force_remount</span> 옵션은 연결(mount)을 강제로 다시 할 때 써요.</p>
+    </details>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ①</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">노트북 첫 셀이에요. ▶를 눌러 실행해 보세요. 다른 화면의 셀 흉내와 이어져요. 코랩에서 첫 셀을 실행한 뒤 <span class="mono">fire  non  test1.jpg  test2.jpg  test3.jpg</span>가 보이지 않으면 선생님께 알려 주세요.</p>
+    <div id="sim1"></div>
+  </div>
+  <div class="callout"><b>비정형 데이터</b>는 정해진 형식이나 구조 없이 자유롭게 저장되는 데이터로, 텍스트·이미지·오디오·비디오 데이터 등이 있어요. 표의 행과 열로 정리된 펭귄·기대 수명 데이터(정형 데이터)와 달리, 사진은 그 자체로는 「어디가 무슨 값」인지 정해져 있지 않아요.</div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 데이터 전처리 · 시각화 -->
+<section class="page" data-name="전처리·시각화" data-acc="#e0702b">
+  <div class="head"><div class="num">02</div><div><h2>데이터 전처리와 시각화</h2><p>교과서 205~207쪽 · 프로젝트 수행 과정 3·4단계</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사진이 몇 장 있는지 세고(목록), 사진 파일의 위치를 리스트로 만들고, 사진을 <b>제 색</b>으로 읽는 함수를 만든 뒤, 몇 장을 <b>직접 눈으로 확인</b>해요. 컴퓨터에게 사진은 결국 <b>숫자가 가득 찬 표</b>예요.</span></div>
+  <div class="card">
+    <h3>📖 노트북에서 확인하기 <span class="muted" style="font-weight:400;font-size:.88rem">(205쪽 1~3 · 206~207쪽 시각화)</span></h3>
+    <ol class="uf-steps">
+      <li><b>이미지 데이터셋 확인</b> · <span class="mono">os.listdir( )</span>로 fire 폴더의 사진 목록과 개수(<b>162개</b>)를 확인하고, 같은 방법으로 non 폴더(162개)도 확인한다.</li>
+      <li><b>이미지 데이터 리스트 생성</b> · <span class="mono">glob.glob(path + '/fire' + '/*')</span>로 사진 파일 경로가 담긴 리스트 train_fire, train_non_fire를 만든다.</li>
+      <li><b>색상 변환</b> · <span class="mono">read_img( )</span> 함수가 <span class="mono">cv2.imread( )</span>로 사진을 읽고 <span class="mono">cv2.COLOR_BGR2RGB</span>로 <b>BGR 형식을 RGB 형식으로</b> 바꾼다.</li>
+      <li><b>시각화</b> · <span class="mono">read_img(train_fire[7])</span>을 <span class="mono">plt.imshow( )</span>로 보고, x축에 크기 <span class="mono">(400, 400, 3)</span>을 표시한다. 7 대신 다른 숫자를 넣으면 다른 사진이 나온다.</li>
+    </ol>
+    <p class="note" style="margin-bottom:0">교과서 코드의 read_img 주석에는 「흑백으로 변환」이라고 적혀 있지만 <span class="mono">COLOR_BGR2RGB</span>는 색의 <b>순서만</b> 바꿔요(사진은 컬러 그대로). 시각화하면 <b>데이터의 크기나 형태에 문제가 있는지</b> 학습 전에 확인할 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>🔍 사진은 숫자 (400, 400, 3)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">사진의 한 점을 누르거나, 사진을 한 번 누른 뒤 <b>방향키</b>로 십자선을 옮겨 보세요. 그 점의 빨강(R)·초록(G)·파랑(B) 세 숫자가 나와요. 그다음 「cv2로 읽은 그대로(BGR) 보기」를 눌러 보세요.</p>
+    <div id="pxGame"></div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ②~⑥</h3>
+    <div id="sim2"></div>
+  </div>
+  <details class="card uf-more">
+    <summary>🔎 더 알아보기 · 시각화로 데이터의 문제 찾기</summary>
+    <div class="uf-find"><img src="img/g-non133.jpg" alt="non 폴더에 들어 있는 산불 사진" width="120" height="120"><p style="margin:0">노트북의 「여러 장을 한꺼번에 보기」 셀로 사진을 둘러보면 이상한 점을 찾을 수 있어요. 예를 들어 <b>non 폴더(산불이 아닌 이미지)의 non_fire.133</b>은 불길과 연기가 보이는 <b>산불 사진</b>이에요. 정답이 잘못 붙은 데이터는 모델을 헷갈리게 만들어요. 또 fire 폴더에는 숲이 아니라 <b>건물 화재</b>나 소방관 사진도 많아요. 이런 특징이 모델에 어떤 영향을 줄지는 「데이터 편향성 해결」에서 이어서 살펴봐요.</p></div>
+  </details>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 알고리즘 선정 · CNN -->
+<section class="page" data-name="CNN 모델" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>알고리즘 선정과 CNN 모델 만들기</h2><p>교과서 208~209쪽 · 프로젝트 수행 과정 5단계, 6단계 ①</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사진 분류에는 <b>합성곱 신경망(CNN)</b>을 써요. CNN은 사진 전체를 한꺼번에 보기보다 <b>작은 부분</b>을 보며 이웃한 픽셀끼리의 관계(선, 무늬, 불꽃 모양)를 찾고(합성곱층), 크기를 줄여 중요한 것만 남겨요(풀링층). 이것을 세 번 되풀이한 뒤 마지막에 산불인지 판단해요.</span></div>
+  <div class="card">
+    <h3>📖 5 알고리즘 선정</h3>
+    <p style="margin-top:0">산불 이미지 데이터나 산불이 아닌 이미지 데이터와 같은 비정형 데이터를 분류하기 위해 <b>합성곱 신경망(CNN: Convolution Neural Networks)</b> 딥러닝 모델을 활용한다. CNN은 딥러닝에서 이미지 또는 영상 데이터를 처리할 때 사용하며, 주요 구성 요소는 <b>컨볼루션</b>과 <b>풀링</b>이다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#9b4fc4"><h4>컨볼루션(convolution) · 합성곱층</h4><p>입력 데이터와 <b>필터(커널)</b> 간의 합성곱 연산을 통해 특징을 추출한다. 같은 크기의 두 행렬을 포개어 같은 위치의 값끼리 곱하여 모두 더한다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>풀링(pooling) · 풀링층</h4><p>입력 데이터의 공간 크기를 줄여 중요한 정보를 보존한다. 지정한 크기에서 최댓값만 가져오는 <b>최대 풀링</b>, 평균값을 가져오는 <b>평균 풀링</b>이 있다.</p></div>
+    </div>
+  </div>
+  <details class="card uf-more">
+    <summary>🤖 AI와 함께 지식 키우기 · 컨볼루션과 풀링 계산해 보기 <span class="muted" style="font-weight:400;font-size:.88rem">(208쪽)</span></summary>
+    <p class="muted" style="margin-top:0;font-size:.9rem">5×5 입력에 3×3 커널을 한 칸씩 옮겨 가며 포개요. <b>출력 칸을 눌러</b> 어떤 입력 칸과 곱해졌는지 확인하세요.</p>
+    <div id="convGame"></div>
+    <div class="uf-pool">
+      <div><b>최대 풀링</b> (4×4 → 2×2)<table class="uf-mt"><tr><td class="a">29</td><td class="a">15</td><td class="b">28</td><td class="b">184</td></tr><tr><td class="a">0</td><td class="a">100</td><td class="b">70</td><td class="b">38</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">7</td><td class="d">2</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">45</td><td class="d">6</td></tr></table><span class="uf-ar">→</span><table class="uf-mt sm"><tr><td class="a">100</td><td class="b">184</td></tr><tr><td class="c">12</td><td class="d">45</td></tr></table></div>
+      <div><b>평균 풀링</b> (4×4 → 2×2)<table class="uf-mt"><tr><td class="a">31</td><td class="a">15</td><td class="b">28</td><td class="b">184</td></tr><tr><td class="a">0</td><td class="a">100</td><td class="b">70</td><td class="b">38</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">7</td><td class="d">2</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">45</td><td class="d">6</td></tr></table><span class="uf-ar">→</span><table class="uf-mt sm"><tr><td class="a">36.5</td><td class="b">80</td></tr><tr><td class="c">12</td><td class="d">15</td></tr></table></div>
+    </div>
+    <p class="note">합성곱층·풀링층은 「컴퓨터 비전」에서 배운 내용(교과서 105쪽)과 같아요. 교과서 그림의 평균 풀링 왼쪽 위 값은 36으로 실려 있는데, (31 + 15 + 0 + 100) ÷ 4 = 36.5예요.</p>
+  </details>
+  <div class="card">
+    <h3>📖 6 모델 학습 · ① CNN 모델 생성하기</h3>
+    <p style="margin-top:0">텐서플로 라이브러리를 불러오고, 계층(layer)을 순서대로 쌓는 <b>Sequential 모델</b>로 CNN을 만든다. 3개의 합성곱층과 풀링층을 지난 뒤 <b>Flatten</b> 계층에서 1차원 배열로 바꾸고, 마지막에 2개의 층(Dense)으로 판단한다.</p>
+<pre class="uf-code">import tensorflow as tf
+model = tf.keras.models.Sequential([
+      tf.keras.layers.Conv2D(16, (3, 3), activation = 'relu', input_shape = (400, 400, 3)),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(128, activation = 'relu'),
+      tf.keras.layers.Dense(1, activation = 'sigmoid')
+])
+model.summary()</pre>
+    <p class="note"><span class="mono">Conv2D(16, (3, 3))</span>: 3×3 필터 16개 · <span class="mono">MaxPool2D(2, 2)</span>: 2×2 최대 풀링 · <span class="mono">Dense(1, activation = 'sigmoid')</span>: 0~1 사이의 값 하나를 내는 마지막 층<br><b>Dense = 완전 연결층</b>: 앞 층의 모든 값이 이 층의 모든 뉴런과 연결된 층이에요.</p>
+  </div>
+  <div class="card">
+    <h3>🧱 층을 지나며 모양이 어떻게 바뀔까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">층을 누르거나 「다음 층 ▶」을 눌러 따라가 보세요. summary( )의 <b>Output Shape</b>(출력값의 형태)와 <b>Param #</b>(매개 변수의 수)가 어떻게 계산되는지 나와요.</p>
+    <div id="layerGame"></div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑦</h3>
+    <div id="sim3"></div>
+    <p class="note" style="margin-bottom:0">코랩에서 이 셀을 실행하면 <span class="mono">input_shape</span>에 관한 경고(UserWarning)가 한 줄 나올 수 있어요. 오류가 아니라서 그대로 진행해요.</p>
+  </div>
+  <div class="callout"><b>해석</b> 각각의 계층에서 Output Shape를 알아볼 수 있다. Flatten 계층에서 3차원이던 데이터가 <b>73,728개</b>의 1차원 형태로 바뀐다. Param은 parameter(매개 변수)의 약자로, 학습할 때 알고리즘이 스스로 바꾸어 가는 값(가중치와 편향)이다. 이 모델 전체가 학습하는 매개 변수는 <b>9,451,777개</b>이다.<br><small class="muted">교과서 209쪽 실행 결과에는 Flatten 147,456개, 18,898,209개로 실려 있어요. 이 숫자는 세 번째 합성곱층의 필터를 64개로 했을 때의 결과예요(위 체험의 「더 알아보기」에서 「필터 64」를 눌러 확인). 교과서 코드(필터 32개)를 실행하면 73,728개, 9,451,777개가 나와요.</small></div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 모델 학습 -->
+<section class="page" data-name="모델 학습" data-acc="#2f6fd0">
+  <div class="head"><div class="num">04</div><div><h2>CNN 모델 컴파일하고 학습시키기</h2><p>교과서 210~211쪽 · 6단계 ②·③, 7단계 ①·②</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델에게 <b>무엇을 줄이고(손실 함수) 어떻게 고치고(최적화) 무엇으로 점수를 매길지(평가 지표)</b> 알려 준 뒤(compile), 사진을 9장씩 묶어 36번 보여 주는 것을 8바퀴(epoch, 에포크) 되풀이해요(fit). 바퀴를 돌수록 오차는 대체로 줄고 정확도는 올라가요.</span></div>
+  <div class="card">
+    <h3>⏱️ 학습 셀은 먼저 실행해 두기</h3>
+    <p style="margin-top:0">노트북에서 compile 셀 → 데이터 설정 셀 → <b>학습(fit) 셀</b>까지 실행해 두고, 학습이 도는 동안 아래 설명을 읽어요. GPU에서는 1분 안팎, GPU 없이(CPU) 하면 4~8분 걸려요. 너무 느리면 <b>런타임 → 런타임 유형 변경 → T4 GPU</b>로 바꾸고 처음 셀부터 다시 실행해요.</p>
+  </div>
+  <div class="card">
+    <h3>📖 2 CNN 모델 컴파일하기</h3>
+<pre class="uf-code">model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])</pre>
+    <div class="cards3">
+      <div class="kc" style="--k:#d64535"><h4>손실 함수 · binary_crossentropy</h4><p>이진 분류 문제에 쓰는 손실 함수. 예측값이 0과 1 사이의 확률값으로 나오며, 0이나 1에 가까울수록 두 클래스(산불 / 산불 아님) 중 하나에 가깝다는 뜻이다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>최적화 방법 · Adam</h4><p>주로 신경망 모델을 훈련시킬 때 사용하며, 학습률을 자동으로 조절하여 최적화 과정을 안정화시킨다.</p></div>
+      <div class="kc" style="--k:#1f9d74"><h4>평가 지표 · accuracy</h4><p>학습하는 동안 정확도(맞힌 비율)를 함께 계산해 보여 준다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📖 3 CNN 모델 학습하기 · 정규화와 배치 사이즈</h3>
+<pre class="uf-code">from tensorflow.keras.preprocessing.image import ImageDataGenerator
+train_datagen = ImageDataGenerator(rescale = 1/255)   <span class="c"># RGB값을 0과 1 사이로 정규화</span>
+train_generator = train_datagen.flow_from_directory(
+                  path, target_size = (400,400),
+                  batch_size = 9, class_mode = 'binary',
+                  seed = 3
+)
+print(train_generator.class_indices)                  <span class="c"># (더한 부분) 폴더 이름 → 숫자 레이블</span></pre>
+<pre class="uf-out">Found 324 images belonging to 2 classes.
+{'fire': 0, 'non': 1}</pre>
+    <div class="uf-facts">
+      <div><b>rescale = 1/255</b><span>0~255인 RGB 값을 255로 나누어 <b>0~1</b>로 정규화한다(98쪽 정규화). 학습이 안정적이고 효율적이 된다.</span></div>
+      <div><b>batch_size = 9</b><span>몇 개의 샘플로 가중치를 갱신할지 정한다(93쪽 배치 사이즈). 이미지의 총 개수 <b>324</b>의 약수 중 하나인 9로 정했다.</span></div>
+      <div><b>class_mode = 'binary'</b><span>산불 이미지인지 아닌지 <b>이진 분류</b>한다. 하위 폴더 이름이 정답(레이블)이 되고, 알파벳 순서대로 <b>fire = 0, non = 1</b>이다.</span></div>
+    </div>
+<pre class="uf-code">history = model.fit(train_generator, steps_per_epoch = 36, epochs = 8, verbose = 1)</pre>
+    <div class="uf-batch" aria-label="배치와 에포크"><span>9장 × <b>36</b>번(steps_per_epoch) = 324장 = <b>1 에포크</b></span><span>× <b>8</b> 에포크(epochs) = 사진 324장을 8바퀴</span></div>
+    <p class="note">epoch는 학습 횟수예요. 교과서는 8번 학습했지만, 횟수를 바꿔 가며 학습한 뒤 가장 알맞은 횟수로 정하는 것이 좋아요. <span class="mono">verbose = 1</span>이면 학습 과정이 보이고, 0이면 안 보여요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑧~⑪</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">학습 기록은 교과서 소스 노트북을 실제로 실행한 결과예요. 시간(초)은 컴퓨터마다 달라요.</p>
+    <div id="sim4"></div>
+  </div>
+  <div class="card">
+    <h3>📈 7 성능 평가 · 오차와 정확도 시각화하기 <span class="muted" style="font-weight:400;font-size:.88rem">(211쪽)</span></h3>
+<pre class="uf-code">plt.plot(history.history['loss'], 'r--', label = 'loss')
+plt.plot(history.history['accuracy'], 'b-', label = 'accuracy')
+plt.xlabel('epoch')
+plt.legend()
+plt.show()</pre>
+    <p style="margin-bottom:0"><b>해석</b> x축은 학습 횟수인 epoch, y축은 오차(loss)와 정확도(accuracy)이다. 학습이 진행될수록 오차는 대체로 줄고 정확도는 커진다. 이 정확도는 <b>학습에 쓴 사진</b>으로 잰 값이라서, 처음 보는 사진도 잘 맞히는지는 새 이미지로 따로 확인해야 해요.</p>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 새 이미지로 평가 · 스스로 해결하기 -->
+<section class="page" data-name="새 이미지 평가" data-acc="#1f9d74">
+  <div class="head"><div class="num">05</div><div><h2>새 이미지로 모델 평가하기</h2><p>교과서 212~213쪽 · 7단계 ③ · 스스로 해결하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>학습에 쓰지 않은 사진을 <b>학습 때와 똑같은 모양</b>(400×400, 0~1 값, 한 장짜리 묶음)으로 바꿔 모델에 넣어요. 결과가 <b>0에 가까우면 산불</b>, <b>1에 가까우면 산불이 아님</b>이에요.</span></div>
+  <div class="card">
+    <h3>📖 3 새로운 이미지 데이터로 이미지 학습 모델 평가하기</h3>
+    <div class="uf-tests">
+      <figure><img src="img/test1.jpg" alt="test1 산불 사진" width="120" height="120"><figcaption>test1.jpg · 산불</figcaption></figure>
+      <figure><img src="img/test2.jpg" alt="test2 숲 사진" width="120" height="120"><figcaption>test2.jpg · 산불 아님</figcaption></figure>
+    </div>
+    <p>교과서는 생성형 인공지능으로 산불 이미지를 만들어 <span class="mono">files.upload()</span>로 올렸어요. 수업용 zip 안에 이 사진들이 들어 있어서 바로 열면 돼요. <b>PIL</b>(Python Imaging Library)은 이미지 열기, 조작, 저장 등 이미지를 분석하고 처리하는 라이브러리예요.</p>
+<pre class="uf-code">from PIL import Image
+img1 = Image.open(path + '/test1.jpg')     <span class="c"># 교과서: Image.open('/content/test1.jpg')</span>
+
+from tensorflow.keras.preprocessing import image
+import numpy as np
+img_resize1 = img1.resize((400,400))                 <span class="c"># ① 크기를 (400, 400)으로</span>
+test_img1 = image.img_to_array(img_resize1) / 255    <span class="c"># ② 숫자 배열로 + (더한 부분) 0~1로 정규화</span>
+test_img1 = np.expand_dims(test_img1, axis = 0)      <span class="c"># ③ 테스트 결과를 저장할 공간(차원) 만들기</span>
+images1 = np.vstack([test_img1])                     <span class="c"># ④ 테스트에 알맞게 배열 변환</span></pre>
+    <div class="uf-shape" aria-label="배열 모양 변화"><span>사진 1024×1024</span><i>→</i><span>resize<br><b>400×400</b></span><i>→</i><span>img_to_array<br><b>(400, 400, 3)</b></span><i>→</i><span>÷ 255<br><b>0~1</b></span><i>→</i><span>expand_dims<br><b>(1, 400, 400, 3)</b></span></div>
+<pre class="uf-code">classes1 = model.predict(images1, batch_size = 10)
+print(classes1[0])
+if classes1[0][0] < 0.5:          <span class="c"># (고친 부분) 교과서: if classes1[0]==0:</span>
+    print('Fire Image')
+else:
+    print('Non Fire Image')</pre>
+    <p class="note" style="margin-bottom:0">출력이 <span class="mono">[1.6e-14]</span>처럼 나오면 <b>e-14</b>는 「× 10의 −14제곱」, 곧 소수점 아래 0이 13개인 아주 작은 수예요. <b>거의 0</b>이라서 산불 이미지예요.</p>
+  </div>
+  <div class="card uf-fix">
+    <h3>🔧 교과서 코드와 다르게 쓴 두 줄</h3>
+    <p style="margin-top:0"><b>① / 255를 더한 까닭</b> 학습할 때는 <span class="mono">rescale = 1/255</span>로 0~1 값을 썼어요. 새 사진도 똑같이 255로 나누어야 모델이 배운 것과 같은 범위의 숫자를 받아요. 교과서 코드는 이 줄이 빠져서 0~255 값이 그대로 들어가, 결과가 <span class="mono">[0.]</span>이나 <span class="mono">[1.]</span>처럼 끝까지 쏠려 나왔어요.</p>
+    <p style="margin-bottom:0"><b>② 0.5를 기준으로 나눈 까닭</b> 시그모이드 출력은 0.03, 0.97처럼 <b>0과 1 사이의 값</b>이에요. <span class="mono">== 0</span>으로 비교하면 0.03도 「0이 아님」이 되어 버려요. 그래서 <b>0.5보다 작으면 산불(fire = 0)</b>, 크면 산불 아님(non = 1)으로 판단해요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑫~⑬</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">흉내에서 나오는 확률은 예시 값이에요. 실제 값은 학습할 때마다 달라요.</p>
+    <div id="sim5"></div>
+  </div>
+  <div class="card">
+    <h3>📖 프로젝트 정리 <span class="muted" style="font-weight:400;font-size:.88rem">(213쪽)</span></h3>
+    <p style="margin:0">산불은 언제, 어디서 발생할지 알 수 없고 원인도 다양해 발생 건수 자체를 줄이기 매우 어렵다. 이 문제를 해결하기 위해 CNN을 이해하고 산불 이미지 데이터와 산불이 아닌 이미지 데이터로 산불 이미지를 분류하는 인공지능을 제작해 보았다. 모든 이미지의 크기를 400×400으로 통일시켜 학습시켰고, 딥러닝 학습이 진행되면서 정확도가 커지는 것을 확인하였다.</p>
+    <p class="note" style="margin-bottom:0">인터넷에서 수집한 데이터를 저작권자 동의 없이 사용하는 것은 불법일 수 있으니 주의해요.</p>
+  </div>
+  <div class="card">
+    <h3>🧩 스스로 해결하기 · 해 보기 「성능 평가 및 수정」</h3>
+    <p style="margin-top:0">학습시키지 않은 새로운 이미지 데이터를 적용하여 테스트해 보고, 결과가 <b>잘못 나오는 경우</b>가 있는지 살펴보고 그 이유를 찾아보자. <span class="muted">(선택 · 시간이 남으면 노트북 맨 아래 「내 사진 올려 보기」 셀로 직접 시험해 봐요. 사진은 JPG·PNG만 돼요(아이폰 HEIC 사진은 안 열려요). zip 안의 test3.jpg도 넣어 보세요.)</span></p>
+    <div class="memo"><label>이 모델이 <b>잘못 판별할 것 같은 사진</b>을 하나 떠올려(또는 직접 시험해) 쓰고, 그렇게 생각한 까닭을 <b>학습에 쓴 사진들의 특징</b>과 연결해 써 보세요.</label><textarea data-memo="wrongMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <details class="card uf-more">
+    <summary>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(선택 · 시간이 남으면)</span></summary>
+    <p class="muted" style="font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>이미지처럼 정해진 형식이나 구조 없이 저장되는 데이터를 <button class="blank" data-a="비정형 데이터">?</button>라고 한다.</li>
+      <li><button class="blank" data-a="합성곱 신경망(CNN)">?</button>은 컨볼루션으로 특징을 추출하고 <button class="blank" data-a="풀링">?</button>으로 공간 크기를 줄여 이미지를 분류한다.</li>
+      <li>rescale = 1/255로 RGB 값을 0과 1 사이로 바꾸는 것을 <button class="blank" data-a="정규화">?</button>라고 한다.</li>
+      <li>전체 학습 데이터를 한 번 모두 학습하는 단위를 <button class="blank" data-a="epoch(에포크)">?</button>라고 하며, 교과서 모델은 8번 학습했다.</li>
+    </ol>
+  </details>
+  <div class="card">
+    <h3>✅ 성취도 평가</h3>
+    <p style="margin-top:0">교과서 점검 포인트예요. 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#d64535">사진은 <b>비정형 데이터</b>예요. 컴퓨터에게 사진 한 장은 <b>(400, 400, 3)</b> 모양의 숫자 묶음이고, cv2는 색을 <b>BGR</b> 순서로 읽어 <span class="mono">COLOR_BGR2RGB</span>로 바꿔 보여 줘요.</div>
+    <div style="--k:#9b4fc4"><b>CNN</b>은 합성곱층(필터로 특징 추출)과 풀링층(크기 줄이기)을 거치며 400×400 사진을 48×48×32로 줄이고, <b>Flatten</b>으로 1차원(73,728개)으로 펼친 뒤 <b>시그모이드</b>로 0~1 값 하나를 내요.</div>
+    <div style="--k:#2f6fd0"><b>rescale = 1/255</b>로 정규화하고 <b>9장씩 36번 × 8 epoch</b> 학습했어요. 새 사진도 학습 때와 같이 <b>÷255</b> 해서 넣고, 결과가 0.5보다 작으면 <b>산불(fire = 0)</b>이에요.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>산불 이미지는 정해진 형식이 없는 비정형 데이터입니다. 컴퓨터는 사진 한 장을 어떤 숫자로 저장하는지 (400, 400, 3)의 뜻과 함께 설명하고, 205쪽 read_img( ) 함수에서 BGR 형식을 RGB 형식으로 바꾼 까닭을 쓰세요.</li>
+      <li>209쪽 CNN 모델은 합성곱층과 풀링층을 세 번 거친 뒤 Flatten 계층에서 1차원으로 바뀝니다. 400×400 사진이 층을 지나며 Output Shape가 어떻게 달라지는지 예를 들어 설명하고, 합성곱층과 풀링층이 각각 하는 일을 쓰세요.</li>
+      <li>모델을 학습시킨 뒤 학습하지 않은 새 이미지로 산불인지 판별해 보았습니다. 학습 기록(오차와 정확도)이 에포크에 따라 어떻게 달라졌는지 쓰고, 이 모델이 잘못 판별할 것 같은 사진을 하나 들어 그렇게 생각한 까닭을 학습 데이터와 연결해 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

@@ -1,0 +1,234 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 단원 정리</span>
+      <h1>「인공지능 프로젝트」<br>되돌아보기</h1>
+      <div class="story"><b>인공지능 기술을 활용하여 융합적으로 문제를 해결하려면 어떻게 해야 할까?</b><br>이 단원을 시작할 때 던진 질문이에요. 그동안 우리는 <b>지속가능발전목표</b>에서 문제를 찾고, <b>남극 펭귄</b>을 분류하고, <b>기대 수명</b>을 예측하고, <b>산불 이미지</b>를 분류하며 데이터 편향성을 줄이는 방법까지 살펴보았어요.</div>
+      <p>오늘은 세 프로젝트의 과정을 <b>그림으로 다시 정리</b>하고, 서로 무엇이 같고 다른지 견주어 본 뒤, 인공지능으로 세상을 바꾸려는 사람들의 이야기로 <b>내 진로</b>까지 이어 봐요.</p>
+      <ol>
+        <li>지속가능발전목표와 문제 정의</li><li>프로젝트 과정 그림으로 정리</li><li>세 프로젝트 비교 · 데이터 편향성</li>
+        <li>인공지능에 도전하는 사람들</li><li>단원 정리 · 역량 Check</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🌍</i><div><b>지속가능발전목표 · 문제 정의</b><small>17개 목표에서 해결할 문제 찾기</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🐧</i><div><b>프로젝트 수행 과정</b><small>남극 펭귄의 종류 분류하기</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>📈</i><div><b>정형 데이터 프로젝트</b><small>기대 수명 예측하기</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔥</i><div><b>비정형 데이터 프로젝트</b><small>산불 이미지 분류하기 · 데이터 편향성 확인하고 줄이기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>교과서 219쪽처럼 세 프로젝트의 수행 과정을 <b>흐름도로 완성</b>하고, 데이터 종류·알고리즘·평가 지표를 <b>프로젝트끼리 견주어</b> 봅니다. 그리고 218쪽 <b>인공지능 스타트업</b> 이야기를 읽고, 내가 프로젝트에서 맡고 싶은 역할과 진로를 생각해 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">핵심 아이디어</span>
+        <ul>
+          <li>인공지능은 다양한 분야와 융합하여 <b>새로운 가치를 창출</b>하는 데 도움을 준다.</li>
+          <li>인공지능은 <b>지속가능발전목표를 달성</b>하는 데 도움을 준다.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>단원</b> · 인공지능 기술을 활용하여 융합적으로 문제를 해결하려면 어떻게 해야 할까?</li>
+          <li><b>오늘의 질문</b> · 데이터와 문제가 달라도 인공지능 프로젝트의 흐름은 왜 비슷할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>인공지능 문제 해결 과정에 맞게 프로젝트를 계획하고 수행 과정을 설명할 수 있다.</li>
+          <li>인공지능의 가치를 판단하고, 협력적으로 문제를 해결하려는 자세를 기를 수 있다.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="card" style="margin-top:18px">
+      <h3>✍️ 학습 계획 세우기</h3>
+      <div class="memo" style="margin-top:0"><label>이 단원의 프로젝트 중 <b>가장 기억에 남는 것</b>과, 오늘 <b>다시 확인하고 싶은 것</b>을 한 줄씩 써 보세요.</label><textarea data-memo="planMemo" rows="2" placeholder="기억에 남는 것: … / 다시 확인하고 싶은 것: …"></textarea><div class="saved"></div></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 지속가능발전목표와 문제 정의부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 SDGs · 문제 정의 -->
+<section class="page" data-name="지속가능발전목표와 문제 정의" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>지속가능발전목표와 문제 정의</h2><p>교과서 171~177쪽 다시 보기 · 179·191·203쪽 문제 정의</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능 프로젝트는 「무엇을 만들까?」가 아니라 <b>「어떤 문제를 풀까?」</b>에서 시작해요. 이 단원에서는 유엔의 <b>지속가능발전목표 17개</b>에서 문제를 찾고, 그 문제를 인공지능이 풀 수 있도록 <b>구체적인 질문</b>으로 바꾸었어요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#1f9d74"><div class="ic">🌍</div><h4>지속가능발전목표(SDGs)</h4><p>2015년 유엔(UN)에서 2030년까지 지속 가능 발전을 위해 달성하기로 한 인류 공동의 목표 17개. 「단 한 사람도 소외되지 않는 것」이라는 슬로건과 함께 사람, 지구 환경, 번영, 평화, 파트너십이라는 5개 영역에서 17개 목표와 169개 세부 목표를 제시한다.</p><small>171쪽</small></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🎯</div><h4>문제 정의</h4><p>해결하려는 문제가 인공지능으로 해결할 수 있는 문제인지, 지속가능발전목표와 관련이 있는지 살펴보고 문제를 명확하게 정의한다. 목표는 <b>구체적이고 측정할 수 있게</b> 세우고, 필요한 데이터를 명확하게 결정한다. 연속적인 값을 예측하는 <b>회귀</b> 문제인지, 범주형 값을 예측하는 <b>분류</b> 문제인지도 구분한다.</p><small>174쪽</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🃏 이 프로젝트는 어떤 목표와 이어질까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">카드 앞면을 보고 <b>지속가능발전목표 번호</b>를 먼저 떠올린 뒤, 눌러서(또는 Enter) 뒤집어 확인하세요. 뒷면에는 교과서가 정의한 문제가 있어요.</p>
+    <div id="sdgCards" class="tcards"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 내 프로젝트의 문제 정의 다시 쓰기</h3>
+    <p style="margin-top:0;font-size:.95rem">176쪽에서는 아이디어를 모아 상위 범주로 묶고, 해결하고 싶은 문제를 <b>질문 형태</b>로 만들었어요. 예: 「어떻게 하면 남극 펭귄의 종류를 구별할 수 있는 모델을 만들 수 있을까?」</p>
+    <div class="memo" style="margin-top:0"><label>내 프로젝트(또는 지금 떠오르는 문제)는 <b>몇 번 목표</b>와 이어지나요? 그 문제를 「어떻게 하면 …할 수 있을까?」 질문으로 써 보세요.</label><textarea data-memo="myProblem" rows="3" placeholder="목표: ○번 … / 질문: 어떻게 하면 …"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 흐름도 -->
+<section class="page" data-name="프로젝트 과정 그림으로 정리" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>프로젝트 과정 그림으로 정리</h2><p>교과서 219쪽 단원 정리 · 174·180~181·191·203쪽 프로젝트 수행 과정</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>펭귄, 기대 수명, 산불은 데이터도 알고리즘도 달랐지만, 프로젝트는 <b>데이터를 모으고 → 다듬고 → 살펴보고 → 알고리즘을 고르고 → 학습하고 → 평가하고 → 고치는</b> 같은 흐름으로 진행했어요.</span></div>
+  <div class="card">
+    <h3>🧩 흐름도 완성하기 <span class="muted" style="font-weight:400;font-size:.88rem">(219쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">프로젝트를 고른 뒤, 아래 카드를 <b>진행한 순서대로</b> 눌러 빈칸을 채우세요. <b>한 프로젝트(펭귄 권장)는 꼭</b> 끝까지, 나머지 둘은 시간이 남으면 해요(키보드: Tab으로 고르고 Enter, 카드끼리는 방향키). 카드 중 <b>한 장은 이 프로젝트와 맞지 않는</b> 카드예요. 다 채우면 칸마다 그 프로젝트에서 실제로 한 일이 나타나요. 진행 상황은 이 기기에 저장돼요.</p>
+    <div id="flowTabs" class="u4r-tabs" role="group" aria-label="프로젝트 고르기"></div>
+    <div class="u4r-flow">
+      <div id="flowHub" class="u4r-hub"></div>
+      <ol id="flowBoard" class="u4r-board"></ol>
+    </div>
+    <div id="flowFb" class="u4r-fb" aria-live="polite"></div>
+    <div id="flowPool" class="u4r-pool" role="group" aria-label="단계 카드"></div>
+    <div class="row" style="margin-top:10px"><button class="btn sm ghost" id="flowReset">이 프로젝트 다시 섞기</button></div>
+    <p class="note">교과서 219쪽 펭귄 흐름도는 첫째 칸과 둘째 칸이 모두 「펭귄 종류 데이터 수집」으로 인쇄되어 있어요. 다른 두 흐름도와 강의 자료처럼 둘째 칸을 「데이터 확인 및 데이터 전처리」로 두었어요.</p>
+  </div>
+  <div class="card">
+    <h3>🔢 단계 수는 달라도 흐름은 같아요</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서는 쪽마다 단계를 조금씩 다르게 나누었어요. 같은 줄은 같은 일을 하는 단계예요.</p>
+    <div class="u4r-steps">
+      <div><b>174쪽 · 5단계</b><span>문제 정의</span><span>데이터 수집 및 전처리</span><span>기계학습 유형과 알고리즘 선정</span><span>모델 학습</span><span>성능 평가 및 수정</span></div>
+      <div><b>181쪽 펭귄 · 6단계</b><span>문제 정의</span><span>데이터 수집 → 데이터 전처리</span><span>기계학습 유형과 알고리즘 선정</span><span>모델 학습</span><span>성능 평가</span></div>
+      <div><b>191쪽 기대 수명 · 8단계</b><span>문제 정의</span><span>데이터 수집 → 데이터 전처리 → 데이터 시각화 및 분석</span><span>기계학습 유형과 알고리즘 선정</span><span>모델 학습</span><span>성능 평가 → 수정 및 성능 개선</span></div>
+      <div><b>203쪽 산불 · 7단계</b><span>문제 정의</span><span>데이터 수집 → 데이터 전처리 → 데이터 시각화 및 분석</span><span>알고리즘 선정</span><span>모델 학습</span><span>성능 평가 및 수정</span></div>
+    </div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 비교 · 편향성 -->
+<section class="page" data-name="세 프로젝트 비교 · 데이터 편향성" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>세 프로젝트 비교 · 데이터 편향성</h2><p>교과서 180~188쪽 · 190~201쪽 · 202~217쪽</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>표로 정리된 <b>정형 데이터</b>(펭귄 측정값, 국가별 기대 수명 속성)와 이미지 같은 <b>비정형 데이터</b>(산불 사진)는 다루는 방법이 달라요. 문제가 <b>분류</b>인지 <b>예측</b>인지에 따라 알고리즘과 평가 지표도 달라졌어요.</span></div>
+  <div class="card">
+    <h3>🧺 어느 프로젝트의 이야기일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">카드 9장(프로젝트마다 데이터 · 알고리즘 · 평가 지표)을 읽고 어느 프로젝트에서 한 일인지 고르세요. 다 고르면 아래 칸이 세 프로젝트 <b>비교표</b>가 돼요.</p>
+    <div id="projGame"></div>
+  </div>
+  <div class="card">
+    <h3>⚖️ 데이터 편향성 <span class="muted" style="font-weight:400;font-size:.88rem">(214~216쪽 심화 활동)</span></h3>
+    <div class="u4r-bias">
+      <div><b>정의</b>데이터 수집 과정에서 특정 그룹이나 성향을 지닌 데이터가 다른 그룹이나 성향을 지닌 데이터보다 과도하게 포함된 상황. 인공지능 모델의 성능을 왜곡시키고, 예측 결과의 신뢰성을 떨어뜨릴 수 있다.</div>
+      <div><b>사례</b>자율주행 자동차가 하얀색 트럭을 「밝게 빛나고 있던 하늘」로 인식해 사고가 났다. 데이터가 특정 조건에 한정되어 수집되면 모델은 그 조건에서만 운전하는 것을 배운 것과 같다.</div>
+    </div>
+    <ol class="u4r-chain">
+      <li><b>의심하기</b>산불 이미지에는 불을 상징하는 빨간색이 많다. 혹시 빨간색의 정도로만 판단하는 것은 아닐까?</li>
+      <li><b>확인하기</b>빨간색 건물 사진으로 테스트 → 산불 이미지로 판별. 학습 데이터에 편향성이 있었다.</li>
+      <li><b>줄여 보기</b>이미지 색상을 회색조(BGR2GRAY)로 전처리하고, 색상 특징이 없으므로 학습 횟수를 8번에서 15번으로 늘림.</li>
+      <li><b>다시 평가하기</b>교과서는 같은 빨간색 건물을 산불이 아닌 이미지(Non_Fire Image)로 판별했다고 소개한다. 내 결과는 다를 수 있다.</li>
+    </ol>
+    <p class="note">회색조로 바꾸면 색 정보를 버리므로, 빨간색 건물은 맞혀도 진짜 산불 사진을 놓치는 일이 생길 수 있어요. 편향을 근본적으로 줄이려면 <b>붉지만 산불이 아닌 사진</b>(단풍·노을·빨간 건물 등)을 학습 데이터에 더해 데이터의 균형을 맞추는 것이 좋아요.</p>
+    <div class="memo"><label>내 프로젝트(또는 교과서 프로젝트)에서 생길 수 있는 <b>데이터 편향</b> 하나와, 그것을 <b>줄이는 방법</b>을 써 보세요.</label><textarea data-memo="biasMemo" rows="3" placeholder="생길 수 있는 편향: … / 줄이는 방법: …"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 진로 -->
+<section class="page" data-name="인공지능에 도전하는 사람들" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>인공지능에 도전하는 사람들</h2><p>교과서 218쪽 인공지능 스타트업 · 178쪽 모둠원의 역할</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>인공지능 스타트업</b>은 인공지능 기술을 기반으로 한 창업 회사예요. 우리가 지속가능발전목표에서 문제를 찾았던 것처럼, 실제로 환경 문제를 인공지능 서비스로 풀어 보려는 사람들이 있어요.</span></div>
+  <div class="card">
+    <h3>🌱 환경을 위한 작은 행동을 실천하는 인공지능 스타트업</h3>
+    <p style="margin-top:0">교과서가 소개한 <b>EarthMera</b>는 「지구를 위한 행동」들을 장려하고 보상하는 무료 애플리케이션이에요.</p>
+    <div class="u4r-loop" aria-label="서비스 흐름">
+      <div><i>📸</i>지구를 위한 행동을 스냅숏으로 기록</div><span>→</span>
+      <div><i>🪙</i>앱 안에서만 쓰는 디지털 포인트로 보상</div><span>→</span>
+      <div><i>💚</i>친환경 제품 구매 · 자선 단체 기부</div>
+    </div>
+    <p class="muted" style="font-size:.9rem">창업자와의 대화를 펼쳐 읽어 보세요. (교과서 대화를 짧게 줄였어요.)</p>
+    <details class="u4r-qa"><summary>어떠한 동기 또는 계기로 이 일을 시작했나요?</summary><p>세상에 큰 변화를 가져온 리더들을 보며 「나도 세상에 긍정적인 변화를 가져올 수 있을까?」라는 생각을 품었고, 이 생각을 팀원들과 나누었다. 지속 가능 발전을 위한 <b>작은 행동</b>으로 세상을 더 나은 곳으로 만들 수 있음을 알리고자 한다.</p></details>
+    <details class="u4r-qa"><summary>하는 일을 통해 사회의 어떠한 분야에 영향을 미칠 수 있을까요?</summary><p>목표는 지구를 위한 작은 행동으로 보상받는 「영웅」 1백만 명을 만드는 것. ① 개인의 작은 행동으로 <b>환경 보호의 중요성</b>을 일깨우고, ② 개인과 기업 모두가 환경에 대한 <b>사회적 책임</b>을 다하는 것의 중요성을 알리며, ③ 디지털 화폐를 통한 보상으로 <b>친환경 제품 시장과 자선 기부 분야</b>를 경제적으로 활성화한다.</p></details>
+    <details class="u4r-qa"><summary>인공지능 분야에 관심이 있는 학생들에게 하고 싶은 말은?</summary><p>인공지능은 우리 미래를 위한 열쇠이고, 관심을 가진 학생들은 변화의 주역이 될 수 있다. <b>기술은 도구일 뿐</b> 세상을 더 나은 곳으로 만들 가능성은 여러분의 손안에 있으니, 노력과 열정, 지속적인 학습으로 그 가능성을 실현하길 바란다.</p></details>
+  </div>
+  <div class="card">
+    <h3>👥 프로젝트 모둠원의 역할 <span class="muted" style="font-weight:400;font-size:.88rem">(178쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 프로젝트에는 다섯 가지 역할이 필요했어요. 스타트업도 이런 역할을 나누어 맡은 사람들이 함께 일해요.</p>
+    <div class="u4r-roles">
+      <div><i>🧭</i><b>프로젝트 기획자</b>프로젝트를 감독하고 모둠원들이 서로 협력할 수 있도록 앞장서서 이끈다.</div>
+      <div><i>📥</i><b>데이터 수집가</b>프로젝트에 필요한 데이터를 수집하여 데이터의 정확성과 관련성을 확인한다.</div>
+      <div><i>🔍</i><b>데이터 분석가</b>수집된 데이터를 검사하고 패턴이나 추세를 식별한다. 시각화 도구를 쓸 수 있다.</div>
+      <div><i>🛠️</i><b>모델 개발자</b>분석된 데이터를 사용하여 인공지능 모델을 만들고 훈련하는 데 중점을 둔다.</div>
+      <div><i>🎤</i><b>프로젝트 발표자</b>프로젝트 결과를 요약하여 명확하면서 간결한 프레젠테이션 또는 보고서를 작성해 발표한다.</div>
+    </div>
+    <p style="margin-bottom:6px">다음 프로젝트에서 <b>내가 맡고 싶은 역할</b>을 하나 골라 보세요. (교과서는 한 사람이 두 가지 이상의 역할을 맡도록 안내해요.)</p>
+    <div id="roleChips"></div>
+    <div class="memo"><label>인공지능으로 세상을 더 낫게 만드는 일 중 <b>내가 해 보고 싶은 것</b>은 무엇인가요? 고른 역할과 이어서 써 보세요.</label><textarea data-memo="careerMemo" rows="3" placeholder="해 보고 싶은 일: … / 그 일에서 내 역할: …"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 단원 정리 -->
+<section class="page" data-name="단원 정리 · 역량 Check" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>단원 정리 · 역량 Check</h2><p>교과서 219쪽 · 189·201·217쪽 프로젝트 정리</p></div></div>
+  <details class="card u4r-opt">
+    <summary>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(선택 · 시간이 남으면)</span></summary>
+    <p class="muted" style="margin-top:8px;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="u4r-blanks">
+      <li>지속가능발전목표(SDGs)는 2015년 유엔에서 2030년까지 지속 가능 발전을 위해 달성하기로 한 인류 공동의 목표 <button class="u4r-blank" data-a="17개">?</button>이다.</li>
+      <li>펭귄 종류처럼 정해진 종 중 하나로 나누는 문제는 <button class="u4r-blank" data-a="분류">?</button>, 기대 수명처럼 몇 세인지 숫자를 내는 문제는 <button class="u4r-blank" data-a="예측(회귀)">?</button> 문제이다.</li>
+      <li>k-최근접 이웃은 속성의 수치 크기에 민감하므로, 데이터를 평균 0, 표준편차 1로 바꾸는 <button class="u4r-blank" data-a="표준화">?</button>를 하면 성능이 좋아졌다.</li>
+      <li>회귀 모델은 <button class="u4r-blank" data-a="결정 계수(R²)">?</button>로, 분류 모델은 정확도와 <button class="u4r-blank" data-a="혼동행렬">?</button>로 성능을 평가했다.</li>
+      <li>이미지 같은 비정형 데이터를 분류하기 위해 <button class="u4r-blank" data-a="합성곱 신경망(CNN)">?</button>을 활용했고, 빨간색 건물을 산불로 판별한 <button class="u4r-blank" data-a="데이터 편향성">?</button>을 줄이려고 이미지를 회색조로 전처리했다.</li>
+    </ol>
+  </details>
+  <div class="card">
+    <h3>✅ 역량 Check <span class="muted" style="font-weight:400;font-size:.88rem">(219쪽)</span></h3>
+    <p style="margin-top:0">「인공지능 프로젝트」 단원에서 <b>길러진 역량</b>을 모두 골라 보세요.</p>
+    <div class="u4r-comp">
+      <div><b>컴퓨팅 사고력</b><span>추상화 능력 · 자동화 능력 · 창의·융합 능력</span></div>
+      <div><b>디지털 문화 소양</b><span>디지털 의사소통·협업 능력 · 디지털 윤리 의식 · 디지털 기술 활용 능력</span></div>
+      <div><b>인공지능 소양</b><span>인공지능 문제 해결력 · 데이터 문해력 · 인공지능 윤리 의식</span></div>
+    </div>
+    <div id="compChips"></div>
+  </div>
+  <div class="card">
+    <h3>🔁 내 프로젝트 되돌아보기 <span class="muted" style="font-weight:400;font-size:.88rem">(189·201·217쪽 프로젝트 정리)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서의 평가 기준: 지속가능발전목표와 관련 있는 주제를 선정하고 문제를 명확하게 정의하였는가? · 필요한 데이터를 수집하고 모델에 입력할 수 있도록 전처리하였는가? · 여러 알고리즘을 비교하여 최적의 알고리즘을 선정하였는가? · 훈련 데이터와 테스트 데이터로 적합한 모델을 생성하였는가? · 평가 지표로 성능을 평가하고 성능 개선 방법을 사용하였는가?</p>
+    <div class="memo" style="margin-top:0"><label>내 프로젝트에서 <b>가장 잘한 단계</b>와, 다시 한다면 <b>고치고 싶은 단계와 방법</b>을 써 보세요.</label><textarea data-memo="projReflect" rows="3" placeholder="잘한 단계: … (까닭: …) / 고치고 싶은 단계: … (방법: …)"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>「인공지능 프로젝트」 단원 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74">인공지능 프로젝트는 <b>지속가능발전목표</b>와 관련된 문제를 찾아, 인공지능으로 해결할 수 있도록 <b>구체적이고 측정할 수 있게 정의</b>하는 데서 시작한다.</div>
+    <div style="--k:#2f6fd0">데이터와 알고리즘이 달라도 프로젝트는 <b>데이터 수집 → 전처리 → 시각화·분석 → 알고리즘 선정 → 모델 학습 → 성능 평가 → 수정</b>의 흐름으로 진행하고, 결과를 모둠원과 나눈다.</div>
+    <div style="--k:#9b4fc4">분류(펭귄·산불)와 예측(기대 수명), 정형 데이터와 비정형 데이터에 따라 <b>알고리즘과 평가 지표</b>를 고르고, <b>데이터 편향성</b>을 찾아 줄여야 믿을 수 있는 모델이 된다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>세 프로젝트(펭귄 종류 분류, 기대 수명 예측, 산불 이미지 분류) 중 하나를 골라, 데이터 수집부터 성능 평가·수정까지 <b>단계마다 무엇을 했는지</b> 순서대로 설명하기(데이터, 고른 알고리즘과 그 까닭, 평가 지표 넣기)</li>
+      <li>산불 이미지 분류 모델이 빨간색 건물을 산불로 판별한 까닭을 <b>데이터 편향성</b>으로 설명하고, 교과서가 쓴 방법(회색조)과 그 한계, 내 프로젝트에서 편향을 줄이는 방법 쓰기</li>
+      <li>지속가능발전목표 하나를 골라 인공지능으로 풀고 싶은 문제를 <b>질문 형태</b>로 쓰고, 내가 맡고 싶은 역할과 그 까닭을 218쪽 스타트업 사례와 이어 쓰기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

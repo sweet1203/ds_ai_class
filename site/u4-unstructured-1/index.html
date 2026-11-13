@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>비정형 데이터 프로젝트 ① 이미지 분류</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  /* 카드 격자 칸이 안의 긴 코드·표 때문에 늘어나지 않게 */
+  .cards2>*,.cards3>*,.cards4>*,.grid2>*{min-width:0}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 공통 */
+  .btn.ghost.on{background:var(--acc);color:#fff}
+  .btn:disabled{opacity:.45;cursor:default}
+  pre{max-width:100%;overflow-x:auto}
+  .uf-code{background:#0f2742;color:#e8eef6;border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.55;margin:8px 0;white-space:pre;overflow-x:auto}
+  .uf-code .c{color:#9fb3c8}
+  .uf-code.sm{font-size:.76rem;margin:0}
+  .uf-out{background:#f1f3f6;color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.8rem;line-height:1.5;margin:6px 0;white-space:pre;border-left:4px solid #8a94a3;overflow-x:auto}
+  .uf-out.sm{font-size:.74rem;margin:4px 0}
+  .uf-scroll{overflow-x:auto}
+  .uf-steps{margin:0;padding-left:22px}
+  .uf-steps li{margin:3px 0}
+  .uf-more summary{cursor:pointer;font-weight:900}
+  .uf-more[open] summary{margin-bottom:6px}
+  details.uf-more:not(.card){margin-top:10px;background:#fbfaf7;border-radius:10px;padding:8px 12px}
+  svg .gl{stroke:#eceae4;stroke-width:1}
+  svg .tk{font-size:10px;fill:var(--muted)}
+  /* 01 문제 정의 · 폴더 */
+  .uf-def{display:flex;gap:14px;align-items:flex-start;background:#fbfaf7;border-radius:12px;padding:12px 14px}
+  .uf-sdg{flex:0 0 auto;width:54px;height:54px;border-radius:10px;background:#3f7e44;color:#fff;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;display:grid;place-items:center}
+  .uf-tree{font-size:.92rem;background:#fbfaf7;border-radius:12px;padding:10px 14px;margin:10px 0}
+  .uf-dir{font-weight:900}
+  .uf-sub{border-left:2px dashed #c9c2b4;margin:4px 0 0 10px;padding-left:12px}
+  .uf-sub>div{margin:4px 0}
+  .uf-sub small{color:var(--muted)}
+  .uf-dir.f{color:#d64535}.uf-dir.n{color:#1f9d74}
+  .uf-file{font-weight:700}
+  .uf-gal{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:8px 0}
+  @media (max-width:760px){.uf-gal{grid-template-columns:repeat(4,1fr)}}
+  .uf-gal figure{margin:0;position:relative}
+  .uf-gal img{width:100%;height:auto;aspect-ratio:1;display:block;border-radius:8px;object-fit:cover}
+  .uf-gal figcaption{position:absolute;left:4px;bottom:4px;font-size:.7rem;font-weight:900;color:#fff;border-radius:6px;padding:0 6px}
+  .uf-gal figcaption.f{background:#d64535}.uf-gal figcaption.n{background:#1f9d74}
+  /* 셀 흉내 */
+  .uf-cell{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px;background:#fff}
+  .uf-ct{font-weight:900;font-size:.88rem;margin-bottom:3px}
+  .uf-cin{display:flex;gap:8px;align-items:flex-start}
+  .uf-cin pre{flex:1;min-width:0}
+  .uf-run{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:0;background:#1f9d74;color:#fff;font-size:1rem;cursor:pointer}
+  .uf-run:hover:not(:disabled){background:#17694f}
+  .uf-run:disabled{background:#9aa5b1;cursor:default}
+  .uf-cout{margin:6px 0 0 44px;font-size:.88rem}
+  .uf-cout:empty{display:none}
+  @media (max-width:560px){.uf-cout{margin-left:0}}
+  .uf-err{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;background:#fde8e6;color:#8f2418;border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:pre}
+  .uf-why{font-size:.86rem;margin-top:4px}
+  .uf-plt{margin:4px 0;display:inline-flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  .uf-plt b{font-size:.82rem}
+  .uf-plt small{font-family:ui-monospace,Menlo,monospace;font-size:.74rem;color:var(--muted)}
+  .uf-plt img{width:160px;height:160px;object-fit:cover}
+  .uf-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .uf-row img{border-radius:8px;object-fit:cover}
+  .uf-chart{max-width:360px;background:#fff;border:1px solid var(--line);border-radius:10px}
+  /* 02 사진은 숫자 */
+  .uf-px{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:start}
+  @media (max-width:640px){.uf-px{grid-template-columns:1fr}}
+  .uf-pxl canvas{width:min(100%,260px);aspect-ratio:1;height:auto;display:block;border-radius:10px;cursor:crosshair;touch-action:none;outline:none;border:3px solid transparent}
+  .uf-pxl canvas:focus-visible{border-color:var(--amber)}
+  .uf-pxpos{font-size:.9rem;margin-bottom:6px}
+  .uf-sw{display:flex;align-items:center;gap:8px;font-size:.92rem;margin-bottom:6px;flex-wrap:wrap}
+  .uf-sw i{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);flex:0 0 auto}
+  .uf-bar{display:grid;grid-template-columns:18px 1fr 34px 86px;gap:6px;align-items:center;font-size:.85rem;margin:3px 0}
+  .uf-bar span{font-weight:900}
+  .uf-bar i{display:block;height:12px;background:#eceae4;border-radius:6px;overflow:hidden}
+  .uf-bar i b{display:block;height:100%}
+  .uf-bar em{font-style:normal;font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  .uf-bar small{color:var(--muted);font-variant-numeric:tabular-nums}
+  .uf-pxmsg{margin-top:8px;font-size:.9rem;background:var(--acc-soft);border-radius:10px;padding:8px 12px}
+  #pxBgr{margin-top:8px}
+  .uf-find{display:flex;gap:12px;align-items:flex-start;font-size:.93rem}
+  .uf-find img{border-radius:8px;flex:0 0 auto}
+  @media (max-width:480px){.uf-find{flex-direction:column}}
+  /* 03 컨볼루션 · 풀링 */
+  .uf-conv{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .uf-conv>div{text-align:center}
+  .uf-conv small{display:block;color:var(--muted);font-size:.78rem}
+  .uf-mt{border-collapse:collapse;width:auto;margin:4px auto;font-variant-numeric:tabular-nums}
+  .uf-mt td{border:1px solid #c9c2b4;width:30px;height:30px;padding:0;text-align:center;font-size:.86rem}
+  .uf-mt.cv td.on{background:#f3c6cf;font-weight:900}
+  .uf-mt.k td{background:#eef1f5}
+  .uf-mt.o td{padding:0}
+  .uf-mt.o button{all:unset;box-sizing:border-box;display:block;width:30px;height:30px;line-height:30px;cursor:pointer;font-weight:700;background:#fff}
+  .uf-mt.o button.on{background:#9b4fc4;color:#fff}
+  .uf-mt.o button:focus-visible{outline:3px solid var(--amber)}
+  .uf-ar{font-size:1.3rem;font-weight:900;color:var(--muted)}
+  .uf-calc{font-family:ui-monospace,Menlo,monospace;font-size:.82rem;background:#fbfaf7;border-radius:10px;padding:8px 12px;margin-top:8px;overflow-wrap:anywhere}
+  .uf-pool{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:640px){.uf-pool{grid-template-columns:1fr}}
+  .uf-pool>div{display:flex;align-items:center;gap:6px;flex-wrap:wrap;background:#fbfaf7;border-radius:12px;padding:8px 10px;font-size:.88rem}
+  .uf-pool>div>b{width:100%}
+  .uf-pool .uf-mt td{width:34px;height:26px;font-size:.78rem}
+  .uf-mt td.a{background:#cfe8c9}.uf-mt td.b{background:#f6c9cf}.uf-mt td.c{background:#f8d9b8}.uf-mt td.d{background:#c9dcf3}
+  .uf-mt.sm td{width:40px}
+  /* 03 층 모양 */
+  .uf-opt{font-size:.88rem;margin-bottom:6px}
+  .uf-opt>span{font-weight:700;margin-right:2px}
+  .uf-lt{min-width:340px;font-size:.86rem}
+  .uf-lt th,.uf-lt td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left}
+  .uf-lt td.m{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;text-align:right;white-space:nowrap}
+  .uf-lt tr[data-i]{cursor:pointer;color:#9aa5b1}
+  .uf-lt tr.seen{color:var(--ink)}
+  .uf-lt tr.on{background:#efe3f6;font-weight:700}
+  .uf-lt tr[data-i]:focus-visible{outline:3px solid var(--amber);outline-offset:-3px}
+  .uf-lt tr.tot td{font-weight:900;border-top:2px solid var(--ink)}
+  .uf-why2{background:#f6eefb;border-radius:10px;padding:8px 12px;margin:8px 0;font-size:.92rem}
+  /* 04 학습 */
+  .uf-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:8px 0}
+  @media (max-width:760px){.uf-facts{grid-template-columns:1fr}}
+  .uf-facts>div{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:4px solid var(--acc);font-size:.88rem}
+  .uf-facts b{display:block;font-family:ui-monospace,Menlo,monospace;font-size:.86rem;margin-bottom:2px}
+  .uf-batch{display:flex;gap:8px;flex-wrap:wrap;margin:6px 0}
+  .uf-batch span{background:var(--acc-soft);border-radius:999px;padding:3px 12px;font-size:.88rem}
+  /* 05 평가 */
+  .uf-tests{display:flex;gap:12px;flex-wrap:wrap}
+  .uf-tests figure{margin:0;text-align:center}
+  .uf-tests img{border-radius:10px;object-fit:cover;display:block}
+  .uf-tests figcaption{font-size:.8rem;color:var(--muted)}
+  .uf-shape{display:flex;align-items:center;gap:4px;flex-wrap:wrap;margin:8px 0;font-size:.8rem}
+  .uf-shape span{background:#fbfaf7;border:1px solid var(--line);border-radius:8px;padding:4px 8px;text-align:center;line-height:1.35}
+  .uf-shape b{font-family:ui-monospace,Menlo,monospace}
+  .uf-shape i{font-style:normal;color:var(--muted);font-weight:900}
+  .uf-fix{border-left:6px solid #c98a00}
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 3. 비정형 데이터 인공지능 프로젝트 실제 2</span>
+      <h1>인공지능은 산불 예방을<br>어떻게 할까?</h1>
+      <div class="story"><b>불타는 숲, 사진으로 먼저 알아챌 수 있다면?</b><br>2019년 가을 호주에서 사상 최악의 산불이 나서 약 <b>1,860만 헥타르</b>, 대한민국 국토 면적의 85%에 해당하는 땅이 타 버렸어요. 우리나라도 2004년 4월 강원도 동해안을 따라 번진 산불로 <b>23,794 헥타르</b>(서울 종로구의 10배)가 피해를 입었어요. 지구 온난화와 기상 이변으로 대형 산불은 점점 잦아지고 있어요.</div>
+      <p>오늘은 <b>산불 사진과 산불이 아닌 사진</b>을 모아 컴퓨터가 구별하도록 학습시키는 <b>이미지 분류 프로젝트</b>를 처음부터 끝까지 해 봐요. 사진처럼 형식이 정해지지 않은 <b>비정형 데이터</b>는 <b>합성곱 신경망(CNN)</b>으로 학습시켜요.</p>
+      <ol>
+        <li>문제 정의 · 데이터 수집</li><li>데이터 전처리 · 시각화</li><li>알고리즘 선정 · CNN 모델</li>
+        <li>모델 학습</li><li>새 이미지로 평가</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🎯</i><div><b>문제 정의</b><small>SDGs 13 · 기후 변화 대응</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🖼️</i><div><b>데이터 수집 · 전처리</b><small>산불 162장 · 산불 아님 162장</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🧠</i><div><b>CNN 모델 학습</b><small>합성곱층 · 풀링층 · epoch(에포크) 8</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔥</i><div><b>새 이미지로 평가</b><small>산불일까, 아닐까?</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>인공지능 프로젝트 수행 과정 7단계(<b>문제 정의 → 데이터 수집 → 데이터 전처리 → 데이터 시각화 및 분석 → 알고리즘 선정 → 모델 학습 → 성능 평가 및 수정</b>)를 따라 코랩에서 산불 이미지 분류 모델을 직접 만듭니다. 사진이 컴퓨터 안에서 어떤 숫자로 저장되는지, CNN이 층을 지나며 사진을 어떻게 줄여 가는지 확인하고, 학습에 쓰지 않은 새 사진으로 모델을 시험합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">교과서 202쪽 질문이에요. 내 생각을 한두 문장으로 적어 봐요.</p>
+        <div class="memo"><label>산불 발생과 기후 변화와의 관계는 무엇일까요?</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>단원</b> · 비정형 데이터로 사회 문제를 해결하기 위한 분류 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 인공지능은 어떻게 기후 변화를 감지하고 분류해서 대비할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>비정형 데이터와 관련된 문제를 인공지능을 활용하여 협력적으로 해결할 수 있다.</li>
+          <li>문제 해결 과정에 따라 협력적인 자세로 프로젝트를 수행할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 비정형 데이터 · 협력적 프로젝트 수행 과정</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 문제 정의 · 데이터 수집부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 문제 정의 · 데이터 수집 -->
+<section class="page" data-name="문제 정의·데이터 수집" data-acc="#d64535">
+  <div class="head"><div class="num">01</div><div><h2>문제 정의와 데이터 수집</h2><p>교과서 203~204쪽 · 프로젝트 수행 과정 1·2단계</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>먼저 <b>무엇을 해결할지</b> 한 문장으로 정해요(문제 정의). 그다음 그 문제를 풀 <b>재료</b>를 모아요(데이터 수집). 오늘의 재료는 <b>산불 사진</b>과 <b>산불이 아닌 사진</b>이에요.</span></div>
+  <div class="card">
+    <h3>▶ 먼저 노트북부터 열어 두기</h3>
+    <ol class="uf-steps">
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>메뉴 <b>런타임 → 런타임 유형 변경 → T4 GPU → 저장</b>. GPU를 쓰면 학습이 몇 배 빨라요.</li>
+      <li>첫 코드 셀(데이터 내려받기)의 <span class="mono">ZIP_URL = ''</span> 따옴표 안에 선생님이 알려 준 주소를 붙여 넣고 ▶(또는 <b>Shift + Enter</b>)로 실행해요. 기다리는 동안 아래를 읽어요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-unstructured-1/assets/fire-cnn.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="fire-cnn.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+    <p class="note">GPU를 고르는 창에서 「사용할 수 없음」이 나오면 그대로 CPU로 해도 돼요. 학습 단계에서 몇 분 더 기다리면 돼요.</p>
+  </div>
+  <div class="card">
+    <h3>🎯 1 문제 정의 <span class="muted" style="font-weight:400;font-size:.88rem">(203쪽)</span></h3>
+    <p style="margin-top:0">지속가능발전목표(SDGs) 17개 목표를 탐색해 보고, 인공지능으로 해결할 수 있는 주제를 선정하여 해결할 문제를 정의한다.</p>
+    <div class="uf-def"><span class="uf-sdg">13</span><div><b>목표</b> 13번 「기후 변화에 대한 영향 방지와 긴급 조치」<br><b>사례</b> 화재 예방을 위한 이미지 분류<br><b>문제 정의</b> 화재 예방을 위해 산불 관련 이미지 데이터를 학습하는 인공지능 모델을 제작해 본다.</div></div>
+    <details class="uf-more"><summary>왜 이 프로젝트가 필요할까? (사회·경제·환경, 교과서 지도 TIP)</summary>
+    <div class="cards3" style="margin-top:8px">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🏘️</div><h4>사회적 측면</h4><p>재난 예방이나 대응에 효과적이고 주민들의 안전을 확보할 수 있다.</p></div>
+      <div class="kc" style="--k:#c98a00"><div class="ic">💰</div><h4>경제적 측면</h4><p>산림 자원의 피해를 줄여 국가 경제에 미치는 부정적인 영향을 줄일 수 있다.</p></div>
+      <div class="kc" style="--k:#1f9d74"><div class="ic">🌳</div><h4>환경적 측면</h4><p>산불로부터 생태계를 보호하고 기후 변화에 대응할 수 있다.</p></div>
+    </div></details>
+  </div>
+  <details class="card uf-more">
+    <summary>👥 해 보기 · 문제 정의 및 모둠원 역할 정하기 <span class="muted" style="font-weight:400;font-size:.88rem">(모둠 활동을 할 때)</span></summary>
+    <p style="margin-top:0">역할 예시: <b>프로젝트 기획자</b> · <b>데이터 수집가</b> · <b>데이터 분석가</b> · <b>모델 개발자</b> · <b>프로젝트 발표자</b> 등. 혼자 할 때도 단계마다 어떤 역할을 하고 있는지 생각하며 진행해요.</p>
+    <div class="memo"><label>우리 모둠(또는 짝)의 문제 정의를 한 문장으로 쓰고, 내가 맡은 역할을 적어 보세요.</label><textarea data-memo="roleMemo" rows="2"></textarea><div class="saved"></div></div>
+  </details>
+  <div class="card">
+    <h3>🖼️ 2 데이터 수집 <span class="muted" style="font-weight:400;font-size:.88rem">(204쪽)</span></h3>
+    <p style="margin-top:0">학습을 위한 이미지 데이터는 직접 또는 인터넷에서 수집할 수 있다. 산불 이미지는 인터넷에서 검색하여 수집하고, 산불 이미지가 아닌 것도 인터넷 검색 또는 주변의 모습을 촬영하여 수집한다.</p>
+    <div class="uf-tree">
+      <div class="uf-dir">📁 fire</div>
+      <div class="uf-sub">
+        <div><span class="uf-dir f">📁 fire</span> 산불 이미지 <b>162장</b> <small>fire.1 ~ fire.162</small></div>
+        <div><span class="uf-dir n">📁 non</span> 산불이 아닌 이미지 <b>162장</b> <small>non_fire.1 ~ non_fire.162</small></div>
+        <div><span class="uf-file">🖼️ test1.jpg · test2.jpg · test3.jpg</span> 학습에 쓰지 않는 새 이미지</div>
+      </div>
+    </div>
+    <div class="uf-gal" aria-label="데이터 사진 예시">
+      <figure><img src="img/g-fire8.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire13.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire37.jpg" alt="산불 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-fire64.jpg" alt="건물 화재 사진 예시" loading="lazy"><figcaption class="f">fire</figcaption></figure>
+      <figure><img src="img/g-non1.jpg" alt="안개 낀 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non31.jpg" alt="초록 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non46.jpg" alt="나무 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+      <figure><img src="img/g-non115.jpg" alt="단풍 숲 사진 예시" loading="lazy"><figcaption class="n">non</figcaption></figure>
+    </div>
+    <p class="note">사진은 모두 가로·세로 400 픽셀이에요. 수업에서는 시간을 아끼려고 사진 324장을 <b>압축 파일(fire.zip) 하나로 묶어</b> 선생님이 구글 드라이브로 공유해요. 노트북 첫 셀의 <span class="mono">ZIP_URL</span>에 선생님이 알려 준 주소를 붙여 넣고 실행하면 코랩으로 내려받아 풀어요. (파일 크기를 줄이려고 PNG 사진을 JPG로 바꾸었어요.)<br><b>사진 출처</b>: 교과서 제공 실습 데이터(수업용)</p>
+    <details class="uf-more"><summary>교과서처럼 구글 드라이브로 할 때</summary>
+      <ol style="margin:6px 0 0;padding-left:20px;font-size:.92rem">
+        <li>구글 드라이브에 「fire」 폴더를 만들고, 그 안에 「non」과 「fire」 폴더를 만들어 사진을 나누어 저장한다.</li>
+        <li>코랩에서 <span class="mono">from google.colab import drive</span>, <span class="mono">drive.mount('/gdrive', force_remount = True)</span>를 실행해 드라이브를 연결한다(Mounted at /gdrive).</li>
+        <li>노트북의 <span class="mono">path</span>를 <span class="mono">'/gdrive/MyDrive/fire'</span>로 바꾼다. 경로의 슬래시(/)와 폴더 이름을 정확히 쓴다.</li>
+      </ol>
+      <p class="note" style="margin-bottom:0"><span class="mono">force_remount</span> 옵션은 연결(mount)을 강제로 다시 할 때 써요.</p>
+    </details>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ①</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">노트북 첫 셀이에요. ▶를 눌러 실행해 보세요. 다른 화면의 셀 흉내와 이어져요. 코랩에서 첫 셀을 실행한 뒤 <span class="mono">fire  non  test1.jpg  test2.jpg  test3.jpg</span>가 보이지 않으면 선생님께 알려 주세요.</p>
+    <div id="sim1"></div>
+  </div>
+  <div class="callout"><b>비정형 데이터</b>는 정해진 형식이나 구조 없이 자유롭게 저장되는 데이터로, 텍스트·이미지·오디오·비디오 데이터 등이 있어요. 표의 행과 열로 정리된 펭귄·기대 수명 데이터(정형 데이터)와 달리, 사진은 그 자체로는 「어디가 무슨 값」인지 정해져 있지 않아요.</div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 데이터 전처리 · 시각화 -->
+<section class="page" data-name="전처리·시각화" data-acc="#e0702b">
+  <div class="head"><div class="num">02</div><div><h2>데이터 전처리와 시각화</h2><p>교과서 205~207쪽 · 프로젝트 수행 과정 3·4단계</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사진이 몇 장 있는지 세고(목록), 사진 파일의 위치를 리스트로 만들고, 사진을 <b>제 색</b>으로 읽는 함수를 만든 뒤, 몇 장을 <b>직접 눈으로 확인</b>해요. 컴퓨터에게 사진은 결국 <b>숫자가 가득 찬 표</b>예요.</span></div>
+  <div class="card">
+    <h3>📖 노트북에서 확인하기 <span class="muted" style="font-weight:400;font-size:.88rem">(205쪽 1~3 · 206~207쪽 시각화)</span></h3>
+    <ol class="uf-steps">
+      <li><b>이미지 데이터셋 확인</b> · <span class="mono">os.listdir( )</span>로 fire 폴더의 사진 목록과 개수(<b>162개</b>)를 확인하고, 같은 방법으로 non 폴더(162개)도 확인한다.</li>
+      <li><b>이미지 데이터 리스트 생성</b> · <span class="mono">glob.glob(path + '/fire' + '/*')</span>로 사진 파일 경로가 담긴 리스트 train_fire, train_non_fire를 만든다.</li>
+      <li><b>색상 변환</b> · <span class="mono">read_img( )</span> 함수가 <span class="mono">cv2.imread( )</span>로 사진을 읽고 <span class="mono">cv2.COLOR_BGR2RGB</span>로 <b>BGR 형식을 RGB 형식으로</b> 바꾼다.</li>
+      <li><b>시각화</b> · <span class="mono">read_img(train_fire[7])</span>을 <span class="mono">plt.imshow( )</span>로 보고, x축에 크기 <span class="mono">(400, 400, 3)</span>을 표시한다. 7 대신 다른 숫자를 넣으면 다른 사진이 나온다.</li>
+    </ol>
+    <p class="note" style="margin-bottom:0">교과서 코드의 read_img 주석에는 「흑백으로 변환」이라고 적혀 있지만 <span class="mono">COLOR_BGR2RGB</span>는 색의 <b>순서만</b> 바꿔요(사진은 컬러 그대로). 시각화하면 <b>데이터의 크기나 형태에 문제가 있는지</b> 학습 전에 확인할 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>🔍 사진은 숫자 (400, 400, 3)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">사진의 한 점을 누르거나, 사진을 한 번 누른 뒤 <b>방향키</b>로 십자선을 옮겨 보세요. 그 점의 빨강(R)·초록(G)·파랑(B) 세 숫자가 나와요. 그다음 「cv2로 읽은 그대로(BGR) 보기」를 눌러 보세요.</p>
+    <div id="pxGame"></div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ②~⑥</h3>
+    <div id="sim2"></div>
+  </div>
+  <details class="card uf-more">
+    <summary>🔎 더 알아보기 · 시각화로 데이터의 문제 찾기</summary>
+    <div class="uf-find"><img src="img/g-non133.jpg" alt="non 폴더에 들어 있는 산불 사진" width="120" height="120"><p style="margin:0">노트북의 「여러 장을 한꺼번에 보기」 셀로 사진을 둘러보면 이상한 점을 찾을 수 있어요. 예를 들어 <b>non 폴더(산불이 아닌 이미지)의 non_fire.133</b>은 불길과 연기가 보이는 <b>산불 사진</b>이에요. 정답이 잘못 붙은 데이터는 모델을 헷갈리게 만들어요. 또 fire 폴더에는 숲이 아니라 <b>건물 화재</b>나 소방관 사진도 많아요. 이런 특징이 모델에 어떤 영향을 줄지는 「데이터 편향성 해결」에서 이어서 살펴봐요.</p></div>
+  </details>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 알고리즘 선정 · CNN -->
+<section class="page" data-name="CNN 모델" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>알고리즘 선정과 CNN 모델 만들기</h2><p>교과서 208~209쪽 · 프로젝트 수행 과정 5단계, 6단계 ①</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사진 분류에는 <b>합성곱 신경망(CNN)</b>을 써요. CNN은 사진 전체를 한꺼번에 보기보다 <b>작은 부분</b>을 보며 이웃한 픽셀끼리의 관계(선, 무늬, 불꽃 모양)를 찾고(합성곱층), 크기를 줄여 중요한 것만 남겨요(풀링층). 이것을 세 번 되풀이한 뒤 마지막에 산불인지 판단해요.</span></div>
+  <div class="card">
+    <h3>📖 5 알고리즘 선정</h3>
+    <p style="margin-top:0">산불 이미지 데이터나 산불이 아닌 이미지 데이터와 같은 비정형 데이터를 분류하기 위해 <b>합성곱 신경망(CNN: Convolution Neural Networks)</b> 딥러닝 모델을 활용한다. CNN은 딥러닝에서 이미지 또는 영상 데이터를 처리할 때 사용하며, 주요 구성 요소는 <b>컨볼루션</b>과 <b>풀링</b>이다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#9b4fc4"><h4>컨볼루션(convolution) · 합성곱층</h4><p>입력 데이터와 <b>필터(커널)</b> 간의 합성곱 연산을 통해 특징을 추출한다. 같은 크기의 두 행렬을 포개어 같은 위치의 값끼리 곱하여 모두 더한다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>풀링(pooling) · 풀링층</h4><p>입력 데이터의 공간 크기를 줄여 중요한 정보를 보존한다. 지정한 크기에서 최댓값만 가져오는 <b>최대 풀링</b>, 평균값을 가져오는 <b>평균 풀링</b>이 있다.</p></div>
+    </div>
+  </div>
+  <details class="card uf-more">
+    <summary>🤖 AI와 함께 지식 키우기 · 컨볼루션과 풀링 계산해 보기 <span class="muted" style="font-weight:400;font-size:.88rem">(208쪽)</span></summary>
+    <p class="muted" style="margin-top:0;font-size:.9rem">5×5 입력에 3×3 커널을 한 칸씩 옮겨 가며 포개요. <b>출력 칸을 눌러</b> 어떤 입력 칸과 곱해졌는지 확인하세요.</p>
+    <div id="convGame"></div>
+    <div class="uf-pool">
+      <div><b>최대 풀링</b> (4×4 → 2×2)<table class="uf-mt"><tr><td class="a">29</td><td class="a">15</td><td class="b">28</td><td class="b">184</td></tr><tr><td class="a">0</td><td class="a">100</td><td class="b">70</td><td class="b">38</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">7</td><td class="d">2</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">45</td><td class="d">6</td></tr></table><span class="uf-ar">→</span><table class="uf-mt sm"><tr><td class="a">100</td><td class="b">184</td></tr><tr><td class="c">12</td><td class="d">45</td></tr></table></div>
+      <div><b>평균 풀링</b> (4×4 → 2×2)<table class="uf-mt"><tr><td class="a">31</td><td class="a">15</td><td class="b">28</td><td class="b">184</td></tr><tr><td class="a">0</td><td class="a">100</td><td class="b">70</td><td class="b">38</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">7</td><td class="d">2</td></tr><tr><td class="c">12</td><td class="c">12</td><td class="d">45</td><td class="d">6</td></tr></table><span class="uf-ar">→</span><table class="uf-mt sm"><tr><td class="a">36.5</td><td class="b">80</td></tr><tr><td class="c">12</td><td class="d">15</td></tr></table></div>
+    </div>
+    <p class="note">합성곱층·풀링층은 「컴퓨터 비전」에서 배운 내용(교과서 105쪽)과 같아요. 교과서 그림의 평균 풀링 왼쪽 위 값은 36으로 실려 있는데, (31 + 15 + 0 + 100) ÷ 4 = 36.5예요.</p>
+  </details>
+  <div class="card">
+    <h3>📖 6 모델 학습 · ① CNN 모델 생성하기</h3>
+    <p style="margin-top:0">텐서플로 라이브러리를 불러오고, 계층(layer)을 순서대로 쌓는 <b>Sequential 모델</b>로 CNN을 만든다. 3개의 합성곱층과 풀링층을 지난 뒤 <b>Flatten</b> 계층에서 1차원 배열로 바꾸고, 마지막에 2개의 층(Dense)으로 판단한다.</p>
+<pre class="uf-code">import tensorflow as tf
+model = tf.keras.models.Sequential([
+      tf.keras.layers.Conv2D(16, (3, 3), activation = 'relu', input_shape = (400, 400, 3)),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(128, activation = 'relu'),
+      tf.keras.layers.Dense(1, activation = 'sigmoid')
+])
+model.summary()</pre>
+    <p class="note"><span class="mono">Conv2D(16, (3, 3))</span>: 3×3 필터 16개 · <span class="mono">MaxPool2D(2, 2)</span>: 2×2 최대 풀링 · <span class="mono">Dense(1, activation = 'sigmoid')</span>: 0~1 사이의 값 하나를 내는 마지막 층<br><b>Dense = 완전 연결층</b>: 앞 층의 모든 값이 이 층의 모든 뉴런과 연결된 층이에요.</p>
+  </div>
+  <div class="card">
+    <h3>🧱 층을 지나며 모양이 어떻게 바뀔까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">층을 누르거나 「다음 층 ▶」을 눌러 따라가 보세요. summary( )의 <b>Output Shape</b>(출력값의 형태)와 <b>Param #</b>(매개 변수의 수)가 어떻게 계산되는지 나와요.</p>
+    <div id="layerGame"></div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑦</h3>
+    <div id="sim3"></div>
+    <p class="note" style="margin-bottom:0">코랩에서 이 셀을 실행하면 <span class="mono">input_shape</span>에 관한 경고(UserWarning)가 한 줄 나올 수 있어요. 오류가 아니라서 그대로 진행해요.</p>
+  </div>
+  <div class="callout"><b>해석</b> 각각의 계층에서 Output Shape를 알아볼 수 있다. Flatten 계층에서 3차원이던 데이터가 <b>73,728개</b>의 1차원 형태로 바뀐다. Param은 parameter(매개 변수)의 약자로, 학습할 때 알고리즘이 스스로 바꾸어 가는 값(가중치와 편향)이다. 이 모델 전체가 학습하는 매개 변수는 <b>9,451,777개</b>이다.<br><small class="muted">교과서 209쪽 실행 결과에는 Flatten 147,456개, 18,898,209개로 실려 있어요. 이 숫자는 세 번째 합성곱층의 필터를 64개로 했을 때의 결과예요(위 체험의 「더 알아보기」에서 「필터 64」를 눌러 확인). 교과서 코드(필터 32개)를 실행하면 73,728개, 9,451,777개가 나와요.</small></div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 모델 학습 -->
+<section class="page" data-name="모델 학습" data-acc="#2f6fd0">
+  <div class="head"><div class="num">04</div><div><h2>CNN 모델 컴파일하고 학습시키기</h2><p>교과서 210~211쪽 · 6단계 ②·③, 7단계 ①·②</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델에게 <b>무엇을 줄이고(손실 함수) 어떻게 고치고(최적화) 무엇으로 점수를 매길지(평가 지표)</b> 알려 준 뒤(compile), 사진을 9장씩 묶어 36번 보여 주는 것을 8바퀴(epoch, 에포크) 되풀이해요(fit). 바퀴를 돌수록 오차는 대체로 줄고 정확도는 올라가요.</span></div>
+  <div class="card">
+    <h3>⏱️ 학습 셀은 먼저 실행해 두기</h3>
+    <p style="margin-top:0">노트북에서 compile 셀 → 데이터 설정 셀 → <b>학습(fit) 셀</b>까지 실행해 두고, 학습이 도는 동안 아래 설명을 읽어요. GPU에서는 1분 안팎, GPU 없이(CPU) 하면 4~8분 걸려요. 너무 느리면 <b>런타임 → 런타임 유형 변경 → T4 GPU</b>로 바꾸고 처음 셀부터 다시 실행해요.</p>
+  </div>
+  <div class="card">
+    <h3>📖 2 CNN 모델 컴파일하기</h3>
+<pre class="uf-code">model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])</pre>
+    <div class="cards3">
+      <div class="kc" style="--k:#d64535"><h4>손실 함수 · binary_crossentropy</h4><p>이진 분류 문제에 쓰는 손실 함수. 예측값이 0과 1 사이의 확률값으로 나오며, 0이나 1에 가까울수록 두 클래스(산불 / 산불 아님) 중 하나에 가깝다는 뜻이다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>최적화 방법 · Adam</h4><p>주로 신경망 모델을 훈련시킬 때 사용하며, 학습률을 자동으로 조절하여 최적화 과정을 안정화시킨다.</p></div>
+      <div class="kc" style="--k:#1f9d74"><h4>평가 지표 · accuracy</h4><p>학습하는 동안 정확도(맞힌 비율)를 함께 계산해 보여 준다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📖 3 CNN 모델 학습하기 · 정규화와 배치 사이즈</h3>
+<pre class="uf-code">from tensorflow.keras.preprocessing.image import ImageDataGenerator
+train_datagen = ImageDataGenerator(rescale = 1/255)   <span class="c"># RGB값을 0과 1 사이로 정규화</span>
+train_generator = train_datagen.flow_from_directory(
+                  path, target_size = (400,400),
+                  batch_size = 9, class_mode = 'binary',
+                  seed = 3
+)
+print(train_generator.class_indices)                  <span class="c"># (더한 부분) 폴더 이름 → 숫자 레이블</span></pre>
+<pre class="uf-out">Found 324 images belonging to 2 classes.
+{'fire': 0, 'non': 1}</pre>
+    <div class="uf-facts">
+      <div><b>rescale = 1/255</b><span>0~255인 RGB 값을 255로 나누어 <b>0~1</b>로 정규화한다(98쪽 정규화). 학습이 안정적이고 효율적이 된다.</span></div>
+      <div><b>batch_size = 9</b><span>몇 개의 샘플로 가중치를 갱신할지 정한다(93쪽 배치 사이즈). 이미지의 총 개수 <b>324</b>의 약수 중 하나인 9로 정했다.</span></div>
+      <div><b>class_mode = 'binary'</b><span>산불 이미지인지 아닌지 <b>이진 분류</b>한다. 하위 폴더 이름이 정답(레이블)이 되고, 알파벳 순서대로 <b>fire = 0, non = 1</b>이다.</span></div>
+    </div>
+<pre class="uf-code">history = model.fit(train_generator, steps_per_epoch = 36, epochs = 8, verbose = 1)</pre>
+    <div class="uf-batch" aria-label="배치와 에포크"><span>9장 × <b>36</b>번(steps_per_epoch) = 324장 = <b>1 에포크</b></span><span>× <b>8</b> 에포크(epochs) = 사진 324장을 8바퀴</span></div>
+    <p class="note">epoch는 학습 횟수예요. 교과서는 8번 학습했지만, 횟수를 바꿔 가며 학습한 뒤 가장 알맞은 횟수로 정하는 것이 좋아요. <span class="mono">verbose = 1</span>이면 학습 과정이 보이고, 0이면 안 보여요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑧~⑪</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">학습 기록은 교과서 소스 노트북을 실제로 실행한 결과예요. 시간(초)은 컴퓨터마다 달라요.</p>
+    <div id="sim4"></div>
+  </div>
+  <div class="card">
+    <h3>📈 7 성능 평가 · 오차와 정확도 시각화하기 <span class="muted" style="font-weight:400;font-size:.88rem">(211쪽)</span></h3>
+<pre class="uf-code">plt.plot(history.history['loss'], 'r--', label = 'loss')
+plt.plot(history.history['accuracy'], 'b-', label = 'accuracy')
+plt.xlabel('epoch')
+plt.legend()
+plt.show()</pre>
+    <p style="margin-bottom:0"><b>해석</b> x축은 학습 횟수인 epoch, y축은 오차(loss)와 정확도(accuracy)이다. 학습이 진행될수록 오차는 대체로 줄고 정확도는 커진다. 이 정확도는 <b>학습에 쓴 사진</b>으로 잰 값이라서, 처음 보는 사진도 잘 맞히는지는 새 이미지로 따로 확인해야 해요.</p>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 새 이미지로 평가 · 스스로 해결하기 -->
+<section class="page" data-name="새 이미지 평가" data-acc="#1f9d74">
+  <div class="head"><div class="num">05</div><div><h2>새 이미지로 모델 평가하기</h2><p>교과서 212~213쪽 · 7단계 ③ · 스스로 해결하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>학습에 쓰지 않은 사진을 <b>학습 때와 똑같은 모양</b>(400×400, 0~1 값, 한 장짜리 묶음)으로 바꿔 모델에 넣어요. 결과가 <b>0에 가까우면 산불</b>, <b>1에 가까우면 산불이 아님</b>이에요.</span></div>
+  <div class="card">
+    <h3>📖 3 새로운 이미지 데이터로 이미지 학습 모델 평가하기</h3>
+    <div class="uf-tests">
+      <figure><img src="img/test1.jpg" alt="test1 산불 사진" width="120" height="120"><figcaption>test1.jpg · 산불</figcaption></figure>
+      <figure><img src="img/test2.jpg" alt="test2 숲 사진" width="120" height="120"><figcaption>test2.jpg · 산불 아님</figcaption></figure>
+    </div>
+    <p>교과서는 생성형 인공지능으로 산불 이미지를 만들어 <span class="mono">files.upload()</span>로 올렸어요. 수업용 zip 안에 이 사진들이 들어 있어서 바로 열면 돼요. <b>PIL</b>(Python Imaging Library)은 이미지 열기, 조작, 저장 등 이미지를 분석하고 처리하는 라이브러리예요.</p>
+<pre class="uf-code">from PIL import Image
+img1 = Image.open(path + '/test1.jpg')     <span class="c"># 교과서: Image.open('/content/test1.jpg')</span>
+
+from tensorflow.keras.preprocessing import image
+import numpy as np
+img_resize1 = img1.resize((400,400))                 <span class="c"># ① 크기를 (400, 400)으로</span>
+test_img1 = image.img_to_array(img_resize1) / 255    <span class="c"># ② 숫자 배열로 + (더한 부분) 0~1로 정규화</span>
+test_img1 = np.expand_dims(test_img1, axis = 0)      <span class="c"># ③ 테스트 결과를 저장할 공간(차원) 만들기</span>
+images1 = np.vstack([test_img1])                     <span class="c"># ④ 테스트에 알맞게 배열 변환</span></pre>
+    <div class="uf-shape" aria-label="배열 모양 변화"><span>사진 1024×1024</span><i>→</i><span>resize<br><b>400×400</b></span><i>→</i><span>img_to_array<br><b>(400, 400, 3)</b></span><i>→</i><span>÷ 255<br><b>0~1</b></span><i>→</i><span>expand_dims<br><b>(1, 400, 400, 3)</b></span></div>
+<pre class="uf-code">classes1 = model.predict(images1, batch_size = 10)
+print(classes1[0])
+if classes1[0][0] < 0.5:          <span class="c"># (고친 부분) 교과서: if classes1[0]==0:</span>
+    print('Fire Image')
+else:
+    print('Non Fire Image')</pre>
+    <p class="note" style="margin-bottom:0">출력이 <span class="mono">[1.6e-14]</span>처럼 나오면 <b>e-14</b>는 「× 10의 −14제곱」, 곧 소수점 아래 0이 13개인 아주 작은 수예요. <b>거의 0</b>이라서 산불 이미지예요.</p>
+  </div>
+  <div class="card uf-fix">
+    <h3>🔧 교과서 코드와 다르게 쓴 두 줄</h3>
+    <p style="margin-top:0"><b>① / 255를 더한 까닭</b> 학습할 때는 <span class="mono">rescale = 1/255</span>로 0~1 값을 썼어요. 새 사진도 똑같이 255로 나누어야 모델이 배운 것과 같은 범위의 숫자를 받아요. 교과서 코드는 이 줄이 빠져서 0~255 값이 그대로 들어가, 결과가 <span class="mono">[0.]</span>이나 <span class="mono">[1.]</span>처럼 끝까지 쏠려 나왔어요.</p>
+    <p style="margin-bottom:0"><b>② 0.5를 기준으로 나눈 까닭</b> 시그모이드 출력은 0.03, 0.97처럼 <b>0과 1 사이의 값</b>이에요. <span class="mono">== 0</span>으로 비교하면 0.03도 「0이 아님」이 되어 버려요. 그래서 <b>0.5보다 작으면 산불(fire = 0)</b>, 크면 산불 아님(non = 1)으로 판단해요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 ⑫~⑬</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">흉내에서 나오는 확률은 예시 값이에요. 실제 값은 학습할 때마다 달라요.</p>
+    <div id="sim5"></div>
+  </div>
+  <div class="card">
+    <h3>📖 프로젝트 정리 <span class="muted" style="font-weight:400;font-size:.88rem">(213쪽)</span></h3>
+    <p style="margin:0">산불은 언제, 어디서 발생할지 알 수 없고 원인도 다양해 발생 건수 자체를 줄이기 매우 어렵다. 이 문제를 해결하기 위해 CNN을 이해하고 산불 이미지 데이터와 산불이 아닌 이미지 데이터로 산불 이미지를 분류하는 인공지능을 제작해 보았다. 모든 이미지의 크기를 400×400으로 통일시켜 학습시켰고, 딥러닝 학습이 진행되면서 정확도가 커지는 것을 확인하였다.</p>
+    <p class="note" style="margin-bottom:0">인터넷에서 수집한 데이터를 저작권자 동의 없이 사용하는 것은 불법일 수 있으니 주의해요.</p>
+  </div>
+  <div class="card">
+    <h3>🧩 스스로 해결하기 · 해 보기 「성능 평가 및 수정」</h3>
+    <p style="margin-top:0">학습시키지 않은 새로운 이미지 데이터를 적용하여 테스트해 보고, 결과가 <b>잘못 나오는 경우</b>가 있는지 살펴보고 그 이유를 찾아보자. <span class="muted">(선택 · 시간이 남으면 노트북 맨 아래 「내 사진 올려 보기」 셀로 직접 시험해 봐요. 사진은 JPG·PNG만 돼요(아이폰 HEIC 사진은 안 열려요). zip 안의 test3.jpg도 넣어 보세요.)</span></p>
+    <div class="memo"><label>이 모델이 <b>잘못 판별할 것 같은 사진</b>을 하나 떠올려(또는 직접 시험해) 쓰고, 그렇게 생각한 까닭을 <b>학습에 쓴 사진들의 특징</b>과 연결해 써 보세요.</label><textarea data-memo="wrongMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <details class="card uf-more">
+    <summary>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(선택 · 시간이 남으면)</span></summary>
+    <p class="muted" style="font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>이미지처럼 정해진 형식이나 구조 없이 저장되는 데이터를 <button class="blank" data-a="비정형 데이터">?</button>라고 한다.</li>
+      <li><button class="blank" data-a="합성곱 신경망(CNN)">?</button>은 컨볼루션으로 특징을 추출하고 <button class="blank" data-a="풀링">?</button>으로 공간 크기를 줄여 이미지를 분류한다.</li>
+      <li>rescale = 1/255로 RGB 값을 0과 1 사이로 바꾸는 것을 <button class="blank" data-a="정규화">?</button>라고 한다.</li>
+      <li>전체 학습 데이터를 한 번 모두 학습하는 단위를 <button class="blank" data-a="epoch(에포크)">?</button>라고 하며, 교과서 모델은 8번 학습했다.</li>
+    </ol>
+  </details>
+  <div class="card">
+    <h3>✅ 성취도 평가</h3>
+    <p style="margin-top:0">교과서 점검 포인트예요. 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#d64535">사진은 <b>비정형 데이터</b>예요. 컴퓨터에게 사진 한 장은 <b>(400, 400, 3)</b> 모양의 숫자 묶음이고, cv2는 색을 <b>BGR</b> 순서로 읽어 <span class="mono">COLOR_BGR2RGB</span>로 바꿔 보여 줘요.</div>
+    <div style="--k:#9b4fc4"><b>CNN</b>은 합성곱층(필터로 특징 추출)과 풀링층(크기 줄이기)을 거치며 400×400 사진을 48×48×32로 줄이고, <b>Flatten</b>으로 1차원(73,728개)으로 펼친 뒤 <b>시그모이드</b>로 0~1 값 하나를 내요.</div>
+    <div style="--k:#2f6fd0"><b>rescale = 1/255</b>로 정규화하고 <b>9장씩 36번 × 8 epoch</b> 학습했어요. 새 사진도 학습 때와 같이 <b>÷255</b> 해서 넣고, 결과가 0.5보다 작으면 <b>산불(fire = 0)</b>이에요.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>산불 이미지는 정해진 형식이 없는 비정형 데이터입니다. 컴퓨터는 사진 한 장을 어떤 숫자로 저장하는지 (400, 400, 3)의 뜻과 함께 설명하고, 205쪽 read_img( ) 함수에서 BGR 형식을 RGB 형식으로 바꾼 까닭을 쓰세요.</li>
+      <li>209쪽 CNN 모델은 합성곱층과 풀링층을 세 번 거친 뒤 Flatten 계층에서 1차원으로 바뀝니다. 400×400 사진이 층을 지나며 Output Shape가 어떻게 달라지는지 예를 들어 설명하고, 합성곱층과 풀링층이 각각 하는 일을 쓰세요.</li>
+      <li>모델을 학습시킨 뒤 학습하지 않은 새 이미지로 산불인지 판별해 보았습니다. 학습 기록(오차와 정확도)이 에포크에 따라 어떻게 달라졌는지 쓰고, 이 모델이 잘못 판별할 것 같은 사진을 하나 들어 그렇게 생각한 까닭을 학습 데이터와 연결해 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/ai-34-4-3.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u4-unstructured-1', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 202~213쪽) — 오답도 교과서 표현에서 */
+const QUIZ={
+ 1:[{q:'산불 사진처럼 정해진 형식이나 구조 없이 자유롭게 저장되는 데이터는?',o:['정형 데이터','비정형 데이터','범주형 데이터'],a:1,w:'텍스트, 이미지, 오디오, 비디오 데이터처럼 정해진 형식 없이 저장되는 데이터를 비정형 데이터라고 해요. 표의 행과 열로 정리된 데이터는 정형 데이터예요.'},
+    {q:'산불 이미지 분류 프로젝트에서 사진을 「fire」 폴더와 「non」 폴더에 나누어 저장한 까닭은?',o:['산불인지 아닌지 정답을 나누려고','구글 드라이브의 저장 용량을 아끼려고','사진을 400×400 크기로 한꺼번에 줄이려고'],a:0,w:'fire 폴더에는 화재 이미지, non 폴더에는 비화재 이미지를 넣어요. 학습할 때 하위 폴더 이름이 그대로 정답(레이블)이 돼요.'}],
+ 2:[{q:'read_img( ) 함수에서 cv2.cvtColor(img_arr, cv2.COLOR_BGR2RGB)를 쓰는 까닭은?',o:['사진을 회색조로 바꾸려고','사진 크기를 400×400으로 맞추려고','cv2가 색을 BGR 순서로 읽어 제 색으로 보이게 하려고'],a:2,w:'cv2.imread( )는 색을 파랑·초록·빨강(BGR) 순서로 읽어요. 그대로 보여 주면 불꽃이 파랗게 보여서 RGB 순서로 바꿔요. 회색조로 바꾸는 것은 COLOR_BGR2GRAY예요.'},
+    {q:'fire_img.shape가 (400, 400, 3)일 때 3이 뜻하는 것은?',o:['색 채널의 수','같은 사진을 겹친 장수','사진 한 변의 길이를 나눈 수'],a:0,w:'세로 400 × 가로 400 픽셀마다 빨강·초록·파랑 세 값이 있다는 뜻이에요. 사진 한 장이 400 × 400 × 3 = 480,000개의 숫자예요.'},
+    {q:'데이터 시각화 및 분석 단계에서 학습 전에 사진을 직접 보는 까닭으로 알맞은 것은?',o:['모델의 정확도를 높이려고','사진 파일의 이름을 바꾸려고','데이터의 크기나 형태에 문제가 있는지 확인하려고'],a:2,w:'시각화로 데이터의 특성을 이해하고, 크기나 형태에 문제가 있는지 학습 전에 점검해요. 예를 들어 non 폴더에 산불 사진이 섞여 있는 것도 찾을 수 있어요.'}],
+ 3:[{q:'CNN의 구성 요소 중 컨볼루션에 대한 설명은?',o:['데이터를 1차원 배열로 바꾼다','입력 데이터의 공간 크기를 줄인다','입력 데이터와 필터 간의 합성곱 연산으로 특징을 추출한다'],a:2,w:'컨볼루션은 필터(커널)를 포개어 같은 위치끼리 곱해 더하는 합성곱 연산으로 특징을 추출해요. 공간 크기를 줄이는 것은 풀링, 1차원으로 바꾸는 것은 Flatten이에요.'},
+    {q:'2×2 평균 풀링에서 [[28, 184], [70, 38]] 영역의 결괏값은?',o:['38','80','184'],a:1,w:'평균 풀링은 영역의 평균값을 가져와요. (28 + 184 + 70 + 38) ÷ 4 = 80이에요. 최대 풀링이었다면 최댓값 184예요.'},
+    {q:'209쪽 CNN 모델에서 Flatten 계층이 하는 일은?',o:['사진의 크기를 절반으로 줄인다','3차원 데이터를 1차원 배열로 바꾼다','마지막 층에서 0과 1 사이의 값 하나를 낸다'],a:1,w:'Flatten은 48 × 48 × 32 모양의 3차원 데이터를 73,728개짜리 1차원 배열로 펼쳐 Dense 층에 넘겨요. 크기를 절반으로 줄이는 것은 풀링층, 0과 1 사이의 값 하나를 내는 것은 마지막 Dense(sigmoid) 층이에요.'}],
+ 4:[{q:'ImageDataGenerator(rescale = 1/255)로 하는 일은?',o:['RGB 값을 0~1로 정규화한다','사진을 255장씩 묶어 학습한다','사진 크기를 255×255로 바꾼다'],a:0,w:'0~255인 RGB 값을 255로 나누어 0과 1 사이로 정규화해요. 학습을 안정적이고 효율적으로 만들어요.'},
+    {q:'사진 324장을 batch_size = 9로 나누어 학습하면 한 epoch 동안 가중치를 몇 번 갱신할까?',o:['9번','36번','324번'],a:1,w:'9장씩 묶으면 324 ÷ 9 = 36묶음이에요. 그래서 steps_per_epoch를 36으로 정했어요. 36번 갱신하면 324장을 한 번씩 모두 본 것(1 epoch)이에요.'},
+    {q:'이 모델의 출력이 0에 가까운 값으로 나왔다면 모델의 판단은?',o:['산불 이미지','산불이 아닌 이미지','아직 학습이 덜 된 이미지'],a:0,w:'폴더 이름의 알파벳 순서대로 fire는 0, non은 1이에요. 0에 가까우면 산불 이미지, 1에 가까우면 산불이 아닌 이미지로 판단해요.'}],
+ 5:[{q:'새 이미지를 모델에 넣기 전에 255로 나누는 까닭은?',o:['사진을 회색조로 바꾸려고','사진 파일의 크기를 줄이려고','학습 데이터와 같은 0~1 범위로 맞추려고'],a:2,w:'학습할 때 rescale = 1/255로 0~1 값을 썼기 때문에 새 사진도 같은 범위로 바꿔 넣어야 모델이 배운 대로 판단할 수 있어요.'},
+    {q:'np.expand_dims(test_img1, axis = 0)으로 (400, 400, 3) 배열을 바꾸면 모양은?',o:['(400, 400)','(1, 400, 400, 3)','(400, 400, 3, 1)'],a:1,w:'맨 앞(axis = 0)에 차원을 하나 더해 「사진 1장짜리 묶음」인 (1, 400, 400, 3)이 돼요. 모델은 사진을 여러 장 묶음으로 받기 때문이에요.'}]
+};
+
+const QK='ds-u4-unstructured-1-quiz'+WHO.sfx;
+const MK='ds-u4-unstructured-1-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* ───────── 셀 실행 흉내 (여러 화면이 상태를 함께 씀) ───────── */
+/* 학습 기록: 교과서 소스 노트북(204쪽~215쪽_산불이미지분류하기.ipynb)의 실제 출력 */
+const UF_LOG=[[0.9273,0.6019,'118s 3s'],[0.3500,0.8611,'29s 814ms'],[0.3642,0.8889,'29s 815ms'],[0.2564,0.9105,'29s 800ms'],[0.2039,0.9228,'29s 793ms'],[0.1395,0.9475,'29s 796ms'],[0.1014,0.9568,'29s 803ms'],[0.0764,0.9753,'28s 788ms']];
+const NB={busy:false,out:{}};
+const ufErr=(e,why)=>`<div class="uf-err">${e}</div><div class="uf-why">${why}</div>`;
+const ufOK=t=>`<span class="ok">✓ 실행 완료</span> <span class="muted">${t||'(출력 없음)'}</span>`;
+const ufPre=t=>`<pre class="uf-out sm">${t}</pre>`;
+function ufChart(){
+  const W=320,H=190,L=34,R=10,T=12,B=28, n=UF_LOG.length;
+  const x=i=>L+i*(W-L-R)/(n-1), y=v=>T+(1-v)*(H-T-B);
+  let g='';
+  [0,.2,.4,.6,.8,1].forEach(v=>g+=`<line class="gl" x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}"/><text class="tk" x="${L-5}" y="${y(v)+3}" text-anchor="end">${v.toFixed(1)}</text>`);
+  for(let i=0;i<n;i++) g+=`<text class="tk" x="${x(i)}" y="${H-B+13}" text-anchor="middle">${i}</text>`;
+  g+=`<text class="tk" x="${W-R}" y="${H-3}" text-anchor="end">epoch</text>`;
+  const path=k=>UF_LOG.map((r,i)=>`${i?'L':'M'}${x(i).toFixed(1)},${y(Math.min(1,r[k])).toFixed(1)}`).join('');
+  g+=`<path d="${path(0)}" fill="none" stroke="#d64535" stroke-width="2.2" stroke-dasharray="6 4"/><path d="${path(1)}" fill="none" stroke="#2f6fd0" stroke-width="2.4"/>`;
+  g+=`<g transform="translate(${W-108},${T+60})"><rect width="96" height="38" rx="6" fill="#fff" stroke="#e3ddd2"/><line x1="8" x2="28" y1="13" y2="13" stroke="#d64535" stroke-width="2.2" stroke-dasharray="5 3"/><text x="34" y="17" class="tk">loss</text><line x1="8" x2="28" y1="28" y2="28" stroke="#2f6fd0" stroke-width="2.4"/><text x="34" y="32" class="tk">accuracy</text></g>`;
+  return `<svg class="uf-chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="epoch에 따른 오차와 정확도 그래프">${g}</svg>`;
+}
+const SUMMARY=`Model: "sequential"
+Layer (type)                  Output Shape              Param #
+conv2d (Conv2D)               (None, 398, 398, 16)          448
+max_pooling2d (MaxPooling2D)  (None, 199, 199, 16)            0
+conv2d_1 (Conv2D)             (None, 197, 197, 32)        4,640
+max_pooling2d_1 (MaxPooling2D)(None, 98, 98, 32)              0
+conv2d_2 (Conv2D)             (None, 96, 96, 32)          9,248
+max_pooling2d_2 (MaxPooling2D)(None, 48, 48, 32)              0
+flatten (Flatten)             (None, 73728)                   0
+dense (Dense)                 (None, 128)             9,437,312
+dense_1 (Dense)               (None, 1)                     129
+ Total params: 9,451,777 (36.06 MB)`;
+const CELLS={
+  dl:{t:'① 데이터 내려받기 (수업용)',c:`ZIP_URL = '(선생님이 알려 준 주소)'
+!gdown -q --fuzzy "$ZIP_URL" -O fire.zip
+!unzip -q -o fire.zip
+!ls /content/fire`,run(){ NB.dl=true; return ufPre('fire  non  test1.jpg  test2.jpg  test3.jpg'); }},
+  ls:{t:'② 이미지 데이터셋 확인하기 (205쪽)',c:`import os
+path = '/content/fire'
+train_fire_dir = path + '/fire'
+train_fire_names = os.listdir(train_fire_dir)
+print(train_fire_names[:2])
+print(len(train_fire_names))`,run(){ NB.path=true;
+    if(!NB.dl) return ufErr(`FileNotFoundError: [Errno 2] No such file or directory: '/content/fire/fire'`,'아직 사진을 내려받지 않아 폴더가 없어요. ① 데이터 내려받기 셀(01 화면)부터 실행하세요.');
+    NB.ls=true; return ufPre(`['fire.12.jpg', 'fire.155.jpg']\n162`); }},
+  glob:{t:'③ 이미지 데이터 리스트 생성하기 (205쪽)',c:`import glob
+train_fire = glob.glob(path + '/fire' + '/*')
+train_non_fire = glob.glob(path + '/non' + '/*')
+train_fire[:5]`,run(){
+    if(!NB.path) return ufErr(`NameError: name 'path' is not defined`,'path는 ② 셀에서 정했어요. ②부터 실행하세요.');
+    if(!NB.dl){ NB.globEmpty=true; return ufPre('[]')+'<div class="uf-why">빈 리스트예요. 사진을 내려받지 않아 폴더에 아무것도 없어요. ① 셀을 먼저 실행하세요.</div>'; }
+    NB.glob=true; return ufPre(`['/content/fire/fire/fire.12.jpg',\n '/content/fire/fire/fire.155.jpg',\n '/content/fire/fire/fire.67.jpg',\n '/content/fire/fire/fire.3.jpg',\n '/content/fire/fire/fire.98.jpg']`); }},
+  rimg:{t:'④ 이미지 데이터 색상 변환 함수 (205쪽)',c:`import cv2
+from matplotlib.pyplot import imshow
+def read_img(file_path):
+  img_arr = cv2.imread(file_path)
+  return cv2.cvtColor(img_arr, cv2.COLOR_BGR2RGB)`,run(){ NB.rimg=true; return ufOK('함수를 만들기만 했어요.'); }},
+  showF:{t:'⑤ 산불 이미지 시각화하기 (206쪽)',c:`import matplotlib.pyplot as plt
+fire_img = read_img(train_fire[7])
+plt.title('Fire Image')
+plt.xlabel(fire_img.shape)
+plt.imshow(fire_img, aspect = 'auto')`,run(){
+    if(!NB.rimg) return ufErr(`NameError: name 'read_img' is not defined`,'read_img 함수를 아직 만들지 않았어요. ④ 셀을 먼저 실행하세요.');
+    if(!NB.glob&&NB.globEmpty) return ufErr('IndexError: list index out of range','train_fire 리스트가 비어 있어 7번째 사진이 없어요. 사진을 내려받지 않고 ③ 셀을 실행했기 때문이에요. ① → ③ 순서로 다시 실행하세요.');
+    if(!NB.glob) return ufErr(`NameError: name 'train_fire' is not defined`,'train_fire 리스트는 ③ 셀에서 만들어요.');
+    return `<figure class="uf-plt"><b>Fire Image</b><img src="img/px-fire.jpg" alt="산불 이미지" width="180" height="180"><small>(400, 400, 3)</small></figure>`; }},
+  showN:{t:'⑥ 산불이 아닌 이미지 시각화하기 (207쪽)',c:`non_fire_img = read_img(train_non_fire[7])
+plt.title('Non Fire Image')
+plt.xlabel(non_fire_img.shape)
+plt.imshow(non_fire_img, aspect = 'auto')`,run(){
+    if(!NB.rimg) return ufErr(`NameError: name 'read_img' is not defined`,'read_img 함수를 아직 만들지 않았어요. ④ 셀을 먼저 실행하세요.');
+    if(!NB.glob&&NB.globEmpty) return ufErr('IndexError: list index out of range','train_non_fire 리스트가 비어 있어요. ① → ③ 순서로 다시 실행하세요.');
+    if(!NB.glob) return ufErr(`NameError: name 'train_non_fire' is not defined`,'train_non_fire 리스트는 ③ 셀에서 만들어요.');
+    return `<figure class="uf-plt"><b>Non Fire Image</b><img src="img/px-non.jpg" alt="산불이 아닌 이미지" width="180" height="180"><small>(400, 400, 3)</small></figure>`; }},
+  model:{t:'⑦ CNN 모델 생성하기 (209쪽)',c:`import tensorflow as tf
+model = tf.keras.models.Sequential([
+      tf.keras.layers.Conv2D(16, (3, 3), activation = 'relu', input_shape = (400, 400, 3)),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Conv2D(32, (3, 3), activation = 'relu'),
+      tf.keras.layers.MaxPool2D(2, 2),
+      tf.keras.layers.Flatten(),
+      tf.keras.layers.Dense(128, activation = 'relu'),
+      tf.keras.layers.Dense(1, activation = 'sigmoid')
+])
+model.summary()`,run(){ const re=NB.model; NB.model=true; NB.comp=false; NB.trained=false; return ufPre(SUMMARY)+(re?'<div class="uf-why">모델을 새로 만들었어요. 학습한 내용은 사라졌으니 ⑧ compile과 ⑩ 학습을 다시 해야 해요. (history 변수는 남아 있어요.)</div>':''); }},
+  comp:{t:'⑧ CNN 모델 컴파일하기 (210쪽)',c:`model.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])`,run(){
+    if(!NB.model) return ufErr(`NameError: name 'model' is not defined`,'모델을 아직 만들지 않았어요. 03 화면의 ⑦ 셀을 먼저 실행하세요.');
+    NB.comp=true; return ufOK(); }},
+  gen:{t:'⑨ 훈련 데이터 설정 · 정규화 (210쪽)',c:`from tensorflow.keras.preprocessing.image import ImageDataGenerator
+train_datagen = ImageDataGenerator(rescale = 1/255)
+train_generator = train_datagen.flow_from_directory(
+                  path, target_size = (400,400),
+                  batch_size = 9, class_mode = 'binary',
+                  seed = 3
+)
+print(train_generator.class_indices)`,run(){
+    if(!NB.path) return ufErr(`NameError: name 'path' is not defined`,'path는 02 화면의 ② 셀에서 정했어요.');
+    if(!NB.dl) return ufErr(`FileNotFoundError: [Errno 2] No such file or directory: '/content/fire'`,'사진을 내려받지 않아 폴더가 없어요. ① 셀부터 실행하세요.');
+    NB.gen=true; return ufPre(`Found 324 images belonging to 2 classes.\n{'fire': 0, 'non': 1}`); }},
+  fit:{t:'⑩ 모델 학습 (210쪽)',c:`history = model.fit(train_generator, steps_per_epoch = 36, epochs = 8, verbose = 1)`,anim:true,run(){
+    if(!NB.model) return ufErr(`NameError: name 'model' is not defined`,'모델을 아직 만들지 않았어요. ⑦ 셀부터 실행하세요.');
+    if(!NB.gen) return ufErr(`NameError: name 'train_generator' is not defined`,'훈련 데이터를 설정하는 ⑨ 셀을 먼저 실행하세요.');
+    if(!NB.comp) return ufErr('ValueError: You must call `compile()` before using the model.','손실 함수·최적화 방법·평가 지표를 정하는 compile( )을 먼저 해야 학습할 수 있어요. ⑧ 셀을 실행하세요.');
+    return null; }},
+  plot:{t:'⑪ 오차와 정확도 시각화하기 (211쪽)',c:`import matplotlib.pyplot as plt
+plt.plot(history.history['loss'], 'r--', label = 'loss')
+plt.plot(history.history['accuracy'], 'b-', label = 'accuracy')
+plt.xlabel('epoch')
+plt.legend()
+plt.show()`,run(){
+    if(!NB.hist) return ufErr(`NameError: name 'history' is not defined`,'history는 ⑩ 학습 셀이 끝나야 생겨요.');
+    return ufChart(); }},
+  t1:{t:'⑫ 새 이미지(test1.jpg) 열고 전처리하기 (212쪽)',c:`from PIL import Image
+img1 = Image.open(path + '/test1.jpg')
+from tensorflow.keras.preprocessing import image
+import numpy as np
+img_resize1 = img1.resize((400,400))
+test_img1 = image.img_to_array(img_resize1) / 255
+test_img1 = np.expand_dims(test_img1, axis = 0)
+images1 = np.vstack([test_img1])
+images1.shape`,run(){
+    if(!NB.path) return ufErr(`NameError: name 'path' is not defined`,'path는 02 화면의 ② 셀에서 정했어요.');
+    if(!NB.dl) return ufErr(`FileNotFoundError: [Errno 2] No such file or directory: '/content/fire/test1.jpg'`,'사진을 내려받지 않았어요. ① 셀부터 실행하세요.');
+    NB.t1=true; return `<div class="uf-row"><img src="img/test1.jpg" alt="test1 산불 사진" width="90" height="90">${ufPre('(1, 400, 400, 3)')}</div>`; }},
+  p1:{t:'⑬ 새로운 이미지 데이터로 테스트하기 (213쪽)',c:`classes1 = model.predict(images1, batch_size = 10)
+print(classes1[0])
+if classes1[0][0] &lt; 0.5:
+    print('Fire Image')
+else:
+    print('Non Fire Image')`,run(){
+    if(!NB.t1) return ufErr(`NameError: name 'images1' is not defined`,'⑫ 셀에서 test1.jpg를 전처리해야 해요.');
+    if(!NB.model) return ufErr(`NameError: name 'model' is not defined`,'모델을 아직 만들지 않았어요. ⑦ 셀부터 실행하세요.');
+    if(!NB.trained) return ufPre(`1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 150ms/step\n[0.5013]\nNon Fire Image`)+'<div class="uf-why">학습(⑩)을 하지 않은 모델이라 0.5 근처의 값이 나왔어요. 아무것도 배우지 않았으니 판단이 의미가 없어요.</div>';
+    return ufPre(`1/1 ━━━━━━━━━━━━━━━━━━━━ 0s 150ms/step\n[0.0016]\nFire Image`)+'<div class="uf-why">0에 가까우니 산불 이미지예요. <span class="muted">(값은 예시예요. [1.6e-14]처럼 e-14가 붙어 나오면 소수점 아래 0이 13개, 거의 0이라는 뜻이에요.)</span></div>'; }},
+  t2:{t:'(이어서) test2.jpg로도 테스트하기 (213쪽)',c:`img2 = Image.open(path + '/test2.jpg')
+img_resize2 = img2.resize((400,400))
+test_img2 = image.img_to_array(img_resize2) / 255
+test_img2 = np.expand_dims(test_img2, axis = 0)
+images2 = np.vstack([test_img2])
+classes2 = model.predict(images2, batch_size = 10)
+print(classes2[0])
+if classes2[0][0] &lt; 0.5:
+    print('Fire Image')
+else:
+    print('Non Fire Image')`,run(){
+    if(!NB.t1) return ufErr(`NameError: name 'Image' is not defined`,'Image와 image, np는 ⑫ 셀에서 불러왔어요. ⑫를 먼저 실행하세요.');
+    if(!NB.model) return ufErr(`NameError: name 'model' is not defined`,'모델을 아직 만들지 않았어요. ⑦ 셀부터 실행하세요.');
+    if(!NB.trained) return ufPre(`[0.4991]\nFire Image`)+'<div class="uf-why">학습(⑩)을 하지 않은 모델이라 0.5 근처의 값이 나왔어요. 0.5보다 조금 작아 「Fire」가 나왔을 뿐, 의미 있는 판단이 아니에요.</div>';
+    return `<div class="uf-row"><img src="img/test2.jpg" alt="test2 숲 사진" width="90" height="90">${ufPre(`[1.]\nNon Fire Image`)}</div><div class="uf-why">1에 가까우니 산불이 아닌 이미지예요. <span class="muted">(값은 예시예요.)</span></div>`; }}
+};
+const SIMS={};
+function nbSim(box,ids){ SIMS[box]=ids; drawSim(box); }
+function drawSim(box){
+  const B=$(box); if(!B) return;
+  B.innerHTML=SIMS[box].map(id=>{const c=CELLS[id]; return `<div class="uf-cell"><div class="uf-ct">${c.t}</div><div class="uf-cin"><button class="uf-run" data-id="${id}" aria-label="${c.t} 실행" ${NB.busy?'disabled':''}>▶</button><pre class="uf-code sm">${c.c}</pre></div><div class="uf-cout" id="out-${id}">${NB.out[id]||''}</div></div>`;}).join('')
+    +`<div class="row" style="margin-top:4px"><button class="btn sm ghost uf-reset">처음부터 (모든 셀 지우기)</button></div>`;
+  B.querySelectorAll('.uf-run').forEach(b=>b.onclick=()=>runCell(b.dataset.id));
+  B.querySelector('.uf-reset').onclick=()=>{ if(NB.busy) return; for(const k in NB) if(k!=='out') delete NB[k]; NB.busy=false; NB.out={}; Object.keys(SIMS).forEach(drawSim); };
+}
+function setOut(id,h){ NB.out[id]=h; const o=$('out-'+id); if(o) o.innerHTML=h; }
+function runCell(id){
+  if(NB.busy) return;
+  const c=CELLS[id], r=c.run();
+  if(r!==null){ setOut(id,r); return; }
+  /* 학습 셀: 한 줄씩 */
+  NB.busy=true; NB.trained=false; Object.keys(SIMS).forEach(b=>$(b)&&$(b).querySelectorAll('.uf-run').forEach(x=>x.disabled=true));
+  let lines=[], i=0;
+  const step=()=>{
+    const [loss,acc,tm]=UF_LOG[i];
+    lines.push(`Epoch ${i+1}/8\n36/36 ━━━━━━━━━━━━━━━━━━━━ ${tm}/step - accuracy: ${acc.toFixed(4)} - loss: ${loss.toFixed(4)}`);
+    setOut(id,ufPre(lines.join('\n'))+(i<UF_LOG.length-1?'<div class="uf-why">학습 중… (실제로는 한 줄에 몇 초~수십 초)</div>':''));
+    i++;
+    if(i<UF_LOG.length) setTimeout(step,420);
+    else { NB.busy=false; NB.trained=true; NB.hist=true; setOut(id,ufPre(lines.join('\n'))+'<span class="ok">✓ 학습 완료</span> 정확도가 0.60 → 0.98로 올라가고 오차는 0.93 → 0.08로 줄었어요.'); Object.keys(SIMS).forEach(b=>$(b)&&$(b).querySelectorAll('.uf-run').forEach(x=>x.disabled=false)); }
+  };
+  step();
+}
+nbSim('sim1',['dl']);
+nbSim('sim2',['ls','glob','rimg','showF','showN']);
+nbSim('sim3',['model']);
+nbSim('sim4',['comp','gen','fit','plot']);
+nbSim('sim5',['t1','p1','t2']);
+
+/* ───────── 02 사진은 숫자 (400, 400, 3) ───────── */
+(function(){
+  const B=$('pxGame');
+  const PICS=[['img/px-fire.jpg','산불 사진'],['img/px-non.jpg','숲 사진']];
+  let pic=0, bgr=false, cx=104, cy=132, base=null, ok=true;
+  B.innerHTML=`<div class="uf-px">
+    <div class="uf-pxl"><canvas id="pxCv" width="200" height="200" tabindex="0" role="img" aria-label="사진. 누르거나 방향키로 점을 고르세요"></canvas>
+      <div class="row" style="margin-top:6px">${PICS.map((p,i)=>`<button class="btn sm ghost" data-p="${i}">${p[1]}</button>`).join('')}</div></div>
+    <div class="uf-pxr">
+      <div class="uf-pxpos" id="pxPos"></div>
+      <div id="pxVals"></div>
+      <button class="btn sm" id="pxBgr"></button>
+      <div class="uf-pxmsg" id="pxMsg"></div>
+    </div></div>`;
+  const cv=$('pxCv'), ctx=cv.getContext('2d');
+  function load(){
+    const im=new Image();
+    im.onload=()=>{ ctx.drawImage(im,0,0,200,200); try{ base=ctx.getImageData(0,0,200,200); ok=true; }catch(e){ ok=false; } draw(); };
+    im.src=PICS[pic][0];
+  }
+  function draw(){
+    B.querySelectorAll('[data-p]').forEach(b=>b.classList.toggle('on',+b.dataset.p===pic));
+    $('pxBgr').textContent=bgr?'↩ RGB로 바꿔 보기 (read_img)':'cv2로 읽은 그대로(BGR) 보기';
+    if(!ok){ $('pxVals').innerHTML='<p class="note">이 환경에서는 사진의 숫자를 읽을 수 없어요. 파일을 직접 열지 말고 인터넷 주소로 열면 돼요.</p>'; return; }
+    const d=new ImageData(new Uint8ClampedArray(base.data),200,200);
+    if(bgr) for(let i=0;i<d.data.length;i+=4){ const t=d.data[i]; d.data[i]=d.data[i+2]; d.data[i+2]=t; }
+    ctx.putImageData(d,0,0);
+    ctx.strokeStyle='#fff'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(cx+.5,0); ctx.lineTo(cx+.5,200); ctx.moveTo(0,cy+.5); ctx.lineTo(200,cy+.5); ctx.stroke();
+    ctx.strokeStyle='#000'; ctx.strokeRect(cx-3.5,cy-3.5,8,8);
+    const k=(cy*200+cx)*4, r=base.data[k], g=base.data[k+1], b=base.data[k+2];
+    $('pxPos').innerHTML=`사진 속 위치 <b>세로 ${cy*2}, 가로 ${cx*2}</b> <span class="muted">(400 × 400 중)</span>`;
+    const bar=(n,v,col)=>`<div class="uf-bar"><span>${n}</span><i><b style="width:${v/255*100}%;background:${col}"></b></i><em>${v}</em><small>÷255 = ${(v/255).toFixed(2)}</small></div>`;
+    const sw=bgr?`rgb(${b},${g},${r})`:`rgb(${r},${g},${b})`;
+    $('pxVals').innerHTML=`<div class="uf-sw"><i style="background:${sw}"></i>${bgr?`cv2.imread가 읽은 순서 <b>[B, G, R] = [${b}, ${g}, ${r}]</b>`:`이 점의 숫자 <b>[R, G, B] = [${r}, ${g}, ${b}]</b>`}</div>`
+      +(bgr?bar('B',b,'#2f6fd0')+bar('G',g,'#1f9d74')+bar('R',r,'#d64535'):bar('R',r,'#d64535')+bar('G',g,'#1f9d74')+bar('B',b,'#2f6fd0'));
+    $('pxMsg').innerHTML=bgr?'<b>BGR 순서 그대로</b> 화면에 보여 주면 빨강 자리에 파랑 값이 들어가 <b>불꽃이 파랗게</b> 보여요. 그래서 read_img( )에서 <span class="mono">COLOR_BGR2RGB</span>로 순서를 바꿔요.'
+      :'사진 한 장 = 세로 400 × 가로 400 점 × 색 3개 = <b>480,000개의 숫자</b> → <span class="mono">shape (400, 400, 3)</span>. 학습할 때는 <span class="mono">rescale = 1/255</span>로 모든 숫자를 0~1로 바꿔요(정규화).';
+  }
+  function at(ev){ const r=cv.getBoundingClientRect(); cx=Math.max(0,Math.min(199,Math.floor((ev.clientX-r.left)/r.width*200))); cy=Math.max(0,Math.min(199,Math.floor((ev.clientY-r.top)/r.height*200))); draw(); }
+  let down=false;
+  cv.addEventListener('pointerdown',e=>{down=true; cv.focus(); try{cv.setPointerCapture(e.pointerId);}catch(x){} at(e); e.preventDefault();});
+  cv.addEventListener('pointermove',e=>{ if(down) at(e); });
+  ['pointerup','pointercancel','lostpointercapture'].forEach(t=>cv.addEventListener(t,()=>{down=false;}));
+  cv.addEventListener('keydown',e=>{
+    const m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(!m) return;
+    e.preventDefault(); const s=e.shiftKey?10:2; cx=Math.max(0,Math.min(199,cx+m[0]*s)); cy=Math.max(0,Math.min(199,cy+m[1]*s)); draw();
+  });
+  B.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{ pic=+b.dataset.p; load(); });
+  $('pxBgr').onclick=()=>{ bgr=!bgr; draw(); };
+  load();
+})();
+
+/* ───────── 03 컨볼루션 계산 (교과서 208쪽 그림) ───────── */
+(function(){
+  const B=$('convGame');
+  const I=[[0,0,1,0,0],[0,0,1,1,0],[1,1,1,1,1],[0,0,1,0,0],[0,0,1,0,0]], K=[[0,1,0],[1,0,1],[0,1,0]];
+  const O=[0,1,2].map(r=>[0,1,2].map(c=>{let s=0; for(let i=0;i<3;i++) for(let j=0;j<3;j++) s+=I[r+i][c+j]*K[i][j]; return s;}));
+  let sr=0, sc=0;
+  function draw(){
+    const inp=I.map((row,r)=>`<tr>${row.map((v,c)=>`<td class="${r>=sr&&r<sr+3&&c>=sc&&c<sc+3?'on':''}">${v}</td>`).join('')}</tr>`).join('');
+    const ker=K.map(row=>`<tr>${row.map(v=>`<td>${v}</td>`).join('')}</tr>`).join('');
+    const out=O.map((row,r)=>`<tr>${row.map((v,c)=>`<td><button class="${r===sr&&c===sc?'on':''}" data-r="${r}" data-c="${c}" aria-label="출력 ${r+1}행 ${c+1}열">${v}</button></td>`).join('')}</tr>`).join('');
+    const terms=[], prods=[]; for(let i=0;i<3;i++) for(let j=0;j<3;j++){ terms.push(`${I[sr+i][sc+j]}×${K[i][j]}`); prods.push(I[sr+i][sc+j]*K[i][j]); }
+    B.innerHTML=`<div class="uf-conv"><div><table class="uf-mt cv">${inp}</table><small>입력 5×5</small></div><span class="uf-ar">⊛</span><div><table class="uf-mt cv k">${ker}</table><small>커널 3×3</small></div><span class="uf-ar">=</span><div><table class="uf-mt cv o">${out}</table><small>출력 3×3 (누르기)</small></div></div>
+      <div class="uf-calc">${terms.join(' + ')}<br>= ${prods.join(' + ')} = <b>${O[sr][sc]}</b></div>
+      <p class="note" style="margin-bottom:0">교과서 그림의 출력에는 첫째 줄 가운데가 4, 둘째 줄 왼쪽이 3으로 실려 있지만, 직접 계산하면 <b>3</b>과 <b>2</b>예요. 두 칸을 눌러 확인해 보세요.</p>`;
+    B.querySelectorAll('button[data-r]').forEach(b=>b.onclick=()=>{ sr=+b.dataset.r; sc=+b.dataset.c; draw(); B.querySelector(`button[data-r="${sr}"][data-c="${sc}"]`).focus(); });
+  }
+  draw();
+})();
+
+/* ───────── 03 층을 지나며 모양 바뀌기 ───────── */
+(function(){
+  const B=$('layerGame');
+  let f3=32, ch=3, sel=0, optOpen=false;
+  const nf=n=>n.toLocaleString('ko-KR');
+  function layers(){
+    const L=[]; let h=400, c=ch;
+    L.push({n:'입력 이미지',s:`(400, 400, ${ch})`,p:null,why:`가로·세로 400 픽셀, 색 채널 ${ch}개${ch===3?'(R, G, B)':'(회색조)'}. <span class="mono">input_shape = (400, 400, ${ch})</span>`});
+    [[16,'첫 번째'],[32,'두 번째'],[f3,'세 번째']].forEach(([f,o],k)=>{
+      const h2=h-2, p=3*3*c*f+f;
+      L.push({n:`Conv2D(${f}) 합성곱층`,s:`(None, ${h2}, ${h2}, ${f})`,p,why:`${o} 합성곱층: 3×3 필터가 가장자리 밖으로 나가지 않으니 ${h} − 3 + 1 = <b>${h2}</b>. 필터 ${f}개가 특징 지도 ${f}장을 만들어 채널이 <b>${f}</b>.<br>매개 변수 = 3 × 3 × (들어오는 채널 ${c}) × (필터 ${f}) + 편향 ${f} = <b>${nf(p)}</b>`});
+      h=h2; c=f; const h3=Math.floor(h/2);
+      L.push({n:'MaxPool2D(2, 2) 풀링층',s:`(None, ${h3}, ${h3}, ${f})`,p:0,why:`2×2 최대 풀링: ${h} ÷ 2 = ${h/2}${h%2?` → 나머지를 버려 <b>${h3}</b>`:` → <b>${h3}</b>`}. 채널 수는 그대로 ${f}. 풀링은 최댓값만 고르므로 학습할 매개 변수가 <b>0</b>.`});
+      h=h3;
+    });
+    const flat=h*h*c;
+    L.push({n:'Flatten',s:`(None, ${flat})`,p:0,why:`3차원 (${h}, ${h}, ${c})를 한 줄로 펼쳐요: ${h} × ${h} × ${c} = <b>${nf(flat)}</b>개. 매개 변수 0.`});
+    const p1=flat*128+128;
+    L.push({n:'Dense(128) relu',s:'(None, 128)',p:p1,why:`${nf(flat)}개의 값이 128개 뉴런 모두와 연결: ${nf(flat)} × 128 + 편향 128 = <b>${nf(p1)}</b>. 모델 매개 변수의 대부분이 여기에 있어요.`});
+    L.push({n:'Dense(1) sigmoid',s:'(None, 1)',p:129,why:`128 × 1 + 편향 1 = <b>129</b>. 시그모이드로 0~1 사이 값 하나를 내요(0에 가까우면 산불, 1에 가까우면 산불 아님).`});
+    return L;
+  }
+  function draw(){
+    const L=layers(), tot=L.reduce((s,l)=>s+(l.p||0),0);
+    const book=f3===64&&ch===3;
+    B.innerHTML=`<div class="uf-scroll"><table class="uf-lt"><tr><th>층</th><th>Output Shape</th><th>Param #</th></tr>
+      ${L.map((l,i)=>`<tr class="${i===sel?'on':''} ${i<=sel?'seen':''}" data-i="${i}" tabindex="0"><td>${l.n}</td><td class="m">${l.s}</td><td class="m">${l.p==null?'–':nf(l.p)}</td></tr>`).join('')}
+      <tr class="tot"><td colspan="2">Total params</td><td class="m">${nf(tot)}</td></tr></table></div>
+      <div class="uf-why2">${L[sel].why}</div>
+      <div class="row"><button class="btn sm ghost" id="lyPrev" ${sel?'':'disabled'}>◀ 이전 층</button><button class="btn sm" id="lyNext" ${sel<L.length-1?'':'disabled'}>다음 층 ▶</button></div>
+      <details class="uf-more" id="lyOpt" ${optOpen?'open':''}><summary>더 알아보기 · 필터 수와 색 채널을 바꾸면?</summary>
+      <div class="row uf-opt"><span>세 번째 합성곱층 필터</span>${[32,64].map(v=>`<button class="btn sm ghost ${f3===v?'on':''}" data-f="${v}">${v}개${v===32?' (교과서 코드)':''}</button>`).join('')}</div>
+      <div class="row uf-opt"><span>입력 채널</span>${[3,1].map(v=>`<button class="btn sm ghost ${ch===v?'on':''}" data-ch="${v}">${v===3?'3 (컬러)':'1 (회색조)'}</button>`).join('')}</div>
+      ${book?'<p class="note">이 숫자(Flatten 147,456 · Total 18,898,209)가 교과서 209쪽 실행 결과 그림과 같아요. 교과서 그림은 세 번째 합성곱층의 필터를 64개로 실행한 결과예요.</p>':''}
+      ${ch===1?'<p class="note">회색조 사진이면 첫 합성곱층의 매개 변수가 448 → 160으로 줄어요. 하지만 Dense(128)의 매개 변수가 그대로라 전체는 거의 같아요.</p>':''}</details>`;
+    $('lyOpt').ontoggle=()=>{ optOpen=$('lyOpt').open; };
+    B.querySelectorAll('[data-f]').forEach(b=>b.onclick=()=>{f3=+b.dataset.f; optOpen=true; draw(); B.querySelector(`[data-f="${f3}"]`).focus();});
+    B.querySelectorAll('[data-ch]').forEach(b=>b.onclick=()=>{ch=+b.dataset.ch; optOpen=true; draw(); B.querySelector(`[data-ch="${ch}"]`).focus();});
+    B.querySelectorAll('tr[data-i]').forEach(r=>{ r.onclick=()=>{sel=+r.dataset.i; draw(); B.querySelector(`tr[data-i="${sel}"]`).focus();};
+      r.onkeydown=e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault(); r.onclick();} else if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); sel=Math.max(0,Math.min(L.length-1,sel+(e.key==='ArrowDown'?1:-1))); draw(); B.querySelector(`tr[data-i="${sel}"]`).focus(); } }; });
+    $('lyPrev').onclick=()=>{ if(sel>0){sel--; draw(); $(sel?'lyPrev':'lyNext').focus();} };
+    $('lyNext').onclick=()=>{ if(sel<L.length-1){sel++; draw(); $(sel<L.length-1?'lyNext':'lyPrev').focus();} };
+  }
+  draw();
+})();
+
+/* ───────── 05 개념 빈칸 · 성취도 ───────── */
+document.querySelectorAll('.blank').forEach(b=>b.onclick=()=>{ b.textContent=b.dataset.a; b.classList.add('on'); });
+chips('selfCheck','selfCheckPick',['데이터셋을 코랩과 연결하고 경로를 올바르게 설정할 수 있다','이미지 데이터셋을 확인하고 색상을 변환하는 코드의 흐름을 설명할 수 있다','CNN 모델의 구성을 이해하고 summary( ) 결괏값을 해석할 수 있다','손실 함수·최적화 함수·평가 지표를 설정하고 학습 횟수를 정할 수 있다','새로운 이미지의 예측 결과와 실제 결과를 비교해 모델의 성능을 평가할 수 있다'],true);
+
+const MEMOLIST=[['planMemo','산불 발생과 기후 변화의 관계'],['roleMemo','우리 모둠의 문제 정의와 내 역할'],['wrongMemo','잘못 판별할 것 같은 사진과 그 까닭'],['selfCheckPick','성취도 평가: 할 수 있게 된 것']];
+onShow[6]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

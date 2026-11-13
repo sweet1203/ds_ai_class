@@ -1,0 +1,330 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#d64535">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅳ. 인공지능 프로젝트 · 정형 데이터 인공지능 프로젝트 실제 1</span>
+      <h1>내 모델은 기대 수명을<br>얼마나 잘 예측할까?</h1>
+      <div class="story"><b>앞 단계에서 한 일</b><br>WHO 기대 수명 데이터(2,938행 · 22개 속성)에서 결측치를 지워 <b>1,649행</b>(133개 나라)을 남기고, 개발 상태(Status)를 0과 1로 바꿨어요. 그래프로 보니 <b>교육 기간(0.73)·소득(자원 소득에 대한 국가 개발 정도, 0.72)</b>는 기대 수명과 양의 상관관계, <b>성인 사망률(−0.70)</b>은 음의 상관관계가 컸어요.</div>
+      <p>오늘은 남은 4단계, <b>기계학습 유형과 알고리즘 선정 → 모델 학습 → 성능 평가 → 수정 및 성능 개선</b>을 코랩에서 진행하고, 마지막에 <b>프로젝트 전체를 정리</b>해요.</p>
+      <ol>
+        <li>유형·알고리즘 선정과 데이터 나누기</li><li>모델 학습</li><li>성능 평가</li>
+        <li>수정 및 성능 개선</li><li>프로젝트 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🧭</i><div><b>5 유형과 알고리즘 선정</b><small>지도학습의 예측 · 선형 회귀</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧠</i><div><b>6 모델 학습</b><small>fit() · 가중치와 편향</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🎯</i><div><b>7 성능 평가</b><small>결정 계수 R² · 실제와 예측 비교</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔧</i><div><b>8 수정 및 성능 개선</b><small>회귀선 · 속성 고르기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>기대 수명을 예측하는 문제에 알맞은 <b>기계학습 유형과 알고리즘</b>을 고르고, 데이터를 <b>훈련 데이터와 테스트 데이터</b>로 나눠 <b>선형 회귀 모델</b>을 학습시킵니다. <b>결정 계수</b>와 실제·예측 기대 수명의 <b>차이</b>로 성능을 평가하고, <b>회귀선</b>을 그려 보며 성능을 높일 방법을 찾습니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">기대 수명을 예측하는 모델이 있어요. 실제 기대 수명과 <b>몇 년 차이 안으로</b> 맞히면 쓸 만한 모델이라고 할 수 있을까요?</p>
+        <div class="memo" style="margin-top:0"><label>내 생각과 그 까닭</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>중단원</b> · 정형 데이터로 사회 문제를 해결하기 위한 예측 프로젝트는 어떻게 수행할까?</li>
+          <li><b>오늘의 질문</b> · 예측 모델의 성능은 무엇으로 평가하고, 어떻게 높일 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>정형 데이터와 관련된 문제를 인공지능을 활용하여 협력적으로 해결할 수 있다.</li>
+          <li>문제 해결 과정에 따라 협력적인 자세로 프로젝트를 수행할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">오늘 쓸 것: 구글 코랩(학교 구글 계정) · 노트북은 01 화면에 있어요.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 유형·알고리즘 선정부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 유형·알고리즘 선정과 데이터 나누기 -->
+<section class="page" data-name="유형 선정·데이터 나누기" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>유형·알고리즘 선정과 데이터 나누기</h2><p>교과서 197쪽 · 기계학습 유형과 알고리즘 선정, 훈련 데이터와 테스트 데이터 분리</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>「기대 수명이 <b>몇 세</b>인가?」처럼 <b>숫자</b>를 내놓는 인공지능은 정답(기대 수명)이 있는 데이터로 배우는 <b>지도학습의 예측</b>이에요. 대표 알고리즘은 <b>선형 회귀</b>예요. 학습에 쓸 데이터와 시험에 쓸 데이터는 미리 <b>나눠</b> 둬요.</span></div>
+  <div class="card">
+    <h3>🧭 기계학습 유형 고르기</h3>
+    <p style="margin-top:0">기대 수명이 몇 세인지를 출력하는 인공지능은 어떤 기계학습 유형일까요? 먼저 골라 보세요.</p>
+    <div id="typeVote" class="vote le-v3"></div>
+    <div class="reveal" id="typeAns">
+      <div class="callout"><b>1 기계학습 유형 선정하기</b> 기대 수명이 몇 세인지를 출력하는 인공지능이므로 <b>지도학습의 예측</b>에 해당한다.<br><b>2 알고리즘 선정하기</b> 지도학습의 예측 알고리즘으로는 <b>선형 회귀</b>가 대표적이다.</div>
+      <p class="note">펭귄의 종류를 맞히는 문제(178~189쪽)는 정해진 범주 중 하나를 고르는 <b>분류</b>였어요. 기대 수명은 정답이 있는 <b>숫자</b>라 예측(회귀)이에요.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>▶ 코랩에서 직접 실행하기</h3>
+    <ol>
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>처음 실행할 때 「Google에서 작성하지 않은 노트북」 경고 창이 뜨면 <b>「무시하고 계속하기」</b>를 눌러요.</li>
+      <li>맨 위 <b>준비 셀</b>은 앞 단계(데이터 수집·전처리)를 한 번에 해요. 실행하면 <span class="mono">(1649, 22)</span>가 나와요. 분홍색 상자의 <b>FutureWarning은 오류가 아니에요</b>.</li>
+      <li>차례로 ▶(또는 <b>Shift + Enter</b>)를 눌러 <b>[5]</b>부터 <b>[8]</b>까지 실행하고, 결과를 02~04 화면과 맞춰 봐요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u4-structured-2/assets/life-expectancy-2.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="life-expectancy-2.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost" href="../u4-structured-1/life-expectancy-data.csv" download="Life Expectancy Data.csv" style="text-decoration:none">Life Expectancy Data.csv 받기</a></div>
+    <p class="note">노트북은 데이터를 인터넷에서 바로 불러오므로 파일을 올리지 않아도 돼요. 교과서 방식대로 하려면 CSV를 받아 코랩 왼쪽 <b>파일(📁)</b> 창에 끌어다 놓고 <span class="mono">pd.read_csv('Life Expectancy Data.csv')</span>로 읽어요.</p>
+  </div>
+  <div class="card">
+    <h3>✂️ 3 훈련 데이터와 테스트 데이터 분리하기</h3>
+<pre class="le-code"><span class="c"># ① 'Life expectancy'와 'Country'를 제외한 속성은 X, 'Life expectancy'는 y</span>
+X = df.drop(['Life expectancy', 'Country'], axis=1)
+y = df.loc[:, 'Life expectancy']
+<span class="c"># ②③ 8 : 2로 나누기 — 80%로 학습하고 20%로 테스트</span>
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                                                    random_state = 96)
+<span class="c"># ④ 잘 나눠졌는지 확인</span>
+X_train.shape, y_train.shape, X_test.shape, y_test.shape</pre>
+<pre class="le-out">((1319, 20), (1319,), (330, 20), (330,))</pre>
+    <p class="note">국가 이름(Country)은 기대 수명을 계산하는 데 쓸 수 있는 숫자가 아니라서 빼고, 나머지 <b>20개 속성</b>을 X로 써요. 디지털 샘의 Tip · 훈련 데이터와 테스트 데이터 분리는 기계학습 유형과 알고리즘 선정 전에도 할 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내 (197~200쪽)</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 코드예요. ▶를 눌러 위에서부터 실행해 보세요. 결과는 02~04 화면에서 자세히 살펴봐요.</p>
+    <div id="cellSim"></div>
+  </div>
+  <div class="card">
+    <h3>🙋 해 보기 · 비율을 다르게 하여 데이터를 분리해 보자</h3>
+    <p style="margin-top:0;font-size:.93rem">노트북의 「해 보기」 셀에서 <span class="mono">test_size</span>를 바꿔 실행해 봐요. 시간이 없으면 아래 결과표만 펼쳐 봐도 돼요.</p>
+    <details class="le-more"><summary>test_size별 결과표 펼치기</summary>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th>test_size</th><th>훈련 : 테스트</th><th>X_train.shape</th><th>X_test.shape</th><th>테스트 데이터 결정 계수</th></tr>
+      <tr><td>0.1</td><td>9 : 1</td><td>(1484, 20)</td><td>(165, 20)</td><td>0.820</td></tr>
+      <tr class="y"><td>0.2</td><td>8 : 2</td><td>(1319, 20)</td><td>(330, 20)</td><td>0.794</td></tr>
+      <tr><td>0.3</td><td>7 : 3</td><td>(1154, 20)</td><td>(495, 20)</td><td>0.817</td></tr>
+      <tr><td>0.4</td><td>6 : 4</td><td>(989, 20)</td><td>(660, 20)</td><td>0.820</td></tr>
+      <tr><td>0.5</td><td>5 : 5</td><td>(824, 20)</td><td>(825, 20)</td><td>0.824</td></tr>
+    </table></div>
+    <p class="note">비율을 바꾸면 <b>시험 보는 데이터(테스트 데이터)도 바뀌므로</b> 결정 계수가 조금씩 달라져요. 8 : 2가 가장 높게 나온 것은 아니지만, 결정 계수의 작은 차이를 보고 비율을 고르지는 않아요. 결정 계수는 03 화면에서 살펴봐요.</p>
+    </details>
+    <div class="memo"><label>훈련 데이터와 테스트 데이터의 역할을 한 줄씩 써 보세요.</label><textarea data-memo="splitMemo" rows="2"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 모델 학습 -->
+<section class="page" data-name="모델 학습" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>모델 학습</h2><p>교과서 198쪽 · 모델 생성하기, 모델 학습하기, 가중치와 편향 확인하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>선형 회귀 모델은 속성 20개에 각각 <b>가중치</b>를 곱해 더하고 <b>편향</b>을 더해 기대 수명을 계산해요. <span class="mono">fit()</span>은 훈련 데이터를 보고 오차가 가장 작아지는 <b>가중치와 편향을 찾는</b> 과정이에요.</span></div>
+  <div class="card">
+    <h3>1 모델 생성하기 · 2 모델 학습하기 · 3 가중치와 편향 확인하기</h3>
+<pre class="le-code">from sklearn.linear_model import LinearRegression   <span class="c"># 선형 회귀 알고리즘 불러오기</span>
+linear_reg = LinearRegression()
+lin_results = linear_reg.fit(X_train, y_train)      <span class="c"># 훈련 데이터로 학습</span>
+<span class="c"># 가중치와 편향 확인</span>
+w = lin_results.coef_          <span class="c"># coef_: 가중치(기울기)</span>
+b = lin_results.intercept_     <span class="c"># intercept_: 편향(절편)</span>
+print(w)
+print(b)</pre>
+<pre class="le-out">[-1.31023639e-01  8.05549399e-01 -1.65366218e-02  9.23302716e-02
+ -1.26094468e-01  2.58412695e-04 -5.05864100e-03 -1.25064885e-05
+  3.46114488e-02 -6.89182089e-02  1.01705848e-02  7.40012348e-02
+  1.29221179e-02 -4.31593007e-01  2.94598705e-05 -6.76973582e-10
+  1.49973922e-02 -8.43760109e-02  1.13449331e+01  8.60720103e-01]
+315.6817315128982</pre>
+    <p class="note"><span class="mono">8.05e-01</span>은 8.05 × 10⁻¹ = 0.805라는 뜻이에요. 교과서 198쪽 출력에는 몇 자리가 조금 다르게 실려 있어요(3번째 …271, 14번째 −4.34…). 노트북에서 나온 값을 기준으로 해요. 끝자리는 실행 환경마다 조금 다를 수 있어요. 노트북에는 모델 생성 셀 다음에 <b>버전 맞춤 한 줄</b>이 더 있어요(몰라도 돼요, 실행만 하면 돼요).</p>
+  </div>
+  <div class="card">
+    <h3>🧾 가중치를 속성 이름과 나란히 보기 <small class="muted" style="font-weight:400">(노트북에 더한 셀)</small></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">학습한 모델의 식: <b>예측 기대 수명 = w1 × Year + w2 × Status + … + w20 × Schooling + b</b>. 「부호」 칸의 배지는 가중치가 +(빨강)인지 −(파랑)인지를 나타내요.</p>
+    <div class="le-scroll"><table class="le-tbl" id="wTbl"></table></div>
+  </div>
+  <details class="card le-more">
+    <summary>🔎 더 알아보기 · 가중치가 클수록 중요한 속성일까?</summary>
+    <p>꼭 그렇지는 않아요. 가중치는 <b>속성값이 1 늘 때</b> 예측이 얼마나 바뀌는지를 나타내므로, 속성값의 <b>단위</b>에 따라 크기가 달라져요. 소득(Income composition, 자원 소득에 대한 국가 개발 정도)은 0~1 사이 값이라 가중치가 11.3처럼 커 보이고, 인구수(Population)는 수억 명까지 커지는 값이라 가중치가 0.0000000007처럼 아주 작아요.</p>
+    <p style="margin-bottom:0">그래서 가중치의 크기만 보고 「어떤 속성이 더 중요하다」고 말하기는 어려워요. 모든 속성을 평균 0, 표준편차 1로 맞추는 <b>표준화</b>를 한 뒤 학습하면 가중치끼리 비교하기 쉬워져요(04 화면 더 알아보기).</p>
+  </details>
+  <details class="card le-more">
+    <summary>🛠 더 알아보기 · 결정 계수가 0.79가 아니라 0.56쯤 나온다면?</summary>
+    <p>교과서 소스 코드 노트북을 <b>집 컴퓨터나 새 버전(1.9 이상)의 사이킷런(scikit-learn)</b>에서 실행하면 가중치가 위와 전혀 다르고 결정 계수가 <b>약 0.5577</b>로 나올 수 있어요. 새 버전의 LinearRegression은 크기가 아주 다른 속성(인구수는 수억, 소득은 0~1)이 섞인 데이터에서 아주 작은 값을 버리고 계산하기 때문이에요.</p>
+    <p style="margin-bottom:0">이 수업의 노트북은 모델 생성 셀 다음에 「버전 맞춤」 셀(<span class="mono">if 'tol' in linear_reg.get_params(): linear_reg.set_params(tol = 0)</span>)을 두어 어느 버전에서나 교과서와 같은 결과가 나오게 했어요. 버전이 낮으면 이 줄은 아무 일도 하지 않아요.</p>
+  </details>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 성능 평가 -->
+<section class="page" data-name="성능 평가" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>성능 평가</h2><p>교과서 199쪽 · 결정 계수 확인하기, 테스트 데이터로 평가하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모델이 처음 보는 <b>테스트 데이터 330개</b>로 시험을 봐요. <b>결정 계수(R²)</b>는 1에 가까울수록 성능이 높고, 실제 기대 수명과 예측 기대 수명의 <b>차이(오차)</b>를 보면 몇 년쯤 빗나가는지 알 수 있어요.</span></div>
+  <div class="card">
+    <h3>1 결정 계수 확인하기</h3>
+<pre class="le-code">from sklearn.metrics import r2_score
+y_pred = lin_results.predict(X_test)        <span class="c"># 테스트 데이터의 예측 기대 수명</span>
+print('결정 계수(R^2) = ', r2_score(y_test, y_pred))</pre>
+<pre class="le-out">결정 계수(R^2) =  0.7935432521020239</pre>
+    <p style="margin-bottom:0"><span class="mono">r2_score(y_test, y_pred)</span>는 회귀 모델의 결정 계수를 계산하는 함수예요. y_test는 테스트 데이터의 실제 종속 변숫값, y_pred는 모델이 예측한 값이에요. R²가 <b>1에 가까울수록 성능이 높고</b>, 0에 가까울수록 낮아요.</p>
+    <div class="callout"><b>R²(결정 계수)</b> 독립 변수가 종속 변수를 <b>얼마만큼 설명해 주는지</b>를 나타내는 비율로, 1에 가까울수록 성능이 우수하다(87쪽). → 0.79는 20개 속성으로 기대 수명이 나라마다 다른 정도의 약 79%를 설명한다는 뜻이에요.</div>
+  </div>
+  <div class="card">
+    <h3>2 테스트 데이터로 평가하기</h3>
+<pre class="le-code">Y_prediction = y_pred.flatten()
+for i in range(6):
+    label = y_test.values[i]
+    prediction = Y_prediction[i]
+    print('실제 기대 수명: {:.3f}, 학습 후 예측 기대 수명: {:.3f}, 차이: {:.3f}'
+          .format(label, prediction, label - prediction))</pre>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th>순서</th><th>나라 · 연도</th><th>실제 기대 수명</th><th>학습 후 예측 기대 수명</th><th>차이</th><th>교과서 199쪽</th></tr>
+      <tr><td>1</td><td>피지 2011</td><td>69.200</td><td>73.752</td><td>−4.552</td><td>1행</td></tr>
+      <tr><td>2</td><td>잠비아 2014</td><td>61.100</td><td>64.036</td><td>−2.936</td><td>2행</td></tr>
+      <tr><td>3</td><td>아르헨티나 2002</td><td>74.100</td><td>77.582</td><td>−3.482</td><td>3행</td></tr>
+      <tr class="gap"><td>4</td><td>코모로 2003</td><td>59.600</td><td>57.100</td><td>2.500</td><td>없음</td></tr>
+      <tr class="gap"><td>5</td><td>피지 2009</td><td>68.900</td><td>76.178</td><td><b>−7.278</b></td><td>없음</td></tr>
+      <tr class="gap"><td>6</td><td>투르크메니스탄 2012</td><td>65.600</td><td>71.837</td><td><b>−6.237</b></td><td>없음</td></tr>
+      <tr class="gap"><td>7</td><td>엘살바도르 2006</td><td>75.000</td><td>69.793</td><td><b>5.207</b></td><td>없음</td></tr>
+      <tr><td>8</td><td>가봉 2013</td><td>64.600</td><td>66.247</td><td>−1.647</td><td>4행</td></tr>
+      <tr><td>9</td><td>보스니아 헤르체고비나 2012</td><td>76.800</td><td>74.504</td><td>2.296</td><td>5행</td></tr>
+      <tr><td>10</td><td>아르헨티나 2003</td><td>74.100</td><td>77.272</td><td>−3.172</td><td>6행</td></tr>
+    </table></div>
+    <p class="note">코드의 <span class="mono">range(6)</span>은 처음 6개(1~6번째)를 출력해요. 교과서의 4~6행은 <b>8~10번째 행</b>이에요. <span class="mono">range(10)</span>으로 바꾸면 보여요(노트북에 그 셀을 더해 두었어요). 교과서 1행의 73.725는 73.752의 자리가 바뀐 것이에요. 나라 이름은 이해를 돕기 위해 붙였고, 차이가 −이면 실제보다 <b>높게</b> 예측한 거예요.</p>
+    <p style="margin-bottom:0">교과서는 6개를 보고 「<b>2~5년 내외</b>의 오차」라고 했지만, 그 사이의 4~7번째 행에는 5~7년 차이가 나는 행이 섞여 있어요. <b>몇 개만 골라 보면</b> 모델이 실제보다 좋아 보이거나 나빠 보일 수 있어요. 학습에 쓴 데이터도 193개 나라 중 결측치가 없는 133개 나라였지요. 그렇다면 테스트 데이터 330개 전체는 어떨까요?</p>
+  </div>
+  <div class="card">
+    <h3>🎯 예측과 실제 비교판 · 테스트 데이터 330개</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">점 하나가 테스트 데이터 한 행이에요. 가로는 실제, 세로는 예측 기대 수명이라 <b>대각선 위에 있으면 정확히 맞힌</b> 거예요. 슬라이더로 「몇 년 차이까지 맞힌 것으로 볼지」 정해 보세요. 점을 누르거나 ◀ ▶ 버튼(또는 그림을 누른 뒤 ←→ 키)으로 하나씩 살펴볼 수 있어요.</p>
+    <div id="pvLab"></div>
+  </div>
+  <div class="card">
+    <h3>🙋 해 보기 · 성능 평가</h3>
+    <p style="margin-top:0;font-size:.93rem">1. 예측 모델 성능 평가를 사용하여 정확도를 구해 보자. 2. 나라별 실제 기대 수명과 예측 기대 수명을 비교해 보자. <small class="muted">(정확도와 오차의 차이를 알아보자 — 비교판에서 기준을 바꾸면 「맞힌 비율」이 어떻게 달라졌나요?)</small></p>
+    <div class="memo"><label>결정 계수 0.79와 실제·예측의 차이를 함께 보면, 이 모델을 얼마나 믿을 수 있을까요? 크게 빗나간 나라가 있다면 그 까닭도 짐작해 보세요.</label><textarea data-memo="errMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 수정 및 성능 개선 -->
+<section class="page" data-name="성능 개선" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>수정 및 성능 개선</h2><p>교과서 200쪽 · 선형 회귀 알고리즘으로 회귀선과 모델의 성능 확인하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>속성 하나(교육 기간)로만 학습해 <b>회귀선</b>을 그려 보면 모델이 데이터의 <b>경향</b>을 어떻게 배웠는지 눈으로 볼 수 있어요. 어떤 속성을 쓰느냐에 따라 성능이 달라지므로, 속성을 바꿔 보는 것도 <b>성능 개선</b> 방법이에요.</span></div>
+  <div class="card">
+    <h3>1~4 교육 기간(Schooling)으로 회귀선 그리기</h3>
+<pre class="le-code">lin1 = LinearRegression()                                     <span class="c"># 1 선형 회귀 알고리즘 불러오기</span>
+lin1.fit(X_train['Schooling'].values.reshape(-1, 1),          <span class="c"># 2 교육 기간 하나로 학습하기</span>
+         y_train.values.reshape(-1, 1))
+x_array = np.arange(min(X_train['Schooling']),                <span class="c"># 3 최솟값부터 최댓값까지 만들고</span>
+                    max(X_train['Schooling'])).reshape(-1, 1)
+y_head = lin1.predict(x_array)                                <span class="c">#   예측값 생성하기</span>
+plt.scatter(X_train['Schooling'], y_train)                    <span class="c"># 4 산점도와</span>
+plt.plot(x_array, y_head, color = 'red')                      <span class="c">#   빨간 회귀선</span>
+plt.xlabel('Schooling'); plt.ylabel('Life expectancy'); plt.show()</pre>
+    <p class="note"><span class="mono">reshape(-1, 1)</span>은 배열을 2D로 바꿔요. 열의 수는 1로 고정하고 행의 수는 자동으로 정하라는 뜻이에요. 교과서의 축 이름 'Scooling', 'Life excpectancy'는 오타라서 바로잡았어요.</p>
+    <p class="le-int"><b>해석</b> 교육 수준이 증가함에 따라 기대 수명이 증가하는 회귀선을 확인할 수 있다.</p>
+  </div>
+  <div class="card">
+    <h3>📈 회귀선 탐색기 · 속성을 바꿔 다시 학습하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">위: 속성 <b>하나</b>를 고르면 훈련 데이터 1,319개의 산점도와 그 속성으로 학습한 <b>회귀선</b>이 나와요. 아래: 속성을 <b>여러 개</b> 골라 함께 학습하면 테스트 데이터 결정 계수가 어떻게 되는지 비교해요.</p>
+    <div id="rlLab"></div>
+  </div>
+  <div class="card">
+    <h3>🧹 데이터를 바꿔 성능 높이기 · 앞 단계의 결측치 처리 실험실과 이어 보기</h3>
+    <p style="margin-top:0;font-size:.93rem">속성만 고르면 결정 계수가 20개 전체(0.794)를 넘지 못했어요. 이번에는 <b>데이터</b>를 바꿔 봐요. 결측치가 많은 속성을 <b>먼저 지우고</b> <span class="mono">dropna()</span>를 하면 남는 행이 늘어나요. 같은 코드(8 : 2, random_state = 96)로 다시 학습한 결과예요. <small class="muted">(노트북의 마지막 「더 알아보기」 셀에서 직접 바꿔 볼 수 있어요.)</small></p>
+    <div class="le-scroll"><table class="le-tbl">
+      <tr><th class="l">먼저 지운 속성</th><th>남는 행</th><th>나라</th><th>속성 수(X)</th><th>테스트 데이터 결정 계수</th></tr>
+      <tr class="y"><td class="l">없음(교과서 그대로)</td><td>1,649</td><td>133</td><td>20</td><td>0.794</td></tr>
+      <tr><td class="l">Population</td><td>1,853</td><td>147</td><td>19</td><td>0.799</td></tr>
+      <tr><td class="l">Population, Hepatitis B</td><td>2,301</td><td>155</td><td>18</td><td><b>0.824</b></td></tr>
+      <tr><td class="l">Population, Hepatitis B, GDP</td><td>2,556</td><td>171</td><td>17</td><td>0.816</td></tr>
+    </table></div>
+    <p class="note">인구수는 기대 수명과 관계가 거의 없는 속성(상관계수 −0.02)이라, 지워도 손해가 적고 데이터는 늘어요. 다만 지울 때마다 <b>테스트 데이터도 달라지므로</b> 결정 계수를 똑같은 시험으로 비교한 것은 아니에요. 그래도 「데이터를 어떻게 준비하느냐」가 성능을 바꾼다는 것은 확인할 수 있어요.</p>
+  </div>
+  <details class="card le-more">
+    <summary>🔎 더 알아보기 · 표준화를 하면 성능이 오를까?</summary>
+    <p>표준화는 모든 속성을 평균 0, 표준편차 1로 맞추는 전처리예요(펭귄 분류 프로젝트에서 성능 개선에 썼어요). 이 데이터를 표준화한 뒤 선형 회귀로 학습해도 결정 계수는 <b>0.794로 같아요</b>. 선형 회귀는 속성값에 곱하는 가중치가 단위에 맞춰 바뀔 뿐이라 예측값이 그대로이기 때문이에요.</p>
+    <p style="margin-bottom:0">대신 표준화하면 가중치끼리 크기를 비교하기 쉬워지고, 크기가 아주 다른 속성 때문에 생기던 사이킷런 버전 문제도 사라져요.</p>
+  </details>
+  <div class="callout">선형 회귀 분석 결과를 해석할 때 독립 변수(x)의 크기가 예측의 정확도에 영향을 미칠 수 있어요. 만약 x값이 <b>이상치</b>처럼 아주 커지면, 예측이 정확하지 않을 수 있어요. (GDP 산점도의 오른쪽 끝 점들을 살펴보세요.)</div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>교육 기간 하나로 학습한 모델과 속성 20개를 모두 쓴 모델의 결정 계수는 어떻게 달랐나요? 이 모델의 성능을 더 높이려면 속성이나 데이터를 어떻게 바꿔 보고 싶은지 써 보세요.</label><textarea data-memo="improveMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 프로젝트 정리 -->
+<section class="page" data-name="프로젝트 정리" data-acc="#c98a00">
+  <div class="head"><div class="num">05</div><div><h2>프로젝트 정리</h2><p>교과서 201쪽 · 단계별 수행 과정을 평가해 보고, 나의 활동을 되돌아보자</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제 정의부터 성능 개선까지 <b>내 프로젝트</b>를 한 단계씩 돌아봐요. 잘한 점과 아쉬운 점, <b>내가 한 일</b>과 <b>쓴 함수</b>를 정리하고, 이 모델이 세상에 어떤 도움이 될지 생각해요.</span></div>
+  <div class="card">
+    <h3>1 프로젝트 수행 과정을 돌아보기 <small class="muted" style="font-weight:400">(수행 정도에 맞는 별을 골라요)</small></h3>
+    <div class="le-ev">
+      <div><b>문제 정의</b><span>지속가능발전목표와 관련 있는 주제를 선정하고, 문제를 명확하게 정의하였는가?</span><div id="ev1" class="vote le-star"></div></div>
+      <div><b>데이터 수집 및 전처리</b><span>모델을 학습시키기 위해 필요한 데이터를 수집하고 모델에 입력할 수 있도록 전처리할 수 있는가?</span><div id="ev2" class="vote le-star"></div></div>
+      <div><b>기계학습 유형과 알고리즘 선정</b><span>선정한 알고리즘의 사용법을 잘 알고 있는가?</span><div id="ev3" class="vote le-star"></div></div>
+      <div><b>모델 학습</b><span>훈련 데이터와 테스트 데이터를 사용하여 적합한 모델을 생성하였는가?</span><div id="ev4" class="vote le-star"></div></div>
+      <div><b>성능 평가 및 수정</b><span>평가 지표로 성능을 평가한 후, 성능을 높이기 위한 성능 개선 방법을 이해하였는가?</span><div id="ev5" class="vote le-star"></div></div>
+    </div>
+    <p class="note">모둠으로 했다면 모둠원과 함께 모둠의 별점도 이야기 나눠 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>2 단계마다 내가 한 일과 쓴 모듈·함수</h3>
+    <details class="le-more"><summary>교과서 예시 펼치기</summary>
+    <div class="le-scroll"><table class="le-tbl le-ex">
+      <tr><th>과정</th><th class="l">예시 · 내가 한 일</th><th class="l">예시 · 모듈 또는 라이브러리</th></tr>
+      <tr><td>데이터 수집 및 전처리</td><td class="l">데이터셋 속성을 관찰하였다. 결측치가 발견되어 제거하였다. 속성 간 관계를 파악하는 다양한 시각화 방법을 알아보았다.</td><td class="l">info( ), dropna( ), isna( ).sum( ), seaborn</td></tr>
+      <tr><td>알고리즘 선정</td><td class="l">선형 회귀 알고리즘, 훈련 데이터와 테스트 데이터로 나누었다.</td><td class="l">train_test_split( )</td></tr>
+      <tr><td>모델 학습</td><td class="l">모델을 생성하고, 가중치와 편향을 확인하였다.</td><td class="l">LinearRegression( )</td></tr>
+      <tr><td>성능 평가 및 수정</td><td class="l">회귀 평가 지표로 결정 계수를 사용, 테스트 데이터로 평가하였다.</td><td class="l">r2_score( ), predict( )</td></tr>
+    </table></div>
+    </details>
+    <div class="memo"><label>내가 한 일 중 <b>가장 기억에 남는 단계 하나</b>와, 그때 쓴 함수를 적어 보세요.</label><textarea data-memo="doneMemo" rows="2" placeholder="예: 성능 평가 - range(10)으로 바꿔 교과서에 없는 행을 찾았다 (predict, r2_score)"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>3 이 프로젝트로 얻게 되는 기대 효과</h3>
+    <p style="margin-top:0;font-size:.93rem">기대 수명을 예측하는 것은 <b>개인</b>(건강 관리와 삶의 질), <b>사회</b>(의료 서비스가 부족한 지역 지원), <b>의료</b>(기대 수명이 낮은 집단의 원인 분석과 예방) 등 여러 분야에서 쓸 수 있어요.</p>
+    <div class="memo"><label>이 모델을 누가, 어떤 일에 쓸 수 있을까요? 결측치를 지우며 대한민국을 포함한 60개 나라의 데이터가 빠졌다는 점을 생각해, 쓸 때 조심할 점도 한 가지 적어 보세요.</label><textarea data-memo="effectMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>기대 수명이 몇 세인지를 출력하는 인공지능은 <button class="blank" data-a="지도학습의 예측">?</button>에 해당하고, 대표 알고리즘은 <button class="blank" data-a="선형 회귀">?</button>이다.</li>
+      <li><span class="mono">train_test_split( )</span>으로 데이터를 <button class="blank" data-a="훈련 데이터">?</button>와 <button class="blank" data-a="테스트 데이터">?</button>로 나눈다.</li>
+      <li>선형 회귀 모델의 <span class="mono">coef_</span>는 <button class="blank" data-a="가중치(기울기)">?</button>, <span class="mono">intercept_</span>는 <button class="blank" data-a="편향(절편)">?</button>이다.</li>
+      <li><button class="blank" data-a="결정 계수(R²)">?</button>는 1에 가까울수록 회귀 모델의 성능이 높다.</li>
+    </ol>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">기대 수명처럼 <b>숫자</b>를 출력하는 문제는 <b>지도학습의 예측</b>이고, <b>선형 회귀</b>로 해결한다. 데이터는 <span class="mono">train_test_split()</span>으로 훈련 데이터 1,319행, 테스트 데이터 330행(8 : 2)으로 나눴다.</div>
+    <div style="--k:#9b4fc4"><span class="mono">fit()</span>으로 속성 20개의 <b>가중치</b>와 <b>편향</b>을 찾았고, 테스트 데이터의 <b>결정 계수는 약 0.79</b>였다. 실제와 예측의 차이는 평균 약 2.9년, 330개 중 약 85%가 5년 안이었지만 크게 빗나간 나라도 있었다. 몇 개만 골라 보면 성능을 잘못 판단할 수 있다.</div>
+    <div style="--k:#e0702b">교육 기간 하나로 그린 <b>회귀선</b>은 교육 기간이 긴 나라일수록 기대 수명이 높은 경향을 보여 줬지만 결정 계수는 약 0.51이었다. 결측치가 많은 속성(Population, Hepatitis B)을 먼저 지워 데이터를 늘리자 결정 계수가 약 0.82로 올랐다. 어떤 <b>속성</b>과 <b>데이터</b>를 쓰는지가 성능을 바꾼다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>기대 수명을 예측하는 선형 회귀 모델의 결정 계수(R²)는 약 0.79였습니다. 이 값이 무엇을 뜻하는지 쓰고, 테스트 데이터에서 실제 기대 수명과 예측 기대 수명의 차이를 살펴본 결과와 연결해 이 모델을 얼마나 믿을 수 있을지 설명하세요.</li>
+      <li>교육 기간(Schooling) 하나로 학습한 회귀선과 속성 20개를 모두 쓴 모델의 결정 계수를 비교했습니다. 결과가 어떻게 달랐는지 쓰고, 이 모델의 성능을 더 높이려면 속성이나 데이터를 어떻게 바꿔 볼지 제안하세요.</li>
+      <li>이 기대 수명 예측 모델을 누가, 어떤 일에 활용할 수 있을지 기대 효과를 쓰고, 결측치를 지우며 대한민국을 포함한 여러 나라의 데이터가 빠졌다는 점을 생각해 활용할 때 조심해야 할 점을 한 가지 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
