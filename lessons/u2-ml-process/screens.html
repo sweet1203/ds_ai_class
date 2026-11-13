@@ -1,0 +1,230 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>기계학습으로<br>어떤 문제를 해결할 수 있을까?</h1>
+      <div class="story"><b>내 취향을 어떻게 알았지?</b><br>영상을 보다 보면 「알 수 없는 알고리즘이 나를 여기로 이끌었다.」 같은 댓글을 볼 수 있어요. 알고리즘이 추천한 영상은 놀랍도록 내 취향에 꼭 맞는 경우가 많지요. 초기 추천 알고리즘은 과거에 구매한 것과 <b>비슷한 것</b>을 추천했지만, 이후 나와 비슷한 물건을 산 <b>다른 사람의 선택</b>까지 반영하는 알고리즘으로 진화했어요. 아이템 기반 추천에서 <b>이용자 기반 추천</b>으로 바뀐 것이에요.</div>
+      <p>이렇게 취향에 꼭 맞는 추천이 가능해진 것은 시청 기록이나 검색 기록 같은 <b>다양한 데이터</b>와 <b>기계학습 알고리즘</b>을 활용했기 때문이에요. 오늘은 기계학습이 무엇이고 어떤 문제에 알맞은지, 그리고 기계학습으로 문제를 해결하는 <b>과정</b>을 알아봐요.</p>
+      <ol>
+        <li>기계학습으로 어떤 문제를 해결할 수 있을까?</li><li>기계학습을 적용하여 문제를 해결하려면?</li><li>문제 정의 · 같은 붓꽃 데이터, 세 가지 문제</li>
+        <li>스스로 해결하기 · 주요 개념 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📊</i><div><b>데이터</b><small>시청 기록, 검색 기록, 기온 기록</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧠</i><div><b>기계가 규칙을 찾기</b><small>데이터를 학습해 스스로 발견</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔮</i><div><b>새 데이터에 적용</b><small>정보를 얻거나 예측하기</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🌸</i><div><b>문제 정의부터</b><small>무엇을 알고 싶은지 정하기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p><b>전통적 프로그래밍</b>과 <b>기계학습</b>이 어떻게 다른지 서울의 평균 기온 데이터로 비교하고, 기계학습으로 문제를 해결하는 <b>여섯 단계</b>를 순서대로 정리합니다. 그리고 같은 <b>붓꽃 데이터</b>로도 문제를 어떻게 정의하느냐에 따라 군집·분류·회귀로 달라지는 것을 직접 확인합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기 (58쪽)</span>
+        <p style="margin:0 0 6px;font-size:.9rem">① 위 글에서 나의 취향을 정확하게 알아서 추천해 주는 것은 무엇일까? ② 사용자의 취향에 꼭 맞는 추천이 가능하게 된 것은 무엇 때문일까? ③ 이 단원에서 배우고 싶은 것은? — 짝과 이야기해 보고, ②만 적어 봐요.</p>
+        <div class="memo"><label>사용자의 취향에 꼭 맞는 추천이 가능하게 된 것은 무엇 때문일까요?</label><textarea data-memo="recoWhy" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>기계학습</b> · 기계학습으로 해결할 수 있는 문제의 특성과 해결 방법은 무엇일까?</li>
+          <li><b>오늘의 질문</b> · 꽃 이름을 알아내는 문제를 기계학습으로 해결할 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>기계학습 문제 해결 과정을 설명할 수 있다.</li>
+          <li>기계학습을 적용할 문제를 정의할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 기계학습 · 데이터 · 문제 해결 과정 · 문제 정의</p>
+      </div>
+    </div>
+    <div class="cards2 mp-unit">
+      <div class="kc" style="--k:#1f9d74">
+        <h4>🗺️ Ⅱ. 인공지능과 학습에서 배울 내용 (54쪽)</h4>
+        <div class="mp-two">
+          <div><b>1. 기계학습</b><span>기계학습과 문제 해결 과정 · 데이터 수집 · 기계학습 유형과 알고리즘 선정 · 모델 학습과 성능 평가</span></div>
+          <div><b>2. 딥러닝</b><span>인공신경망과 딥러닝 · 컴퓨터 비전 · 음성 인식 · 자연어 처리</span></div>
+        </div>
+        <small>이 단원을 배우고 나면 해결하고자 하는 문제에 따라 기계학습의 사용이 적합한지 판단하여 적절한 기계학습 모델을 선택해요.</small>
+      </div>
+      <div class="kc" style="--k:#9b4fc4">
+        <h4>📜 짧은 이야기로 만나는 인공지능 (56~57쪽)</h4>
+        <ol class="mp-hist">
+          <li><b>기계학습의 탄생</b> 「머신러닝(기계학습)」이라는 용어는 아서 사무엘이 처음 사용했어요.</li>
+          <li><b>기계학습의 발전</b> 전문 지식을 적용한 지식 기반 시스템에서, 통계적 기법과 확률론으로 데이터 분석과 예측을 시도하게 됐어요.</li>
+          <li><b>딥러닝의 출발</b> 초기 인공신경망과 로젠블랫의 퍼셉트론이 나왔지만 복잡한 문제를 해결하지 못했어요.</li>
+          <li><b>딥러닝의 부상</b> 2010년대 데이터의 폭발적 증가와 알고리즘의 발전으로 딥러닝이 다시 떠올랐어요.</li>
+        </ol>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 기계학습으로 어떤 문제를 해결할 수 있을까부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 전통적 프로그래밍 vs 기계학습 -->
+<section class="page" data-name="기계학습이란" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>기계학습으로 어떤 문제를 해결할 수 있을까?</h2><p>교과서 59쪽 · 전통적 프로그래밍과 기계학습, 서울의 평균 기온 데이터</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>전통적 프로그래밍</b>은 사람이 규칙을 정해 주면 컴퓨터가 그대로 계산해요. <b>기계학습</b>은 기계가 데이터를 보고 <b>스스로 규칙과 패턴</b>을 찾은 뒤, 그 규칙으로 새로운 데이터에 대해 예측해요.</span></div>
+  <div class="card">
+    <h3>📖 추천 시스템으로 보는 두 가지 방법</h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#e0702b"><div class="ic">🧾</div><h4>전통적 프로그래밍</h4><p>추천 시스템이 사용자가 <b>과거에 구매한 물건과 같은 물건</b>을 추천하는 것</p></div>
+      <div class="kc" style="--k:#1f9d74"><div class="ic">🧠</div><h4>기계학습</h4><p>과거에 구매한 것과 <b>유사한 특징의 다른 물건</b>을 추천하거나, 나와 같은 물건을 구매한 <b>다른 사람의 취향을 반영</b>하여 새로운 물건을 추천하는 것</p></div>
+    </div>
+    <p>물건의 속성들과 나의 선택, 나와 같은 선택을 한 다른 사람이 선택하는 물건의 특징에 해당하는 데이터를 학습시켜 기계가 스스로 규칙과 패턴을 찾고, 그 규칙에 따라 나에게 새로운 추천을 한다.</p>
+    <div class="callout"><b>기계학습</b>은 데이터를 학습시켜 <b>스스로 규칙을 발견</b>하고, 이를 <b>새로운 데이터에 적용</b>하여 정보를 얻거나 예측하는 기술을 말한다.</div>
+  </div>
+  <div class="card">
+    <h3>🌡️ 서울의 평균 기온 데이터로 두 문제 풀기 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-1)</span></h3>
+    <div style="overflow-x:auto"><table class="mp-tbl">
+      <tr><th>지점 번호</th><th>지점명</th><th>연도</th><th>평균 기온</th><th>최고 기온</th><th>최고 기온 일자</th><th>최저 기온</th><th>최저 기온 일자</th></tr>
+      <tr><td>108</td><td>서울</td><td>1907</td><td></td><td>25.4</td><td>1907-10-05</td><td>-20.1</td><td>1907-12-23</td></tr>
+      <tr><td>108</td><td>서울</td><td>1908</td><td>10.4</td><td>33.6</td><td>1908-08-06</td><td>-15.8</td><td>1908-02-07</td></tr>
+      <tr class="mp-dot"><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td><td>⋮</td></tr>
+      <tr><td>108</td><td>서울</td><td>2022</td><td>13.2</td><td>36.1</td><td>2022-07-30</td><td>-13.7</td><td>2022-12-23</td></tr>
+    </table></div>
+    <p class="muted" style="font-size:.85rem;margin:4px 0 0">1907년의 평균 기온 칸은 비어 있어요. 데이터에 이런 빈 값이 있으면 어떻게 할지는 데이터 전처리에서 배워요.</p>
+    <div class="cards2" style="margin-top:12px">
+      <div class="kc" style="--k:#e0702b"><span class="tagt">전통적 프로그래밍 적용</span><h4>(가) 평균 기온이 가장 높은 해는 언제일까?</h4><p>평균 기온 속성의 데이터를 모두 비교하여 가장 큰 값을 찾은 후 해당하는 연도를 출력한다.</p></div>
+      <div class="kc" style="--k:#1f9d74"><span class="tagt">기계학습 적용</span><h4>(나) 2050년의 평균 기온은 얼마나 될까?</h4><p>주어진 데이터에 답을 찾기 어렵거나 사람이 규칙을 발견하기 어려운 문제는 기계가 스스로 데이터를 학습하여 규칙을 발견한 후 이를 활용하여 해답을 찾는다.</p></div>
+    </div>
+    <div class="callout">이처럼 기계학습으로 해결할 수 있는 문제는 <b>관련 데이터 안에서 답을 찾기 어렵거나 사람이 명확한 규칙을 찾기 어려워</b> 기계가 스스로 학습하여 결과를 예측하는 것으로 볼 수 있다.</div>
+  </div>
+  <div class="card">
+    <h3>🧩 규칙은 어디에 있을까? <span class="muted" style="font-weight:400;font-size:.88rem">(59쪽 그림)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">두 방법은 <b>무엇을 넣고 무엇을 얻는지</b>가 달라요. 빈칸을 눌러 <b>데이터 · 규칙 · 결괏값</b> 중 하나를 넣고(누를 때마다 바뀌어요), 다 채우면 「확인하기」를 눌러 보세요. 위 (가)·(나)를 떠올리면 쉬워요.</p>
+    <div id="ruleGame"></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 문제 해결 과정 -->
+<section class="page" data-name="문제 해결 과정" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>기계학습을 적용하여 문제를 해결하려면?</h2><p>교과서 60쪽 · 기계학습을 적용한 문제 해결 과정</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>집을 지을 때 설계하고, 재료를 구해 다듬고, 짓고, 점검하듯이 기계학습에도 순서가 있어요. <b>무엇을 풀지 정하고 → 데이터를 모아 → 다듬고 → 알맞은 방법을 골라 → 학습시키고 → 잘 되는지 평가</b>해요. 결과가 아쉬우면 앞 단계로 돌아가요.</span></div>
+  <div class="card">
+    <h3>📖 문제 해결 과정</h3>
+    <p style="margin-top:0">기계학습을 적용한 문제 해결은 <b>문제 정의, 데이터 수집, 데이터 전처리, 기계학습 유형과 알고리즘 선정, 모델 학습, 성능 평가 및 수정</b> 과정을 거친다. 문제 해결에 적합한 <b>데이터</b>와 <b>기계학습 모델</b>을 활용한다.</p>
+  </div>
+  <div class="card">
+    <h3>🔢 순서대로 놓아 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">아래 단계 카드 중 <b>먼저 할 일부터</b> 차례로 눌러 보세요. 맞게 누르면 흐름도에 붙으면서 그 단계에서 하는 일이 열려요.</p>
+    <div id="stepGame"></div>
+  </div>
+  <div class="card">
+    <h3>⏱️ 어느 단계가 가장 오래 걸릴까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">각 단계에서 하는 일을 읽어 보고, 실제로 문제를 풀 때 <b>시간이 가장 많이 걸릴 것 같은 단계</b>를 골라 보세요.</p>
+    <div class="vote" id="slowVote"></div>
+    <div id="slowMsg"></div>
+  </div>
+  <p class="muted" style="font-size:.85rem">낱말 뜻 (60쪽) — <b>결측치</b>: 데이터에 비어 있는 값 · <b>이상치</b>: 범위를 벗어난 너무 작거나 큰 값 · <b>스케일링</b>: 데이터 값의 측정 단위가 다를 때 이를 일정하게 맞추는 작업 · <b>인코딩</b>: 범주형 데이터를 수치형 데이터로 변환하는 작업. 데이터 전처리에서 자세히 배워요.</p>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 문제 정의 -->
+<section class="page" data-name="문제 정의" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>문제 정의 · 같은 붓꽃 데이터, 세 가지 문제</h2><p>교과서 60~61쪽 · 문제 정의, 붓꽃 데이터, 군집 · 분류 · 회귀</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>같은 데이터라도 <b>무엇을 알아내고 싶은지</b>에 따라 풀어야 할 문제가 달라져요. 그래서 기계학습은 <b>문제를 분명하게 정하는 것</b>에서 시작해요.</span></div>
+  <div class="card">
+    <h3>📖 문제 정의 단계에서 하는 일</h3>
+    <p style="margin-top:0">해결하려고 하는 문제가 기계학습으로 해결할 수 있는 문제인지 전통적 프로그래밍으로 해결할 수 있는 문제인지 파악하여 <b>목표를 설정</b>한다. 데이터를 입력하여 기계학습을 적용하면 어떤 결과가 나올지 <b>가설을 세우고</b> 기계학습을 진행한다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#d64535"><div class="ic">🌹</div><h4>꽃 이름을 검색하는 서비스 <small style="display:inline;font-size:.8rem">(그림 Ⅱ-1)</small></h4><p>꽃 검색 기능이 없던 시절에는 처음 보는 꽃의 이름을 알아내기 어려웠다. 꽃 이름을 알기 위해 꽃 이름 검색 서비스를 적용하는 것은 <b>기계학습을 활용한 사례</b>이다.</p></div>
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🌸</div><h4>붓꽃 데이터</h4><p>이미지 검색뿐 아니라 꽃의 <b>속성 데이터</b>를 활용한 기계학습으로 꽃을 분류할 수 있다. 영국의 통계학자이자 생물학자인 로널드 피셔가 1936년에 정리한 <b>150개의 붓꽃 데이터</b>는 다양한 문제 해결에 활용되고 있다.</p><small>붓꽃의 속성: 꽃잎 길이, 꽃잎 너비, 꽃받침 길이, 꽃받침 너비 (그리고 종류)</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔍 직접 확인하기 · 무엇을 알고, 무엇을 알아내려 할까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문제를 고르면 붓꽃 표에서 <b>알고 있는 것</b>(초록)과 <b>알아내려는 것</b>(<span class="mp-q">?</span>)이 표시돼요. 표를 보고 유형을 골라 본 다음, <b>「기계에게 맡겨 보기」</b>로 결과를 확인하세요. 붓꽃 150송이는 교과서 붓꽃 데이터 그대로이고, 「새로운 꽃」의 값은 예시예요. 답은 아래 「풀고 나서 확인」에 있어요.</p>
+    <p class="muted" style="margin-top:0;font-size:.86rem">(다)에서는 꽃잎 너비를 모르는 값으로 정했어요. 교과서 표 Ⅱ-3은 꽃받침 너비를 예로 들어요. 어느 속성이든 모르는 수치를 구하면 회귀 문제예요.</p>
+    <div id="irisGame"></div>
+  </div>
+  <details class="card mp-ans">
+    <summary>📋 풀고 나서 확인 · 같은 붓꽃 데이터로 정의한 세 문제 (61쪽)</summary>
+    <div style="overflow-x:auto">
+    <table class="mp-tbl mp-def">
+      <tr><th>문제</th><th>기계학습 유형</th></tr>
+      <tr><td><b>(가)</b> 꽃잎 길이, 꽃잎 너비, 꽃받침 길이, 꽃받침 너비를 알면 서로 다른 꽃을 구분할 수 있을까?</td><td>정확한 종류는 몰라도 서로 다른 종류인지 아닌지 구분하는 <b>군집</b>의 문제이다.</td></tr>
+      <tr><td><b>(나)</b> 꽃의 종류별로 모든 속성값을 알고 있을 때, 새로운 꽃의 속성으로 꽃의 종류를 알 수 있을까?</td><td>정답을 알고 있는 상태에서 학습하고 종류를 구분하므로 <b>분류</b>의 문제이다.</td></tr>
+      <tr><td><b>(다)</b> 꽃의 종류별로 모든 속성값을 알고 있을 때, 새로운 꽃의 모르는 수치형 속성값을 구할 수 있을까?</td><td>모르는 속성의 정확한 수치를 예측하는 <b>회귀</b>의 문제이다.</td></tr>
+    </table>
+    </div>
+  </details>
+  <div class="card">
+    <div class="callout" style="margin-top:0">수집한 데이터에 따라서 해결할 수 있는 문제 정의가 다를 수 있고, 같은 데이터라도 정의한 문제에 따라 필요한 속성을 일부만 선정하므로 <b>문제 정의는 기계학습을 적용한 문제 해결에서 매우 중요</b>하다.</div>
+    <div class="memo"><label>내 생활이나 관심 있는 진로, 사회 문제에서 기계학습으로 풀어 보고 싶은 문제를 하나 정의해 보세요. ① 무엇을 알아내고 싶은지(목표) ② 어떤 데이터가 필요한지 ③ 군집·분류·회귀 중 무엇에 가까운지 순서로 써요.</label><textarea data-memo="myProblem" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 스스로 해결하기 · 정리 -->
+<section class="page" data-name="스스로 해결하기" data-acc="#d64535">
+  <div class="head"><div class="num">04</div><div><h2>스스로 해결하기 · 주요 개념 정리</h2><p>교과서 61쪽 · 기계학습과 전통적 프로그래밍 중 더 효율적인 방법 고르기</p></div></div>
+  <div class="card">
+    <h3>✍️ 스스로 해결하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.92rem">다음 문제에서 기계학습과 전통적 프로그래밍 중 <b>더 효율적인 해결 방법</b>을 고르고, 그 이유를 짝에게 말해 보세요. 고르면 선생님용 예시 답안이 열려요(더 알아보기).</p>
+    <div id="judgeGame"></div>
+  </div>
+  <div class="card">
+    <h3>💬 내 말로 정리하기</h3>
+    <div class="memo"><label>전통적 프로그래밍과 기계학습은 무엇이 다른가요? 오늘 본 사례(추천 시스템, 평균 기온, 붓꽃, 위 표의 문제 등) 중 하나와 연결해 설명해 보세요.</label><textarea data-memo="tradML" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>기계학습은 데이터를 학습시켜 스스로 <button class="blank" data-a="규칙">?</button>을 발견하고, 이를 새로운 데이터에 적용하여 정보를 얻거나 <button class="blank" data-a="예측">?</button>하는 기술이다.</li>
+      <li>기계학습 적용 문제 해결은 <button class="blank" data-a="문제 정의">?</button>, 데이터 수집 및 <button class="blank" data-a="전처리">?</button>, 기계학습 유형과 알고리즘 선정, 모델 학습 및 <button class="blank" data-a="성능 평가">?</button> 과정을 거친다.</li>
+      <li>붓꽃 데이터에서 종류는 몰라도 서로 다른 꽃인지 구분하는 것은 <button class="blank" data-a="군집">?</button>, 새로운 꽃의 종류를 알아내는 것은 <button class="blank" data-a="분류">?</button>, 모르는 수치를 구하는 것은 <button class="blank" data-a="회귀">?</button>의 문제이다.</li>
+    </ol>
+    <div class="memo"><label>오늘 새롭게 이해한 개념 하나를 골라 친구에게 설명하듯 <b>내 말로</b> 써 보세요. (예: 기계학습, 문제 정의, 데이터 전처리, 군집·분류·회귀 …)</label><textarea data-memo="myWords" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 기계학습으로 해결할 수 있는 문제를 구분할 수 있는가? 아래에서 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">05</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>기계학습</b>은 데이터를 학습시켜 스스로 규칙을 발견하고, 새로운 데이터에 적용하여 정보를 얻거나 예측하는 기술이다. 데이터 안에서 답을 찾기 어렵거나 사람이 명확한 규칙을 찾기 어려운 문제에 알맞다.</div>
+    <div style="--k:#2f6fd0">기계학습을 적용한 문제 해결은 <b>문제 정의 → 데이터 수집 → 데이터 전처리 → 기계학습 유형과 알고리즘 선정 → 모델 학습 → 성능 평가 및 수정</b> 과정을 거치고, 성능을 높이려고 이전 단계로 돌아갈 수 있다.</div>
+    <div style="--k:#9b4fc4">같은 붓꽃 데이터라도 문제를 어떻게 정의하느냐에 따라 <b>군집 · 분류 · 회귀</b>로 달라지고 필요한 속성도 달라진다. 그래서 <b>문제 정의</b>가 매우 중요하다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>전통적 프로그래밍과 기계학습의 차이를 오늘 배운 사례와 연결해 설명하고, 기계학습이 적합한 문제를 하나 제안해 보세요.</li>
+      <li>'기계학습과 문제 해결 과정' 수업에서 새롭게 이해한 개념을 하나 고르고, 그 개념을 자신의 말로 설명하세요.</li>
+      <li>'기계학습과 문제 해결 과정' 내용이 실제 생활, 진로, 사회 문제 중 어디와 연결된다고 생각하는지 구체적인 예를 들어 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

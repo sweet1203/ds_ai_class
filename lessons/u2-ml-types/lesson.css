@@ -1,0 +1,100 @@
+  /* 01 유형 카드 */
+  .mt-two{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px}
+  .mt-two>div{background:#eef3fb;border-radius:10px;padding:8px 10px;font-size:.84rem;line-height:1.5}
+  .mt-two b{display:block;color:#2f6fd0}
+  @media (max-width:560px){.mt-two{grid-template-columns:1fr}}
+  .mt-algo{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+  .mt-algo span{border:1px solid var(--line);border-radius:10px;padding:6px 10px;font-size:.88rem;background:#fbfaf7}
+  .mt-algo b{margin-right:6px;color:var(--acc)}
+  /* 02 분류 vs 예측 */
+  .sv{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media (max-width:820px){.sv{grid-template-columns:1fr}}
+  .sv-p{border:2px solid var(--line);border-top:5px solid var(--k);border-radius:14px;padding:12px 14px;background:#fff;min-width:0}
+  .sv-p h4 small{font-weight:400;color:var(--muted);font-size:.8rem}
+  .sv-p .ctrl{grid-template-columns:86px 1fr 84px}
+  .sv-svg{width:100%;height:auto;display:block;margin:4px 0 6px}
+  .sv-svg .ax{stroke:#8a94a3;stroke-width:1.2}
+  .sv-svg .tk{font-size:10px;fill:#5b6776;text-anchor:middle}
+  .sv-svg .al{font-size:10.5px;fill:#16202c;font-weight:700}
+  .sv-svg .lg{font-size:9.5px;fill:#5b6776}
+  .sv-svg .h1{fill:#d62828;opacity:.75}.sv-svg .h0{fill:#fff;stroke:#2f6fd0;stroke-width:2}
+  .sv-svg .nb{opacity:1;stroke:#0f2742;stroke-width:2}
+  .sv-svg .h1.nb{stroke:#0f2742}
+  .sv-svg .sv-rng{fill:rgba(242,165,22,.12);stroke:#f2a516;stroke-width:1.5;stroke-dasharray:4 3}
+  .sv-svg .nw{fill:#f2a516;stroke:#0f2742;stroke-width:2}
+  .sv-svg .hp{fill:#2f6fd0;opacity:.45}
+  .sv-svg .sv-line{stroke:#0f2742;stroke-width:2.5}
+  .sv-svg .sv-guide{stroke:#f2a516;stroke-width:1.5;stroke-dasharray:4 3}
+  .sv-out{display:flex;align-items:center;gap:10px;margin-top:6px;flex-wrap:wrap}
+  .sv-out>span{font-weight:900;font-size:.88rem;color:var(--muted)}
+  .sv-cls{display:flex;gap:6px;flex-wrap:wrap}
+  .sv-cls b{border:2px dashed #c5ccd5;border-radius:10px;padding:6px 10px;font-size:.9rem;color:#8a94a3;transition:.15s}
+  .sv-cls b.on{border:2px solid #d62828;background:#fdecea;color:#16202c}
+  .sv-num{font-size:.95rem}
+  .sv-num b{font-size:1.5rem;font-variant-numeric:tabular-nums;color:#1d4ed8}
+  .sv-num small{display:block;color:var(--muted);font-size:.8rem}
+  .sv-cnt{font-size:.84rem;color:var(--muted);margin-top:6px}
+  .sv-end{margin-top:8px;overflow-x:auto}
+  .sv-tbl{min-width:460px}
+  .sv-tbl td,.sv-tbl th{border:1px solid var(--line);font-size:.9rem}
+  .sv-tbl th{background:#fbfaf7}
+  /* 03 콜레라 */
+  .ch{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;align-items:start}
+  @media (max-width:820px){.ch{grid-template-columns:1fr}}
+  .ch-map svg{width:100%;height:auto;display:block;background:#f7f4ee;border-radius:12px;border:1px solid var(--line)}
+  .ch-map .st{stroke:#e2dccf;stroke-width:9;fill:none;stroke-linecap:round}
+  .ch-map .ln{stroke-width:1;opacity:.35}
+  .ch-map .pt{stroke:#fff;stroke-width:.8}
+  .ch-map .pm rect{stroke-width:2.5}
+  .ch-map .pm text,.ch-map .kc-c text{font-size:12px;font-weight:900;text-anchor:middle;fill:#0f2742}
+  .ch-map .kc-c text{fill:#fff}
+  .ch-map .kc-c circle{stroke:#fff;stroke-width:2}
+  .ch-map .pm.can{cursor:pointer}
+  .ch-map .pm.on rect{fill:#fff4d6;stroke-width:4}
+  .ch-map .pm-ghost{fill:none;stroke:#8a94a3;stroke-dasharray:3 2}
+  .ch-msg{background:#fbf3ec;border-radius:12px;padding:10px 12px;font-size:.93rem;min-height:4.5em}
+  .ch-msg .ok{color:var(--mint);font-weight:900}.ch-msg .ng{color:var(--red);font-weight:900}
+  .ch-bars{margin-top:8px;display:grid;gap:3px}
+  .ch-bars div{display:grid;grid-template-columns:56px 1fr 26px;align-items:center;gap:6px;font-size:.82rem}
+  .ch-bars i{display:block;height:12px;border-radius:6px;min-width:2px}
+  .ch-bars b{text-align:right;font-variant-numeric:tabular-nums}
+  .mt-code summary{cursor:pointer;font-weight:900;font-size:1.05rem}
+  .mt-code pre{background:#0f2742;color:#e8eef6;border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.5;overflow-x:auto;margin:8px 0;max-width:100%}
+  /* 04 k-NN */
+  .kn{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;align-items:start}
+  @media (max-width:860px){.kn{grid-template-columns:1fr}}
+  .kn-plot svg{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:12px;cursor:crosshair;touch-action:manipulation}
+  .kn-plot svg:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+  .kn-plot .gd{stroke:#eef0f3;stroke-width:1}
+  .kn-plot .tk{font-size:11px;fill:#5b6776;text-anchor:middle}
+  .kn-plot .al{font-size:12px;fill:#16202c;font-weight:700}
+  .kn-plot .ip{opacity:.55}
+  .kn-plot .ip.x{stroke-width:2.2;fill:none}
+  .kn-plot .ip.nb{opacity:1;stroke:#0f2742;stroke-width:1.5}
+  .kn-plot .ip.x.nb{stroke-width:3.2}
+  .kn-plot .kn-rng{fill:rgba(47,111,208,.07);stroke:#1d3f8f;stroke-width:2}
+  .kn-plot .kn-new circle{fill:#f28c16;stroke:#fff;stroke-width:2}
+  .kn-plot .kn-new path{stroke:#fff;stroke-width:2}
+  .kn-plot .kn-lg rect{fill:#fff;stroke:var(--line)}
+  .kn-plot .kn-lg text{font-size:12px;fill:#16202c}
+  .kn-side .ctrl{grid-template-columns:30px 1fr 30px}
+  .kn-v{display:grid;gap:4px;margin:10px 0}
+  .kn-v div{display:grid;grid-template-columns:84px 1fr 24px;align-items:center;gap:6px;font-size:.88rem;font-weight:700}
+  .kn-v i{display:block;height:14px;border-radius:7px;min-width:2px;transition:width .2s}
+  .kn-v b{text-align:right}
+  .kn-res{background:#f6f0fb;border-radius:12px;padding:10px 12px;font-size:.93rem}
+  .kn-res small{display:block;color:var(--muted);margin-top:4px}
+  .kn-side details{margin-top:8px}
+  .kn-side summary{cursor:pointer;font-weight:700;font-size:.9rem}
+  .kn-tbl td,.kn-tbl th{font-size:.84rem;padding:4px 6px}
+  /* 05 유형 고르기 */
+  .pk{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;margin-bottom:6px}
+  @media (max-width:760px){.pk{grid-template-columns:1fr}}
+  .pk-card{border-left:6px solid var(--k);background:#fbfaf7;border-radius:12px;padding:12px 14px}
+  .pk-card h4{color:var(--k);font-size:1.15rem}
+  .pk-card small{color:var(--muted)}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  .mt-opt summary{cursor:pointer;font-weight:900;font-size:1.05rem}

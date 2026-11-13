@@ -1,0 +1,265 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>데이터를 모을 때<br>무엇을 주의해야 할까?</h1>
+      <div class="story"><b>요리사에게 좋은 재료가 필요하듯이</b><br>요리사에게는 만들고자 하는 음식에 적합한 <b>신선하고 질 좋은 재료</b>가 필요해요. 기계학습도 마찬가지로 학습에 사용되는 <b>데이터의 질과 양</b>에 의해 성능이 결정돼요. 재료가 한쪽으로 치우쳐 있다면, 그 재료로 만든 인공지능의 결과를 믿을 수 있을까요?</div>
+      <p>오늘은 데이터가 한쪽으로 치우치는 <b>데이터 편향성</b>이 어디서 생기는지 찾아보고, 붓꽃 데이터를 내려받아 <b>속성</b>을 구분한 뒤, 두 데이터를 하나로 합치는 <b>데이터 전처리</b>를 시작해요.</p>
+      <ol>
+        <li>데이터 편향성은 무엇일까?</li><li>편향은 무엇을 망칠까?</li><li>스스로 해결하기 · 수집 방법과 편향 방지</li>
+        <li>함께 해결하기 · 붓꽃 데이터 수집</li><li>데이터 속성을 어떻게 구분할까?</li><li>데이터 전처리 · 데이터 통합</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>⚖️</i><div><b>데이터 편향성</b><small>수집 · 전처리 · 속성 선택</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🎯</i><div><b>정확성과 공정성</b><small>치우친 데이터가 망치는 것</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🌸</i><div><b>붓꽃 데이터</b><small>내려받고 속성 구분하기</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🧩</i><div><b>데이터 통합</b><small>두 파일을 하나로 합치기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>기계학습에 쓸 데이터를 모을 때 생길 수 있는 <b>데이터 편향성</b>과 그 원인을 알아보고, 편향된 데이터가 인공지능 결과의 <b>정확성</b>과 <b>공정성</b>을 어떻게 해치는지 확인합니다. 이어서 붓꽃 데이터를 살펴보며 <b>데이터 속성</b>을 구분하고, 데이터를 분석하기 알맞게 만드는 <b>데이터 전처리</b>의 첫 단계로 두 파일을 <b>통합</b>합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">생각 열기 (64쪽)</span>
+        <p style="margin:0 0 6px;font-size:.9rem">요리사에게 신선하고 질 좋은 재료가 필요하다면, 인공지능에게 필요한 「좋은 재료」는 어떤 데이터일까요?</p>
+        <div class="memo"><label>인공지능에게 좋은 데이터란 어떤 데이터일까요?</label><textarea data-memo="chefData" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>데이터 수집</b> · 데이터를 수집할 때 어떤 점을 주의해야 할까?</li>
+          <li><b>데이터 전처리</b> · 데이터 속성을 어떻게 구분하고, 여러 데이터를 어떻게 하나로 합칠까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>데이터 수집 방법에 따라 데이터를 수집할 수 있다.</li>
+          <li>수집한 데이터를 전처리할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 데이터 수집 · 데이터 편향성 · 데이터 속성 · 데이터 통합</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 데이터 편향성은 무엇일까부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 데이터 편향성 -->
+<section class="page" data-name="데이터 편향성" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>데이터 편향성은 무엇일까?</h2><p>교과서 64쪽 · 데이터 편향성, 데이터 편향성이 발생하는 원인</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터가 <b>현실 세계를 골고루 담지 못하고 한쪽으로 치우친 것</b>이 데이터 편향성이에요. 데이터를 <b>모을 때</b>, <b>다듬을 때</b>, 그리고 어떤 <b>속성을 고를 때</b> 모두 치우침이 끼어들 수 있어요.</span></div>
+  <div class="card">
+    <h3>📖 데이터 편향성</h3>
+    <p style="margin-top:0">기계학습은 학습에 사용되는 데이터의 질과 양에 의해 성능이 결정된다. 특히 <b>데이터의 편향성(data bias)</b>은 인공지능이 만들어 내는 결과의 신뢰 여부를 결정하는 중요한 요소이다.</p>
+    <div class="callout"><b>데이터 편향성</b>이란 데이터가 현실 세계를 잘 반영할 수 있을 만큼 충분히 확보되지 않아 <b>실제 세계를 표현하지 못하거나 한쪽으로 치우친 경향</b>을 보이고 있는 것을 말한다.</div>
+    <h3 style="margin-top:16px">🔎 데이터 편향성이 발생하는 원인</h3>
+    <p style="margin-top:0">기계학습을 적용한 문제 해결 과정에서 다양한 편향이 발생할 수 있다.</p>
+    <div class="cards3">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🧺</div><h4>데이터 수집</h4><p>특정 집단이 <b>너무 많이 또는 적게</b> 수집되거나 아예 특정 집단이 <b>누락</b>될 때 발생</p></div>
+      <div class="kc" style="--k:#e0702b"><div class="ic">🧹</div><h4>데이터 전처리</h4><p>데이터를 수집하여 입력할 때 <b>잘못 입력</b>하거나 <b>비어 있는 값을 채워 넣는</b> 과정에서 발생</p></div>
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🏷️</div><h4>속성 선택</h4><p><b>무의식적으로 가지고 있는 사회의 편향</b>이 포함되었을 때 발생</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🧩 어느 단계에서 생긴 편향일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">아래 상황은 이해를 돕기 위해 만든 <b>예시</b>예요. 읽고 편향이 생긴 단계를 골라 보세요.</p>
+    <div id="stageGame"></div>
+    <div class="memo"><label>세 단계 중 하나를 골라, 그 단계에서 편향이 생기는 상황을 <b>내 주변의 구체적인 예</b>로 들어 보세요. (게임에 나온 예 말고 새로운 예면 더 좋아요)</label><textarea data-memo="biasStage" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 정확성과 공정성 -->
+<section class="page" data-name="정확성·공정성" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>편향은 무엇을 망칠까?</h2><p>교과서 64쪽 · 편향된 데이터로 학습했을 때의 결과, 정확성과 공정성</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>치우친 데이터로 공부한 인공지능은 <b>틀리는 일이 많아지고</b>(정확성), 그 틀림이 <b>특정한 사람들에게 몰리기</b> 쉬워요(공정성). 그래서 데이터를 <b>모으는 단계부터</b> 조심해야 해요.</span></div>
+  <div class="card">
+    <h3>📖 교과서 문장</h3>
+    <div class="callout" style="margin-top:0">이러한 다양한 원인에 의한 편향이 반영된 데이터로 기계학습이 진행되면 결과의 <b>정확성이 떨어지고 공정성을 갖기 힘들다</b>. 따라서 <b>데이터 수집 단계에서부터</b> 공정하고 정확한 데이터 수집을 위해 노력해야 한다.</div>
+  </div>
+  <div class="card">
+    <h3>🔊 AI 스피커 시뮬레이션 <span class="muted" style="font-weight:400;font-size:.88rem">(예시)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">어느 AI 스피커가 목소리 데이터로 말을 알아듣는 법을 학습해요. 실제 사용자는 <b>청소년 70%, 어르신 30%</b>라고 해 볼게요. 학습 데이터에 <b>어르신 목소리를 얼마나 넣을지</b> 바꿔 보며 두 막대를 비교하세요. <b>숫자는 설명을 위해 만든 예시</b>예요(실제 측정값이 아니에요).</p>
+    <div id="fairSim"></div>
+  </div>
+  <div class="card">
+    <h3>🤔 생각해 보기 · 「정확하지 않다」와 「공정하지 않다」</h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><h4>🎯 정확성</h4><p>인공지능의 결과가 <b>얼마나 맞는가</b>. 전체 정확도가 낮으면 누구에게나 틀린 답을 자주 내요.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>⚖️ 공정성</h4><p>결과가 <b>집단에 따라 고르게 나오는가</b>. 전체 정확도가 높아도 틀리는 일이 한 집단에 몰리면 그 사람들은 불리해져요.</p></div>
+    </div>
+    <div class="memo"><label>「정확하지 않은 것」과 「공정하지 않은 것」은 어떻게 다를까요? 위 시뮬레이션이나 내가 아는 예를 들어 설명해 보세요.</label><textarea data-memo="fairVsAcc" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 스스로 해결하기 -->
+<section class="page" data-name="수집 방법·편향 방지" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>스스로 해결하기 · 수집 방법과 편향 방지</h2><p>교과서 64쪽 · 문제 해결을 위한 데이터 수집 방법, 편향성 방지를 위해 노력할 점</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>풀고 싶은 문제가 정해지면 <b>어떤 방법으로 데이터를 모을지</b> 고르고, 그 방법에서 <b>어떤 치우침이 생길 수 있을지</b> 미리 생각해 두는 거예요.</span></div>
+  <div class="card">
+    <h3>🧺 데이터 수집 방법 다시 보기 <span class="muted" style="font-weight:400;font-size:.88rem">(62~63쪽)</span></h3>
+    <div class="cards3">
+      <div class="kc" style="--k:#1f9d74"><div class="ic">📏</div><h4>관찰, 측정, 설문</h4><p>해당하는 데이터를 관찰하거나 직접 측정하는 가장 간단한 방법이에요. 양이 많으면 시간과 노력이 많이 들어요.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🤖</div><h4>자동화 장치와 코드</h4><p>센서·사물 인터넷이나 웹크롤링 같은 코드로 실시간 데이터, 인터넷의 데이터와 검색어를 모아요.</p></div>
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🗂️</div><h4>공유 사이트</h4><p>공공데이터포털 같은 공공 데이터 공유 사이트나 데이콘·캐글 같은 민간 사이트에서 내려받아요.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📝 문제마다 수집 방법 고르기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문제마다 알맞은 수집 방법을 하나 골라 보세요. 고르면 <b>예시 답안</b>(수집 방법과 편향성 방지를 위해 노력할 점)이 열려요. 예시 답안과 달라도 <b>이유가 있다면 괜찮아요</b>.</p>
+    <div id="planTbl"></div>
+    <div class="memo"><label>네 문제 중 하나를 골라 <b>수집 방법</b>과 <b>편향성 방지를 위해 노력할 점</b>을 적어 보세요. 그리고 그 방법으로 편향을 <b>완전히 없앨 수 있을지</b>도 생각해 적어 보세요.</label><textarea data-memo="biasPlan" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 함께 해결하기 · 붓꽃 데이터 -->
+<section class="page" data-name="붓꽃 데이터 수집" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>함께 해결하기 · 붓꽃 데이터 수집</h2><p>교과서 65쪽 · 붓꽃 데이터를 수집하고 데이터에 포함된 속성 알아보기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터 공유 사이트 <b>캐글</b>에서 붓꽃 데이터 파일을 내려받아 열어 보고, <b>한쪽으로 치우친 부분이 없는지</b> 살펴봐요.</span></div>
+  <div class="card">
+    <h3>🌸 붓꽃 데이터 내려받기</h3>
+    <ol class="steps2">
+      <li>캐글 사이트에 접속한다.</li>
+      <li>로그인 후 [Datasets] 메뉴에서 「iris」를 검색해서 「Iris Species」를 선택하고 파일(Iris.csv)을 내려받는다. <small class="muted">캐글에서 데이터셋을 내려받으려면 로그인이 필요해요.</small></li>
+      <li>파일을 열어 데이터가 편향적으로 수집된 부분이 있는지 살펴보고, 이를 해결하기 위해 어떤 처리를 해야 할지 생각해 본다. <small class="muted">(실습에는 속성과 종류를 한글로 바꾼 Iris1.csv를 사용해요.)</small></li>
+    </ol>
+    <div class="row"><a class="btn ghost sm" href="https://www.kaggle.com/datasets/uciml/iris" target="_blank" rel="noopener" style="text-decoration:none">캐글 Iris Species 열기 ↗</a><a class="btn sm" href="Iris.csv" download style="text-decoration:none">Iris.csv 받기</a><a class="btn sm" href="Iris1.csv" download style="text-decoration:none">Iris1.csv 받기 (한글)</a></div>
+    <p class="note">로그인이 어렵다면 위 「받기」 버튼으로 같은 파일을 바로 받을 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>🔍 Iris.csv 열어 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">파일의 앞부분이에요. 영문 속성 이름과 한글 속성 이름을 바꿔 보고, <b>종류별 개수</b>를 세어 치우침이 있는지 확인해 보세요.</p>
+    <div id="irisView"></div>
+  </div>
+  <div class="card">
+    <h3>💬 데이터 수집 방법 말해 보기</h3>
+    <p style="margin-top:0">이 붓꽃 데이터는 어떤 방법으로 수집했나요? 이 방법 외에 어떤 방법으로 데이터를 수집할 수 있을까요? <span class="muted">— 짝과 말로 이야기해 보세요. 예를 들어 우리나라에 피는 붓꽃 데이터가 필요하다면 어떻게 모을 수 있을까요?</span></p>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>데이터는 <button class="blank" data-a="관찰·측정·설문">?</button>, 자동화 장치나 코드 이용, <button class="blank" data-a="데이터 공유 사이트">?</button>와 같은 다양한 방법으로 수집할 수 있다.</li>
+      <li>데이터를 수집할 때 데이터의 <button class="blank" data-a="편향성">?</button>에 주의해야 한다.</li>
+    </ol>
+    <h3 style="margin-top:14px">✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 데이터 속성 -->
+<section class="page" data-name="데이터 속성" data-acc="#1f9d74">
+  <div class="head"><div class="num">05</div><div><h2>데이터 속성을 어떻게 구분할까? <span class="pa-quick">선생님과 함께 빠르게</span></h2><p>교과서 66쪽 · 속성명과 속성값, 수치형과 범주형, 독립 변수와 종속 변수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>표의 <b>열 이름</b>이 속성명, 칸에 든 <b>값</b>이 속성값이에요. 속성값은 <b>숫자로 계산할 수 있는지(수치형)</b>, <b>몇 가지 갈래 중 하나인지(범주형)</b>로 나누고, 기계학습에서 <b>무엇을 맞히려는지</b>에 따라 독립 변수와 종속 변수로 나눠요.</span></div>
+  <div class="card">
+    <h3>📖 속성명과 속성값 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-2)</span></h3>
+    <p style="margin-top:0">사람은 감각 기관과 경험을 통해 세상을 이해하지만 기계는 입력된 데이터로 세상에 대한 지식을 갖게 된다. 기계는 성별, 나이, 키, 학교, 취미 등의 속성으로 이루어진 데이터를 입력받아 사람에 대해 학습한다. 이때 데이터 속성은 <b>속성명</b>과 <b>속성값</b>으로 구분된다.</p>
+    <table class="pa-attr"><tr><th>속성명</th><td>성별</td><td>나이</td><td>키</td><td>학교</td><td>취미</td></tr><tr><th>속성값</th><td>남</td><td>18</td><td>178.3</td><td>○○고</td><td>만화 그리기</td></tr></table>
+  </div>
+  <div class="card">
+    <h3>🔢 데이터 유형: 수치형과 범주형 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-2)</span></h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><h4>수치형 데이터 (numeric) · 양적</h4><p>숫자로 표현되며 <b>비교 및 연산이 가능</b>함. 예: 키, 학급 인원수</p><small>(66쪽 데이터 유형) <b>연속형</b> 키, 몸무게, 체온 · <b>이산형</b> 신발 크기, 가족 인원수</small></div>
+      <div class="kc" style="--k:#e0702b"><h4>범주형 데이터 (categorical) · 질적</h4><p><b>몇 개의 범주 또는 항목</b>의 형태로 나누어짐. 예: 취미, 혈액형</p><small><b>순위형</b> 등급(1등급, 2등급, 3등급) · <b>명목형</b> 성별(남, 여), 지역(서울, 부산, 제주)</small></div>
+    </div>
+    <h3 style="margin-top:16px">🧩 어느 갈래일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서에 나온 속성들이에요. 숫자가 들어 있다고 꼭 수치형은 아니에요!</p>
+    <div id="typeGame"></div>
+  </div>
+  <div class="card">
+    <h3>🎯 독립 변수와 종속 변수 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-3)</span></h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#1f9d74"><h4>독립 변수</h4><p>기계학습에서 <b>결과에 영향을 주는</b> 속성이다. <small style="display:inline">특성(feature), 속성(attribute)이라고도 불러요.</small></p></div>
+      <div class="kc" style="--k:#d64535"><h4>종속 변수</h4><p><b>다른 속성에 영향을 받는</b> 속성이다. <small style="display:inline">레이블(label), 타깃(target)이라고도 불러요.</small></p></div>
+    </div>
+    <p style="margin-bottom:6px">같은 붓꽃 데이터라도 <b>어떤 문제를 푸느냐</b>에 따라 역할이 바뀌어요. 61쪽 문제를 골라 보세요.</p>
+    <div class="row pa-role-btn"><button class="btn sm" data-r="na">(나) 새로운 꽃의 속성으로 꽃의 종류를 알기</button><button class="btn sm ghost" data-r="da">(다) 새로운 꽃의 모르는 수치형 속성값 구하기</button></div>
+    <div id="roleView"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 데이터 전처리 · 통합 -->
+<section class="page" data-name="데이터 통합" data-acc="#2f6fd0">
+  <div class="head"><div class="num">06</div><div><h2>데이터 전처리 · 두 데이터를 하나로 합치기 <span class="pa-quick">선생님과 함께 빠르게</span></h2><p>교과서 67쪽 · 데이터 전처리, 데이터 통합(Iris1.csv + Iris2.csv)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>모은 데이터를 그대로 쓰지 않고 <b>분석하기 좋은 모양으로 다듬는 일</b>이 데이터 전처리예요. 오늘은 그 첫 단계로, 따로 있는 두 파일을 <b>위아래로 이어 붙여 하나로</b> 만들어요.</span></div>
+  <div class="card">
+    <h3>📖 데이터 전처리</h3>
+    <p style="margin-top:0"><b>데이터 전처리</b>는 데이터를 분석하거나 처리하기에 적합한 형태로 만드는 과정을 의미하며 기계학습에서 아주 중요한 과정이다. 카드를 눌러 네 가지 작업의 뜻(67쪽)을 확인해 보세요.</p>
+    <div id="prepCards" class="tcards"></div>
+  </div>
+  <div class="card">
+    <h3>🌸 최신 붓꽃 데이터 추가하기</h3>
+    <p style="margin-top:0">통계학자 피셔가 수집한 붓꽃 데이터는 <b>1936년</b>에 붓꽃을 측정하여 만든 데이터이다. 생태계의 변화에 따라 최근 만들어진 붓꽃 정보를 추가하기 위해 <b>종류별 10개씩</b>의 데이터를 수집하여 <b>Iris2.csv</b> 파일을 제작하였다. Iris1.csv와 Iris2.csv를 한 개의 데이터로 통합해 보자.</p>
+    <div class="pa-code">
+      <p><b>1 파일 업로드하기</b> — 구글 코랩의 files 모듈로 합칠 두 파일을 올려요.</p>
+<pre>from google.colab import files   # 구글 코랩의 files 모듈 불러오기
+irisData1 = files.upload()   # files 모듈의 upload()로 파일 업로드하기
+irisData2 = files.upload()</pre>
+      <p><b>2 데이터셋 불러오기</b> — pandas로 파일을 읽어 앞의 5개 데이터를 출력해요. 한글이 포함된 파일이라 <span class="mono">cp949</span> 인코딩을 넣어요.</p>
+<pre>import pandas as pd    # pandas 모듈을 불러와 별칭을 pd로 지정
+df1 = pd.read_csv('Iris1.csv', encoding = 'cp949') # 데이터프레임으로 변환
+df2 = pd.read_csv('Iris2.csv', encoding = 'cp949')
+df1.head()    # df1의 앞 5개 데이터 출력</pre>
+      <div class="pa-out"><table><tr><th></th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th><th>종류</th></tr><tr><th>0</th><td>1</td><td>5.1</td><td>3.5</td><td>1.4</td><td>0.2</td><td>세토사</td></tr><tr><th>1</th><td>2</td><td>4.9</td><td>3.0</td><td>1.4</td><td>0.2</td><td>세토사</td></tr><tr><th>2</th><td>3</td><td>4.7</td><td>3.2</td><td>1.3</td><td>0.2</td><td>세토사</td></tr><tr><th>3</th><td>4</td><td>4.6</td><td>3.1</td><td>1.5</td><td>0.2</td><td>세토사</td></tr><tr><th>4</th><td>5</td><td>5.0</td><td>3.6</td><td>1.4</td><td>0.2</td><td>세토사</td></tr></table></div>
+      <p><b>3 두 개의 데이터 파일 합치기</b> — df1 내용 뒤에 df2 내용이 붙도록 합하여 df에 저장해요. <span class="mono">concat()</span>은 두 개 이상의 판다스 객체를 행 또는 열 방향으로 이어 붙여요.</p>
+<pre>df = pd.concat([df1, df2]) # df1과 df2를 위아래 방향으로 합치기
+df</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🧩 직접 합쳐 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">두 표의 일부를 보여 줘요. 실행 버튼을 눌러 합친 결과를 확인하고, <b>순서를 바꾸면</b> 어떻게 되는지도 비교해 보세요.</p>
+    <div id="mergeLab"></div>
+  </div>
+  <div class="card">
+    <h3>💻 코랩에서 직접 해 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">노트북에서는 파일을 올리는 대신 인터넷 주소에서 Iris1.csv와 Iris2.csv를 바로 읽도록 바꿔 두었어요. 위에서부터 셀을 차례로 실행해 보세요.</p>
+    <div class="row"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-preprocess-bias/assets/iris_merge.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="iris_merge.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost sm" href="Iris2.csv" download style="text-decoration:none">Iris2.csv 받기</a></div>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">07</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>데이터 편향성</b>은 데이터가 현실 세계를 잘 반영하지 못하거나 한쪽으로 치우친 것이다. <b>데이터 수집</b>(특정 집단이 너무 많거나 적거나 누락), <b>데이터 전처리</b>(잘못 입력, 빈 값 채워 넣기), <b>속성 선택</b>(무의식적인 사회의 편향) 단계에서 생길 수 있다.</div>
+    <div style="--k:#2f6fd0">편향이 반영된 데이터로 학습하면 결과의 <b>정확성</b>이 떨어지고 <b>공정성</b>을 갖기 힘들다. 그래서 <b>데이터 수집 단계에서부터</b> 공정하고 정확한 데이터를 모으려고 노력해야 한다.</div>
+    <div style="--k:#9b4fc4">데이터 속성은 유형에 따라 <b>수치형·범주형</b>, 역할에 따라 <b>독립 변수·종속 변수</b>로 구분한다. <b>데이터 전처리</b>(정제·통합·축소·변환)의 하나로 <span class="mono">pd.concat()</span>을 써서 두 데이터를 <b>통합</b>했다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>데이터 편향성은 수집·전처리·속성 선택 세 단계에서 생길 수 있다고 배웠습니다. 이 중 한 단계를 고르고, 그 단계에서 편향이 생기는 상황을 구체적인 예로 들어 쓰세요.</li>
+      <li>교과서는 편향된 데이터로 학습하면 정확성이 떨어지고 공정성을 갖기 어렵다고 합니다. &#x27;정확하지 않은 것&#x27;과 &#x27;공정하지 않은 것&#x27;은 어떻게 다른지 예를 들어 설명하세요.</li>
+      <li>64쪽 활동에서 데이터 수집 방법을 정하고 편향을 막기 위해 노력할 점을 적었습니다. 내가 적은 방법이 편향을 완전히 없앨 수 있을지 생각해 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

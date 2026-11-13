@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>데이터 전처리(2): 결측치 · 이상치 · 핵심 속성</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  /* 카드 격자 칸이 안의 긴 코드·표 때문에 늘어나지 않게 */
+  .cards2>*,.cards3>*,.cards4>*,.grid2>*{min-width:0}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 공통: 표 · 코드 · 그래프 */
+  .iv-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .iv{font-size:.85rem;margin:6px 0;min-width:440px}
+  .iv th,.iv td{padding:5px 8px;white-space:nowrap}
+  .pa-code pre{background:#0f2742;color:#e8eef6;border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.55;overflow-x:auto;margin:6px 0 10px}
+  .pa-code>p{margin:12px 0 4px;font-size:.93rem}
+  .pa-out{background:#f6f4ef;border:1px solid var(--line);border-radius:10px;padding:4px 8px;overflow-x:auto;margin:4px 0}
+  .pa-out pre{background:none;color:var(--ink);margin:4px 0;padding:0;font-size:.8rem}
+  .pa-out table{font-family:ui-monospace,Menlo,monospace;font-size:.78rem;margin:2px 0;min-width:520px}
+  .pa-out th,.pa-out td{padding:3px 7px;white-space:nowrap;text-align:right}
+  .pa-out tr.hl td{background:#fde8e6;color:#a32a1e;font-weight:700}
+  .pa-out td.odd{background:#fde8e6;color:#a32a1e;font-weight:900}
+  .pa-tri table{min-width:420px}
+  .pa-svg{display:block;width:100%;height:auto;max-width:560px;margin:6px auto}
+  .pa-svg .ax{stroke:#8a94a3;stroke-width:1.2}
+  .pa-svg .gr{stroke:#eef0f3;stroke-width:1}
+  .pa-svg .tk{font-size:10px;fill:var(--muted);text-anchor:middle}
+  .pa-svg .lb{font-size:11px;fill:var(--ink);text-anchor:middle;font-weight:700}
+  .pa-svg .lg{font-size:10.5px;fill:var(--ink)}
+  .pa-more{margin-top:10px;background:#fbfaf7;border:1px dashed #c5ccd5;border-radius:12px;padding:10px 14px}
+  .pa-more summary{cursor:pointer;font-weight:900}
+  .pa-more p{font-size:.92rem}
+  .fs-row{display:grid;grid-template-columns:72px 1fr 64px;gap:8px;align-items:center;margin:5px 0;font-size:.9rem}
+  .fs-row b{text-align:right;font-size:.88rem}
+  .fs-tr{position:relative;background:#eef0f3;border-radius:999px;height:14px;overflow:hidden}
+  .fs-tr i{position:absolute;left:0;top:0;height:100%;border-radius:999px;transition:width .3s}
+  .fs-tr i.bf{background:#d5dae1}
+  .fs-msg{background:#fff4d6;border-radius:10px;padding:10px 12px;font-size:.92rem;margin-top:10px}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  /* 01 결측치 실험실 */
+  .na-ctl{display:flex;flex-direction:column;gap:8px;margin-bottom:8px}
+  .na-ctl>div,.bx-ctl>div{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .na-ctl span,.bx-ctl span{font-size:.82rem;font-weight:900;color:var(--muted);min-width:64px}
+  .na-ctl button,.bx-ctl button,.sc-btns button,.bx-out button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 11px;font:inherit;font-size:.86rem;cursor:pointer;color:var(--ink)}
+  .na-ctl button.on,.bx-ctl button.on,.sc-btns button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .natb td.nan{color:var(--red);font-weight:700;background:#fde8e6}
+  .natb td.fill{background:#fff4d6;color:#8a5a00;font-weight:900}
+  .natb tr.cut td{text-decoration:line-through;color:#aab1bb;background:#f4f5f7}
+  .natb .colcut{text-decoration:line-through;color:#aab1bb;background:#f4f5f7}
+  .na-res{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:8px}
+  @media (max-width:560px){.na-res{grid-template-columns:1fr}}
+  .na-num{display:flex;gap:8px}
+  .na-num>div,.bx-stat>div{background:var(--acc-soft);border-radius:10px;padding:6px 10px;text-align:center}
+  .na-num small,.bx-stat small{display:block;font-size:.74rem;color:var(--muted)}
+  .na-num b{font-size:1.05rem}
+  /* 03 박스 플롯 */
+  .bx-ctl{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+  .bx-main{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+  @media (max-width:760px){.bx-main{grid-template-columns:1fr}}
+  .bx-svg{max-width:380px}
+  .bx-svg .fe{stroke:var(--red);stroke-width:1.4;stroke-dasharray:5 4}
+  .bx-svg .fl{font-size:10px;fill:var(--red);font-weight:700}
+  .bx-svg .wk{stroke:#3d4652;stroke-width:1.6}
+  .bx-svg .bxr{fill-opacity:.55;stroke:#3d4652;stroke-width:1.6}
+  .bx-svg .md{stroke:#16202c;stroke-width:2.4}
+  .bx-svg .pt{fill:#6b7684;fill-opacity:.7;cursor:grab;touch-action:none}
+  .bx-svg .pt.out{fill:var(--red);fill-opacity:.9}
+  .bx-svg .pt.sel{stroke:#0f2742;stroke-width:3;fill-opacity:1;cursor:ns-resize}
+  .bx-svg .sl{font-size:11px;font-weight:900;fill:#0f2742;text-anchor:middle}
+  .bx-sel{background:var(--acc-soft);border-radius:10px;padding:8px 10px;font-size:.92rem}
+  .bx-sel .ok{color:#17694f;font-weight:700}.bx-sel .ng{color:var(--red);font-weight:700}
+  #bxR{width:100%;margin-top:8px}
+  .bx-stat{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .bx-stat b{font-family:ui-monospace,Menlo,monospace;font-size:.92rem}
+  .bx-out{margin-top:8px;font-size:.88rem;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+  .bx-out>b{margin-right:4px}
+  .bx-out button{border-color:#f3c1bb;color:#a32a1e;padding:2px 8px;font-size:.8rem}
+  /* 04 산점도 · 히트맵 */
+  .sc-btns{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+  .sc-main{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:12px;align-items:start}
+  @media (max-width:760px){.sc-main{grid-template-columns:1fr}}
+  .sc-main .pa-svg{max-width:420px}
+  .sc-lg{display:flex;flex-wrap:wrap;gap:10px;font-size:.88rem}
+  .sc-lg span{display:inline-flex;align-items:center;gap:4px}
+  .sc-mix{background:var(--acc-soft);border-radius:10px;padding:8px 10px;margin-top:10px}
+  .sc-mix small{display:block;font-size:.78rem;color:var(--muted)}
+  .sc-mix b{font-size:1.3rem}
+  .sc-mix span{display:block;font-size:.78rem;color:var(--muted)}
+  .vote.pa-vote6{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:640px){.vote.pa-vote6{grid-template-columns:1fr 1fr}}
+  .hm{border-collapse:separate;border-spacing:2px;min-width:440px;max-width:560px;font-size:.82rem}
+  .hm td{font-family:ui-monospace,Menlo,monospace;font-weight:700;padding:9px 4px;border-radius:4px;border:0}
+  .hm th{font-size:.76rem;padding:4px;border:0;white-space:nowrap}
+  .hm td.top{outline:3px solid #0f2742;outline-offset:-3px}
+  /* 05 tips 막대 */
+  .tb-box{margin-top:10px;max-width:520px}
+  .tb-h{font-weight:900;font-size:.9rem;margin-bottom:4px}
+  .tb-row{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;margin:3px 0;font-size:.82rem}
+  .tb-row b{text-align:right;font-family:ui-monospace,Menlo,monospace}
+  .tb-tr{position:relative;height:12px;background:#eef0f3;border-radius:4px}
+  .tb-tr::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:#8a94a3}
+  .tb-tr i{position:absolute;top:0;height:100%;border-radius:3px}
+  .tb-tr i.pos{background:#d64535}.tb-tr i.neg{background:#1f9d74}
+  #naVote{grid-template-columns:1fr;gap:6px;margin-top:6px}
+  #naVote button,.vote.pa-vote6 button{padding:7px 10px;font-size:.88rem;border-width:2px}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>데이터를 다듬어<br>핵심 속성을 찾아볼까?</h1>
+      <div class="story"><b>합친 붓꽃 데이터, 그대로 써도 될까?</b><br>Iris1.csv와 Iris2.csv를 <span class="mono">pd.concat</span>으로 합치면 180행의 데이터가 돼요. 그런데 표를 자세히 보면 <b>비어 있는 칸(NaN)</b>이 있고, 꽃받침 길이가 <b>15.0</b>, 꽃잎 너비가 <b>111</b>처럼 붓꽃이라고 믿기 어려운 값도 섞여 있어요. 이런 데이터로 학습하면 인공지능의 결과를 믿을 수 있을까요?</div>
+      <p>오늘은 비어 있는 값(<b>결측치</b>)과 크게 벗어난 값(<b>이상치</b>)을 찾아 처리하는 <b>데이터 정제</b>를 하고, 붓꽃의 종류를 가장 잘 구분하는 <b>핵심 속성</b>을 산점도와 히트맵으로 찾아요.</p>
+      <ol>
+        <li>결측치를 어떻게 확인하고 처리할까?</li><li>기초 통계량·히스토그램으로 이상치 찾기</li><li>박스 플롯으로 이상치 확정하고 제거하기</li>
+        <li>핵심 속성을 어떻게 알 수 있을까?</li><li>(선택 · 과제) 함께 해결하기 · tips 데이터</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🕳️</i><div><b>결측치</b><small>비어 있는 값 확인하고 처리하기</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>📊</i><div><b>이상치</b><small>통계량 · 히스토그램 · 박스 플롯</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔑</i><div><b>핵심 속성</b><small>산점도 · 히트맵 · 상관계수</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🍽️</i><div><b>tips 데이터</b><small>배운 순서대로 직접 해 보기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>합친 붓꽃 데이터에서 <b>결측치</b>를 확인하고 세 가지 처리 방법을 비교합니다. <b>기초 통계량</b>, <b>히스토그램</b>, <b>박스 플롯</b>으로 <b>이상치</b>를 찾아 제거하고, <b>산점도</b>와 <b>히트맵</b>으로 속성 간의 관계를 살펴 붓꽃의 종류를 가장 잘 구분하는 <b>핵심 속성</b>을 고릅니다. 마지막 <b>tips 데이터 실습(05)은 선택 · 과제</b>예요. 시간이 남으면 수업 중에, 아니면 집에서 해 봐요.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">생각 열기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">설문 조사를 했는데 한 응답자가 10개 질문 중 4개만 답했어요. 이 응답지를 어떻게 할까요? <small class="muted">(예시 상황)</small></p>
+        <div id="naVote" class="vote"></div>
+        <p id="naVoteMsg" class="note"></p>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>데이터 정제</b> · 데이터에서 결측치와 이상치를 어떻게 확인하고 처리할까?</li>
+          <li><b>핵심 속성</b> · 문제를 해결하는 데 가장 큰 영향을 주는 속성을 어떻게 알 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>수집한 데이터를 전처리할 수 있다.</li>
+          <li>데이터의 핵심 속성을 추출할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 데이터 정제 · 이상치 및 결측치 처리 · 핵심 속성</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>💻 오늘 쓰는 실습 노트북</h3>
+      <p class="muted" style="margin-top:0;font-size:.9rem">교과서 68~72쪽 코드를 그대로 담은 노트북이에요. 파일을 올리는 대신 인터넷 주소에서 Iris1.csv와 Iris2.csv를 바로 읽도록 바꿔 두었어요. 화면마다 코드와 실행 결과를 보여 주니, 실행하지 않아도 따라올 수 있어요.</p>
+      <div class="row"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-preprocess-2/assets/iris_preprocess.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="iris_preprocess.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost sm" href="Iris1.csv" download style="text-decoration:none">Iris1.csv</a><a class="btn ghost sm" href="Iris2.csv" download style="text-decoration:none">Iris2.csv</a></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 결측치부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 결측치 -->
+<section class="page" data-name="결측치" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>결측치를 어떻게 확인하고 처리할까?</h2><p>교과서 68쪽 · 데이터 정제, 결측치 확인하기, 결측치 처리하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>표에서 <b>비어 있는 칸</b>이 결측치예요. 빈칸이 있는 <b>열을 지우거나</b>, <b>다른 값으로 채우거나</b>, 빈칸이 있는 <b>행을 지우는</b> 세 가지 방법 중에서 골라요. 무엇을 고르느냐에 따라 남는 데이터가 달라져요.</span></div>
+  <div class="card">
+    <h3>📖 데이터 정제와 결측치</h3>
+    <p style="margin-top:0">수집된 데이터 값에 값이 잘못 들어가 있거나 불필요한 문자가 섞여 있을 수 있다. 이때 손상되거나 부정확한 부분을 수정하고, 불필요하거나 불완전한 데이터를 삭제 또는 교체하는 전처리 작업을 <b>데이터 정제(data cleaning)</b>라고 한다.</p>
+    <div class="callout"><b>결측치(missing value)</b>는 수집한 데이터에서 누락되어 비어 있는 값을 말한다. 예를 들어, 설문 조사를 했는데 응답자가 10개 질문 중 4개만 응답했다면 나머지 6개는 결측치가 된다. 결측치는 기계학습의 성능에 부정적 영향을 주는 요인이므로 데이터 정제 과정에서 반드시 처리해야 한다.</div>
+    <p class="muted" style="font-size:.88rem;margin:0">결측치 표기(68쪽): 빈값 · NA(Not Available) · NaN(Not a Number) · Null</p>
+  </div>
+  <div class="card">
+    <h3>1 결측치 확인하기</h3>
+    <div class="pa-code">
+<pre>df.isna().sum()</pre>
+      <div class="pa-out"><pre>일련번호      0
+꽃받침 길이    3
+꽃받침 너비    4
+꽃잎 길이     2
+꽃잎 너비     3
+종류        0
+dtype: int64</pre></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 결측치의 개수는 꽃받침 길이 3개, 꽃받침 너비 4개, 꽃잎 길이 2개, 꽃잎 너비 3개가 있고 일련번호, 종류 속성은 결측치가 없음을 확인할 수 있다. <span class="muted"><span class="mono">isna()</span>는 결측치가 있으면 True, 없으면 False를 돌려주고, <span class="mono">sum()</span>으로 True의 개수를 더해요.</span></p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>2 결측치 처리하기</h3>
+    <div class="cards3">
+      <div class="kc" style="--k:#9b4fc4"><h4>(가) 결측치가 있는 열 제거하기</h4><p>결측치에 해당하는 속성을 모두 제거하면 <b>심각한 데이터 손실</b>이 발생할 수 있다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>(나) 결측치를 특정 값으로 대체하기</h4><p>결측치를 다른 값으로 치환하면 사실을 온전히 반영한 것이 아니므로 <b>데이터 편향</b>이 발생할 수 있다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>(다) 결측치가 있는 행 제거하기</h4><p>데이터의 양이 충분히 많다면 결측치가 있는 행을 제거하는 (다) 방법이 가장 적절하다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🧪 결측치 처리 실험실 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-4 결측치가 있는 데이터)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">데이터 범위와 처리 방법을 바꿔 보세요. 아래 표는 결측치가 있는 8개 행이고, 결과 칸에는 <b>남은 행·열의 수</b>와 <b>종류별 개수</b>가 나와요. <b>Iris2.csv 30행만 있을 때</b>와 <b>합친 데이터 180행일 때</b> (다) 방법의 결과를 꼭 비교해 보세요.</p>
+    <div id="naLab"></div>
+  </div>
+  <div class="card">
+    <h3>✂️ 교과서의 선택: (다) 결측치가 있는 행 제거하기</h3>
+    <div class="pa-code">
+<pre>df3 = df.dropna(axis = 0, inplace = False)
+df3</pre>
+      <p class="note" style="color:var(--ink)">180행 중 결측치가 있는 8행이 지워져 <b>172행</b>이 남아요. <span class="muted"><span class="mono">dropna</span>의 axis 옵션: 0 또는 'index'는 NaN 값이 포함된 행(row) 삭제(생략하면 기본값), 1 또는 'columns'는 NaN 값이 포함된 열(column) 삭제</span></p>
+    </div>
+    <div class="memo"><label>교과서가 (다) 행 제거를 고른 이유는 무엇이었나요? 만약 데이터가 30개뿐이었다면 같은 선택을 했을까요? 실험실에서 본 결과를 근거로 써 보세요.</label><textarea data-memo="naChoice" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 기초 통계량 · 히스토그램 -->
+<section class="page" data-name="기초 통계량" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>기초 통계량·히스토그램으로 이상치 찾기</h2><p>교과서 69~70쪽 · 이상치, describe(), groupby(), 히스토그램(그림 Ⅱ-3)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>숫자가 많으면 하나하나 볼 수 없으니 <b>평균, 중앙값, 최솟값, 최댓값</b> 같은 요약 숫자를 먼저 봐요. 최댓값이 평균이나 75%보다 <b>터무니없이 크다면</b> 이상치가 있다는 신호예요.</span></div>
+  <div class="card">
+    <h3>📖 이상치</h3>
+    <div class="callout" style="margin-top:0"><b>이상치(outlier)</b>는 관측된 데이터의 범위에서 많이 벗어난 아주 작은 값이나 큰 값을 말한다. 설문 조사에서 누군가 의도적으로 전혀 예상하지 못한 대답을 했을 때와 같이 일반적인 경향에서 벗어난 값도 이에 해당한다.</div>
+    <h3 style="margin-top:14px">1 기초 통계량으로 이상치 확인하기</h3>
+    <p style="margin-top:0"><span class="mono">describe()</span> 함수를 사용하여 기초 통계량 중에서 중심 경향성을 나타내는 평균값, 중앙값 및 최솟값, 최댓값 등을 주의해서 살펴보자.</p>
+    <div class="pa-code">
+<pre>df3.describe()</pre>
+      <div class="pa-out"><table><tr><th></th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th></tr>
+        <tr><th>count</th><td>172.000000</td><td>172.000000</td><td>172.000000</td><td>172.000000</td><td>172.000000</td></tr>
+        <tr><th>mean</th><td>87.267442</td><td>5.914535</td><td>3.057558</td><td>4.348256</td><td>1.880233</td></tr>
+        <tr><th>std</th><td>51.003136</td><td>1.082432</td><td>0.451768</td><td>5.574834</td><td>8.409266</td></tr>
+        <tr><th>min</th><td>1.000000</td><td>4.300000</td><td>2.000000</td><td>1.000000</td><td>0.100000</td></tr>
+        <tr><th>25%</th><td>43.750000</td><td>5.175000</td><td>2.800000</td><td>1.600000</td><td>0.300000</td></tr>
+        <tr><th>50%</th><td>86.500000</td><td>5.800000</td><td>3.000000</td><td>4.400000</td><td>1.350000</td></tr>
+        <tr><th>75%</th><td>129.250000</td><td>6.425000</td><td>3.300000</td><td>5.100000</td><td>1.825000</td></tr>
+        <tr class="hl"><th>max</th><td>180.000000</td><td>15.000000</td><td>4.400000</td><td>55.000000</td><td>111.000000</td></tr></table></div>
+      <p class="note">count 데이터의 개수 · mean 평균 · std 표준편차 · min 최솟값 · 25% 하위 25% · 50% 중앙값 · 75% 상위 25% · max 최댓값</p>
+    </div>
+    <p><span class="mono">groupby()</span> 함수를 사용하면 종류별로 통계 정보를 확인할 수 있다.</p>
+    <div class="pa-code">
+<pre>df3.groupby('종류')['꽃받침 길이'].describe()</pre>
+      <div class="pa-out"><table><tr><th>종류</th><th>count</th><th>mean</th><th>std</th><th>min</th><th>25%</th><th>50%</th><th>75%</th><th>max</th></tr>
+        <tr><th>버시컬러</th><td>59.0</td><td>6.105085</td><td>1.289670</td><td>4.9</td><td>5.6</td><td>5.9</td><td>6.35</td><td class="odd">15.0</td></tr>
+        <tr><th>버지니카</th><td>58.0</td><td>6.574138</td><td>0.657096</td><td>4.9</td><td>6.2</td><td>6.5</td><td>6.90</td><td>7.9</td></tr>
+        <tr><th>세토사</th><td>55.0</td><td>5.014545</td><td>0.368891</td><td>4.3</td><td>4.8</td><td>5.0</td><td>5.25</td><td>5.8</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 꽃받침 길이의 평균(mean)은 버지니카, 버시컬러, 세토사 순으로 크다. 75%까지는 이 순서가 유지되다가 최댓값(max)에서 버시컬러, 버지니카, 세토사 순으로 크기가 바뀌는 것을 확인할 수 있다. 이는 <b>이상치가 입력되었을 가능성</b>을 나타내는 것이다.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔎 스스로 해결하기 · 기초 통계량 탐색기 <span class="muted" style="font-weight:400;font-size:.88rem">(69쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">붓꽃 종류별로 꽃받침 너비, 꽃잎 길이, 꽃잎 너비의 기초 통계량을 출력해 보고 결과의 의미를 설명해 보자. 속성을 바꾸면 <span class="mono">df3.groupby('종류')['속성'].describe()</span>의 결과와 히스토그램이 함께 바뀌어요.</p>
+    <div id="statLab"></div>
+    <p class="note" style="color:var(--ink)"><b>🤔 생각해 보기</b> 종류별 count가 <b>버시컬러 59, 버지니카 58, 세토사 55</b>로 서로 달라요. 왜 달라졌을까요? 데이터를 모을 때 주의해야 할 <b>데이터 편향성</b>과는 어떻게 이어질까요? 짝과 이야기해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>2 히스토그램으로 이상치 확인하기</h3>
+    <p style="margin-top:0">붓꽃 종류와 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비 간의 분포를 시각적으로 확인하기 위해 히스토그램을 그려 보자. 위 탐색기의 히스토그램이 이 코드의 결과를 다시 그린 것이에요.</p>
+    <div class="pa-code">
+<pre>!pip install koreanize-matplotlib # 한글 폰트 설정 라이브러리 설치
+import koreanize_matplotlib   # 한글 출력 가능한 그래프 모듈
+import matplotlib.pyplot as plt # 그래프 그리기에 필요한 모듈
+import seaborn as sns # 시각화를 위해 필요한 모듈
+sns.histplot(data = df3, x = '꽃받침 길이', hue = '종류')</pre>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 그림 Ⅱ-3에서 꽃받침 길이와 꽃잎 길이, 꽃잎 너비에서 전체 분포에서 벗어난 이상치가 있음을 확인할 수 있다.</p>
+    </div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">이상치 확인(69쪽): 데이터가 정규 분포를 이루는 경우에는 데이터의 99.7%가 존재하는 ±3σ를 벗어나는 값을 이상치로 처리한다. 하지만 기계학습에 사용되는 데이터는 정규 분포를 이루지 않거나 한쪽으로 치우친 경우가 많다. 이런 경우에는 데이터 변환 작업 또는 데이터의 <b>사분위수 범위</b> 값을 이용해 이상치를 찾는다.</p>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 박스 플롯 -->
+<section class="page" data-name="박스 플롯" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>박스 플롯으로 이상치 확정하고 제거하기</h2><p>교과서 70~71쪽 · 사분위수, 사분위수 범위(IQR), 안 울타리값·밖 울타리값, drop()</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터를 크기순으로 줄 세워 <b>가운데 50%</b>를 상자로 그려요. 상자 길이(IQR)의 <b>1.5배</b>보다 더 멀리 떨어진 점은 이상치로 봐요. 이 기준선이 <b>울타리</b>예요.</span></div>
+  <div class="card">
+    <h3>📖 박스 플롯</h3>
+    <p style="margin-top:0"><b>박스 플롯</b>은 사분위수, 최솟값, 최댓값을 사용해 여러 속성의 분포를 비교할 수 있는 그래프이다. <b>Q1 − 1.5 × IQR(안 울타리값, A) 미만</b>이나 <b>Q3 + 1.5 × IQR(밖 울타리값, B)을 초과</b>하여 수직선을 벗어나는 값을 보통 이상치로 판단한다.</p>
+    <div class="cards3">
+      <div class="kc" style="--k:#e0702b"><h4>Q1 · Q3</h4><p>제1사분위수(Q1)는 하위 25%, 제3사분위수(Q3)는 상위 25% 위치의 값</p></div>
+      <div class="kc" style="--k:#9b4fc4"><h4>IQR (사분위수 범위)</h4><p>Q3 − Q1. 상자의 길이예요.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>수직선(수염)</h4><p>상자의 IQR 거리의 1.5배 범위 안에서 가장 멀리 떨어진 데이터까지 그려서 분포를 표현한다.</p></div>
+    </div>
+    <div class="pa-code" style="margin-top:12px">
+<pre>sns.catplot(data = df3, x = '종류', y = '꽃받침 길이', kind = 'box', hue = '종류')</pre>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 꽃받침 길이에서는 버시컬러와 버지니카, 꽃잎 길이에서는 버지니카, 꽃잎 너비에서는 버시컬러에서 이상치가 있음을 확인할 수 있다.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🖐️ 박스 플롯 끌어 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">처음 화면은 <b>버시컬러의 꽃받침 길이</b>예요. 빨간 점이 이상치이고, 테두리가 굵은 점이 <b>일련번호 161번(15.0)</b>이에요. 이 점을 <b>위아래로 끌거나</b> 아래 슬라이더로 값을 바꿔 보세요. 몇 cm쯤부터 이상치가 아니게 되나요? 다른 점을 누르면 그 점을 고를 수 있고, 종류와 속성도 바꿀 수 있어요.</p>
+    <div id="boxLab"></div>
+  </div>
+  <div class="card">
+    <h3>4 이상치 제거하기 <span class="muted" style="font-weight:400;font-size:.88rem">(71쪽)</span></h3>
+    <p style="margin-top:0">박스 플롯에 이상치로 보이는 값의 인덱스를 찾기 위해서 사분위수 범위, 안 울타리값과 밖 울타리값을 계산한 후 이 범위를 벗어난 값의 인덱스를 찾아 삭제한다.</p>
+    <div class="pa-code">
+      <p><b>① 사분위수 범위</b></p>
+<pre>Q1 = df3.groupby('종류')['꽃받침 길이'].quantile(0.25) # 제1사분위수
+Q3 = df3.groupby('종류')['꽃받침 길이'].quantile(0.75) # 제3사분위수
+IQR = Q3 - Q1 # 사분위수 범위</pre>
+      <div class="pa-out pa-tri"><table><tr><th>종류</th><th>Q1</th><th>Q3</th><th>IQR</th><th>lower (A)</th><th>upper (B)</th></tr>
+        <tr><th>버시컬러</th><td>5.6</td><td>6.35</td><td>0.75</td><td>4.475</td><td>7.475</td></tr>
+        <tr><th>버지니카</th><td>6.2</td><td>6.90</td><td>0.70</td><td>5.150</td><td>7.950</td></tr>
+        <tr><th>세토사</th><td>4.8</td><td>5.25</td><td>0.45</td><td>4.125</td><td>5.925</td></tr></table></div>
+      <p><b>② 안팎 울타리값</b></p>
+<pre>lower = Q1 - 1.5 * IQR; upper = Q3 + 1.5 * IQR</pre>
+      <p><b>③ 이상치 찾기</b> — 버시컬러 데이터만 추출하여 df4에 저장하고, 꽃받침 길이가 안 울타리값(4.475)보다 작거나 밖 울타리값(7.475)보다 큰 데이터를 찾는다.</p>
+<pre>df4 = df3[df3['종류'] == '버시컬러']
+df4[(df4['꽃받침 길이'] &lt; lower['버시컬러']) | (df4['꽃받침 길이'] &gt; upper['버시컬러'])]</pre>
+      <div class="pa-out"><table><tr><th></th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th><th>종류</th></tr><tr><th>10</th><td>161</td><td>15.0</td><td>2.9</td><td>4.7</td><td>1.4</td><td>버시컬러</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 버시컬러의 일련번호 161의 꽃받침 길이가 이상치임을 알 수 있다.</p>
+      <p><b>④ 이상치 제거</b> — 위 알고리즘을 함수로 만들어 다른 속성의 이상치도 찾고, 특정 행을 삭제하는 <span class="mono">drop()</span> 함수로 제거한다.</p>
+<pre>df3 = df3.drop(index = [3, 5, 6, 10, 13, 14, 18, 20, 22, 23, 24, 35, 43, 44,
+                        98, 106], axis = 0) # 제거하려는 인덱스 설정</pre>
+    </div>
+    <details class="pa-more">
+      <summary>🔍 더 알아보기 · 이 코드를 실행하면 몇 행이 남을까?</summary>
+      <p><span class="mono">pd.concat([df1, df2])</span>로 합친 표는 <b>원래 인덱스를 그대로</b> 가져와서, Iris1 부분은 0~149, Iris2 부분은 0~29로 <b>번호가 겹쳐요</b>. 그래서 <span class="mono">drop(index=[3, 5, …])</span>은 그 번호를 가진 행을 <b>두 파일 부분에서 모두</b> 지워요. 실제로 실행하면 172행에서 <b>147행</b>이 남고, 종류별 개수는 <b>버시컬러 54, 버지니카 54, 세토사 39</b>가 돼요. 다음 화면의 산점도·히트맵은 교과서와 같이 이 147행으로 그린 거예요.</p>
+      <p>겹치지 않게 하려면 합칠 때 <span class="mono">pd.concat([df1, df2], ignore_index = True)</span>처럼 인덱스를 0~179로 새로 매기는 방법이 있어요. 전처리 과정에서 한 종류의 데이터가 많이 줄어드는 일이 생기지 않았는지 <span class="mono">df3['종류'].value_counts()</span>로 확인하는 습관을 들여요. <small class="muted">(노트북의 「더 알아보기」 셀에서 직접 확인할 수 있어요.)</small></p>
+    </details>
+    <div class="memo"><label>버시컬러 일련번호 161번의 꽃받침 길이 15.0이 이상치로 나왔어요. 이 값을 삭제하기 전에, <b>정말 잘못된 값인지</b> 확인하려면 무엇을 더 알아봐야 할까요? <small>(같은 꽃의 다른 속성값, 같은 종류의 다른 꽃들, 측정·입력 과정 등을 떠올려 보세요)</small></label><textarea data-memo="outlierCheck" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 핵심 속성 -->
+<section class="page" data-name="핵심 속성" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>핵심 속성을 어떻게 알 수 있을까?</h2><p>교과서 72쪽 · 산점도로 속성 간의 관계 알아보기, 히트맵과 상관계수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>붓꽃의 종류를 맞히는 데 <b>가장 도움이 되는 속성</b>이 핵심 속성이에요. 두 속성으로 점을 찍어 보면(산점도) 세 종류가 <b>따로따로 모이는지, 뒤섞이는지</b> 한눈에 보여요.</span></div>
+  <div class="card">
+    <h3>📖 핵심 속성</h3>
+    <p style="margin-top:0">문제를 해결하는 데 가장 큰 영향을 주는 속성이 무엇인지 찾아보기 위해 속성 간의 관계를 살펴보자. 핵심 속성은 학습 결과에 영향을 미치는 「특징」이라고 할 수 있어요. 핵심 속성을 찾아 기계학습을 진행하면, <b>학습과 예측에 필요한 계산량을 줄일 수 있어 효율적</b>이에요.</p>
+    <h3 style="margin-top:14px">1 산점도로 속성 간의 관계 알아보기</h3>
+    <p style="margin-top:0"><b>산점도</b>는 두 개의 속성 간의 관계를 파악하기 위한 시각화 기법으로, x축과 y축을 설정한 좌표평면 위에 속성값을 표시한다.</p>
+    <div class="pa-code">
+<pre>sns.pairplot(df3, hue = '종류', markers = ['o', 's', 'D'])
+plt.show()</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔍 어떤 두 속성이 세 종류를 가장 잘 나눌까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem"><span class="mono">pairplot</span>은 속성을 두 개씩 짝지어 산점도를 한꺼번에 그려요. 여기서는 한 쌍씩 골라 크게 봐요. 여섯 쌍을 모두 살펴본 뒤, 세 종류가 <b>가장 덜 겹치는</b> 쌍을 골라 보세요.</p>
+    <div id="scatLab"></div>
+    <p style="margin:12px 0 6px;font-weight:700">내가 고른 쌍은?</p>
+    <div id="pairVote" class="vote pa-vote6"></div>
+    <div id="pairMsg"></div>
+  </div>
+  <div class="card">
+    <h3>2 히트맵을 활용하여 속성 간의 관계 알아보기</h3>
+    <p style="margin-top:0"><b>히트맵</b>은 속성 간의 관계를 색과 <b>상관계수</b>로 표현하여 시각적인 분석을 가능하게 해 준다. 상관계수는 0부터 ±1 사잇값으로 나타낸다. +는 양의 상관 관계를, −는 음의 상관 관계를 나타낸다.</p>
+    <div class="pa-code">
+<pre>irisData = df3.corr(method = 'pearson', numeric_only = True)
+plt.figure(figsize = (10, 10))
+sns.heatmap(data = irisData, annot = True, fmt = '.2f', linewidth = .5,
+            cmap = 'RdYlGn_r')
+plt.show()</pre>
+    </div>
+    <div id="heatMap"></div>
+    <p class="note" style="color:var(--ink)"><b>해석</b> 히트맵을 보면 꽃잎 길이와 꽃잎 너비의 상관계수가 <b>0.96</b>으로 높게 나타났으므로, 이 두 가지 속성을 핵심 속성으로 선택한다. 상관관계가 높을수록 진한 색으로 나타난다.</p>
+    <p class="note"><b>🤔 생각해 보기</b> 일련번호도 꽃잎 속성과 상관계수가 0.7 정도로 나와요. 하지만 일련번호는 꽃의 특징이 아니라 데이터에 <b>붙인 순서</b>예요. 세토사 → 버시컬러 → 버지니카 순서로 번호를 매겼기 때문에 생긴 관계라서, 핵심 속성으로 고르지 않아요. 정리하면, <b>종류를 가르는 근거는 산점도</b>에서 찾고, <b>히트맵은 속성끼리의 관계</b>를 보여 줘요.</p>
+    <div class="memo"><label>세 종류를 가장 잘 구분하는 속성은 꽃잎 길이와 꽃잎 너비였어요. <b>꽃받침 속성들은 왜 구분에 덜 도움이 되었을까요?</b> 산점도에서 점들이 어떤 모양으로 모였는지와 연결해 설명해 보세요.</label><textarea data-memo="keyAttr" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(73쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>결측치를 처리하는 방법은 결측치가 있는 <button class="blank" data-a="속성 전체를 삭제">?</button>하는 방법, 결측치가 있는 속성을 <button class="blank" data-a="다른 값으로 대체">?</button>하는 방법, 결측치가 있는 <button class="blank" data-a="행을 삭제">?</button>하는 방법이 있다.</li>
+      <li>이상치는 <button class="blank" data-a="기초 통계량">?</button>, 히스토그램, <button class="blank" data-a="박스 플롯">?</button>으로 확인할 수 있다.</li>
+      <li>문제를 해결하는 데 <button class="blank" data-a="핵심 속성">?</button>을 찾기 위해 산점도, <button class="blank" data-a="히트맵">?</button>을 활용하여 상관관계를 확인한다.</li>
+    </ol>
+    <h3 style="margin-top:14px">✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 함께 해결하기 · tips -->
+<section class="page" data-name="tips(선택)" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>선택 · 과제 · 함께 해결하기: tips 데이터의 핵심 속성 찾기</h2><p>교과서 73쪽 · total_bill에 가장 큰 영향을 주는 핵심 속성 찾기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>시간이 남으면 수업 중에, 아니면 과제로</b> 해 보는 선택 화면이에요. 질문폼과 퀴즈에는 들어가지 않아요. 식당 계산서 244장을 모은 <b>tips 데이터</b>로 오늘 배운 순서를 그대로 해 봐요. <b>결측치 확인 → 통계 정보 → 범주형을 숫자로 → 이상치 → 히트맵</b> 순서예요.</span></div>
+  <div class="card">
+    <h3>🍽️ tips 데이터셋</h3>
+    <div class="iv-wrap"><table class="iv"><tr><th>속성</th><th>의미</th><th>인자</th><th>자료형</th></tr>
+      <tr><td class="mono">total_bill</td><td>총 계산 요금(달러)</td><td>3.07~50.81</td><td>실수(float)</td></tr>
+      <tr><td class="mono">tip</td><td>팁(달러)</td><td>1.0~10.0</td><td>실수(float)</td></tr>
+      <tr><td class="mono">sex</td><td>성별</td><td>Male, Female</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">smoker</td><td>흡연 여부</td><td>Yes, No</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">day</td><td>요일</td><td>Thur, Fri, Sat, Sun</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">time</td><td>식사 시간</td><td>Lunch, Dinner</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">size</td><td>식사 인원</td><td>1~6</td><td>정수(int)</td></tr></table></div>
+  </div>
+  <div class="card">
+    <h3>📋 순서대로 완성하기 <span class="muted" style="font-weight:400;font-size:.88rem">(실행 결과는 교과서 소스 파일을 실행한 결과)</span></h3>
+    <div class="pa-code">
+      <p><b>1 데이터 불러오기</b></p>
+<pre>import seaborn as sns
+tips_df = sns.load_dataset('tips')
+tips_df.head()</pre>
+      <p><b>2 속성별 결측치 숫자 확인하기</b> → 일곱 속성 모두 <b>0</b>이에요. 처리할 결측치가 없어요.</p>
+<pre>tips_df.isna().sum()</pre>
+      <p><b>3 통계 정보 확인하기</b></p>
+<pre>tips_df.describe()</pre>
+      <div class="pa-out"><table><tr><th></th><th>total_bill</th><th>tip</th><th>size</th></tr>
+        <tr><th>count</th><td>244.000000</td><td>244.000000</td><td>244.000000</td></tr><tr><th>mean</th><td>19.785943</td><td>2.998279</td><td>2.569672</td></tr>
+        <tr><th>std</th><td>8.902412</td><td>1.383638</td><td>0.951100</td></tr><tr><th>min</th><td>3.070000</td><td>1.000000</td><td>1.000000</td></tr>
+        <tr><th>25%</th><td>13.347500</td><td>2.000000</td><td>2.000000</td></tr><tr><th>50%</th><td>17.795000</td><td>2.900000</td><td>2.000000</td></tr>
+        <tr><th>75%</th><td>24.127500</td><td>3.562500</td><td>3.000000</td></tr><tr><th>max</th><td>50.810000</td><td>10.000000</td><td>6.000000</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>여기서 잠깐!</b> 통계 정보에 sex, smoker, day, time 속성이 보이지 않는 이유는? → 숫자형 데이터에 대한 통계를 계산하므로 <b>범주형 데이터에 대한 통계는 기본적으로 제공하지 않는다</b>. 범주형 데이터도 기계학습에 포함하기 위해서 <span class="mono">get_dummies()</span> 함수를 사용해 0, 1로 부호화하여 숫자로 변경할 수 있다.</p>
+      <p><b>4 범주형 속성을 숫자형으로 변경하기</b> → sex는 sex_Male, sex_Female처럼 <b>값마다 열이 하나씩</b> 생기고 해당하면 1(True), 아니면 0(False)이 들어가요.</p>
+<pre>dummyDf = pd.get_dummies(tips_df) # 범주형을 숫자형으로 변환
+dummyDf</pre>
+      <p><b>5 사분위수로 이상치 확인하여 처리하기</b></p>
+<pre>q1 = dummyDf['total_bill'].quantile(0.25) # 1사분위수
+q3 = dummyDf['total_bill'].quantile(0.75) # 3사분위수
+IQR = q3 - q1 # 사분위수 범위
+lower = q1 - 1.5*IQR # 안울타리값
+upper = q3 + 1.5*IQR # 밖울타리값
+dummyDf[(dummyDf['total_bill'] &lt; lower) | (dummyDf['total_bill'] &gt; upper)]</pre>
+      <div class="pa-out"><pre>Q1: 13.35, Q3:24.13, IQR: 10.78
+lower:-2.82, upper:40.30</pre></div>
+      <p class="note" style="color:var(--ink)">total_bill이 40.30달러보다 큰 <b>9개 행</b>(40.55~50.81달러)이 이상치로 나와요. 단체 손님의 큰 계산서처럼 실제로 있을 수 있는 값인지 생각해 보고 처리 방법을 정해요.</p>
+      <p><b>6 히트맵으로 속성 간의 관계 파악하여 핵심 속성 찾기</b></p>
+<pre>tipData = dummyDf.corr(method = 'pearson')
+sns.heatmap(data = tipData, annot = True, fmt = '.2f', linewidth = .5, cmap = 'RdYlGn_r')</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🎯 먼저 예상하고 확인하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">히트맵을 보기 전에 예상해 보세요. <b>total_bill(총 계산 요금)</b>과 가장 관련이 깊은 속성은 무엇일까요? 고르면 히트맵의 total_bill 줄이 막대로 나타나요.</p>
+    <div id="tipsGuess" class="vote pa-vote6"></div>
+    <div id="tipsBars"></div>
+    <div class="memo"><label>식사 금액(total_bill)이 오르면 팁(tip)도 오르는 경향이 있었어요(상관계수 0.68). 그렇다면 「식사 금액을 올리면 팁이 오른다」고 말할 수 있을까요? 이유와 함께 써 보세요. <small>(시간이 부족하면 나중에 써도 돼요)</small></label><textarea data-memo="tipsCause" rows="3"></textarea><div class="saved"></div></div>
+    <div class="row"><a class="btn ghost sm" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-preprocess-2/assets/tips_keyattr.ipynb" target="_blank" rel="noopener" style="text-decoration:none">tips 노트북 코랩에서 열기 ↗</a><a class="btn ghost sm" href="tips_keyattr.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+  </div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>결측치</b>는 <span class="mono">isna().sum()</span>으로 확인하고, (가) 열 제거 · (나) 특정 값으로 대체 · (다) 행 제거 중에서 고른다. 열을 지우면 데이터 손실이 크고, 값을 채우면 편향이 생길 수 있어서, <b>데이터의 양이 충분히 많을 때</b>는 (다) 행 제거가 가장 적절하다.</div>
+    <div style="--k:#e0702b"><b>이상치</b>는 기초 통계량(<span class="mono">describe</span>), 히스토그램으로 의심하고, <b>박스 플롯</b>의 안 울타리값(Q1 − 1.5×IQR)과 밖 울타리값(Q3 + 1.5×IQR)으로 확정해 <span class="mono">drop()</span>으로 제거한다. 버시컬러 161번의 꽃받침 길이 15.0이 그 예이다.</div>
+    <div style="--k:#9b4fc4"><b>핵심 속성</b>은 산점도와 히트맵(상관계수)으로 찾는다. 붓꽃은 <b>꽃잎 길이와 꽃잎 너비</b>로 세 종류가 가장 잘 나뉘고 두 속성의 상관계수는 0.96이다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>결측치 처리 방법은 속성 전체 삭제 / 다른 값으로 대체 / 행 삭제 세 가지입니다. 교과서는 행 삭제를 골랐는데 그 이유는 무엇이었나요? 만약 데이터가 30개뿐이었다면 같은 선택을 했을지도 함께 쓰세요.</li>
+      <li>박스 플롯에서 버시컬러 일련번호 161번의 꽃받침 길이가 이상치로 나왔습니다. 이 값을 삭제하기 전에, 정말 잘못된 값인지 확인하려면 무엇을 더 알아봐야 할지 쓰세요.</li>
+      <li>산점도로 확인해 보니 세 품종을 가장 잘 구분하는 속성은 꽃잎 길이와 꽃잎 너비였습니다. 꽃받침 속성들은 왜 구분에 덜 도움이 되었을지 산점도 모양과 연결해 설명하세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/ai-11-2-1-3-3.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u2-preprocess-2', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 68~73쪽) — 오답도 교과서 문장에서, 극단어 피하기 */
+const QUIZ={
+ 1:[{q:'결측치에 대한 설명으로 옳은 것은?',o:['관측된 데이터의 범위에서 많이 벗어난 아주 작은 값이나 큰 값','수집한 데이터에서 누락되어 비어 있는 값','다른 속성에 영향을 받는 속성'],a:1,w:'결측치는 수집한 데이터에서 누락되어 비어 있는 값이에요(68쪽). 범위에서 많이 벗어난 값은 이상치, 다른 속성에 영향을 받는 속성은 종속 변수예요.'},
+    {q:'교과서가 결측치 처리 방법으로 (다) 결측치가 있는 행 제거하기를 고른 근거는?',o:['데이터의 양이 충분히 많기 때문이다','결측치를 평균으로 바꾸면 계산이 쉬워지기 때문이다','결측치가 있는 열을 지우는 것이 손실이 적기 때문이다'],a:0,w:'교과서는 「데이터의 양이 충분히 많다면 결측치가 있는 행을 제거하는 (다) 방법이 가장 적절하다」고 해요(68쪽). 180행 중 8행을 지워도 172행이 남아요. 30행뿐이라면 이야기가 달라져요.'},
+    {q:'결측치를 특정 값으로 대체하는 (나) 방법에서 주의할 점은?',o:['속성 전체가 사라져 심각한 데이터 손실이 생긴다','데이터의 행 수가 크게 줄어든다','사실을 온전히 반영한 것이 아니므로 데이터 편향이 생길 수 있다'],a:2,w:'채워 넣은 값은 실제로 측정한 값이 아니라서 데이터 편향이 생길 수 있어요(68쪽). 실험실에서 세토사의 빈칸이 전체 평균으로 채워진 것을 떠올려 보세요. 속성 전체가 사라지는 것은 (가) 방법이에요.'}],
+ 2:[{q:'describe( ) 결과에서 50%가 나타내는 것은?',o:['평균','표준편차','중앙값'],a:2,w:'기초 통계량에서 mean은 평균, std는 표준편차, 50%는 중앙값이에요(69쪽).'},
+    {q:'버시컬러 꽃받침 길이의 75%는 6.35인데 max가 15.0이었다. 이것이 나타내는 것은?',o:['이상치가 입력되었을 가능성','결측치가 많을 가능성','데이터가 정규 분포를 이룰 가능성'],a:0,w:'75%까지는 순서가 유지되다가 최댓값에서 크기 순서가 바뀌는 것은 이상치가 입력되었을 가능성을 나타내요(69쪽).'}],
+ 3:[{q:'버시컬러 꽃받침 길이의 Q1이 5.6, Q3이 6.35일 때 사분위수 범위(IQR)는?',o:['4.475','0.75','7.475'],a:1,w:'IQR = Q3 − Q1 = 6.35 − 5.6 = 0.75예요(71쪽). 4.475는 안 울타리값(Q1 − 1.5×IQR), 7.475는 밖 울타리값(Q3 + 1.5×IQR)이에요.'},
+    {q:'박스 플롯에서 보통 이상치로 판단하는 값은?',o:['Q1 이상 Q3 이하에 있어 상자 안쪽에 그려지는 값','Q1 − 1.5×IQR 미만이거나 Q3 + 1.5×IQR을 초과하는 값','수직선(수염)의 끝에 가장 가깝게 놓인 값'],a:1,w:'안 울타리값(Q1 − 1.5×IQR) 미만이나 밖 울타리값(Q3 + 1.5×IQR)을 초과하여 수직선을 벗어나는 값을 보통 이상치로 판단해요(70쪽). Q1~Q3 사이는 상자 안쪽이에요.'},
+    {q:'데이터프레임의 특정 행이나 열을 제거할 수 있는 함수는?',o:['describe( )','groupby( )','drop( )'],a:2,w:'drop( )은 데이터프레임의 특정 행이나 열을 제거해요(71쪽). describe( )는 기초 통계량, groupby( )는 그룹 단위 연산에 써요.'}],
+ 4:[{q:'산점도로 확인했을 때 붓꽃의 세 종류를 가장 잘 구분할 수 있는 속성은?',o:['꽃받침 길이와 꽃받침 너비','일련번호와 꽃받침 너비','꽃잎 길이와 꽃잎 너비'],a:2,w:'꽃잎 길이와 꽃잎 너비 산점도에서 세 종류가 가장 뚜렷하게 나뉘어요(72쪽). 꽃받침 속성은 버시컬러와 버지니카의 점이 많이 겹쳐요.'},
+    {q:'상관계수에 대한 설명으로 옳은 것은?',o:['0부터 ±1 사잇값으로 나타내며, −는 음의 상관 관계를 뜻한다','0부터 100 사잇값으로 나타내며, 클수록 관계가 약하다','값이 0에 가까울수록 두 속성의 관계가 깊다'],a:0,w:'상관계수는 0부터 ±1 사잇값으로 나타내고, +는 양의 상관 관계, −는 음의 상관 관계예요(72쪽). 1이나 −1에 가까울수록 관계가 깊어요.'},
+    {q:'핵심 속성을 찾아 기계학습을 진행하면 좋은 점은?',o:['결측치가 자동으로 채워진다','학습과 예측에 필요한 계산량을 줄일 수 있다','데이터의 개수가 늘어난다'],a:1,w:'핵심 속성을 찾아 학습하면 학습과 예측에 필요한 계산량을 줄일 수 있어 효율적이에요(72쪽).'}]
+};
+
+const QK='ds-u2-preprocess-2-quiz'+WHO.sfx;
+const MK='ds-u2-preprocess-2-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* 교과서 소스 파일의 Iris1.csv(150행) · Iris2.csv(30행) — 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비(빈칸=결측치), Iris2는 끝에 종류 번호 */
+const IRIS1='5.1,3.5,1.4,0.2;4.9,3,1.4,0.2;4.7,3.2,1.3,0.2;4.6,3.1,1.5,0.2;5,3.6,1.4,0.2;5.4,3.9,1.7,0.4;4.6,3.4,1.4,0.3;5,3.4,1.5,0.2;4.4,2.9,1.4,0.2;4.9,3.1,1.5,0.1;5.4,3.7,1.5,0.2;4.8,3.4,1.6,0.2;4.8,3,1.4,0.1;4.3,3,1.1,0.1;5.8,4,1.2,0.2;5.7,4.4,1.5,0.4;5.4,3.9,1.3,0.4;5.1,3.5,1.4,0.3;5.7,3.8,1.7,0.3;5.1,3.8,1.5,0.3;5.4,3.4,1.7,0.2;5.1,3.7,1.5,0.4;4.6,3.6,1,0.2;5.1,3.3,1.7,0.5;4.8,3.4,1.9,0.2;5,3,1.6,0.2;5,3.4,1.6,0.4;5.2,3.5,1.5,0.2;5.2,3.4,1.4,0.2;4.7,3.2,1.6,0.2;4.8,3.1,1.6,0.2;5.4,3.4,1.5,0.4;5.2,4.1,1.5,0.1;5.5,4.2,1.4,0.2;4.9,3.1,1.5,0.1;5,3.2,1.2,0.2;5.5,3.5,1.3,0.2;4.9,3.1,1.5,0.1;4.4,3,1.3,0.2;5.1,3.4,1.5,0.2;5,3.5,1.3,0.3;4.5,2.3,1.3,0.3;4.4,3.2,1.3,0.2;5,3.5,1.6,0.6;5.1,3.8,1.9,0.4;4.8,3,1.4,0.3;5.1,3.8,1.6,0.2;4.6,3.2,1.4,0.2;5.3,3.7,1.5,0.2;5,3.3,1.4,0.2;7,3.2,4.7,1.4;6.4,3.2,4.5,1.5;6.9,3.1,4.9,1.5;5.5,2.3,4,1.3;6.5,2.8,4.6,1.5;5.7,2.8,4.5,1.3;6.3,3.3,4.7,1.6;4.9,2.4,3.3,1;6.6,2.9,4.6,1.3;5.2,2.7,3.9,1.4;5,2,3.5,1;5.9,3,4.2,1.5;6,2.2,4,1;6.1,2.9,4.7,1.4;5.6,2.9,3.6,1.3;6.7,3.1,4.4,1.4;5.6,3,4.5,1.5;5.8,2.7,4.1,1;6.2,2.2,4.5,1.5;5.6,2.5,3.9,1.1;5.9,3.2,4.8,1.8;6.1,2.8,4,1.3;6.3,2.5,4.9,1.5;6.1,2.8,4.7,1.2;6.4,2.9,4.3,1.3;6.6,3,4.4,1.4;6.8,2.8,4.8,1.4;6.7,3,5,1.7;6,2.9,4.5,1.5;5.7,2.6,3.5,1;5.5,2.4,3.8,1.1;5.5,2.4,3.7,1;5.8,2.7,3.9,1.2;6,2.7,5.1,1.6;5.4,3,4.5,1.5;6,3.4,4.5,1.6;6.7,3.1,4.7,1.5;6.3,2.3,4.4,1.3;5.6,3,4.1,1.3;5.5,2.5,4,1.3;5.5,2.6,4.4,1.2;6.1,3,4.6,1.4;5.8,2.6,4,1.2;5,2.3,3.3,1;5.6,2.7,4.2,1.3;5.7,3,4.2,1.2;5.7,2.9,4.2,1.3;6.2,2.9,4.3,1.3;5.1,2.5,3,1.1;5.7,2.8,4.1,1.3;6.3,3.3,6,2.5;5.8,2.7,5.1,1.9;7.1,3,5.9,2.1;6.3,2.9,5.6,1.8;6.5,3,5.8,2.2;7.6,3,6.6,2.1;4.9,2.5,4.5,1.7;7.3,2.9,6.3,1.8;6.7,2.5,5.8,1.8;7.2,3.6,6.1,2.5;6.5,3.2,5.1,2;6.4,2.7,5.3,1.9;6.8,3,5.5,2.1;5.7,2.5,5,2;5.8,2.8,5.1,2.4;6.4,3.2,5.3,2.3;6.5,3,5.5,1.8;7.7,3.8,6.7,2.2;7.7,2.6,6.9,2.3;6,2.2,5,1.5;6.9,3.2,5.7,2.3;5.6,2.8,4.9,2;7.7,2.8,6.7,2;6.3,2.7,4.9,1.8;6.7,3.3,5.7,2.1;7.2,3.2,6,1.8;6.2,2.8,4.8,1.8;6.1,3,4.9,1.8;6.4,2.8,5.6,2.1;7.2,3,5.8,1.6;7.4,2.8,6.1,1.9;7.9,3.8,6.4,2;6.4,2.8,5.6,2.2;6.3,2.8,5.1,1.5;6.1,2.6,5.6,1.4;7.7,3,6.1,2.3;6.3,3.4,5.6,2.4;6.4,3.1,5.5,1.8;6,3,4.8,1.8;6.9,3.1,5.4,2.1;6.7,3.1,5.6,2.4;6.9,3.1,5.1,2.3;5.8,2.7,5.1,1.9;6.8,3.2,5.9,2.3;6.7,3.3,5.7,2.5;6.7,3,5.2,2.3;6.3,2.5,5,1.9;6.5,3,5.2,2;6.2,3.4,5.4,2.3;5.9,3,5.1,1.8';
+const IRIS2=',3.1,1.5,0.2,0;4.4,,1.2,0.2,0;5.8,,1.2,,0;5.7,4,1.2,0.2,0;,3.8,1.7,0.3,0;5.4,4.3,1.6,,0;4.3,2.5,1.2,0.1,0;4.8,3.8,1.4,0.2,0;5.3,4.2,1.5,0.2,0;5.4,4.1,1.5,0.2,0;15,2.9,4.7,1.4,1;5.6,,,1.3,1;6.7,3.1,4.4,1.4,1;5.6,3,4.5,5.2,1;5.8,2.7,4.1,111,1;6.2,2.2,4.5,1.5,1;5.4,2.5,3.8,1.2,1;5.2,3.3,3.6,1,1;6.7,3.2,4.2,1.3,1;6.8,2.5,4.6,1.7,1;6.8,3,55,2.1,2;5.7,2.5,5,2,2;5.8,2.8,51,2.4,2;6.4,3.2,5.3,2.3,2;6.5,,,,2;,3.2,6.1,2.2,2;7.8,3.6,6.5,2.4,2;7.4,3.4,6.3,2.3,2;6.5,2.7,5.2,2,2;5.5,2.6,4.6,1.5,2';
+const SPK=['세토사','버시컬러','버지니카'], ATT=['꽃받침 길이','꽃받침 너비','꽃잎 길이','꽃잎 너비'], SPC=['#4c72b0','#dd8452','#55a868'];
+const numv=s=>s===''?NaN:+s;
+const ALL=[];   /* pd.concat([df1, df2]) — 인덱스는 원래 것을 유지(Iris1 0~149, Iris2 0~29) */
+IRIS1.split(';').forEach((r,i)=>ALL.push({id:i+1,idx:i,v:r.split(',').map(numv),s:Math.floor(i/50),src:1}));
+IRIS2.split(';').forEach((r,i)=>{const a=r.split(','); ALL.push({id:151+i,idx:i,v:a.slice(0,4).map(numv),s:+a[4],src:2});});
+const hasNa=r=>r.v.some(x=>isNaN(x));
+const DF3=ALL.filter(r=>!hasNa(r));                                   /* df.dropna(axis=0) → 172행 */
+const DROP=[3,5,6,10,13,14,18,20,22,23,24,35,43,44,98,106];
+const DF3D=DF3.filter(r=>!DROP.includes(r.idx));                      /* 교과서 71쪽 drop 결과 → 147행 */
+
+/* 통계 도우미 (pandas와 같은 방식: 분위수는 선형 보간, 표준편차는 n−1) */
+const sortN=a=>a.slice().sort((x,y)=>x-y);
+const qtl=(s,p)=>{const h=(s.length-1)*p, l=Math.floor(h); return l+1<s.length?s[l]+(h-l)*(s[l+1]-s[l]):s[l];};
+const mean=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const sdev=a=>{const m=mean(a); return Math.sqrt(a.reduce((x,y)=>x+(y-m)*(y-m),0)/(a.length-1));};
+const median=a=>qtl(sortN(a),.5);
+function desc(a){const s=sortN(a); return {count:a.length,mean:mean(a),std:sdev(a),min:s[0],q1:qtl(s,.25),q2:qtl(s,.5),q3:qtl(s,.75),max:s[s.length-1]};}
+function fence(a){const s=sortN(a), q1=qtl(s,.25), q3=qtl(s,.75), iqr=q3-q1; return {q1,q2:qtl(s,.5),q3,iqr,lo:q1-1.5*iqr,hi:q3+1.5*iqr};}
+function corr(a,b){const ma=mean(a),mb=mean(b); let sab=0,sa=0,sb=0; a.forEach((x,i)=>{sab+=(x-ma)*(b[i]-mb); sa+=(x-ma)**2; sb+=(b[i]-mb)**2;}); return sab/Math.sqrt(sa*sb);}
+const trim=(v,d)=>String(+v.toFixed(d===undefined?3:d));
+const f1=v=>{const s=trim(v,2); return s.includes('.')?s:s+'.0';};   /* 15 → 15.0 */
+const decs=v=>{for(let d=0;d<=6;d++) if(Math.abs(+v.toFixed(d)-v)<1e-9) return d; return 6;};
+const colFmt=vals=>{const d=Math.max(1,...vals.map(decs)); return v=>v.toFixed(d);};
+const GROUP_ORDER=[1,2,0];   /* groupby('종류') 결과 순서: 버시컬러, 버지니카, 세토사 */
+
+/* 0 생각 열기 투표 */
+vote('naVote','naVote',[['그 응답지는 통째로 빼고 분석한다'],['빈칸을 다른 사람들의 평균으로 채운다'],['빈칸이 있는 질문은 모든 응답에서 뺀다']],i=>{
+  $('naVoteMsg').innerHTML=['결측치가 있는 <b>행을 제거</b>하는 방법과 같은 생각이에요.','결측치를 <b>특정 값으로 대체</b>하는 방법과 같은 생각이에요.','결측치가 있는 <b>열(속성)을 제거</b>하는 방법과 같은 생각이에요.'][i]+' 01에서 세 방법을 붓꽃 데이터로 직접 비교해 봐요.';
+});
+
+/* 01 결측치 처리 실험실 */
+(function(){
+  const B=$('naLab'); let scope='i2', meth=null;
+  const NAROWS=ALL.filter(r=>r.src===2&&hasNa(r));
+  const METH=[['A','(가) 결측치가 있는 열 제거'],['Bm','(나) 평균으로 대체'],['Bd','(나) 중앙값으로 대체'],['C','(다) 결측치가 있는 행 제거']];
+  const cnt=rows=>[0,1,2].map(s=>rows.filter(r=>r.s===s).length);
+  function draw(){
+    const rows=scope==='i2'?ALL.filter(r=>r.src===2):ALL;
+    const naCol=ATT.map((_,j)=>rows.some(r=>isNaN(r.v[j])));
+    const fillv=ATT.map((_,j)=>{const a=rows.map(r=>r.v[j]).filter(x=>!isNaN(x)); return meth==='Bd'?median(a):mean(a);});
+    const after=meth==='C'?rows.filter(r=>!hasNa(r)):rows;
+    const nCol=meth==='A'?2+naCol.filter(x=>!x).length:6;
+    const before=cnt(rows), aft=cnt(after);
+    const tb=NAROWS.map(r=>{ const gone=meth==='C';
+      return `<tr class="${gone?'cut':''}"><td>${r.id}</td>${r.v.map((x,j)=>{
+        if(meth==='A'&&naCol[j]) return `<td class="colcut">${isNaN(x)?'NaN':x}</td>`;
+        if(isNaN(x)) return (meth==='Bm'||meth==='Bd')?`<td class="fill">${trim(fillv[j])}</td>`:'<td class="nan">NaN</td>';
+        return `<td>${x}</td>`; }).join('')}<td>${SPK[r.s]}</td></tr>`; }).join('');
+    let msg='';
+    if(meth==='A') msg=`꽃받침 길이·꽃받침 너비·꽃잎 길이·꽃잎 너비 <b>네 속성 모두</b>에 결측치가 있어서, 결측치가 있는 열을 지우면 <b>일련번호와 종류만</b> 남아요. 꽃을 구분할 정보가 사라지는 <b>심각한 데이터 손실</b>이에요.`;
+    else if(meth==='Bm'||meth==='Bd'){ const st=rows.filter(r=>r.s===0).map(r=>r.v[3]).filter(x=>!isNaN(x));
+      msg=`행과 열은 그대로 남아요. 그런데 세토사인 <b>153번의 꽃잎 너비</b>가 <b>${trim(fillv[3])}</b>(으)로 채워졌어요. 다른 세토사의 꽃잎 너비는 보통 <b>${trim(median(st))}</b> 정도예요. 채운 값은 실제로 측정한 값이 아니라서 <b>데이터 편향</b>이 생길 수 있어요.${meth==='Bm'&&scope==='i2'?' (평균은 꽃잎 너비 111 같은 튀는 값에 끌려가서 더 크게 나왔어요.)':''}`; }
+    else if(meth==='C') msg=scope==='all'?`180행 중 결측치가 있는 <b>8행</b>만 지워져 <b>172행</b>이 남았어요. 종류별 개수도 크게 줄지 않았어요. 데이터의 양이 충분히 많아서 손실이 작아요. <b>교과서가 고른 방법</b>이에요.`
+      :`30행 중 <b>8행</b>이 지워져 <b>22행</b>만 남았어요. 특히 세토사는 <b>10개 중 ${aft[0]}개</b>만 남아 종류별 개수가 크게 치우쳤어요. 데이터가 적을 때 행을 지우면 남는 데이터가 너무 적어지고 <b>편향</b>이 생길 수 있어요.`;
+    else msg='처리 방법을 하나 골라 보세요. 표에서 바뀌는 칸과 아래 결과를 함께 확인해요.';
+    const mx=Math.max(...before);
+    B.innerHTML=`<div class="na-ctl"><div><span>데이터 범위</span><button class="${scope==='i2'?'on':''}" data-s="i2">Iris2.csv만 (30행)</button><button class="${scope==='all'?'on':''}" data-s="all">합친 데이터 df (180행)</button></div>
+      <div><span>처리 방법</span>${METH.map(m=>`<button class="${meth===m[0]?'on':''}" data-m="${m[0]}">${m[1]}</button>`).join('')}</div></div>
+      <div class="iv-wrap"><table class="iv natb"><tr><th>일련번호</th>${ATT.map((a,j)=>`<th class="${meth==='A'&&naCol[j]?'colcut':''}">${a}</th>`).join('')}<th>종류</th></tr>${tb}</table></div>
+      <div class="na-res"><div class="na-num"><div><small>남은 행</small><b>${rows.length} → ${after.length}</b></div><div><small>남은 열(속성)</small><b>6 → ${nCol}</b></div></div>
+      <div class="na-bars">${[0,1,2].map(s=>`<div class="fs-row"><span>${SPK[s]}</span><div class="fs-tr"><i class="bf" style="width:${before[s]/mx*100}%"></i><i class="af" style="width:${aft[s]/mx*100}%;background:${SPC[s]}"></i></div><b>${before[s]}→${aft[s]}</b></div>`).join('')}</div></div>
+      <div class="fs-msg">${msg}</div>`;
+    B.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{scope=b.dataset.s; draw();});
+    B.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{meth=b.dataset.m; draw();});
+  }
+  draw();
+})();
+
+/* 히스토그램 SVG (seaborn histplot hue='종류'처럼 겹쳐 그림) */
+function histSVG(rows,j){
+  const W=520,H=230,L=40,R=10,T=10,Bm=34, all=rows.map(r=>r.v[j]), lo=Math.min(...all), hi=Math.max(...all), nb=25, bw=(hi-lo)/nb||1;
+  const cnt=[0,1,2].map(s=>{const c=new Array(nb).fill(0); rows.filter(r=>r.s===s).forEach(r=>{c[Math.min(nb-1,Math.floor((r.v[j]-lo)/bw))]++;}); return c;});
+  const ym=Math.max(...cnt.flat()), X=v=>L+(v-lo)/(hi-lo||1)*(W-L-R), Y=c=>H-Bm-c/ym*(H-T-Bm);
+  let s=`<line class="ax" x1="${L}" y1="${H-Bm}" x2="${W-R}" y2="${H-Bm}"/><line class="ax" x1="${L}" y1="${T}" x2="${L}" y2="${H-Bm}"/>`;
+  for(let k=0;k<=4;k++){const v=lo+(hi-lo)*k/4; s+=`<text class="tk" x="${X(v)}" y="${H-Bm+14}">${trim(v,1)}</text>`;}
+  for(let k=0;k<=ym;k+=Math.max(1,Math.ceil(ym/4))) s+=`<text class="tk" x="${L-6}" y="${Y(k)+4}" text-anchor="end">${k}</text>`;
+  [0,1,2].forEach(sp=>cnt[sp].forEach((c,i)=>{ if(c) s+=`<rect x="${X(lo+i*bw)+.5}" y="${Y(c)}" width="${Math.max(1,X(lo+(i+1)*bw)-X(lo+i*bw)-1)}" height="${H-Bm-Y(c)}" fill="${SPC[sp]}" fill-opacity=".55" stroke="${SPC[sp]}"/>`; }));
+  s+=`<text class="lb" x="${(L+W-R)/2}" y="${H-4}">${ATT[j]}</text><text class="lb" x="12" y="${(T+H-Bm)/2}" transform="rotate(-90 12 ${(T+H-Bm)/2})">Count</text>`;
+  s+=SPK.map((n,i)=>`<rect x="${W-R-86}" y="${T+4+i*16}" width="10" height="10" fill="${SPC[i]}" fill-opacity=".7"/><text class="lg" x="${W-R-72}" y="${T+13+i*16}">${n}</text>`).join('');
+  return `<svg viewBox="0 0 ${W} ${H}" class="pa-svg" role="img" aria-label="${ATT[j]} 히스토그램">${s}</svg>`;
+}
+
+/* 02 기초 통계량 탐색기 */
+(function(){
+  const B=$('statLab'); let at=1, mark=false;
+  const K=[['count','count'],['mean','mean'],['std','std'],['min','min'],['q1','25%'],['q2','50%'],['q3','75%'],['max','max']];
+  function draw(){
+    const D=GROUP_ORDER.map(s=>{const a=DF3.filter(r=>r.s===s).map(r=>r.v[at]); return {s,d:desc(a),f:fence(a)};});
+    const fm={}; K.forEach(([k])=>{ fm[k]=k==='count'?(v=>v.toFixed(1)):colFmt(D.map(x=>x.d[k])); });
+    const rows=D.map(x=>`<tr><th>${SPK[x.s]}</th>${K.map(([k])=>{const v=x.d[k], odd=mark&&((k==='max'&&v>x.f.hi)||(k==='min'&&v<x.f.lo)); return `<td class="${odd?'odd':''}">${fm[k](v)}</td>`;}).join('')}</tr>`).join('');
+    B.innerHTML=`<div class="row">${ATT.map((a,j)=>`<button class="btn sm${j===at?'':' ghost'}" data-a="${j}">${a}</button>`).join('')}</div>
+      <div class="pa-code" style="margin-top:8px"><pre>df3.groupby('종류')['${ATT[at]}'].describe()</pre></div>
+      <div class="pa-out"><table><tr><th>종류</th>${K.map(k=>`<th>${k[1]}</th>`).join('')}</tr>${rows}</table></div>
+      <div class="row" style="margin:8px 0"><button class="btn sm ${mark?'':'ghost'}" data-k="mark">${mark?'튀는 값 표시 끄기':'튀는 값 표시하기'}</button><span class="muted" style="font-size:.85rem">박스 플롯의 울타리값(03에서 배워요)을 벗어난 최솟값·최댓값을 빨갛게 표시해요.</span></div>
+      ${histSVG(DF3,at)}`;
+    B.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{at=+b.dataset.a; draw();});
+    B.querySelector('[data-k="mark"]').onclick=()=>{mark=!mark; draw();};
+  }
+  draw();
+})();
+
+/* 03 박스 플롯 끌어 보기 */
+(function(){
+  const B=$('boxLab'); let sp=1, at=0, sel=161, over={}, frozen=null, drag=false;
+  const W=360,H=330,TOP=18,BOT=300;
+  B.innerHTML=`<div class="bx-ctl"><div><span>종류</span>${GROUP_ORDER.map(s=>`<button data-s="${s}">${SPK[s]}</button>`).join('')}</div><div><span>속성</span>${ATT.map((a,j)=>`<button data-a="${j}">${a}</button>`).join('')}</div></div>
+    <div class="bx-main"><svg viewBox="0 0 ${W} ${H}" class="pa-svg bx-svg" role="img" aria-label="박스 플롯"></svg>
+    <div class="bx-side"><div class="bx-sel"></div><input type="range" id="bxR" step="0.1" aria-label="고른 점의 값"><div class="row" style="margin:6px 0"><button class="btn sm ghost" data-k="reset">원래 값으로</button></div><div class="bx-stat"></div><div class="bx-out"></div></div></div>`;
+  const svg=B.querySelector('svg'), R=$('bxR');
+  const grp=()=>DF3.filter(r=>r.s===sp);
+  const val=r=>over[r.id]!==undefined?over[r.id]:r.v[at];
+  function pickDefault(){ const g=grp(), m=median(g.map(r=>r.v[at])); sel=g.reduce((a,b)=>Math.abs(b.v[at]-m)>Math.abs(a.v[at]-m)?b:a).id; }
+  function domain(g,f){ const vs=g.map(val), lo=Math.min(f.lo,...vs), hi=Math.max(f.hi,...vs), p=(hi-lo)*.06||.5; return [lo-p,hi+p]; }
+  function draw(){
+    if(!grp().some(x=>x.id===sel)) pickDefault();   /* 고른 점이 지금 종류에 없으면 기본값으로 */
+    const g=grp(), vs=g.map(val), f=fence(vs), dom=frozen||domain(g,f);
+    const Y=v=>BOT-(v-dom[0])/(dom[1]-dom[0])*(BOT-TOP);
+    const inl=vs.filter(v=>v>=f.lo&&v<=f.hi), wl=Math.min(...inl), wh=Math.max(...inl);
+    let s='';
+    for(let k=0;k<=5;k++){const v=dom[0]+(dom[1]-dom[0])*k/5; s+=`<line class="gr" x1="44" x2="${W-8}" y1="${Y(v)}" y2="${Y(v)}"/><text class="tk" x="40" y="${Y(v)+4}" text-anchor="end">${trim(v,2)}</text>`;}
+    s+=`<line class="fe" x1="44" x2="${W-8}" y1="${Y(f.hi)}" y2="${Y(f.hi)}"/><text class="fl" x="${W-10}" y="${Y(f.hi)-4}" text-anchor="end">B 밖 울타리값 ${trim(f.hi,4)}</text>`;
+    s+=`<line class="fe" x1="44" x2="${W-8}" y1="${Y(f.lo)}" y2="${Y(f.lo)}"/><text class="fl" x="${W-10}" y="${Y(f.lo)+13}" text-anchor="end">A 안 울타리값 ${trim(f.lo,4)}</text>`;
+    const cx=120;
+    s+=`<line class="wk" x1="${cx}" x2="${cx}" y1="${Y(wh)}" y2="${Y(f.q3)}"/><line class="wk" x1="${cx}" x2="${cx}" y1="${Y(f.q1)}" y2="${Y(wl)}"/><line class="wk" x1="${cx-18}" x2="${cx+18}" y1="${Y(wh)}" y2="${Y(wh)}"/><line class="wk" x1="${cx-18}" x2="${cx+18}" y1="${Y(wl)}" y2="${Y(wl)}"/>`;
+    s+=`<rect class="bxr" x="${cx-36}" y="${Y(f.q3)}" width="72" height="${Math.max(1,Y(f.q1)-Y(f.q3))}" style="fill:${SPC[sp]}"/><line class="md" x1="${cx-36}" x2="${cx+36}" y1="${Y(f.q2)}" y2="${Y(f.q2)}"/>`;
+    s+=`<text class="tk" x="${cx-42}" y="${Y(f.q3)+4}" text-anchor="end">Q3</text><text class="tk" x="${cx-42}" y="${Y(f.q1)+4}" text-anchor="end">Q1</text>`;
+    g.forEach(r=>{ const v=val(r), o=v<f.lo||v>f.hi, x=190+((r.id*37)%110), on=r.id===sel;
+      s+=`<circle class="pt${o?' out':''}${on?' sel':''}" data-id="${r.id}" cx="${x}" cy="${Y(v)}" r="${on?7:4}"/>`+(on?`<text class="sl" x="${x}" y="${Y(v)-11}">${r.id}번</text>`:''); });
+    svg.innerHTML=s;
+    const r=g.find(x=>x.id===sel), v=val(r), o=v<f.lo||v>f.hi, rmax=Math.ceil(Math.max(...g.map(x=>x.v[at]),f.hi)*1.25);
+    R.min=0; R.max=rmax; if(!drag) R.value=v;
+    B.querySelector('.bx-sel').innerHTML=`<b>${r.id}번</b> ${SPK[sp]}의 ${ATT[at]} <b class="mono">${f1(v)}</b>${over[r.id]!==undefined?` <small class="muted">(원래 ${f1(r.v[at])})</small>`:''}<br><span class="${o?'ng':'ok'}">${o?(v>f.hi?`이상치 — 밖 울타리값 B(${trim(f.hi,4)})보다 커요`:`이상치 — 안 울타리값 A(${trim(f.lo,4)})보다 작아요`):'이상치 아님 — A와 B 사이에 있어요'}</span>`;
+    B.querySelector('.bx-stat').innerHTML=[['Q1',f.q1],['중앙값',f.q2],['Q3',f.q3],['IQR',f.iqr],['A',f.lo],['B',f.hi]].map(([k,x])=>`<div><small>${k}</small><b>${trim(x,4)}</b></div>`).join('');
+    const outs=g.filter(x=>{const w=val(x); return w<f.lo||w>f.hi;});
+    B.querySelector('.bx-out').innerHTML=`<b>이상치 ${outs.length}개</b> ${outs.map(x=>`<button data-id="${x.id}">${x.id}번 ${f1(val(x))}</button>`).join('')||'<span class="muted">없음</span>'}`;
+    B.querySelectorAll('.bx-out button').forEach(b=>b.onclick=()=>{sel=+b.dataset.id; draw();});
+    B.querySelectorAll('.bx-ctl [data-s]').forEach(b=>b.classList.toggle('on',+b.dataset.s===sp));
+    B.querySelectorAll('.bx-ctl [data-a]').forEach(b=>b.classList.toggle('on',+b.dataset.a===at));
+  }
+  function end(){ if(!drag) return; drag=false; frozen=null; draw(); }
+  function yToVal(e){ const rc=svg.getBoundingClientRect(), y=(e.clientY-rc.top)*(H/rc.height), d=frozen;
+    const v=d[0]+(BOT-y)/(BOT-TOP)*(d[1]-d[0]); return Math.max(0,Math.min(+R.max,Math.round(v*10)/10)); }
+  svg.addEventListener('pointerdown',e=>{ const c=e.target.closest&&e.target.closest('circle.pt'); if(!c) return; e.preventDefault();
+    sel=+c.dataset.id; const g=grp(); frozen=domain(g,fence(g.map(val))); drag=true; try{svg.setPointerCapture(e.pointerId);}catch(x){} draw(); });
+  svg.addEventListener('pointermove',e=>{ if(!drag) return; if(!e.buttons){end(); return;} over[sel]=yToVal(e); R.value=over[sel]; draw(); });
+    svg.addEventListener('pointerup',end); svg.addEventListener('pointercancel',end); svg.addEventListener('lostpointercapture',end);
+  R.oninput=()=>{ over[sel]=+R.value; draw(); };
+  B.querySelector('[data-k="reset"]').onclick=()=>{ over={}; draw(); };
+  B.querySelectorAll('.bx-ctl [data-s]').forEach(b=>b.onclick=()=>{sp=+b.dataset.s; over={}; drag=false; frozen=null; pickDefault(); draw();});
+  B.querySelectorAll('.bx-ctl [data-a]').forEach(b=>b.onclick=()=>{at=+b.dataset.a; over={}; drag=false; frozen=null; pickDefault(); draw();});
+  draw();
+})();
+
+/* 04 산점도 고르기 (교과서 71쪽 drop 뒤의 df3, 147행) */
+const PAIRS=[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+const SCAT=(function(){
+  const B=$('scatLab'); let p=0;
+  const sd=ATT.map((_,j)=>sdev(DF3D.map(r=>r.v[j])));
+  function mixed(a,b){ /* 가장 가까운 점이 다른 종류인 점의 수 (속성마다 표준편차로 나눠 거리 계산) */
+    let n=0; DF3D.forEach((r,i)=>{ let best=1e9,bs=-1; DF3D.forEach((q,k)=>{ if(k===i) return; const d=((r.v[a]-q.v[a])/sd[a])**2+((r.v[b]-q.v[b])/sd[b])**2; if(d<best){best=d; bs=q.s;} }); if(bs!==r.s) n++; }); return n; }
+  const MIX=PAIRS.map(([a,b])=>mixed(a,b));
+  const mark=(s,x,y)=>s===0?`<circle cx="${x}" cy="${y}" r="3.6"/>`:s===1?`<rect x="${x-3.3}" y="${y-3.3}" width="6.6" height="6.6"/>`:`<rect x="${x-3.2}" y="${y-3.2}" width="6.4" height="6.4" transform="rotate(45 ${x} ${y})"/>`;
+  function draw(){
+    const [a,b]=PAIRS[p], W=380,H=300,L=44,R=10,T=10,Bm=38;
+    const xs=DF3D.map(r=>r.v[a]), ys=DF3D.map(r=>r.v[b]), x0=Math.min(...xs)-.2, x1=Math.max(...xs)+.2, y0=Math.min(...ys)-.2, y1=Math.max(...ys)+.2;
+    const X=v=>L+(v-x0)/(x1-x0)*(W-L-R), Y=v=>H-Bm-(v-y0)/(y1-y0)*(H-T-Bm);
+    let s=`<line class="ax" x1="${L}" y1="${H-Bm}" x2="${W-R}" y2="${H-Bm}"/><line class="ax" x1="${L}" y1="${T}" x2="${L}" y2="${H-Bm}"/>`;
+    for(let k=0;k<=4;k++){const v=x0+(x1-x0)*k/4, w=y0+(y1-y0)*k/4; s+=`<text class="tk" x="${X(v)}" y="${H-Bm+14}">${trim(v,1)}</text><text class="tk" x="${L-6}" y="${Y(w)+4}" text-anchor="end">${trim(w,1)}</text>`;}
+    s+=`<text class="lb" x="${(L+W-R)/2}" y="${H-6}">${ATT[a]}</text><text class="lb" x="12" y="${(T+H-Bm)/2}" transform="rotate(-90 12 ${(T+H-Bm)/2})">${ATT[b]}</text>`;
+    [0,1,2].forEach(sp=>{ s+=`<g fill="${SPC[sp]}" fill-opacity=".75" stroke="#fff" stroke-width=".6">`+DF3D.filter(r=>r.s===sp).map(r=>mark(sp,X(r.v[a]),Y(r.v[b]))).join('')+'</g>'; });
+    const lg=SPK.map((n,i)=>`<span><svg viewBox="0 0 12 12" width="12" height="12"><g fill="${SPC[i]}">${mark(i,6,6)}</g></svg>${n}</span>`).join('');
+    B.innerHTML=`<div class="sc-btns">${PAIRS.map(([x,y],i)=>`<button class="${i===p?'on':''}" data-p="${i}">${ATT[x]} × ${ATT[y]}</button>`).join('')}</div>
+      <div class="sc-main"><svg viewBox="0 0 ${W} ${H}" class="pa-svg" role="img" aria-label="${ATT[a]}와 ${ATT[b]} 산점도">${s}</svg>
+      <div class="sc-side"><div class="sc-lg">${lg}</div><div class="sc-mix"><small>섞인 정도</small><b>${MIX[p]}개</b><span>가장 가까운 점이 다른 종류인 점의 수 (147개 중)</span></div>
+      <p class="note">세토사 점들이 따로 떨어져 있나요? 버시컬러와 버지니카는 얼마나 겹치나요? 「섞인 정도」가 작을수록 종류가 잘 나뉘어요.</p></div></div>`;
+    B.querySelectorAll('[data-p]').forEach(x=>x.onclick=()=>{p=+x.dataset.p; draw();});
+  }
+  draw();
+  return {show(i){p=i; draw();}, MIX};
+})();
+vote('pairVote','pairPick',PAIRS.map(([a,b])=>[`${ATT[a]} × ${ATT[b]}`]),i=>{
+  SCAT.show(i);
+  const best=SCAT.MIX.indexOf(Math.min(...SCAT.MIX));
+  $('pairMsg').innerHTML=`<div class="fs-msg">${i===5?'<b>교과서 결론과 같아요!</b> 꽃잎 길이 × 꽃잎 너비에서 세토사는 왼쪽 아래에 따로 모이고, 버시컬러와 버지니카도 거의 겹치지 않아요.'
+    :'교과서는 <b>꽃잎 길이 × 꽃잎 너비</b>를 골랐어요. 내가 고른 쌍과 번갈아 보며 버시컬러와 버지니카의 점이 얼마나 겹치는지 비교해 보세요.'} 「섞인 정도」가 가장 작은 쌍은 <b>${ATT[PAIRS[best][0]]} × ${ATT[PAIRS[best][1]]}</b>(${SCAT.MIX[best]}개)예요.</div>`;
+});
+
+/* 04 히트맵 (같은 147행으로 계산 — 교과서 72쪽 값과 같음) */
+(function(){
+  const C=['일련번호',...ATT], col=r=>[r.id,...r.v];
+  const M=C.map((_,i)=>C.map((_,j)=>corr(DF3D.map(r=>col(r)[i]),DF3D.map(r=>col(r)[j]))));
+  const vmin=Math.min(...M.flat()), stops=[[0,[0,104,55]],[.25,[134,203,102]],[.5,[255,255,191]],[.75,[249,142,82]],[1,[165,0,38]]];
+  const color=v=>{ const t=(v-vmin)/(1-vmin); let k=0; while(k<stops.length-2&&t>stops[k+1][0]) k++; const [t0,c0]=stops[k],[t1,c1]=stops[k+1], u=Math.max(0,Math.min(1,(t-t0)/(t1-t0)));
+    return {bg:`rgb(${c0.map((c,i)=>Math.round(c+(c1[i]-c)*u)).join(',')})`, fg:(t<.18||t>.82)?'#fff':'#16202c'}; };
+  $('heatMap').innerHTML=`<div class="iv-wrap"><table class="hm"><tr><th></th>${C.map(c=>`<th>${c}</th>`).join('')}</tr>${M.map((row,i)=>`<tr><th>${C[i]}</th>${row.map((v,j)=>{const c=color(v); return `<td style="background:${c.bg};color:${c.fg}" class="${(i===3&&j===4)||(i===4&&j===3)?'top':''}">${v.toFixed(2)}</td>`;}).join('')}</tr>`).join('')}</table></div>`;
+})();
+
+/* 05 tips: 먼저 예상하고 확인하기 (교과서 소스 파일 히트맵의 total_bill 줄) */
+(function(){
+  const TB=[['tip',.68],['size',.60],['time_Dinner',.18],['time_Lunch',-.18],['sex_Male',.14],['sex_Female',-.14],['day_Thur',-.14],['day_Sun',.12],['smoker_Yes',.09],['smoker_No',-.09],['day_Fri',-.09],['day_Sat',.05]];
+  vote('tipsGuess','tipsGuess',[['tip','팁'],['size','식사 인원'],['sex','성별'],['smoker','흡연 여부'],['day','요일'],['time','식사 시간']],i=>{
+    const bars=TB.map(([n,v])=>`<div class="tb-row"><span class="mono">${n}</span><div class="tb-tr"><i class="${v<0?'neg':'pos'}" style="${v<0?`right:50%;width:${-v*50}%`:`left:50%;width:${v*50}%`}"></i></div><b>${v.toFixed(2)}</b></div>`).join('');
+    $('tipsBars').innerHTML=`<div class="tb-box"><div class="tb-h">total_bill과의 상관계수 <small class="muted">(−1 ← 0 → +1)</small></div>${bars}</div>
+      <div class="fs-msg">${i===0?'<b>예상이 맞았어요!</b> ':''}total_bill과 가장 관련이 깊은 속성은 <b>tip(0.68)</b>, 그다음은 <b>size(0.60)</b>예요. 성별·흡연 여부·요일·식사 시간은 get_dummies로 바뀐 열(sex_Male 등)로 나타나는데, 상관계수가 0.2보다 작아 관계가 약해요.</div>`;
+  });
+})();
+
+/* 05 빈칸 · 스스로 점검 */
+document.querySelectorAll('.blank').forEach(b=>b.onclick=()=>{ b.textContent=b.dataset.a; b.classList.add('on'); });
+chips('selfCheck','selfCheckPick',['결측치를 확인하고 처리할 수 있다','데이터의 이상치를 발견할 수 있다','산점도와 히트맵으로 핵심 속성을 찾을 수 있다','수집한 데이터를 전처리하여 핵심 속성을 추출할 수 있다'],true);
+
+const MEMOLIST=[['naVote','생각 열기: 빈칸이 있는 응답지 처리'],['naChoice','교과서가 행 삭제를 고른 이유, 30개뿐이라면'],['outlierCheck','161번을 삭제하기 전에 더 알아볼 것'],['pairPick','세 종류를 가장 잘 나누는 산점도'],['keyAttr','꽃받침 속성이 구분에 덜 도움이 되는 이유'],['tipsGuess','tips: total_bill과 가장 관련 깊을 것 같은 속성'],['tipsCause','식사 금액을 올리면 팁이 오를까'],['selfCheckPick','스스로 점검: 할 수 있게 된 것']];
+onShow[6]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

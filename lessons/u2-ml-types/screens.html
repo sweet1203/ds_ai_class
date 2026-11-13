@@ -1,0 +1,203 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>이 문제에는<br>어떤 알고리즘을 선정할까?</h1>
+      <div class="story"><b>같은 붓꽃 데이터, 세 가지 문제</b><br>꽃잎 길이, 꽃잎 너비, 꽃받침 길이, 꽃받침 너비를 잰 붓꽃 데이터 하나로도 서로 다른 문제를 정의할 수 있어요. (가) 정확한 종류는 몰라도 <b>서로 다른 종류인지 구분</b>하기, (나) 새로운 꽃의 속성으로 <b>꽃의 종류</b> 알아내기, (다) 새로운 꽃의 <b>모르는 수치형 속성값</b> 구하기. 교과서 61쪽은 이 셋을 각각 <b>군집, 분류, 회귀</b>의 문제라고 했어요.</div>
+      <p>문제가 다르면 학습하는 방법도, 알고리즘도 달라져요. 오늘은 기계학습의 <b>세 가지 유형</b>을 구분하고, 부록 활동에서 한 <b>심장 마비 발병 분류 · 주택 가격 예측 · 콜레라 원인 발견</b> 실습을 다시 돌려 보며 무엇이 다른지 확인해요. 그리고 분류 알고리즘인 <b>k-최근접 이웃</b>을 직접 해 봐요.</p>
+      <ol>
+        <li>기계학습의 세 가지 유형</li><li>지도학습 실습: 분류 vs 예측</li><li>비지도학습 실습: 콜레라</li>
+        <li>k-최근접 이웃</li><li>알고리즘 선정 · 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🏷️</i><div><b>레이블이 있을까?</b><small>지도학습 · 비지도학습</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🔢</i><div><b>갈래일까, 숫자일까?</b><small>분류 · 예측(회귀)</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🎯</i><div><b>보상을 받으며 배울까?</b><small>강화 학습</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🧭</i><div><b>알고리즘 선정</b><small>k-최근접 이웃 · 선형 회귀 · k-평균</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>기계학습을 <b>지도학습, 비지도학습, 강화 학습</b>으로 구분하고, 지도학습 안에서 <b>분류</b>와 <b>예측(회귀)</b>이 어떻게 다른지 실습 결과로 확인합니다. 정답(레이블) 없이 비슷한 것끼리 묶는 <b>군집</b>을 콜레라 지도로 다시 보고, 가까운 이웃의 다수결로 분류하는 <b>k-최근접 이웃</b>을 직접 해 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">붓꽃 (가)(나)(다)처럼, 내가 아는 데이터 하나로 서로 다른 문제를 만들 수 있을까요? 떠오르는 데이터와 문제를 짧게 적어 봐요.</p>
+        <div class="memo"><label>같은 데이터로 만들 수 있는 서로 다른 문제</label><textarea data-memo="planMemo" rows="2" placeholder="예: 급식 메뉴 기록으로 …"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>기계학습</b> · 기계학습을 적용해 문제를 해결하려면 어떤 과정을 거칠까?</li>
+          <li><b>오늘의 질문</b> · 이 문제에는 어떤 기계학습 유형과 알고리즘을 선정할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>기계학습의 유형을 구분할 수 있다.</li>
+          <li>문제 해결에 적합한 기계학습의 유형과 알고리즘을 선정할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 지도학습 · 비지도학습 · 강화 학습 · 기계학습 알고리즘</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 기계학습의 세 가지 유형부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 세 가지 유형 -->
+<section class="page" data-name="세 가지 유형" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>기계학습의 유형은 어떻게 구분할 수 있을까?</h2><p>교과서 74쪽 · 지도학습, 비지도학습, 강화 학습</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터에 <b>정답(레이블)이 붙어 있으면</b> 지도학습, <b>정답이 없으면</b> 비지도학습이에요. 정답 대신 행동의 결과로 <b>보상과 벌</b>을 받으며 배우면 강화 학습이에요.</span></div>
+  <div class="card">
+    <h3>📖 기계학습은 지도학습, 비지도학습, 강화 학습으로 구분한다</h3>
+    <p class="muted" style="margin:0 0 10px;font-size:.9rem"><b>레이블</b>: 지도학습을 위한 데이터 테이블에서 정답의 역할을 하는 속성. 레이블, 예문, 정답, 실젯값, 타깃, 클래스와 같은 의미이다.</p>
+    <div class="cards3">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🏷️</div><h4>1 지도학습</h4><p><b>레이블이 주어진 데이터</b>로 학습하는 방법이다. 주어진 데이터에 대해 연속적인 실숫값을 예측하거나 데이터를 몇 가지 클래스로 구분하는 분류가 있다.</p>
+        <div class="mt-two"><div><b>분류</b>입력을 두 개 이상의 클래스로 나누는 것으로 우리가 일상생활에서 가장 많이 접하는 문제 형태이다.</div><div><b>예측</b>입력과 출력의 관계를 학습한 후 새로운 입력이 들어왔을 때 연속된 값을 미리 예상해 보는 것이다.</div></div></div>
+      <div class="kc" style="--k:#e0702b"><div class="ic">🧩</div><h4>2 비지도학습</h4><p><b>레이블이 없는 데이터</b>로 학습하는 방법으로 데이터 자체에서 패턴을 찾아내야 할 때 사용된다. 레이블이 없는 데이터들을 학습하여 <b>비슷한 특징의 데이터끼리 묶는 군집</b> 알고리즘이 이에 해당한다. 레이블이 없으므로 알고리즘 성능을 평가하는 데는 어려움이 있다.</p></div>
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🎯</div><h4>3 강화 학습</h4><p>학습에 관한 결과에 대해 <b>보상(reward)은 최대화하고 벌은 최소화</b>하는 방향으로 강화시키는 학습 방법이다. <b>알파고</b>도 강화 학습을 통해서 바둑을 학습하였다. 컴퓨터가 <b>시행착오</b>를 겪으면서 알고리즘을 개선하는 방식으로, 행동(action)에 따른 보상이 있는지 판단할 수 있어야 한다.</p></div>
+    </div>
+    <div class="mt-algo">
+      <span><b>분류 알고리즘</b> k-최근접 이웃(k-NN) · 서포트 벡터 머신(SVM) · 의사결정트리 · 로지스틱 회귀</span>
+      <span><b>예측 알고리즘</b> 선형 회귀</span>
+      <span><b>군집 알고리즘</b> k-평균(k-means)</span>
+    </div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">교과서 61쪽은 연속된 수치를 구하는 문제를 <b>회귀</b>의 문제라고 불러요. 그래서 오늘은 「예측(회귀)」로 함께 적어요. 강화 학습은 <a href="https://keris-eduai.co.kr/arcticconcept" target="_blank" rel="noopener">교과서가 안내한 체험 사이트 ↗</a>에서 해 볼 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>🗂️ 어떤 유형일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문장을 읽고 <b>정답(레이블)이 있는지</b>, 있다면 알아내는 것이 <b>갈래인지 숫자인지</b>, 아니면 <b>보상</b>으로 배우는지 따져 골라요.</p>
+    <div id="typeGame"></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 분류 vs 예측 -->
+<section class="page" data-name="분류 vs 예측" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>지도학습 실습 다시 보기: 분류 vs 예측</h2><p>교과서 74쪽 · 부록 활동 222쪽 심장 마비 발병 분류, 223쪽 주택 가격 예측</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>두 실습 모두 데이터에 <b>정답 열</b>(심장 마비는 <span class="mono">output</span>, 주택은 <span class="mono">Price</span>)이 있어서 지도학습이에요. 차이는 모델이 내놓는 <b>답의 모양</b>이에요. 몇 개의 <b>갈래 중 하나</b>면 분류, <b>연속된 숫자</b>면 예측(회귀)이에요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#d64535"><div class="ic">❤️</div><h4>부록 222쪽 · 심장 마비 발병 분류</h4><p>환자의 건강 정보 데이터(<span class="mono">heart.csv</span>: age 나이, thalachh 최대 심박수 등)를 분석하여 심장 마비 <b>발병 여부</b>를 분류하는 모델을 만든다. 종속 변수는 <span class="mono">output</span>.</p><small>모델 후보: k-NN · 로지스틱 회귀 · 서포트 벡터 머신 · 의사결정트리</small></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🏠</div><h4>부록 223쪽 · 주택 가격 예측</h4><p>주택 데이터(<span class="mono">USA_Housing.csv</span>: 평균 소득, 주택 연령, 방의 수, 침실 수, 지역 인구)를 분석하여 <b>주택 가격</b>(Price)을 예측하는 선형 회귀 모델을 만든다.</p><small>성능 평가: 평균제곱오차(MSE) · 결정 계수</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🔁 두 모델을 나란히 돌려 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">입력을 바꾸면서 <b>결과 칸</b>이 어떻게 바뀌는지 지켜보세요. 몇 가지 답이 나올 수 있는지 세어 보는 것이 핵심이에요. <b>(예시 데이터·예시 식이에요. 부록 활동 실습 결과와 숫자는 달라요.)</b></p>
+    <div id="svGame"></div>
+    <div class="memo"><label>두 실습은 각각 분류와 예측(회귀) 중 무엇인가요? <b>무엇을 보고</b> 그렇게 나눴는지 위 결과 칸을 근거로 써 보세요.</label><textarea data-memo="caseCompare" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 콜레라 -->
+<section class="page" data-name="콜레라 군집" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>비지도학습 실습 다시 보기: 콜레라 원인 발견</h2><p>교과서 74쪽 · 부록 활동 224쪽 콜레라 원인을 발견한 인공지능</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>19세기 영국 소호 지역에 콜레라가 크게 퍼졌을 때, 환자 위치 데이터에는 「이 환자는 몇 번 펌프 때문」 같은 <b>정답이 없었어요</b>. 대신 환자마다 <b>가장 가까운 펌프</b>를 거리로 찾아 색을 칠하니 환자가 <b>한 펌프 근처에 몰려</b> 있었어요.</span></div>
+  <div class="card">
+    <h3>🗺️ 모형 지도에서 다시 해 보기 <span class="muted" style="font-weight:400;font-size:.88rem">(예시 좌표로 만든 모형 지도)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">부록 코드의 순서 그대로예요. <b>① 데이터 보기</b>(점에 정답이 없어요) → <b>② 거리 계산</b>(환자마다 가장 가까운 펌프 번호를 찾아 8가지 색으로 칠하기) → <b>③ 결과 해석</b>(의심되는 펌프 고르기).</p>
+    <div id="chGame"></div>
+  </div>
+  <div class="card">
+    <h3>🧩 지도학습 vs 비지도학습</h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><h4>심장 마비 · 주택 가격</h4><p>데이터에 <b>정답 열</b>이 있어요. 모델은 정답과 비교하며 규칙을 배우고, 새 입력의 <b>정답을 맞혀요</b>. 맞혔는지 채점할 수 있어요.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>콜레라 환자 위치</h4><p><b>정답 열이 없어요.</b> 거리처럼 데이터 자체에서 비슷한 것끼리 묶어 <b>숨은 패턴</b>을 찾아요. 묶음이 무엇을 뜻하는지는 사람이 해석해요.</p></div>
+    </div>
+    <div class="memo"><label>지도학습과 비지도학습의 차이를 <b>세 실습</b>(심장 마비, 주택 가격, 콜레라)을 예로 들어 내 말로 써 보세요.</label><textarea data-memo="choleraMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <details class="card mt-code">
+    <summary>💻 부록 224쪽 코드의 핵심 (거리 계산 → 가장 가까운 펌프)</summary>
+<pre>펌프위치 = 펌프위치[['경도', '위도']].to_numpy()  # 넘파이 배열로 변환
+펌프와의거리 = cdist(콜레라환자[['경도', '위도']].values, 펌프위치)  # 거리 계산
+가까운펌프번호 = np.argmin(펌프와의거리, axis = 1)  # 거리가 가장 작은 펌프의 번호</pre>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">부록 224쪽 ➋ 데이터 전처리 코드예요(마지막 줄 주석만 뜻이 드러나게 고쳐 적었어요). <span class="mono">cdist</span>는 환자 한 명과 펌프 8개 사이의 거리를 모두 재고, <span class="mono">argmin</span>은 그중 <b>가장 작은 값</b>의 위치(펌프 번호)를 골라요. 그다음 <span class="mono">folium</span>으로 지도 위에 펌프 번호마다 다른 색 동그라미를 그렸어요.</p>
+  </details>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 k-최근접 이웃 -->
+<section class="page" data-name="k-최근접 이웃" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>k-최근접 이웃으로 분류하기</h2><p>교과서 75쪽 · 문제 해결에 적합한 알고리즘 선정, 그림 Ⅱ-4</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>새 꽃이 들어오면 <b>가장 가까이 있는 꽃 k송이</b>를 찾아보고, 그중 <b>가장 많은 품종</b>으로 정해요. 이웃에게 물어보는 <b>다수결</b>이에요.</span></div>
+  <div class="card">
+    <h3>📖 k-최근접 이웃(k-NN: k-Nearest Neighbors)</h3>
+    <p style="margin-top:0">61쪽의 (나) 문제는 레이블(정답)을 알고 있는 상태에서 학습하고 데이터가 속한 클래스(종류)를 구분하는 <b>분류</b>의 문제이다. k-최근접 이웃은 간단하고 직관적인 분류 알고리즘으로, 분류하려는 현재 데이터를 특정 값으로 분류하기 위해 기존의 데이터 안에서 <b>현재 데이터로부터 가까운 k개의 데이터</b>를 찾아낸다.</p>
+    <div class="callout">k-최근접 이웃 알고리즘은 주변에서 가까운 이웃들을 찾아보고 일종의 <b>다수결 원칙</b>을 사용하여 가장 많은 이웃의 클래스를 새로운 데이터 레이블로 결정하는 방법이다.</div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0"><b>k-최근접 이웃의 k</b>: 이름에서 알 수 있듯이 이웃에 위치한 데이터가 핵심이다. 이 알고리즘에서 이웃이란 가까이 존재하는 데이터들을 의미한다.</p>
+  </div>
+  <div class="card">
+    <h3>🌸 직접 해 보기: 새 붓꽃은 어떤 품종일까? <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-4 · 붓꽃 데이터 150송이)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 데이터(Iris1.csv)의 꽃받침 길이와 꽃받침 너비예요. 그래프를 눌러 <b>새로운 데이터</b>를 놓고(그래프를 한 번 누른 뒤 방향키로도 움직여요), <b>k</b>를 바꿔 보세요. 먼저 「그림 Ⅱ-4 위치」에서 <b>k = 5</b>일 때 결과를 확인해요.</p>
+    <div id="knnGame"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 선정 · 정리 -->
+<section class="page" data-name="선정·정리" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>문제에 맞는 유형과 알고리즘 고르기 · 정리</h2><p>교과서 74~75쪽 · 문제의 복잡도와 데이터의 특성에 따라 알고리즘 선정</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>문제의 복잡도와 데이터의 특성에 따라 적절한 알고리즘을 선정해요. 처음에는 두 가지만 물어도 후보가 크게 줄어요. <b>① 데이터에 레이블이 있나요?</b> <b>② 알아내려는 것이 갈래인가요, 숫자인가요?</b></span></div>
+  <div class="card">
+    <h3>🧭 내 문제로 골라 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">세 실습처럼, 내 주변에서 인공지능으로 풀고 싶은 문제를 하나 떠올리고 두 물음에 답해 보세요. 오른쪽에 알맞은 유형과 교과서 74쪽의 알고리즘이 나와요.</p>
+    <div id="pickGame"></div>
+    <div class="memo"><label>내 주변의 문제 하나: <b>무엇을 입력</b>으로 넣고 <b>무엇을 알아내고</b> 싶은지, 그래서 분류·예측(회귀)·군집 중 무엇으로 풀면 좋을지 써 보세요.</label><textarea data-memo="myProblem" rows="3" placeholder="입력: … / 알아낼 것: … / 유형: … (이유: …)"></textarea><div class="saved"></div></div>
+  </div>
+  <details class="card mt-opt">
+    <summary>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(선택 · 시간이 남으면)</span></summary>
+    <p class="muted" style="margin-top:8px;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li><button class="blank" data-a="지도학습">?</button>은 레이블이 주어진 데이터로 학습하는 방법이고, 분류와 예측이 있다.</li>
+      <li><button class="blank" data-a="비지도학습">?</button>은 레이블이 없는 데이터로 학습하는 방법으로, 비슷한 특징의 데이터끼리 묶는 <button class="blank" data-a="군집">?</button> 알고리즘이 이에 해당한다.</li>
+      <li><button class="blank" data-a="강화 학습">?</button>은 보상은 최대화하고 벌은 최소화하는 방향으로 강화시키는 학습 방법이다.</li>
+      <li>k-최근접 이웃은 가까운 <button class="blank" data-a="k개">?</button>의 이웃을 찾아 <button class="blank" data-a="다수결">?</button> 원칙으로 새로운 데이터의 레이블을 결정한다.</li>
+    </ol>
+  </details>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">학습 목표를 떠올리며 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0"><b>지도학습</b>은 레이블이 있는 데이터로 학습한다. 결과가 정해진 클래스 중 하나면 <b>분류</b>(심장 마비 발병 여부), 연속된 값이면 <b>예측(회귀)</b>(주택 가격)이다.</div>
+    <div style="--k:#e0702b"><b>비지도학습</b>은 레이블 없이 데이터 자체에서 패턴을 찾는다. 콜레라 환자 위치처럼 비슷한 것끼리 묶는 <b>군집</b>이 대표적이다. <b>강화 학습</b>은 보상과 벌로 시행착오를 거치며 배운다.</div>
+    <div style="--k:#9b4fc4"><b>k-최근접 이웃</b>은 가까운 k개 이웃의 다수결로 분류한다. 알고리즘은 <b>문제의 복잡도와 데이터의 특성</b>에 따라 선정한다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>이번에 한 세 실습 중 ‘심장 마비 발병 분류’와 ‘주택 가격 예측’은 둘 다 정답(레이블)이 있는 지도학습입니다. 그런데 알아내는 결과가 하나는 ‘걸림/안 걸림’ 같은 갈래이고, 다른 하나는 ‘30만 달러’ 같은 숫자입니다. 두 실습이 각각 분류와 회귀 중 무엇인지 쓰고, 무엇을 보고 그렇게 나눴는지 설명하세요.</li>
+      <li>‘콜레라 원인 발견’ 실습은 앞의 둘과 달리 정답 라벨 없이, 지도에서 환자가 어느 펌프 근처에 몰리는지를 거리로 찾았습니다. 이렇게 정답 없이 비슷한 것끼리 묶는 방식을 비지도학습(군집)이라고 합니다. 지도학습과 비지도학습의 차이를 세 실습을 예로 들어 자기 말로 설명하세요.</li>
+      <li>세 실습(심장 마비=분류, 주택 가격=회귀, 콜레라=군집)처럼, 내 주변의 문제 하나를 떠올려 보세요. 그 문제는 분류·회귀·군집 중 무엇으로 풀면 좋을까요? 무엇을 입력으로 넣고 무엇을 알아내고 싶은지와 함께 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

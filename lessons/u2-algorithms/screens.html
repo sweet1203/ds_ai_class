@@ -1,0 +1,257 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-1 기계학습 · 기계학습 알고리즘</span>
+      <h1>같은 데이터,<br>어떤 알고리즘을 쓸까?</h1>
+      <div class="story"><b>야구부 감독의 데이터</b><br>A 고등학교 야구부에 새로 온 감독은 기계학습의 도움을 받아 팀의 성적을 향상시키려고 선수들의 데이터를 모았어요. 선수들은 <b>연습 시간, 타율, 방어율</b>과 자신의 <b>포지션</b>에 대한 정보를 제공했지요.</div>
+      <p>감독이 알고 싶은 것은 여러 가지예요. 「연습을 더 하면 타율이 얼마나 오를까?」, 「이 선수는 3할 타자일까?」, 「이 선수는 어느 포지션이 맞을까?」… <b>같은 데이터</b>인데 질문이 바뀌면 쓰는 <b>알고리즘</b>도 바뀌어요. 오늘은 다섯 가지 알고리즘이 야구부 문제를 어떻게 푸는지 보고, 문제에 맞는 알고리즘을 골라 봐요.</p>
+      <ol>
+        <li>같은 데이터, 다른 질문</li><li>의사결정트리</li><li>서포트 벡터 머신 · k-평균</li>
+        <li>스스로 해결하기 · 알고리즘 고르기</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📈</i><div><b>선형 회귀 · 로지스틱 회귀</b><small>타율 예측 · 3할 타자 여부</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🌳</i><div><b>의사결정트리</b><small>질문으로 포지션 정하기</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>⚖️ ⭕</i><div><b>서포트 벡터 머신 · k-평균</b><small>결정 경계 · 선수 군집화</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🧭</i><div><b>어떤 알고리즘을 고를까?</b><small>문제와 데이터에 맞게</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>고교 야구부 데이터 하나로 <b>선형 회귀</b>, <b>로지스틱 회귀</b>, <b>의사결정트리</b>, <b>서포트 벡터 머신</b>, <b>k-평균</b>이 각각 어떤 문제를 푸는지 살펴봅니다. 슬라이더로 예측해 보고, 트리를 따라가고, 군집을 한 단계씩 만들어 본 뒤, 여러 문제에 <b>알맞은 알고리즘</b>을 골라 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>오늘의 질문</b> · 같은 데이터를 쓰는데 왜 문제마다 알고리즘이 달라질까?</li>
+          <li><b>생각해 볼 것</b> · 내가 풀고 싶은 문제에는 어떤 알고리즘이 어울릴까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>알고리즘별로 문제를 해결하는 핵심적인 방법을 설명할 수 있다.</li>
+          <li>문제에 적합한 알고리즘을 선정할 수 있다. <small class="muted">(84쪽 성취도 평가)</small></li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">기억해 둘 문장 (85쪽)</span>
+        <p style="margin:0;font-size:.95rem">기계학습은 수집된 <b>데이터의 특징</b>과 <b>문제 상황</b>에 따라 적절한 알고리즘을 선정하는 것이 중요하다.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 같은 데이터, 다른 질문부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 선형 회귀 · 로지스틱 회귀 -->
+<section class="page" data-name="선형·로지스틱 회귀" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>같은 데이터, 다른 질문</h2><p>교과서 82~83쪽 · 표 Ⅱ-8, 선형 회귀, 로지스틱 회귀</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>같은 야구부 데이터라도 「타율이 <b>얼마</b>일까?」처럼 <b>숫자</b>를 맞히는 질문과, 「3할 타자<b>일까 아닐까</b>?」처럼 <b>둘 중 하나</b>를 고르는 질문은 답의 모양이 달라요. 답의 모양이 다르면 쓰는 알고리즘도 달라져요.</span></div>
+  <div class="card">
+    <h3>📋 고교 야구부 학생들의 데이터 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-8)</span></h3>
+    <div class="al-scroll"><table class="al-tbl">
+      <tr><th>선수</th><th>연습 시간</th><th>타율</th><th>방어율</th><th>포지션</th></tr>
+      <tr><td>1</td><td>3</td><td>0.122</td><td>2.43</td><td>투수</td></tr>
+      <tr><td>2</td><td>10</td><td>0.224</td><td>2.42</td><td>투수</td></tr>
+      <tr><td>3</td><td>5</td><td>0.145</td><td>2.41</td><td>투수</td></tr>
+      <tr class="al-gap"><td colspan="5">⋯ (교과서에는 14명 중 일부만 실려 있어요) ⋯</td></tr>
+      <tr><td>12</td><td>19</td><td>0.351</td><td>2.23</td><td>타자</td></tr>
+      <tr><td>13</td><td>20</td><td>0.389</td><td>4.31</td><td>타자</td></tr>
+      <tr><td>14</td><td>20</td><td>0.250</td><td>3.10</td><td class="muted">?</td></tr>
+    </table></div>
+    <p class="note" style="margin-top:4px">단, 한 선수가 투수와 타자를 겸할 수 있다. · 방어율은 투수가 9이닝 동안 내준 평균 자책점으로, 낮을수록 잘 막은 거예요.</p>
+    <div class="al-map">
+      <div class="g"><span class="lb">지도학습</span>
+        <div class="al-boxes">
+          <div style="--k:#1f9d74"><q>데이터를 잘 설명하는 직선 찾기</q><b>선형 회귀</b><small>타율 예측</small></div>
+          <div style="--k:#d64535"><q>질문을 통해 클래스 분류하기</q><b>의사결정트리</b><small>선발 포지션 분류</small></div>
+          <div style="--k:#c98a00"><q>클래스를 잘 분류하는 S자 곡선 찾기</q><b>로지스틱 회귀</b><small>3할 타자 여부 분류</small></div>
+          <div style="--k:#6a5acd"><q>두 클래스로 분류하는 공평한 선 찾기</q><b>서포트 벡터 머신</b><small>타자, 투수 분류</small></div>
+        </div>
+      </div>
+      <div class="g"><span class="lb">비지도학습</span>
+        <div class="al-boxes one">
+          <div style="--k:#2f6fd0"><q>데이터를 유사한 그룹으로 묶기</q><b>k-평균</b><small>선수 군집화</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#1f9d74"><div class="ic">📈</div><h4>선형 회귀 · 연습 시간에 따른 타율 예측</h4><p>가로축에 연습 시간, 세로축에 타율을 놓고 점을 찍으면 점들이 흩어져 표현된다. 선형 회귀는 이 점들을 <b>가장 잘 설명하는 직선</b>을 찾는 것이다. 이 직선을 <b>회귀선</b>이라고 하며 선형 방정식은 <b>y = mx + b</b>(y는 타율, x는 연습 시간, m은 기울기, b는 절편) 형태를 가진다.</p><small>핵심: 실제 데이터와 모델이 예측한 값의 차이인 <b>오차를 최소화하는 최적의 직선</b>을 찾는 것</small></div>
+    <div class="kc" style="--k:#c98a00"><div class="ic">〰️</div><h4>로지스틱 회귀 · 타율로 3할 타자 여부 분류</h4><p><b>로지스틱 함수</b>는 0과 1 사이의 값을 출력하는 <b>S자 모양의 곡선</b>을 만든다. 선수의 타율이 3할(0.300) 이상인 확률을 구해, 확률이 <b>0.5 이상이면 3할 이상인 타자(1)</b>, 0.5 미만이면 3할 미만인 타자(0)로 분류한다.</p><small>적합한 경우: 독립 변수가 연속형 또는 범주형이며 <b>종속 변수가 범주형 또는 0과 1의 이진 분류</b>일 때</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🎚️ 같은 데이터 · 두 질문 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-7 · Ⅱ-9를 바탕으로 한 예시)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">두 슬라이더를 움직여 보세요. 왼쪽은 <b>연습 시간</b>을 넣으면 회귀선이 <b>타율</b>을 내놓고, 오른쪽은 <b>타율</b>을 넣으면 S자 곡선이 <b>확률</b>을 거쳐 <b>1 또는 0</b>을 내놓아요. 두 알고리즘이 내놓는 <b>답의 모양</b>을 비교해 보세요.</p>
+    <div id="lgGame"></div>
+    <p class="note">점은 그림 Ⅱ-7의 점을 어림해 읽은 값이고, 회귀선은 그 점들로 구한 예시 직선이에요. S자 곡선은 타율 0.300에서 확률 0.5가 되도록 그린 예시 곡선이에요.</p>
+  </div>
+  <div class="card">
+    <h3>🔎 더 알아보기 · 둘 다 「회귀」인데?</h3>
+    <p style="margin-top:0">선형 회귀와 로지스틱 회귀는 모두 <b>회귀(regression)</b>라는 용어를 사용하지만, 실제로는 <b>예측 목표와 모델 방식</b>이 달라요. 이름에 속지 말고 <b>무엇을 답으로 내놓는지</b>를 보면 구분할 수 있어요. 로지스틱 회귀는 <b>분류</b> 알고리즘이에요.</p>
+    <div class="memo"><label>「연습 시간으로 타율을 예측」하는 문제와 「3할 타자인지 아닌지 분류」하는 문제는 같은 데이터를 쓰는데 왜 다른 알고리즘을 쓸까요? 위 체험에서 두 알고리즘이 내놓은 답의 모양을 비교해 써 보세요.</label><textarea data-memo="algoDiff" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 의사결정트리 -->
+<section class="page" data-name="의사결정트리" data-acc="#d64535">
+  <div class="head"><div class="num">02</div><div><h2>의사결정트리</h2><p>교과서 83쪽 · 선발 포지션을 분류하는 규칙(그림 Ⅱ-10)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>스무고개처럼 <b>예/아니요로 답하는 질문</b>을 하나씩 던지며 데이터를 나누어 가요. 질문을 따라 끝까지 내려가면 <b>결과(포지션)</b>가 나와요. 어떤 질문을 거쳐 그 결과가 나왔는지 <b>눈으로 따라갈 수 있다</b>는 것이 큰 장점이에요.</span></div>
+  <div class="card">
+    <h3>📖 의사결정트리로 포지션 정하기</h3>
+    <p style="margin-top:0">의사결정트리는 데이터에 기반하여 각 단계별로 <b>질문을 통해 결과를 도출</b>한다. 데이터를 분석하여 포지션의 특징을 잘 드러내는 첫 번째 질문을 만든다. 예를 들어 「타율이 0.250 이상인가?」와 같은 질문을 만들 수 있다. 이 질문을 기반으로 데이터를 두 그룹으로 나누고, 또 각각의 그룹에 대해 질문을 만들어 가며 데이터를 세분화하면서 선수의 포지션을 결정하는 <b>규칙</b>을 만든다. 의사결정트리 구조의 끝에 도달한 마지막 결과를 포지션으로 정하면 된다.</p>
+    <div class="callout">[그림 Ⅱ-10]은 <b>타자</b>(타율 0.250 초과), <b>중간 투수</b>(타율 0.250 이하, 방어율 2.0 초과), <b>선발 또는 마무리 투수</b>(타율 0.250 이하, 방어율 1.0 초과, 방어율 2.0 이하), <b>선발 투수</b>(타율 0.250 이하, 방어율 1.0 이하)를 트리로 표현한 것이다.</div>
+  </div>
+  <div class="card">
+    <h3>🌳 트리 따라가기 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-10)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">표 Ⅱ-8의 선수를 누르거나 타율·방어율을 직접 바꿔 보세요. 지나가는 질문과 가지에 불이 켜지고, 끝에 도착한 결과가 포지션이에요. 표에서 <b>포지션이 비어 있는 14번</b>도 트리로 정해 보세요.</p>
+    <div id="dtGame"></div>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#1f9d74"><div class="ic">👍</div><h4>장점</h4><p>의사결정트리 알고리즘은 결과를 <b>이해하기 쉬운 트리 구조</b>로 중요한 특징을 찾는 과정이 간편하고 <b>전처리할 필요가 없다</b>. 직관적으로 표현되어 <b>해석이 쉽다</b>.</p></div>
+    <div class="kc" style="--k:#d64535"><div class="ic">⚠️</div><h4>단점 (85쪽)</h4><p><b>과적합</b>되기 쉽고 조정해야 할 파라미터가 많다. 질문을 너무 잘게 나누면 훈련 데이터에만 꼭 맞는 규칙이 될 수 있어요.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="memo" style="margin-top:0"><label>의사결정트리가 다른 알고리즘보다 좋은 점을 하나 쓰고, 그 장점이 왜 중요한 상황인지 예를 들어 설명해 보세요. <small>(예: 결과를 누군가에게 설명해야 하는 상황이라면?)</small></label><textarea data-memo="treeGood" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 서포트 벡터 머신 · k-평균 -->
+<section class="page" data-name="SVM·k-평균" data-acc="#2f6fd0">
+  <div class="head"><div class="num">03</div><div><h2>서포트 벡터 머신 · k-평균</h2><p>교과서 83~84쪽 · 결정 경계와 마진, 선수를 세 그룹으로 군집화</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>서포트 벡터 머신</b>은 타자와 투수 사이에 <b>가장 공평한 선</b>을 긋는 방법이고, <b>k-평균</b>은 정답(포지션) 없이 <b>가까운 선수끼리 k개의 무리</b>로 묶는 방법이에요. 앞의 것은 정답이 있는 지도학습, 뒤의 것은 정답이 없는 비지도학습이에요.</span></div>
+  <div class="card">
+    <h3>⚖️ 서포트 벡터 머신 · 결정 경계로 선수를 타자, 투수로 분류 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-11)</span></h3>
+    <div class="al-svm">
+      <div id="svmFig"></div>
+      <div>
+        <p style="margin-top:0">서포트 벡터 머신은 타자와 투수 두 그룹이 있을 때, 그 그룹을 구분하는 <b>가장 공평한 선</b>을 찾는 것이다. 이 구분선을 <b>결정 경계</b>라고 한다.</p>
+        <p>결정 경계와 가장 가까이 맞닿은 데이터 포인트(점)를 <b>서포트 벡터</b>라고 하고, 서포트 벡터와 결정 경계 사이의 거리를 <b>마진(margin)</b>이라고 한다.</p>
+        <p style="margin-bottom:0">서포트 벡터 머신은 <b>마진을 최대로 하는 결정 경계</b>를 찾는 것이 유리하다. 마진이 클수록 현재 알지 못하는 새로운 데이터가 들어왔을 때 안정적으로 타자 또는 투수로 분류할 가능성이 크기 때문이다.</p>
+      </div>
+    </div>
+    <p class="note">점 위치는 그림 Ⅱ-11을 어림해 읽은 값이에요. 고리를 두른 점이 서포트 벡터예요. 회색 빈 점은 <b>포지션이 정해지지 않은 14번</b>이라 결정 경계를 찾는 학습에 쓰지 않은 점이에요(교과서 그림의 「다」). 그래서 경계에 더 가까워도 서포트 벡터가 아니에요.</p>
+  </div>
+  <div class="card">
+    <h3>⭕ k-평균 · 선수를 세 그룹으로 군집화 <span class="muted" style="font-weight:400;font-size:.88rem">(그림 Ⅱ-12)</span></h3>
+    <p style="margin-top:0">k-평균(k-means) 알고리즘은 <b>비지도학습의 군집 알고리즘</b>으로 데이터 간의 <b>거리</b>를 사용해 가장 가까운 거리에 있는 데이터들을 하나의 군집으로 묶는 알고리즘이다. 이러한 거리를 계산하기 위해서는 데이터가 <b>수치화</b>되어야 한다.</p>
+    <div class="al-steps">
+      <div><b>①</b> k를 3으로 정하고, 3개의 위치에 <b>중심점</b>을 놓는다.</div>
+      <div><b>②</b> 모든 데이터로부터 거리를 계산하여 <b>가장 가까운 중심점</b>에 군집을 형성한다.</div>
+      <div><b>③</b> 각 군집에 속한 데이터들의 <b>평균 좌표</b>로 새로운 중심점을 계산한다.</div>
+      <div><b>④</b> 중심점 좌표가 <b>더 이상 변함이 없다면</b> 알고리즘을 종료한다.</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>👣 k-평균 한 단계씩 해 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">14명의 (타율, 방어율)을 점으로 찍었어요. k-평균에는 <b>포지션(정답)을 알려 주지 않아요</b>. 시작 위치를 고르고 「묶기」와 「옮기기」를 번갈아 눌러 보세요. 끝나면 <b>다른 시작 위치</b>에서도 해 보고 결과를 비교해요.</p>
+    <div id="kmGame"></div>
+    <p class="note">교과서 표에 있는 6명(1·2·3·12·13·14번)은 표의 값, 나머지 8명은 그림 Ⅱ-12의 점을 어림해 읽은 값이에요. 타율과 방어율은 눈금 크기가 달라서, 그래프에 보이는 거리(타율 ÷ 0.45, 방어율 ÷ 5로 맞춘 거리)로 계산했어요. 이름표의 <b>중간·중</b>은 중간 투수, <b>마</b>는 마무리 투수, <b>선</b>은 선발 투수예요.</p>
+  </div>
+  <div class="callout">이처럼 주어진 데이터에 정답이 명시되어 있지 않지만, 타율과 방어율 같은 <b>내재된 구조</b>를 분석함으로써 새로운 정보인 선수의 포지션을 발견할 수 있다. k-평균 알고리즘은 정답이 주어지지 않은 데이터에서 k값을 선택하여 군집화하는 기능을 수행한다. 이때 <b>k값은 사용자가 적절히 선택</b>해야 한다.</div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 스스로 해결하기 -->
+<section class="page" data-name="알고리즘 고르기" data-acc="#c98a00">
+  <div class="head"><div class="num">04</div><div><h2>스스로 해결하기 · 알고리즘 고르기</h2><p>교과서 84~85쪽 · 문제에 적절한 알고리즘과 라이브러리 코드, 기계학습 알고리즘의 특성</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>알고리즘을 고를 때는 먼저 두 가지를 물어요. ① 데이터에 <b>정답(레이블)</b>이 있나? 없으면 <b>군집</b>(k-평균). ② 있다면 얻고 싶은 답이 <b>숫자</b>인가(예측 → 선형 회귀), <b>몇 가지 중 하나</b>인가(분류 → 로지스틱 회귀, k-최근접 이웃, 의사결정트리, 서포트 벡터 머신)?</span></div>
+  <div class="card">
+    <h3>🔁 다시 보기 · k-최근접 이웃 <span class="muted" style="font-weight:400;font-size:.88rem">(75쪽)</span></h3>
+    <p style="margin:0">k-최근접 이웃은 주어진 데이터를 기반으로 새로운 데이터를 분류하는 방법이다. 주변에서 <b>가까운 이웃들</b>을 찾아보고 일종의 <b>다수결 원칙</b>을 사용하여 가장 많은 이웃의 클래스를 새로운 데이터 레이블로 결정한다. 붓꽃 분류에서 k가 5일 때 이웃 4개가 버시컬러, 1개가 버지니카라면 새로운 데이터는 버시컬러로 분류했지요.</p>
+  </div>
+  <div class="card">
+    <h3>🧩 이 문제에는 어떤 알고리즘? <span class="muted" style="font-weight:400;font-size:.88rem">(84쪽 스스로 해결하기 + 예시)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서의 다섯 문제와 예시 세 문제예요. <b>분류 문제는 여러 알고리즘이 가능해요.</b> 교과서 선 잇기처럼 알고리즘마다 문제 하나씩 짝지으며, 문장 속 단서(트리 구조, 발생/아님 두 가지, 가까운 이웃)로 골라요. 해설에 85쪽의 사이킷런 클래스도 함께 나와요.</p>
+    <div id="pickGame"></div>
+  </div>
+  <div class="card">
+    <h3>📊 기계학습 알고리즘의 특성 <span class="muted" style="font-weight:400;font-size:.88rem">(85쪽)</span></h3>
+    <div class="al-scroll"><table class="al-tbl al-feat">
+      <tr><th>알고리즘</th><th>장점</th><th>단점</th><th>사이킷런 클래스</th></tr>
+      <tr><td><b>선형 회귀</b></td><td>새롭게 관측된 데이터의 예측값을 측정할 수 있다.</td><td>데이터 특징들이 선형 관계에 있다는 가설하에 작동하므로 데이터 특징이 가설과 다를 경우 정확도가 낮아진다.</td><td class="mono">LinearRegression</td></tr>
+      <tr><td><b>로지스틱 회귀</b></td><td>데이터를 분류할 때 클래스에 속할 확률을 제공한다.</td><td>데이터 특징이 많다면 학습이 어려워 과소적합되기 쉽다.</td><td class="mono">LogisticRegression</td></tr>
+      <tr><td><b>k-최근접 이웃</b></td><td>알고리즘 이해와 구현이 쉽고 하이퍼 파라미터가 적다.</td><td>예측 속도가 느리고 메모리 사용이 많으며 이상치에 민감하다.</td><td class="mono">KNeighborsClassifier</td></tr>
+      <tr><td><b>서포트 벡터 머신</b></td><td>상대적으로 적은 데이터로 정확도가 높고 예측 속도가 빠르다.</td><td>결정 경계선이 많이 겹칠 때 정확도가 낮아지고 파라미터 설정을 결정하기 어렵다.</td><td class="mono">SVC</td></tr>
+      <tr><td><b>의사결정트리</b></td><td>해석이 쉽고 데이터 전처리가 필요없다.</td><td>과적합되기 쉽고 조정해야 할 파라미터가 많다.</td><td class="mono">DecisionTreeClassifier</td></tr>
+      <tr><td><b>k-평균</b></td><td>데이터 크기에 상관없이 군집화에 사용할 수 있고 구현하기 쉽다.</td><td>초기 중심점 위치와 이상치에 민감하고 데이터의 분포가 고르지 않으면 정확도가 떨어진다.</td><td class="mono">KMeans</td></tr>
+    </table></div>
+  </div>
+  <details class="card al-code">
+    <summary>💻 기계학습 모델의 학습 과정에서 사용되는 주요 코드 (85쪽)</summary>
+    <p class="muted" style="font-size:.9rem">노란 부분은 <b>문제에 따라 바꾸는 곳</b>이에요. 알고리즘을 바꾸려면 <b>모델 생성</b> 부분의 클래스만 바꾸면 돼요. (교과서 코드의 <span class="mono">MinMaxScaler</span> 뒤에 빠진 괄호를 붙였어요.)<br>교과서 코드는 정규화한 <span class="mono">X_scaled</span>가 아니라 <span class="mono">X</span>를 <span class="mono">train_test_split</span>에 넣어요. 정규화한 값으로 학습하려면 <span class="mono">X_scaled</span>를 넣어야 해요.</p>
+<pre><span class="c"># 데이터 수집하기(불러오기)</span>
+import pandas as pd
+df = pd.read_csv('<mark>Iris.csv</mark>')
+X = df.iloc[:, :-1].values; y = df.iloc[:, -1].values
+
+<span class="c"># 데이터 전처리하기</span>
+from sklearn.preprocessing import <mark>MinMaxScaler</mark>
+scaler = <mark>MinMaxScaler</mark>()
+X_scaled = scaler.fit_transform(X)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+<span class="c"># 모델 생성과 학습하기</span>
+from <mark>sklearn.linear_model</mark> import <mark>LogisticRegression</mark>
+model = <mark>LogisticRegression()</mark>
+model.fit(X_train, y_train)
+
+<span class="c"># 성능 평가하기</span>
+from sklearn.metrics import accuracy_score, confusion_matrix
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+matrix = confusion_matrix(y_test, y_pred)</pre>
+  </details>
+  <div class="card">
+    <h3>🏫 우리 학교 데이터라면?</h3>
+    <div class="memo" style="margin-top:0"><label>우리 반이나 학교에서 모을 수 있는 데이터를 하나 떠올리고, 그 데이터로 풀고 싶은 문제와 어울리는 알고리즘을 골라 이유와 함께 써 보세요. <small>(정답이 있나? 답이 숫자인가, 몇 가지 중 하나인가?)</small></label><textarea data-memo="myData" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">05</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>선형 회귀</b>는 오차를 최소화하는 직선으로 <b>숫자</b>(타율)를 예측하고, <b>로지스틱 회귀</b>는 S자 곡선의 확률로 <b>0 또는 1</b>(3할 타자 여부)을 분류한다. 같은 데이터라도 답의 모양이 다르면 알고리즘이 달라진다.</div>
+    <div style="--k:#d64535"><b>의사결정트리</b>는 질문을 따라 결과를 도출해 <b>해석이 쉽고</b>, <b>서포트 벡터 머신</b>은 마진이 최대인 결정 경계를 찾으며, <b>k-평균</b>은 정답 없이 가까운 데이터끼리 k개의 군집으로 묶는다.</div>
+    <div style="--k:#c98a00">알고리즘은 <b>데이터의 특징</b>(정답이 있는가)과 <b>문제 상황</b>(숫자를 예측하는가, 분류하는가, 묶는가)에 따라 고른다. 사이킷런에서는 클래스만 바꾸면 다른 알고리즘을 쓸 수 있다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>야구부 데이터에서 &#x27;연습 시간으로 타율을 예측&#x27;하는 문제와 &#x27;3할 타자인지 아닌지 분류&#x27;하는 문제는 같은 데이터를 쓰는데도 다른 알고리즘을 씁니다. 무엇이 달라서 그런지 쓰세요.</li>
+      <li>의사결정트리는 선발 포지션을 정하는 규칙을 만들어 줍니다. 이 알고리즘이 다른 알고리즘보다 좋은 점을 하나 쓰고, 그 장점이 왜 중요한 상황인지 예를 들어 설명하세요.</li>
+      <li>우리 반이나 학교에서 모을 수 있는 데이터를 하나 떠올리고, 그 데이터로 풀고 싶은 문제와 어울리는 알고리즘을 골라 이유와 함께 쓰세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

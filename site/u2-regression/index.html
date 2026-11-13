@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>선형 회귀 알고리즘 실습</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  /* 카드 격자 칸이 안의 긴 코드·표 때문에 늘어나지 않게 */
+  .cards2>*,.cards3>*,.cards4>*,.grid2>*{min-width:0}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 공통 */
+  .rg-scroll{overflow-x:auto}
+  .rg-tbl{min-width:420px}
+  .rg-tbl th,.rg-tbl td{border:1px solid var(--line);padding:4px 8px;text-align:center}
+  .rg-tbl th{background:#fbfaf7;font-size:.86rem}
+  .rg-q{background:#fff4d6;font-weight:900;color:#c98a00}
+  .btn.ghost.on{background:var(--acc);color:#fff}
+  .ok{color:#17694f;font-weight:700}
+  .ng{color:var(--red);font-weight:700}
+  svg .gl{stroke:#eceae4;stroke-width:1}
+  svg .tk{font-size:10px;fill:var(--muted)}
+  svg .axl{font-size:11px;font-weight:700;fill:var(--muted)}
+  pre{max-width:100%;overflow-x:auto}
+  .rg-code{background:#0f2742;color:#e8eef6;border-radius:10px;padding:10px 12px;font-size:.8rem;line-height:1.55;margin:6px 0;white-space:pre}
+  .rg-code .c{color:#9fb3c8}
+  .rg-out{background:#f1f3f6;color:var(--ink);border-radius:10px;padding:8px 12px;font-size:.8rem;line-height:1.5;margin:6px 0;white-space:pre;border-left:4px solid #8a94a3}
+  .rg-out.sm{font-size:.74rem;margin:4px 0}
+  /* 01 X → y */
+  .rg-xy{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .rg-xy>div{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-radius:12px;padding:8px 10px}
+  .rg-xy .x{background:#eaf1fb}.rg-xy .y{background:#fff4d6}
+  .rg-xy b{font-size:.85rem;margin-right:2px}
+  .rg-xy span{background:#fff;border-radius:999px;padding:1px 10px;font-size:.88rem;font-weight:700}
+  .rg-xy .ar{font-size:1.4rem;font-weight:900;color:var(--muted);background:none;padding:0}
+  /* 01 직선 맞추기 */
+  .rg-ln{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:14px;align-items:start}
+  @media (max-width:760px){.rg-ln{grid-template-columns:1fr}}
+  .rg-ln svg{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:10px;user-select:none}
+  .rg-pt{opacity:.75}
+  .rg-line{stroke:var(--navy);stroke-width:3}
+  .rg-hit{fill:transparent;cursor:ns-resize;touch-action:none}
+  .rg-h{fill:#fff;stroke:var(--navy);stroke-width:3;cursor:ns-resize;touch-action:none}
+  .rg-h:focus{outline:none;stroke:var(--amber);stroke-width:4}
+  .rg-errs line{stroke:var(--red);stroke-width:1;opacity:.55}
+  .rg-meter{background:#fbfaf7;border-radius:10px;padding:8px 10px;margin-bottom:8px}
+  .rg-meter span{font-size:1.4rem;font-weight:900;color:var(--red);font-variant-numeric:tabular-nums}
+  .rg-meter.r2 span{color:#1f9d74}
+  .rg-meter .bar{height:8px;background:#eceae4;border-radius:99px;overflow:hidden;margin-top:4px}
+  .rg-meter .bar i{display:block;height:100%;background:var(--red);transition:width .15s}
+  .rg-meter.r2 .bar i{background:#1f9d74}
+  .rg-meter small{color:var(--muted);font-size:.76rem}
+  .rg-eq{font-size:.92rem;margin-bottom:6px}
+  .rg-best{font-size:.88rem;color:var(--muted);margin-bottom:8px}
+  .rg-leg{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;margin-top:6px}
+  .rg-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px}
+  .rg-msg{margin-top:8px;font-size:.92rem}
+  .rg-msg:not(:empty){background:#e6f5ee;border-radius:10px;padding:8px 12px}
+  /* 02 셀 흉내 */
+  .rg-cell{border:1px solid var(--line);border-radius:12px;padding:8px 10px;margin-bottom:8px;background:#fff}
+  .rg-ct{font-weight:900;font-size:.88rem;margin-bottom:2px}
+  .rg-cin{display:flex;gap:8px;align-items:flex-start}
+  .rg-cin pre{flex:1;min-width:0;margin:0}
+  .rg-run{flex:0 0 auto;width:36px;height:36px;border-radius:50%;border:0;background:#1f9d74;color:#fff;font-size:1rem;cursor:pointer}
+  .rg-run:hover{background:#17694f}
+  .rg-cout{margin:6px 0 0 44px;font-size:.88rem}
+  @media (max-width:560px){.rg-cout{margin-left:0}}
+  .rg-err{font-family:ui-monospace,Menlo,monospace;font-size:.8rem;background:#fde8e6;color:#8f2418;border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:pre}
+  .rg-why{font-size:.86rem;margin-top:4px}
+  /* 02 원-핫 */
+  .rg-cnt{font-size:.88rem}
+  .rg-oh{min-width:560px}
+  .rg-oh th.cat,.rg-oh td.cat{background:#fde8e6}
+  .rg-oh th.hot{background:#eaf1fb;font-size:.8rem}
+  .rg-oh td.hot{background:#f6f9fe;color:var(--muted)}
+  .rg-oh td.hot.one{background:#2f6fd0;color:#fff;font-weight:900}
+  .rg-oh .rg-pick{background:#fbfaf7}
+  .rg-oh select{font:inherit;font-size:.85rem;padding:2px 4px;border-radius:6px;border:1px solid #c5ccd5}
+  .rg-more summary{cursor:pointer;font-weight:900}
+  .rg-more[open] summary{margin-bottom:6px}
+  /* 03 채점 */
+  .rg-sum{background:#fbfaf7;border-radius:10px;padding:8px 12px;margin-top:8px;font-size:.93rem}
+  /* 04 계산기 */
+  .rg-ctrl{grid-template-columns:90px 1fr 48px;max-width:520px}
+  .rg-sp{margin:6px 0 8px;font-weight:700;font-size:.92rem}
+  .rg-calc{min-width:380px;max-width:560px}
+  .rg-calc .hotrow td{background:#f6f9fe}
+  .rg-pred{font-size:1.02rem;margin-top:6px}
+  .rg-pred b{font-size:1.5rem;color:#c98a00}
+  .rg-flow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  @media (max-width:700px){.rg-flow{grid-template-columns:1fr 1fr}}
+  @media (max-width:420px){.rg-flow{grid-template-columns:1fr}}
+  .rg-flow>div{background:#fbfaf7;border-radius:12px;padding:8px 10px;font-size:.88rem;border-top:4px solid #c98a00}
+  .rg-flow b{display:block}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ-1 기계학습 · 기계학습 알고리즘 실습</span>
+      <h1>모르는 꽃받침 길이,<br>직선으로 예측할 수 있을까?</h1>
+      <div class="story"><b>61쪽 (다) 문제</b><br>꽃의 종류별로 모든 속성값을 알고 있을 때, 새로운 꽃의 <b>모르는 수치형 속성값</b>을 구할 수 있을까? 일련번호가 151인 붓꽃은 꽃받침 너비 3.1, 꽃잎 길이 1.5, 꽃잎 너비 0.2, 종류는 세토사인데 <b>꽃받침 길이</b>를 몰라요.</div>
+      <p>모르는 <b>숫자</b>를 예측하는 문제는 <b>회귀</b>의 문제예요. 오늘은 <b>선형 회귀</b> 알고리즘으로 꽃받침 길이를 예측하는 모델을 코랩에서 직접 만들어요. 중간에 <b>오류</b>도 만나고, <b>원-핫 인코딩</b>으로 해결한 뒤, 모델이 얼마나 잘 맞는지 <b>MSE와 R²</b>로 확인해요.</p>
+      <ol>
+        <li>문제 분석 · 직선 찾기</li><li>오류와 원-핫 인코딩</li><li>성능 평가 · MSE와 R²</li>
+        <li>꽃받침 길이 예측 · 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📏</i><div><b>직선 찾기</b><small>오차가 가장 작은 회귀선</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>⚠️</i><div><b>오류 만나기</b><small>could not convert string to float</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔢</i><div><b>원-핫 인코딩</b><small>종류를 0과 1로</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🎯</i><div><b>MSE · R² · 예측</b><small>얼마나 잘 맞을까?</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>붓꽃 데이터로 <b>꽃받침 길이</b>를 예측하는 <b>선형 회귀 모델</b>을 만듭니다. 직선을 직접 움직여 <b>오차</b>가 무엇인지 느껴 보고, 코랩에서 코드를 실행하다 만나는 <b>오류</b>를 <b>원-핫 인코딩</b>으로 해결하며, <b>평균제곱오차(MSE)</b>와 <b>R²</b>로 모델의 성능을 평가합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>오늘의 질문</b> · 글자로 된 데이터가 섞여 있으면 선형 회귀 모델은 어떻게 학습할까?</li>
+          <li><b>생각해 볼 것</b> · 숫자를 예측하는 모델은 무엇으로 잘 맞는지 확인할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>회귀 모델을 생성하여 꽃받침의 길이를 예측할 수 있다. <small class="muted">(87쪽 점검 포인트)</small></li>
+          <li>회귀 모델이 각 특성들과 결과 사이의 선형 관계를 나타내기 위해 어떻게 작동하는지 설명할 수 있다. <small class="muted">(87쪽 성취도 평가)</small></li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">오늘 쓸 것</span>
+        <p style="margin:0;font-size:.95rem">구글 코랩(학교 구글 계정) · 노트북 파일은 02 화면에 있어요. 문제 정의, 데이터 수집, 데이터 전처리 과정은 앞에서 한 것과 같고, 여기서는 <b>기계학습 유형과 알고리즘 선정</b>부터 진행해요.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 문제 분석부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 문제 분석 · 직선 찾기 -->
+<section class="page" data-name="직선 찾기" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>문제 분석 · 직선 찾기</h2><p>교과서 86쪽 · 문제 분석, 독립 변수와 종속 변수 (82쪽 선형 회귀 다시 보기)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>꽃받침 길이를 모르는 붓꽃이 있어요. 꽃받침 길이를 아는 붓꽃 150개로 <b>「다른 속성 → 꽃받침 길이」</b> 관계를 나타내는 식(직선)을 찾아 두면, 151번 붓꽃의 꽃받침 길이도 예측할 수 있어요.</span></div>
+  <div class="card">
+    <h3>🔍 문제 분석</h3>
+    <p style="margin-top:0">61쪽의 (다) 문제에서 일련번호가 151인 데이터는 꽃받침 길이 속성을 모르기 때문에, 꽃받침 길이를 찾아내는 학습 모델을 만들면 일련번호 151인 데이터의 꽃받침 길이를 예측할 수 있다.</p>
+    <div class="rg-scroll"><table class="rg-tbl">
+      <tr><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th><th>종류</th></tr>
+      <tr><td>151</td><td class="rg-q">?</td><td>3.1</td><td>1.5</td><td>0.2</td><td>세토사</td></tr>
+    </table></div>
+    <div class="rg-xy"><div class="x"><b>독립 변수 X</b><span>꽃받침 너비</span><span>꽃잎 길이</span><span>꽃잎 너비</span><span>종류</span></div><div class="ar">→</div><div class="y"><b>종속 변수 y</b><span>꽃받침 길이</span></div></div>
+    <p class="note">Iris1.csv 데이터가 저장된 df1을 이용해 위처럼 X와 y를 정한 회귀 모델을 만들어서 해결한다.</p>
+  </div>
+  <div class="card">
+    <h3>📏 직선을 직접 맞춰 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">먼저 독립 변수를 <b>꽃잎 길이 하나</b>로만 생각해 봐요. 붓꽃 150개를 점으로 찍었어요. 직선 양 끝의 <b>동그란 손잡이</b>를 위아래로 끌거나, <b>손잡이를 한 번 누른 뒤 ↑↓ 키</b>로 움직여 <b>평균제곱오차(MSE)가 가장 작아지는</b> 직선을 찾아보세요. 그다음 「최적 직선」과 비교해요.</p>
+    <div id="lnGame"></div>
+  </div>
+  <div class="callout">선형 회귀 알고리즘은 실제 데이터와 모델이 예측한 값의 차이인 <b>오차를 최소화하는 최적의 직선</b>을 찾는 것이 핵심이다(82쪽). 실습 모델은 꽃잎 길이 하나가 아니라 <b>꽃받침 너비, 꽃잎 길이, 꽃잎 너비, 종류</b>를 모두 써서 같은 일을 해요.</div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 오류와 원-핫 인코딩 -->
+<section class="page" data-name="오류·원-핫 인코딩" data-acc="#d64535">
+  <div class="head"><div class="num">02</div><div><h2>오류와 원-핫 인코딩</h2><p>교과서 86~87쪽 · 1 선형 회귀 모델 생성 ①~③</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>선형 회귀는 속성값에 <b>숫자(가중치)를 곱해 더하는</b> 계산이에요. 그런데 「세토사」, 「버지니카」 같은 <b>글자</b>에는 숫자를 곱할 수 없지요. 그래서 종류를 <b>0과 1로 된 여러 속성</b>으로 바꾸는 <b>원-핫 인코딩</b>이 필요해요.</span></div>
+  <div class="card">
+    <h3>▶ 코랩에서 직접 실행하기</h3>
+    <ol>
+      <li>아래 버튼으로 코랩 노트북을 열어요. (학교 구글 계정으로 로그인)</li>
+      <li>맨 위 셀부터 차례로 ▶(또는 <b>Shift + Enter</b>)를 눌러요.</li>
+      <li><b>② 모델 학습 셀에서 오류</b>가 나요. 출력 <b>맨 아래 줄</b>의 오류 메시지를 읽고, 이어지는 ③ 원-핫 인코딩 셀과 「다시 나누고 학습」 셀을 실행해요.</li>
+      <li>끝까지 실행한 뒤 가중치, R², MSE, 예측값을 03·04 화면의 결과와 맞춰 봐요.</li>
+    </ol>
+    <div class="row" style="margin-top:10px"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-regression/assets/iris-linear-regression.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="iris-linear-regression.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost" href="Iris1.csv" download style="text-decoration:none">Iris1.csv 받기</a></div>
+    <p class="note">노트북은 데이터를 인터넷에서 바로 불러오므로 파일을 올리지 않아도 돼요. 코랩을 열 수 없으면 아래 「셀 실행 흉내」로 같은 흐름을 따라가요.</p>
+  </div>
+  <div class="card">
+    <h3>💻 코랩을 못 열 때 · 셀 실행 흉내로 오류 만나고 해결하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 86~87쪽 코드예요. ▶를 눌러 위에서부터 실행해 보세요.</p>
+    <div id="cellSim"></div>
+  </div>
+  <div class="callout"><b>해석</b> 위의 코드를 실행하면 오류 메시지가 나오는데, 이는 <b>LinearRegression을 위한 독립 변수에는 범주형 데이터를 사용할 수 없기 때문</b>이다. 따라서 범주형 데이터(종류)를 수치형 데이터로 변경하여 모델 생성에 활용하기 위해 <b>원-핫 인코딩(one-hot encoding)</b>을 수행한다.</div>
+  <div class="card">
+    <h3>🔢 원-핫 인코딩 변환기</h3>
+    <p style="margin-top:0">붓꽃의 종류인 세토사, 버시컬러, 버지니카를 원-핫 인코딩하면 데이터프레임의 <b>속성이 범주의 개수만큼 늘어나고</b> 데이터값은 <b>0이나 1</b>로 채워진다.</p>
+    <p class="muted" style="font-size:.9rem">행마다 종류를 바꿔 보고, 「get_dummies 실행」을 눌러 표가 어떻게 바뀌는지 보세요.</p>
+    <div id="ohGame"></div>
+  </div>
+  <details class="card rg-more">
+    <summary>🔎 더 알아보기 · 세토사 = 1, 버시컬러 = 2, 버지니카 = 3으로 번호만 붙이면 안 될까?</summary>
+    <p>번호를 붙여도 오류는 사라져요. 하지만 선형 회귀는 그 숫자에 가중치를 곱하므로, 모델은 <b>버지니카(3)가 세토사(1)의 세 배</b>이고 버시컬러(2)는 그 <b>사이 어딘가</b>에 있는 것처럼 계산해요. 종류에는 그런 크기나 순서가 없는데 숫자가 가짜 관계를 만들어 버리지요.</p>
+    <p style="margin-bottom:0">원-핫 인코딩은 종류마다 「<b>이 종류인가(1), 아닌가(0)</b>」를 나타내는 속성을 따로 만들어요. 그래서 모델이 종류마다 <b>다른 가중치</b>를 배울 수 있고, 종류 사이에 없는 크기 관계는 생기지 않아요.</p>
+  </details>
+  <div class="card">
+    <h3>✍️ 정리하기</h3>
+    <div class="memo" style="margin-top:0"><label>could not convert string to float 오류는 왜 생겼나요? 원-핫 인코딩으로 어떻게 해결했나요?</label><textarea data-memo="errWhy" rows="3"></textarea><div class="saved"></div></div>
+    <div class="memo"><label>원-핫 인코딩을 하면 종류 하나였던 속성이 여러 개로 늘고 값이 0과 1로 바뀌어요. 이렇게 바꾸는 것이 왜 필요한지, 컴퓨터(선형 회귀)가 데이터를 계산하는 방식과 연결해 써 보세요.</label><textarea data-memo="hotWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 성능 평가 -->
+<section class="page" data-name="MSE·R²" data-acc="#2f6fd0">
+  <div class="head"><div class="num">03</div><div><h2>성능 평가 · MSE와 R²</h2><p>교과서 87쪽 · 1-④ 기울기와 절편, 2 성능 평가</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>숫자를 예측하는 모델은 「맞았다/틀렸다」로 채점하기 어려워요. 4.9를 4.91로 예측해도 「틀린」 것이 되니까요. 그래서 회귀 모델은 <b>얼마나 가깝게</b> 예측했는지를 재는 <b>MSE</b>와 <b>R²</b>로 평가해요.</span></div>
+  <div class="card">
+    <h3>④ 선형 회귀 모델의 기울기와 절편 찾기</h3>
+<pre class="rg-code">print('선형 회귀 가중치: {}'.format(model.coef_))       <span class="c"># coef_: 가중치(기울기)</span>
+print('선형 회귀 편향: {}'.format(model.intercept_))    <span class="c"># intercept_: 편향(절편)</span></pre>
+<pre class="rg-out">선형 회귀 가중치: [ 0.5851811   0.78889363 -0.31301472 -0.07307218 -0.36541193  0.43848411]
+선형 회귀 편향: 1.4936806502641469</pre>
+    <p class="note">편향의 끝자리는 실행 환경마다 조금 다를 수 있어요(교과서 원본 노트북은 …495). 교과서 87쪽에는 가중치가 <span class="mono">[[ … ]]</span>, 편향이 <span class="mono">[ … ]</span>처럼 대괄호가 한 겹 더 실려 있지만, 이 노트북에서는 위처럼 나와요. 값은 같아요.</p>
+    <p style="margin-bottom:0">가중치 6개는 X의 여섯 속성(꽃받침 너비, 꽃잎 길이, 꽃잎 너비, 종류_버시컬러, 종류_버지니카, 종류_세토사)에 하나씩 곱하는 수예요. 꽃잎 길이의 가중치 0.789는 「다른 값은 그대로 두고 꽃잎 길이만 1 늘리면 예측한 꽃받침 길이가 약 0.789 는다」는 뜻이에요.</p>
+    <p class="note">더 알아보기 · 가중치는 입력 데이터 또는 특성에 대한 중요성을 나타내는 값이고, 편향은 모델의 출력값을 조정하는 상수예요. 오차는 모델의 예측값과 실젯값 사이의 차이로, 오차가 작을수록 모델이 정확한 예측을 하고 있음을 나타내요.</p>
+  </div>
+  <div class="cards2">
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">📉</div><h4>평균제곱오차 (MSE: Mean Squared Error)</h4><p>실젯값과 예측값 사이의 <b>오차를 제곱하여 평균</b>을 구한 것으로, <b>0에 가까울수록</b> 성능이 우수하다.</p><small>오차를 제곱하므로 + 오차와 − 오차가 서로 지워지지 않고, 크게 빗나간 예측일수록 더 크게 반영돼요.</small></div>
+    <div class="kc" style="--k:#1f9d74"><div class="ic">📈</div><h4>R² (R-Squared) · 결정 계수</h4><p>독립 변수가 종속 변수를 <b>얼마만큼 설명</b>해 주는지를 나타내는 비율로, <b>1에 가까울수록</b> 성능이 우수하다.</p><small>01에서 평균선(모두 평균으로 예측)의 R²는 0, 최적 직선은 0.76이었어요.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>2 성능 평가 코드와 실행 결과</h3>
+<pre class="rg-code">from sklearn.metrics import r2_score            <span class="c"># 회귀 모델 성능 지표 모듈</span>
+y_pred = model.predict(X_test)                  <span class="c"># 테스트 데이터에 대한 예측값</span>
+r2 = r2_score(y_test, y_pred)                   <span class="c"># 결정 계수</span>
+print('결정 계수 R2: ', r2)
+
+from sklearn.metrics import mean_squared_error  <span class="c"># (교과서 코드에 더한 부분)</span>
+mse = mean_squared_error(y_test, y_pred)        <span class="c"># 평균제곱오차</span>
+print('평균제곱오차 MSE: ', mse)</pre>
+<pre class="rg-out">결정 계수 R2:  0.7854413960608994
+평균제곱오차 MSE:  0.11558748791097</pre>
+    <p class="note">교과서 87쪽에는 R²가 1.0으로 실려 있지만, 같은 코드와 데이터로 실행하면 약 0.785가 나와요. 노트북에서 내가 얻은 값을 확인해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>🧮 정확도로 채점하면 어떻게 될까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">테스트 데이터 30개 중 5개를 골랐어요. 붓꽃 분류(k-최근접 이웃)에서는 <b>정확도</b>(전체 데이터 중에서 정확하게 예측한 건수의 비율, 78쪽)로 평가했지요. 버튼을 눌러 세 가지 방법으로 채점해 보세요.</p>
+    <div id="mtGame"></div>
+  </div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>MSE와 R²는 각각 무엇을 말해 주나요? 분류 문제에서 쓴 정확도 대신 이런 지표를 쓰는 까닭은 무엇일까요? <small>(위 채점 비교를 근거로)</small></label><textarea data-memo="metricWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 예측 · 정리 -->
+<section class="page" data-name="예측·정리" data-acc="#c98a00">
+  <div class="head"><div class="num">04</div><div><h2>꽃받침 길이 예측 · 정리</h2><p>교과서 87쪽 · 3 꽃받침 길이 속성 예측</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>학습이 끝난 모델은 <b>y = w1x1 + w2x2 + … + w6x6 + b</b>라는 식이에요. 151번 붓꽃의 속성값(종류는 원-핫 인코딩한 0, 0, 1)을 넣고 계산하면 꽃받침 길이가 나와요.</span></div>
+  <div class="card">
+    <h3>3 꽃받침 길이 속성 예측</h3>
+    <p style="margin-top:0">꽃받침 너비 3.1, 꽃잎 길이 1.5, 꽃잎 너비 0.2, 종류가 세토사인 붓꽃의 꽃받침 길이를 알아보기 위하여 새로운 데이터 x를 만들고 학습 모델로 예측해 본다.</p>
+<pre class="rg-code">new_X = [[3.1, 1.5, 0.2, 0, 0, 1]]
+predict = model.predict(new_X); print(predict)</pre>
+<pre class="rg-out">[4.86696366]</pre>
+    <p class="note">교과서에는 <span class="mono">[[4.86696366]]</span>처럼 대괄호가 두 겹으로 실려 있지만, 이 노트북에서는 한 겹으로 나와요. 값은 같아요.</p>
+  </div>
+  <div class="card">
+    <h3>🧮 예측 계산기 · 모델 속을 들여다보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">처음 값은 151번 붓꽃이에요. 속성값과 종류를 바꾸면 각 속성에 가중치를 곱한 값과 예측한 꽃받침 길이가 어떻게 바뀌는지 보세요.</p>
+    <div id="pdGame"></div>
+  </div>
+  <div class="card">
+    <h3>🗺️ 오늘 한 일 한눈에</h3>
+    <div class="rg-flow">
+      <div><b>알고리즘 선정</b>모르는 수치형 속성값 → 회귀 → <span class="mono">LinearRegression()</span></div>
+      <div><b>데이터 나누기</b>X와 y를 정하고 훈련 : 테스트 = 8 : 2</div>
+      <div><b>오류 → 전처리</b>범주형 「종류」 → 원-핫 인코딩 <span class="mono">get_dummies()</span></div>
+      <div><b>학습</b><span class="mono">model.fit()</span> → 가중치 6개 + 편향</div>
+      <div><b>성능 평가</b>R² 0.785, MSE 0.116</div>
+      <div><b>예측</b>151번 붓꽃 꽃받침 길이 약 4.87</div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 점검 포인트와 성취도 평가: 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">05</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>선형 회귀</b>는 실젯값과 예측값의 차이인 <b>오차를 최소화하는 직선(식)</b>을 찾는다. 모르는 꽃받침 길이처럼 <b>수치형 값</b>을 예측하는 회귀 문제에 쓴다.</div>
+    <div style="--k:#d64535">LinearRegression의 독립 변수에는 <b>범주형 데이터</b>를 쓸 수 없어 <b>could not convert string to float</b> 오류가 난다. <b>원-핫 인코딩</b>으로 종류를 범주 수만큼의 0·1 속성으로 바꾸면 학습할 수 있다.</div>
+    <div style="--k:#2f6fd0">회귀 모델은 <b>MSE</b>(오차 제곱의 평균, 0에 가까울수록 우수)와 <b>R²</b>(설명하는 비율, 1에 가까울수록 우수)로 평가한다. 예측이 정확히 같은지가 아니라 <b>얼마나 가까운지</b>를 재기 때문이다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>선형 회귀 코드를 실행했을 때 could not convert string to float 오류를 만났나요? 이 오류가 왜 생겼는지와, 원-핫 인코딩으로 어떻게 해결했는지 쓰세요.</li>
+      <li>원-핫 인코딩을 하면 품종 하나였던 속성이 여러 개로 늘어나고 값이 0과 1로 바뀝니다. 이렇게 바꾸는 것이 왜 필요한지, 컴퓨터가 데이터를 다루는 방식과 연결해 설명하세요.</li>
+      <li>이 모델의 성능을 MSE와 R² 두 가지로 확인했습니다. 두 숫자가 각각 무엇을 말해 주는지 쓰고, 앞서 분류 문제에서 쓴 정확도와는 왜 다른 지표를 쓰는지 설명하세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/ai-13-2-1-5-2.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u2-regression', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 82·86~87쪽) — 오답도 교과서 문장에서, 극단어 피하기 */
+const QUIZ={
+ 1:[{q:'86쪽 실습에서 종속 변수 y로 정한 속성은?',o:['종류','꽃잎 길이','꽃받침 길이'],a:2,w:'151번 붓꽃은 꽃받침 길이를 모르므로 꽃받침 길이가 종속 변수 y이고, 꽃받침 너비·꽃잎 길이·꽃잎 너비·종류가 독립 변수 X예요(86쪽).'},
+    {q:'61쪽 (다) 문제가 회귀의 문제인 까닭은?',o:['서로 다른 꽃끼리 묶는 문제라서','새로운 꽃의 종류를 판별하는 문제라서','모르는 속성의 정확한 수치를 예측하는 문제라서'],a:2,w:'(다)는 모르는 수치형 속성값(꽃받침 길이)을 구하는 회귀 문제예요. 서로 다른 꽃끼리 구분하는 (가)는 군집, 종류를 판별하는 (나)는 분류 문제였어요(61쪽).'},
+    {q:'직선 맞추기 체험에서 평균제곱오차(MSE)가 작아질수록 직선은?',o:['데이터를 더 잘 설명한다','기울기가 점점 커진다','점의 개수가 줄어든다'],a:0,w:'MSE는 실젯값과 예측값 사이의 오차를 제곱해 평균 낸 값이라, 작을수록 직선이 점들을 더 잘 설명해요. 선형 회귀는 오차를 최소화하는 최적의 직선을 찾아요(82·87쪽).'}],
+ 2:[{q:'모델 학습 코드에서 could not convert string to float 오류가 난 까닭은?',o:['훈련 데이터와 테스트 데이터를 8 : 2로 나누어서','독립 변수에 범주형 데이터인 종류가 들어 있어서','종속 변수인 꽃받침 길이에 결측치가 있어서'],a:1,w:'LinearRegression을 위한 독립 변수에는 범주형 데이터를 사용할 수 없어요. 「버지니카」 같은 글자를 실수(float)로 바꿀 수 없다는 오류예요(86쪽).'},
+    {q:'세토사, 버시컬러, 버지니카를 원-핫 인코딩하면?',o:['종류 속성이 삭제되고 나머지 속성이 남는다','세토사는 1, 버시컬러는 2, 버지니카는 3으로 바뀐다','속성이 범주의 개수만큼 늘어나고 값은 0이나 1로 채워진다'],a:2,w:'원-핫 인코딩하면 종류_버시컬러, 종류_버지니카, 종류_세토사처럼 속성이 범주의 개수만큼 늘어나고 데이터값은 0이나 1로 채워져요(86쪽).'},
+    {q:'원-핫 인코딩한 표에서 버지니카 행의 [종류_버시컬러, 종류_버지니카, 종류_세토사] 값은?',o:['[0, 1, 0]','[1, 0, 0]','[0, 0, 1]'],a:0,w:'자기 종류의 칸만 1, 나머지는 0이에요. 버지니카는 종류_버지니카 칸이 1이라 [0, 1, 0], 세토사는 [0, 0, 1], 버시컬러는 [1, 0, 0]이에요(86쪽 표).'}],
+ 3:[{q:'평균제곱오차(MSE)에 대한 설명으로 옳은 것은?',o:['전체 데이터 중에서 정확하게 예측한 건수의 비율이다','독립 변수가 종속 변수를 얼마만큼 설명해 주는지 나타내는 비율이다','실젯값과 예측값 사이의 오차를 제곱하여 평균을 구한 것이다'],a:2,w:'MSE는 오차를 제곱해 평균 낸 것으로 0에 가까울수록 성능이 우수해요(87쪽). 「설명해 주는 비율」은 R², 「정확하게 예측한 건수의 비율」은 정확도예요.'},
+    {q:'R²(결정 계수)가 어떤 값에 가까울수록 회귀 모델의 성능이 우수할까?',o:['0','1','100'],a:1,w:'R²는 독립 변수가 종속 변수를 얼마만큼 설명해 주는지 나타내는 비율로, 1에 가까울수록 성능이 우수해요. 0에 가까울수록 우수한 것은 MSE예요(87쪽).'},
+    {q:'꽃받침 길이를 예측하는 모델을 정확도 대신 MSE나 R²로 평가하는 까닭은?',o:['예측값이 실젯값과 얼마나 가까운지 재야 하기 때문에','회귀 모델은 테스트 데이터를 쓰지 않기 때문에','정확도는 값이 클수록 나쁜 지표이기 때문에'],a:0,w:'꽃받침 길이 같은 연속된 숫자는 예측값이 실젯값과 똑같기 어려워 「맞힌 건수」로 세면 좋은 모델도 0점이 돼요. 그래서 오차의 크기를 재는 MSE와 R²를 써요.'}],
+ 4:[{q:'model.coef_와 model.intercept_가 뜻하는 것은?',o:['정확도와 재현율','가중치(기울기)와 편향(절편)','훈련 데이터와 테스트 데이터'],a:1,w:'coef_는 가중치(기울기), intercept_는 편향(절편)이에요(87쪽). 학습한 모델은 y = w1x1 + … + wnxn + b 식으로 예측해요.'},
+    {q:'new_X = [[3.1, 1.5, 0.2, 0, 0, 1]]에서 끝의 0, 0, 1이 나타내는 것은?',o:['종류가 세토사','종류가 버지니카','꽃잎 너비가 1'],a:0,w:'원-핫 인코딩한 순서가 종류_버시컬러, 종류_버지니카, 종류_세토사라서 0, 0, 1은 세토사예요(87쪽).'}],
+};
+
+const QK='ds-u2-regression-quiz'+WHO.sfx;
+const MK='ds-u2-regression-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* Iris1.csv 150개 — 꽃잎 길이·꽃받침 길이(×10), 1~50 세토사, 51~100 버시컬러, 101~150 버지니카 */
+const RG_PL=[14,14,13,15,14,17,14,15,14,15,15,16,14,11,12,15,13,14,17,15,17,15,10,17,19,16,16,15,14,16,16,15,15,14,15,12,13,15,13,15,13,13,13,16,19,14,16,14,15,14,47,45,49,40,46,45,47,33,46,39,35,42,40,47,36,44,45,41,45,39,48,40,49,47,43,44,48,50,45,35,38,37,39,51,45,45,47,44,41,40,44,46,40,33,42,42,42,43,30,41,60,51,59,56,58,66,45,63,58,61,51,53,55,50,51,53,55,67,69,50,57,49,67,49,57,60,48,49,56,58,61,64,56,51,56,61,56,55,48,54,56,51,51,59,57,52,50,52,54,51];
+const RG_SL=[51,49,47,46,50,54,46,50,44,49,54,48,48,43,58,57,54,51,57,51,54,51,46,51,48,50,50,52,52,47,48,54,52,55,49,50,55,49,44,51,50,45,44,50,51,48,51,46,53,50,70,64,69,55,65,57,63,49,66,52,50,59,60,61,56,67,56,58,62,56,59,61,63,61,64,66,68,67,60,57,55,55,58,60,54,60,67,63,56,55,55,61,58,50,56,57,57,62,51,57,63,58,71,63,65,76,49,73,67,72,65,64,68,57,58,64,65,77,77,60,69,56,77,63,67,72,62,61,64,72,74,79,64,63,61,77,63,64,60,69,67,69,58,68,67,67,63,65,62,59];
+const RG_SP=['세토사','버시컬러','버지니카'], RG_COL=['#e0702b','#2f6fd0','#9b4fc4'];
+/* 노트북 실행 결과 (random_state = 7) */
+const RG_W=[0.5851811,0.78889363,-0.31301472,-0.07307218,-0.36541193,0.43848411], RG_B=1.4936806502641469;
+
+/* 01 직선을 직접 맞춰 보기 */
+(function(){
+  const B=$('lnGame');
+  const P=RG_PL.map((x,i)=>[x/10,RG_SL[i]/10,Math.floor(i/50)]), n=P.length;
+  const mx=P.reduce((s,p)=>s+p[0],0)/n, my=P.reduce((s,p)=>s+p[1],0)/n;
+  let sxy=0,sxx=0,sst=0; P.forEach(p=>{sxy+=(p[0]-mx)*(p[1]-my); sxx+=(p[0]-mx)**2; sst+=(p[1]-my)**2;});
+  const M=sxy/sxx, C=my-M*mx, VAR=sst/n;     // 최소제곱 직선, 분산(= 평균선의 MSE)
+  const o={W:460,H:300,L:40,R:14,T:14,B:32,x0:0,x1:7.5,y0:4,y1:8.5};
+  const sx=v=>o.L+(v-o.x0)/(o.x1-o.x0)*(o.W-o.L-o.R), sy=v=>o.H-o.B-(v-o.y0)/(o.y1-o.y0)*(o.H-o.T-o.B);
+  const XA=1, XB=7; let yA=5.2, yB=6.0, drag=null, busy=false, best=Infinity, showErr=false;
+  let g='';
+  for(let v=0;v<=7;v++) g+=`<line class="gl" x1="${sx(v)}" y1="${sy(o.y0)}" x2="${sx(v)}" y2="${sy(o.y1)}"/><text class="tk" x="${sx(v)}" y="${sy(o.y0)+14}" text-anchor="middle">${v}</text>`;
+  for(let v=4;v<=8;v++) g+=`<line class="gl" x1="${sx(o.x0)}" y1="${sy(v)}" x2="${sx(o.x1)}" y2="${sy(v)}"/><text class="tk" x="${sx(o.x0)-5}" y="${sy(v)+4}" text-anchor="end">${v}</text>`;
+  g+=`<text class="axl" x="${sx(o.x1)}" y="${o.H-4}" text-anchor="end">꽃잎 길이 x</text><text class="axl" x="${sx(0)+4}" y="${o.T+4}">꽃받침 길이 y</text>`;
+  g+=`<defs><clipPath id="lnClip"><rect x="${o.L}" y="${o.T}" width="${o.W-o.L-o.R}" height="${o.H-o.T-o.B}"/></clipPath></defs><g id="lnErrG" class="rg-errs" clip-path="url(#lnClip)"></g>`;
+  P.forEach(p=>g+=`<circle class="rg-pt" cx="${sx(p[0])}" cy="${sy(p[1])}" r="3.4" style="fill:${RG_COL[p[2]]}"/>`);
+  g+=`<g clip-path="url(#lnClip)"><line id="lnLine" class="rg-line"/></g><circle id="lnTA" class="rg-hit" r="22"/><circle id="lnTB" class="rg-hit" r="22"/><circle id="lnHA" class="rg-h" r="10" tabindex="0" role="slider" aria-label="직선 왼쪽 손잡이"/><circle id="lnHB" class="rg-h" r="10" tabindex="0" role="slider" aria-label="직선 오른쪽 손잡이"/>`;
+  B.innerHTML=`<div class="rg-ln"><svg id="lnSvg" viewBox="0 0 460 300" role="img" aria-label="꽃잎 길이와 꽃받침 길이 산점도와 직선">${g}</svg>
+    <div class="rg-side">
+      <div class="rg-meter"><b>평균제곱오차 MSE</b> <span id="lnMse"></span><div class="bar"><i id="lnBar"></i></div><small>0에 가까울수록 좋아요</small></div>
+      <div class="rg-meter r2"><b>R²</b> <span id="lnR2"></span><div class="bar"><i id="lnBar2"></i></div><small>1에 가까울수록 좋아요</small></div>
+      <div class="rg-eq" id="lnEq"></div>
+      <div class="rg-best" id="lnBest">손잡이를 움직여 MSE를 줄여 보세요.</div>
+      <div class="row"><button class="btn sm ghost" id="lnErr">오차 선 보기</button><button class="btn sm ghost" id="lnMean">평균선</button><button class="btn sm" id="lnFit">최적 직선</button></div>
+    </div></div>
+    <div class="rg-leg">${RG_SP.map((s,i)=>`<span><i style="background:${RG_COL[i]}"></i>${s}</span>`).join('')}<span class="muted">· 점 150개 (Iris1.csv)</span></div>
+    <div class="rg-msg" id="lnMsg"></div>`;
+  const svg=$('lnSvg'), errG=$('lnErrG');
+  const errs=P.map(p=>el('line',{x1:sx(p[0]),x2:sx(p[0]),y1:sy(p[1]),y2:sy(p[1])},errG));
+  function mse(m,b){ return P.reduce((s,p)=>s+(p[1]-(m*p[0]+b))**2,0)/n; }
+  function upd(user){
+    const m=(yB-yA)/(XB-XA), b=yA-m*XA, e=mse(m,b), r2=1-e/VAR;
+    const L=$('lnLine'); L.setAttribute('x1',sx(0)); L.setAttribute('y1',sy(b)); L.setAttribute('x2',sx(7.5)); L.setAttribute('y2',sy(m*7.5+b));
+    [['lnTA',XA,yA],['lnTB',XB,yB]].forEach(([id,x,y])=>{const t=$(id); t.setAttribute('cx',sx(x)); t.setAttribute('cy',sy(y));});
+    [['lnHA',XA,yA],['lnHB',XB,yB]].forEach(([id,x,y])=>{const h=$(id); h.setAttribute('cx',sx(x)); h.setAttribute('cy',sy(y)); h.setAttribute('aria-valuenow',y.toFixed(2));});
+    errs.forEach((l,i)=>l.setAttribute('y2',sy(m*P[i][0]+b)));
+    errG.style.display=showErr?'':'none';
+    $('lnMse').textContent=e.toFixed(3); $('lnR2').textContent=r2.toFixed(3);
+    $('lnBar').style.width=Math.min(100,e/1.2*100)+'%'; $('lnBar2').style.width=Math.max(0,r2)*100+'%';
+    $('lnEq').innerHTML=`내 직선: y = <b>${m.toFixed(3)}</b>x ${b<0?'−':'+'} <b>${Math.abs(b).toFixed(3)}</b>`;
+    if(user&&e<best){ best=e; }
+    if(best<Infinity) $('lnBest').innerHTML=`내가 찾은 가장 작은 MSE: <b>${best.toFixed(3)}</b>`+(r2<0?'<br>R²가 0보다 작으면 평균선(모두 평균으로 예측)보다도 못한 직선이에요.':'');
+  }
+  function anim(tA,tB,done){
+    busy=true; const sA=yA,sB=yB,t0=performance.now();
+    const f=t=>{ const k=Math.min(1,(t-t0)/500), e=k<.5?2*k*k:1-((-2*k+2)**2)/2; yA=sA+(tA-sA)*e; yB=sB+(tB-sB)*e; upd(false); if(k<1) requestAnimationFrame(f); else { busy=false; done&&done(); } };
+    requestAnimationFrame(f);
+  }
+  const yOf=ev=>{ const pt=svg.createSVGPoint(); pt.x=ev.clientX; pt.y=ev.clientY; const q=pt.matrixTransform(svg.getScreenCTM().inverse());
+    return Math.min(o.y1,Math.max(o.y0,o.y0+(o.H-o.B-q.y)/(o.H-o.T-o.B)*(o.y1-o.y0))); };
+  [['lnHA','A','lnTA'],['lnHB','B','lnTB']].forEach(([id,k,hit])=>{
+    const h=$(id);
+    const down=ev=>{ if(busy) return; drag=k; ev.preventDefault(); h.focus(); try{svg.setPointerCapture(ev.pointerId);}catch(e){} };
+    h.addEventListener('pointerdown',down); $(hit).addEventListener('pointerdown',down);
+    h.addEventListener('keydown',ev=>{
+      if(!['ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(ev.key)) return;
+      ev.preventDefault(); if(busy) return;
+      const d=(ev.key==='ArrowUp'||ev.key==='ArrowRight'?1:-1)*(ev.shiftKey?.2:.05);
+      if(k==='A') yA=Math.min(o.y1,Math.max(o.y0,yA+d)); else yB=Math.min(o.y1,Math.max(o.y0,yB+d)); upd(true);
+    });
+  });
+  svg.addEventListener('pointermove',ev=>{ if(!drag) return; const y=yOf(ev); if(drag==='A') yA=y; else yB=y; upd(true); });
+  ['pointerup','pointercancel','pointerleave'].forEach(t=>svg.addEventListener(t,()=>{drag=null;}));
+  $('lnErr').onclick=()=>{ showErr=!showErr; $('lnErr').textContent=showErr?'오차 선 가리기':'오차 선 보기'; upd(false);
+    $('lnMsg').innerHTML=showErr?'세로 선 하나하나가 <b>오차</b>(실젯값 − 예측값)예요. MSE는 이 길이를 <b>제곱해서 평균</b> 낸 값이에요.':''; };
+  $('lnMean').onclick=()=>{ if(busy) return; anim(my,my,()=>{ $('lnMsg').innerHTML=`모든 붓꽃을 평균 꽃받침 길이 <b>${my.toFixed(2)}</b>로 예측하는 수평선이에요. 꽃잎 길이를 전혀 쓰지 않으니 <b>R² = 0</b>, MSE는 <b>${VAR.toFixed(3)}</b>예요. 이보다 나은 직선을 찾아보세요.`; }); };
+  $('lnFit').onclick=()=>{ if(busy) return; anim(M*XA+C,M*XB+C,()=>{ const e=mse(M,C);
+    $('lnMsg').innerHTML=`<b>최적 직선</b> y = ${M.toFixed(3)}x + ${C.toFixed(3)} · MSE <b>${e.toFixed(3)}</b> · R² <b>${(1-e/VAR).toFixed(3)}</b><br>오차를 제곱해 더한 값이 가장 작아지도록 계산한 직선(최소제곱)이라 이보다 MSE가 작은 직선은 없어요. 선형 회귀 모델이 <span class="mono">model.fit()</span>으로 찾는 것이 바로 이런 직선이에요.${best<Infinity?` 내 기록(${best.toFixed(3)})과 ${(best-e).toFixed(3)} 차이가 나요.`:''}`; }); };
+  upd(false);
+})();
+
+/* 02 셀 실행 흉내 */
+(function(){
+  const B=$('cellSim');
+  const CELLS=[
+    {t:'① 독립 변수와 종속 변수 설정, 8 : 2로 나누기',c:`X = df1[['꽃받침 너비', '꽃잎 길이', '꽃잎 너비', '종류']]  <span class="c"># 독립 변수</span>
+y = df1['꽃받침 길이']  <span class="c"># 종속 변수</span>
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                         shuffle = True, random_state = 7)`},
+    {t:'② 선형 회귀 모델 생성과 학습',c:`from sklearn.linear_model import LinearRegression
+model = LinearRegression()  <span class="c"># 선형 회귀 모델 생성</span>
+model.fit(X_train, y_train)  <span class="c"># 선형 회귀 모델 학습</span>`},
+    {t:'③ 원-핫 인코딩 (훈련·테스트 데이터를 나누기 전에)',c:`import pandas as pd
+df1 = pd.get_dummies(df1, columns = ['종류'], dtype = int)  <span class="c"># dtype = int: 0과 1로 표시</span>
+X = df1[['꽃받침 너비', '꽃잎 길이', '꽃잎 너비', '종류_버시컬러', '종류_버지니카', '종류_세토사']]
+y = df1['꽃받침 길이']
+print(X)`},
+    {t:'①·② 다시 실행 (나누기와 학습만)',c:`X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                         shuffle = True, random_state = 7)
+model = LinearRegression()
+model.fit(X_train, y_train)`},
+  ];
+  let st;
+  const OK='<span class="ok">✓ 실행 완료</span> <span class="muted">(출력 없음)</span>';
+  const ERR=(e,why)=>`<div class="rg-err">${e}</div><div class="rg-why">${why}</div>`;
+  function reset(){ st={split:false,splitHot:false,hot:false,fit:false,imp1:false,imp2:false,out:CELLS.map(()=>'')}; draw(); }
+  function run(i){
+    if(i===0){ if(st.hot) st.out[0]=ERR(`KeyError: "['종류'] not in index"`,'③에서 원-핫 인코딩을 해서 「종류」 열이 이제 없어요. 그래서 ① 셀을 그대로 다시 실행하면 이런 오류가 나요. 아래 「①·② 다시 실행」 셀을 쓰세요.');
+      else { st.split=true; st.splitHot=false; st.imp1=true; st.out[0]=OK; } }
+    if(i===1){ st.imp2=true; if(!st.split&&!st.splitHot) st.out[1]=ERR(`NameError: name 'X_train' is not defined`,'아직 데이터를 나누지 않았어요. ①부터 실행하세요.');
+      else if(!st.splitHot) st.out[1]=ERR(`ValueError: could not convert string to float: '버지니카'`,`문자열 '버지니카'를 실수(float)로 바꿀 수 없다는 뜻이에요. X에 들어 있는 <b>종류</b>가 글자(범주형 데이터)라서 선형 회귀가 계산할 수 없어요.${st.hot?' <b>③을 실행했어도</b> X_train은 원-핫 인코딩 전에 나눈 데이터라 그대로예요. 나누기부터 다시 해야 해요.':''}`);
+      else { st.fit=true; st.out[1]='<pre class="rg-out sm">LinearRegression()</pre><span class="ok">✓ 학습 성공!</span>'; } }
+    if(i===2){ if(st.hot) st.out[2]=ERR(`KeyError: "None of [Index(['종류'], …)] are in the [columns]"`,'이미 원-핫 인코딩을 해서 「종류」 열이 없어요. ③은 한 번만 실행해요. (처음부터 다시 하려면 「처음부터」를 누르세요.)');
+      else { st.hot=true; st.out[2]=`<pre class="rg-out sm">     꽃받침 너비  꽃잎 길이  꽃잎 너비  종류_버시컬러  종류_버지니카  종류_세토사
+0       3.5    1.4    0.2        0        0       1
+1       3.0    1.4    0.2        0        0       1
+..      ...    ...    ...      ...      ...     ...
+148     3.4    5.4    2.3        0        1       0
+149     3.0    5.1    1.8        0        1       0
+
+[150 rows x 6 columns]</pre>`; } }
+    if(i===3){ if(!st.imp1) st.out[3]=ERR(`NameError: name 'train_test_split' is not defined`,'train_test_split는 ① 셀에서 불러왔어요. ①을 실행하지 않았으면 이 셀도 실행할 수 없어요. ①부터 차례로 실행하세요.');
+      else if(!st.imp2) st.out[3]=ERR(`NameError: name 'LinearRegression' is not defined`,'LinearRegression은 ② 셀에서 불러왔어요. ②를 한 번 실행한 뒤(오류가 나도 불러오기는 끝나요) 이 셀을 실행하세요.');
+      else if(!st.hot) st.out[3]=ERR(`ValueError: could not convert string to float: '버지니카'`,'아직 원-핫 인코딩(③)을 하지 않아 X에 글자가 그대로 있어요. ③을 먼저 실행하세요.');
+      else { st.splitHot=true; st.fit=true; st.out[3]='<pre class="rg-out sm">LinearRegression()</pre><span class="ok">✓ 이번에는 오류 없이 학습했어요!</span> 원-핫 인코딩한 X로 다시 나누고 학습했기 때문이에요.'; } }
+    draw();
+  }
+  function draw(){
+    B.innerHTML=CELLS.map((c,i)=>`<div class="rg-cell"><div class="rg-ct">${c.t}</div><div class="rg-cin"><button class="rg-run" data-i="${i}" aria-label="${c.t} 실행">▶</button><pre class="rg-code">${c.c}</pre></div>${st.out[i]?`<div class="rg-cout">${st.out[i]}</div>`:''}</div>`).join('')
+      +`<div class="row" style="margin-top:6px"><button class="btn sm ghost" id="csReset">처음부터</button>${st.fit?'<span class="ok">모델이 학습되었어요. 03 화면에서 가중치와 성능을 확인해요.</span>':''}</div>`;
+    B.querySelectorAll('.rg-run').forEach(b=>b.onclick=()=>run(+b.dataset.i));
+    $('csReset').onclick=reset;
+  }
+  reset();
+})();
+
+/* 02 원-핫 인코딩 변환기 */
+(function(){
+  const B=$('ohGame');
+  const R=[[1,'5.1','3.5','1.4','0.2',0],[51,'7.0','3.2','4.7','1.4',1],[101,'6.3','3.3','6.0','2.5',2],[151,'?','3.1','1.5','0.2',0]];
+  const HOT=['버시컬러','버지니카','세토사'];   // get_dummies 열 순서(가나다순)
+  let on=false;
+  function draw(){
+    const sel=r=>`<select data-r="${r[0]}" aria-label="${r[0]}번 종류">${RG_SP.map((s,i)=>`<option value="${i}" ${i===r[5]?'selected':''}>${s}</option>`).join('')}</select>`;
+    const head=`<tr><th class="rg-pick">종류 바꾸기</th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th>${on?HOT.map(h=>`<th class="hot">종류_${h}</th>`).join(''):'<th class="cat">종류</th>'}</tr>`;
+    const rows=R.map(r=>`<tr><td class="rg-pick">${sel(r)}</td><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td>${on?HOT.map(h=>{const v=RG_SP[r[5]]===h?1:0;return `<td class="hot ${v?'one':''}">${v}</td>`;}).join(''):`<td class="cat">${RG_SP[r[5]]}</td>`}</tr>`).join('');
+    B.innerHTML=`<div class="row"><button class="btn sm" id="ohRun">${on?'↩ 원래 표로':'▶ get_dummies 실행'}</button><span class="rg-cnt">X의 속성 <b>${on?6:4}개</b>: ${on?'꽃받침 너비, 꽃잎 길이, 꽃잎 너비, 종류_버시컬러, 종류_버지니카, 종류_세토사':'꽃받침 너비, 꽃잎 길이, 꽃잎 너비, 종류'}</span></div>
+      <div class="rg-scroll"><table class="rg-tbl rg-oh">${head}${rows}</table></div>
+      <p class="note">${on?'각 행에서 <b>자기 종류의 칸만 1</b>, 나머지는 0이에요. 이제 모든 값이 숫자라서 가중치를 곱해 더할 수 있어요.':'「종류」 열만 글자예요. 선형 회귀는 이 열을 계산할 수 없어요.'}</p>`;
+    $('ohRun').onclick=()=>{on=!on; draw();};
+    B.querySelectorAll('select[data-r]').forEach(s=>s.onchange=()=>{ R.find(r=>r[0]===+s.dataset.r)[5]=+s.value; draw(); });
+  }
+  draw();
+})();
+
+/* 03 정확도로 채점하면? */
+(function(){
+  const B=$('mtGame');
+  const T=[[150,'버지니카',5.9,6.344],[85,'버시컬러',5.4,6.257],[41,'세토사',5.0,4.912],[42,'세토사',4.5,4.210],[53,'버시컬러',6.9,6.631]];
+  const n=T.length, mean=T.reduce((s,t)=>s+t[2],0)/n;
+  const sse=T.reduce((s,t)=>s+(t[2]-t[3])**2,0), sst=T.reduce((s,t)=>s+(t[2]-mean)**2,0);
+  let mode='';
+  function draw(){
+    const col={acc:['같은가?'],mse:['오차','오차²'],r2:['오차²','(실젯값 − 평균)²']}[mode]||[];
+    const cell=t=>{ const e=t[2]-t[3]; if(mode==='acc') return `<td class="ng">✗ 다름</td>`; if(mode==='mse') return `<td>${e>=0?'+':'−'}${Math.abs(e).toFixed(3)}</td><td>${(e*e).toFixed(3)}</td>`; if(mode==='r2') return `<td>${(e*e).toFixed(3)}</td><td>${((t[2]-mean)**2).toFixed(3)}</td>`; return ''; };
+    let sum='';
+    if(mode==='acc') sum=`정확히 같게 예측한 붓꽃 <b>0개</b> / 5개 → 정확도 <b>0</b><br><span class="muted">4.912를 5.0과 「다르다」고 하면 아주 가까운 예측도 틀린 것이 돼요. 이 채점으로는 좋은 모델과 엉터리 모델을 구별할 수 없어요.</span>`;
+    if(mode==='mse') sum=`MSE = 오차² 합 ${sse.toFixed(3)} ÷ ${n} = <b>${(sse/n).toFixed(3)}</b><br><span class="muted">예측이 평균적으로 얼마나 빗나갔는지를 재요. 0에 가까울수록 좋아요. 크게 빗나간 85번(오차² ${((5.4-6.257)**2).toFixed(3)})이 MSE를 키웠어요.</span>`;
+    if(mode==='r2') sum=`R² = 1 − (오차² 합 ${sse.toFixed(3)} ÷ (실젯값 − 평균)² 합 ${sst.toFixed(3)}) = <b>${(1-sse/sst).toFixed(3)}</b><br><span class="muted">평균 ${mean.toFixed(2)}로만 예측했을 때보다 오차를 얼마나 줄였는지(얼마나 설명하는지)를 비율로 나타내요. 1에 가까울수록 좋아요.</span>`;
+    B.innerHTML=`<div class="row"><button class="btn sm ghost ${mode==='acc'?'on':''}" data-m="acc">정확도로 채점</button><button class="btn sm ghost ${mode==='mse'?'on':''}" data-m="mse">MSE로 채점</button><button class="btn sm ghost ${mode==='r2'?'on':''}" data-m="r2">R²로 채점</button></div>
+      <div class="rg-scroll"><table class="rg-tbl"><tr><th>일련번호</th><th>종류</th><th>실젯값</th><th>예측값</th>${col.map(c=>`<th>${c}</th>`).join('')}</tr>
+      ${T.map(t=>`<tr><td>${t[0]}</td><td>${t[1]}</td><td>${t[2].toFixed(1)}</td><td>${t[3].toFixed(3)}</td>${cell(t)}</tr>`).join('')}</table></div>
+      <div class="rg-sum">${sum||'위 버튼을 하나씩 눌러 보세요.'}</div>
+      ${mode?`<div class="callout" style="margin-bottom:0">테스트 데이터 <b>30개 전체</b>로 하면: 정확히 같게 예측한 것 <b>0개</b>(정확도 0) · MSE <b>0.116</b> · R² <b>0.785</b>. (소수 첫째 자리로 반올림해서 비교해도 30개 중 3개가 같을 뿐이에요.) 분류 모델(붓꽃 k-최근접 이웃)은 「세토사냐 아니냐」처럼 답이 딱 맞거나 틀려서 정확도 0.967로 평가할 수 있었지만, 연속된 숫자를 예측하는 회귀 모델은 <b>얼마나 가까운지</b>를 재는 지표가 필요해요.</div>`:''}`;
+    B.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{mode=b.dataset.m; draw();});
+  }
+  draw();
+})();
+
+/* 04 예측 계산기 */
+(function(){
+  const B=$('pdGame');
+  const F=[['꽃받침 너비',2,4.4,3.1],['꽃잎 길이',1,6.9,1.5],['꽃잎 너비',.1,2.5,.2]];
+  let sp=0;   // 0 세토사, 1 버시컬러, 2 버지니카
+  B.innerHTML=F.map((f,i)=>`<div class="ctrl rg-ctrl"><label>${f[0]}</label><input type="range" id="pd${i}" min="${f[1]}" max="${f[2]}" step="0.1" value="${f[3]}"><output id="pd${i}o"></output></div>`).join('')
+    +`<div class="row rg-sp">종류 ${RG_SP.map((s,i)=>`<button class="btn sm ghost" data-s="${i}">${s}</button>`).join('')}<button class="btn sm ghost" id="pdBack">151번 붓꽃으로</button></div><div id="pdOut"></div>`;
+  function draw(){
+    const v=F.map((_,i)=>+$('pd'+i).value), hot=[sp===1?1:0,sp===2?1:0,sp===0?1:0], x=[...v,...hot];
+    F.forEach((_,i)=>$('pd'+i+'o').textContent=v[i].toFixed(1));
+    const names=['꽃받침 너비','꽃잎 길이','꽃잎 너비','종류_버시컬러','종류_버지니카','종류_세토사'];
+    const terms=x.map((xi,i)=>RG_W[i]*xi), y=terms.reduce((a,b)=>a+b,0)+RG_B;
+    $('pdOut').innerHTML=`<div class="rg-scroll"><table class="rg-tbl rg-calc"><tr><th>속성</th><th>x (입력)</th><th>가중치 w</th><th>w × x</th></tr>
+      ${x.map((xi,i)=>`<tr class="${i>2?'hotrow':''}"><td>${names[i]}</td><td>${i>2?xi:xi.toFixed(1)}</td><td>${RG_W[i].toFixed(4)}</td><td>${terms[i]>=0?'':'−'}${Math.abs(terms[i]).toFixed(4)}</td></tr>`).join('')}
+      <tr><td colspan="3">편향 b</td><td>${RG_B.toFixed(4)}</td></tr></table></div>
+      <div class="rg-pred">예측한 꽃받침 길이 <b>${y.toFixed(3)}</b> <span class="muted">(${RG_SP[sp]}, new_X = [[${v.map(t=>t.toFixed(1)).join(', ')}, ${hot.join(', ')}]])</span></div>`;
+    B.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('on',+b.dataset.s===sp));
+  }
+  F.forEach((_,i)=>$('pd'+i).oninput=draw);
+  B.querySelectorAll('[data-s]').forEach(b=>b.onclick=()=>{sp=+b.dataset.s; draw();});
+  $('pdBack').onclick=()=>{ F.forEach((f,i)=>$('pd'+i).value=f[3]); sp=0; draw(); };
+  draw();
+})();
+
+chips('selfCheck','selfCheckPick',['회귀 모델을 생성하여 꽃받침의 길이를 예측할 수 있다','범주형 데이터를 원-핫 인코딩으로 바꿀 수 있다','MSE와 R²로 회귀 모델의 성능을 설명할 수 있다','회귀 모델이 특성과 결과 사이의 선형 관계를 나타내는 방법을 설명할 수 있다'],true);
+
+const MEMOLIST=[['errWhy','could not convert string to float 오류의 까닭과 해결'],['hotWhy','원-핫 인코딩이 필요한 까닭'],['metricWhy','MSE·R²의 뜻과 정확도 대신 쓰는 까닭'],['selfCheckPick','스스로 점검: 할 수 있게 된 것']];
+onShow[5]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

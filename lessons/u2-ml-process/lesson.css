@@ -1,0 +1,88 @@
+  /* 시작: 단원 지도 · 짧은 이야기 */
+  .mp-unit{margin-top:18px}
+  .mp-two{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+  @media (max-width:560px){.mp-two{grid-template-columns:1fr}}
+  .mp-two>div{background:#f2faf6;border-radius:10px;padding:8px 10px;font-size:.88rem}
+  .mp-two b{display:block;color:#17694f}
+  .mp-hist{margin:6px 0 0;padding-left:20px;font-size:.88rem}
+  .mp-hist li{margin:4px 0}
+  .mp-hist b{color:#9b4fc4;margin-right:4px}
+  /* 표 */
+  .mp-tbl{font-size:.86rem;min-width:520px}
+  .mp-tbl th,.mp-tbl td{border:1px solid var(--line);padding:5px 8px;text-align:center}
+  .mp-tbl th{background:#fbfaf7}
+  .mp-tbl tr.mp-dot td{color:var(--muted);background:#fff}
+  .mp-def{min-width:0}
+  .mp-def td{text-align:left;vertical-align:top}
+  .mp-q{display:inline-block;background:#fff4d6;color:#b07600;border:2px dashed var(--amber);border-radius:8px;padding:0 8px;font-weight:900}
+  /* 01 규칙 퍼즐 */
+  .rg-row{border:2px solid var(--line);border-left:6px solid var(--k);border-radius:14px;padding:10px 12px;margin-bottom:10px;background:#fff}
+  .rg-row.ok{border-color:#9fd8c2;border-left-color:var(--k);background:#f2faf6}
+  .rg-row.ng{border-color:#f2b8b0;border-left-color:var(--k)}
+  .rg-n{color:var(--k);display:block;margin-bottom:6px}
+  .rg-flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+  .rg-in{display:flex;flex-direction:column;gap:6px}
+  .rg-s{font:inherit;font-weight:900;min-width:88px;padding:7px 12px;border-radius:10px;border:2px solid var(--k);background:#fff;color:var(--k);cursor:pointer}
+  .rg-s.e{border-style:dashed;color:var(--muted)}
+  .rg-ar{font-size:1.3rem;color:var(--muted)}
+  .rg-pc{background:var(--navy);color:#fff;border-radius:10px;padding:8px 12px;font-weight:700;font-size:.9rem}
+  .rg-fb{margin-top:8px;font-size:.9rem}
+  .rg-warn{color:var(--red);font-size:.88rem;margin:6px 0 0}
+  .rg-fb .ok,.ir-fb .ok,.jg-r .ok{color:#17694f;font-weight:900}.rg-fb .ng,.ir-fb .ng,.jg-r .ng{color:var(--red);font-weight:900}
+  /* 02 순서 맞추기 */
+  .sp-pool{display:flex;flex-wrap:wrap;gap:8px}
+  .sp-msg{margin:10px 0;background:var(--acc-soft);border-radius:10px;padding:8px 12px;font-size:.92rem}
+  .sp-flow{list-style:none;padding:0;margin:8px 0 0}
+  .sp-it{border-left:5px solid var(--k);background:#fbfaf7;border-radius:12px;padding:8px 12px;margin-bottom:8px;position:relative}
+  .sp-it:not(:last-child)::after{content:"↓";position:absolute;left:18px;bottom:-15px;color:var(--muted);font-weight:900}
+  .sp-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sp-n{background:var(--k);color:#fff;border-radius:50%;width:24px;height:24px;display:grid;place-items:center;font-size:.8rem;font-weight:900}
+  .sp-h i{font-style:normal;font-size:1.2rem}
+  .sp-h b{color:var(--k)}
+  .sp-h small{margin-left:auto;color:var(--muted);font-size:.78rem}
+  .sp-it ul{margin:4px 0 0;padding-left:20px;font-size:.88rem}
+  .sp-loop{background:#fff4d6;border-radius:12px;padding:10px 12px;font-size:.92rem}
+  .vote{grid-template-columns:repeat(3,1fr)}
+  @media (max-width:640px){.vote{grid-template-columns:1fr 1fr}}
+  .vote button{font-size:.88rem;padding:10px 8px}
+  /* 03 붓꽃 */
+  .ir-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .ir-tabs button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 16px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .ir-tabs button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .ir-q{background:var(--acc-soft);border-radius:10px;padding:8px 12px;font-size:.93rem;margin-bottom:6px}
+  .ir-tbl td.k{background:#eaf7f0}
+  .ir-tbl td.u{background:#fff8e6}
+  .ir-tbl td.x{color:#b9c0ca}
+  .ir-tbl tr.nw td{border-top:2px solid var(--amber);font-weight:700}
+  .ir-tbl td small,.ir-tbl th small{display:block;font-weight:400;color:var(--muted);font-size:.72rem}
+  .ir-ask{margin-top:10px}
+  .ir-ask>span{display:block;font-weight:900;margin-bottom:6px}
+  .ir-fb{margin-top:8px;font-size:.92rem}
+  .ir-plot{max-width:520px}
+  .ir-plot svg{width:100%;height:auto;display:block}
+  .ir-plot .gx{stroke:#eef0f3;stroke-width:1}
+  .ir-plot .tk{font-size:9px;fill:var(--muted);text-anchor:middle}
+  .ir-plot .ax{font-size:10px;fill:var(--muted);text-anchor:middle;font-weight:700}
+  .ir-plot .dt{opacity:.8}
+  .ir-plot .rg{fill:none;stroke:var(--amber);stroke-width:2}
+  .ir-plot .star{font-size:18px;fill:#b07600;text-anchor:middle;paint-order:stroke;stroke:#fff;stroke-width:2px}
+  .ir-plot .qline{stroke:var(--amber);stroke-width:1.5;stroke-dasharray:5 4}
+  .ir-plot .qt{font-size:9px;fill:#b07600;font-weight:700}
+  .ir-plot .fit{stroke:var(--navy);stroke-width:2}
+  .ir-leg{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.82rem;color:var(--muted)}
+  .ir-leg i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+  .ir-note{margin-top:8px;background:#fbfaf7;border-radius:10px;padding:8px 12px;font-size:.92rem;min-height:2.6em}
+  /* 04 판별표 */
+  .jg-q{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;background:#fff}
+  .jg-q.ex{background:#fbfaf7}
+  .jg-t{font-weight:700;margin-bottom:6px}
+  .jg-q .btn:disabled{cursor:default;opacity:1}
+  .jg-q .btn.ghost:disabled{opacity:.55}
+  .jg-q .btn.right{border-style:dashed;opacity:1}
+  .jg-r{margin-top:8px;font-size:.9rem;background:var(--acc-soft);border-radius:10px;padding:8px 12px}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  .mp-ans summary{cursor:pointer;font-weight:900;font-size:1.05rem}
+  .mp-ans[open] summary{margin-bottom:8px}

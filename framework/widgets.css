@@ -199,3 +199,6 @@
   .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
   .types div b{display:block}
   .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+
+  /* 카드 격자 칸이 안의 긴 코드·표 때문에 늘어나지 않게 */
+  .cards2>*,.cards3>*,.cards4>*,.grid2>*{min-width:0}

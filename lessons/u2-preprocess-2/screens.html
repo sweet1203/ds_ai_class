@@ -1,0 +1,361 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>데이터를 다듬어<br>핵심 속성을 찾아볼까?</h1>
+      <div class="story"><b>합친 붓꽃 데이터, 그대로 써도 될까?</b><br>Iris1.csv와 Iris2.csv를 <span class="mono">pd.concat</span>으로 합치면 180행의 데이터가 돼요. 그런데 표를 자세히 보면 <b>비어 있는 칸(NaN)</b>이 있고, 꽃받침 길이가 <b>15.0</b>, 꽃잎 너비가 <b>111</b>처럼 붓꽃이라고 믿기 어려운 값도 섞여 있어요. 이런 데이터로 학습하면 인공지능의 결과를 믿을 수 있을까요?</div>
+      <p>오늘은 비어 있는 값(<b>결측치</b>)과 크게 벗어난 값(<b>이상치</b>)을 찾아 처리하는 <b>데이터 정제</b>를 하고, 붓꽃의 종류를 가장 잘 구분하는 <b>핵심 속성</b>을 산점도와 히트맵으로 찾아요.</p>
+      <ol>
+        <li>결측치를 어떻게 확인하고 처리할까?</li><li>기초 통계량·히스토그램으로 이상치 찾기</li><li>박스 플롯으로 이상치 확정하고 제거하기</li>
+        <li>핵심 속성을 어떻게 알 수 있을까?</li><li>(선택 · 과제) 함께 해결하기 · tips 데이터</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🕳️</i><div><b>결측치</b><small>비어 있는 값 확인하고 처리하기</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>📊</i><div><b>이상치</b><small>통계량 · 히스토그램 · 박스 플롯</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔑</i><div><b>핵심 속성</b><small>산점도 · 히트맵 · 상관계수</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🍽️</i><div><b>tips 데이터</b><small>배운 순서대로 직접 해 보기</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>합친 붓꽃 데이터에서 <b>결측치</b>를 확인하고 세 가지 처리 방법을 비교합니다. <b>기초 통계량</b>, <b>히스토그램</b>, <b>박스 플롯</b>으로 <b>이상치</b>를 찾아 제거하고, <b>산점도</b>와 <b>히트맵</b>으로 속성 간의 관계를 살펴 붓꽃의 종류를 가장 잘 구분하는 <b>핵심 속성</b>을 고릅니다. 마지막 <b>tips 데이터 실습(05)은 선택 · 과제</b>예요. 시간이 남으면 수업 중에, 아니면 집에서 해 봐요.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">생각 열기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">설문 조사를 했는데 한 응답자가 10개 질문 중 4개만 답했어요. 이 응답지를 어떻게 할까요? <small class="muted">(예시 상황)</small></p>
+        <div id="naVote" class="vote"></div>
+        <p id="naVoteMsg" class="note"></p>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>데이터 정제</b> · 데이터에서 결측치와 이상치를 어떻게 확인하고 처리할까?</li>
+          <li><b>핵심 속성</b> · 문제를 해결하는 데 가장 큰 영향을 주는 속성을 어떻게 알 수 있을까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>수집한 데이터를 전처리할 수 있다.</li>
+          <li>데이터의 핵심 속성을 추출할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 데이터 정제 · 이상치 및 결측치 처리 · 핵심 속성</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>💻 오늘 쓰는 실습 노트북</h3>
+      <p class="muted" style="margin-top:0;font-size:.9rem">교과서 68~72쪽 코드를 그대로 담은 노트북이에요. 파일을 올리는 대신 인터넷 주소에서 Iris1.csv와 Iris2.csv를 바로 읽도록 바꿔 두었어요. 화면마다 코드와 실행 결과를 보여 주니, 실행하지 않아도 따라올 수 있어요.</p>
+      <div class="row"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-preprocess-2/assets/iris_preprocess.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="iris_preprocess.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost sm" href="Iris1.csv" download style="text-decoration:none">Iris1.csv</a><a class="btn ghost sm" href="Iris2.csv" download style="text-decoration:none">Iris2.csv</a></div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 결측치부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 결측치 -->
+<section class="page" data-name="결측치" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>결측치를 어떻게 확인하고 처리할까?</h2><p>교과서 68쪽 · 데이터 정제, 결측치 확인하기, 결측치 처리하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>표에서 <b>비어 있는 칸</b>이 결측치예요. 빈칸이 있는 <b>열을 지우거나</b>, <b>다른 값으로 채우거나</b>, 빈칸이 있는 <b>행을 지우는</b> 세 가지 방법 중에서 골라요. 무엇을 고르느냐에 따라 남는 데이터가 달라져요.</span></div>
+  <div class="card">
+    <h3>📖 데이터 정제와 결측치</h3>
+    <p style="margin-top:0">수집된 데이터 값에 값이 잘못 들어가 있거나 불필요한 문자가 섞여 있을 수 있다. 이때 손상되거나 부정확한 부분을 수정하고, 불필요하거나 불완전한 데이터를 삭제 또는 교체하는 전처리 작업을 <b>데이터 정제(data cleaning)</b>라고 한다.</p>
+    <div class="callout"><b>결측치(missing value)</b>는 수집한 데이터에서 누락되어 비어 있는 값을 말한다. 예를 들어, 설문 조사를 했는데 응답자가 10개 질문 중 4개만 응답했다면 나머지 6개는 결측치가 된다. 결측치는 기계학습의 성능에 부정적 영향을 주는 요인이므로 데이터 정제 과정에서 반드시 처리해야 한다.</div>
+    <p class="muted" style="font-size:.88rem;margin:0">결측치 표기(68쪽): 빈값 · NA(Not Available) · NaN(Not a Number) · Null</p>
+  </div>
+  <div class="card">
+    <h3>1 결측치 확인하기</h3>
+    <div class="pa-code">
+<pre>df.isna().sum()</pre>
+      <div class="pa-out"><pre>일련번호      0
+꽃받침 길이    3
+꽃받침 너비    4
+꽃잎 길이     2
+꽃잎 너비     3
+종류        0
+dtype: int64</pre></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 결측치의 개수는 꽃받침 길이 3개, 꽃받침 너비 4개, 꽃잎 길이 2개, 꽃잎 너비 3개가 있고 일련번호, 종류 속성은 결측치가 없음을 확인할 수 있다. <span class="muted"><span class="mono">isna()</span>는 결측치가 있으면 True, 없으면 False를 돌려주고, <span class="mono">sum()</span>으로 True의 개수를 더해요.</span></p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>2 결측치 처리하기</h3>
+    <div class="cards3">
+      <div class="kc" style="--k:#9b4fc4"><h4>(가) 결측치가 있는 열 제거하기</h4><p>결측치에 해당하는 속성을 모두 제거하면 <b>심각한 데이터 손실</b>이 발생할 수 있다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>(나) 결측치를 특정 값으로 대체하기</h4><p>결측치를 다른 값으로 치환하면 사실을 온전히 반영한 것이 아니므로 <b>데이터 편향</b>이 발생할 수 있다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>(다) 결측치가 있는 행 제거하기</h4><p>데이터의 양이 충분히 많다면 결측치가 있는 행을 제거하는 (다) 방법이 가장 적절하다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🧪 결측치 처리 실험실 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-4 결측치가 있는 데이터)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">데이터 범위와 처리 방법을 바꿔 보세요. 아래 표는 결측치가 있는 8개 행이고, 결과 칸에는 <b>남은 행·열의 수</b>와 <b>종류별 개수</b>가 나와요. <b>Iris2.csv 30행만 있을 때</b>와 <b>합친 데이터 180행일 때</b> (다) 방법의 결과를 꼭 비교해 보세요.</p>
+    <div id="naLab"></div>
+  </div>
+  <div class="card">
+    <h3>✂️ 교과서의 선택: (다) 결측치가 있는 행 제거하기</h3>
+    <div class="pa-code">
+<pre>df3 = df.dropna(axis = 0, inplace = False)
+df3</pre>
+      <p class="note" style="color:var(--ink)">180행 중 결측치가 있는 8행이 지워져 <b>172행</b>이 남아요. <span class="muted"><span class="mono">dropna</span>의 axis 옵션: 0 또는 'index'는 NaN 값이 포함된 행(row) 삭제(생략하면 기본값), 1 또는 'columns'는 NaN 값이 포함된 열(column) 삭제</span></p>
+    </div>
+    <div class="memo"><label>교과서가 (다) 행 제거를 고른 이유는 무엇이었나요? 만약 데이터가 30개뿐이었다면 같은 선택을 했을까요? 실험실에서 본 결과를 근거로 써 보세요.</label><textarea data-memo="naChoice" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 기초 통계량 · 히스토그램 -->
+<section class="page" data-name="기초 통계량" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>기초 통계량·히스토그램으로 이상치 찾기</h2><p>교과서 69~70쪽 · 이상치, describe(), groupby(), 히스토그램(그림 Ⅱ-3)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>숫자가 많으면 하나하나 볼 수 없으니 <b>평균, 중앙값, 최솟값, 최댓값</b> 같은 요약 숫자를 먼저 봐요. 최댓값이 평균이나 75%보다 <b>터무니없이 크다면</b> 이상치가 있다는 신호예요.</span></div>
+  <div class="card">
+    <h3>📖 이상치</h3>
+    <div class="callout" style="margin-top:0"><b>이상치(outlier)</b>는 관측된 데이터의 범위에서 많이 벗어난 아주 작은 값이나 큰 값을 말한다. 설문 조사에서 누군가 의도적으로 전혀 예상하지 못한 대답을 했을 때와 같이 일반적인 경향에서 벗어난 값도 이에 해당한다.</div>
+    <h3 style="margin-top:14px">1 기초 통계량으로 이상치 확인하기</h3>
+    <p style="margin-top:0"><span class="mono">describe()</span> 함수를 사용하여 기초 통계량 중에서 중심 경향성을 나타내는 평균값, 중앙값 및 최솟값, 최댓값 등을 주의해서 살펴보자.</p>
+    <div class="pa-code">
+<pre>df3.describe()</pre>
+      <div class="pa-out"><table><tr><th></th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th></tr>
+        <tr><th>count</th><td>172.000000</td><td>172.000000</td><td>172.000000</td><td>172.000000</td><td>172.000000</td></tr>
+        <tr><th>mean</th><td>87.267442</td><td>5.914535</td><td>3.057558</td><td>4.348256</td><td>1.880233</td></tr>
+        <tr><th>std</th><td>51.003136</td><td>1.082432</td><td>0.451768</td><td>5.574834</td><td>8.409266</td></tr>
+        <tr><th>min</th><td>1.000000</td><td>4.300000</td><td>2.000000</td><td>1.000000</td><td>0.100000</td></tr>
+        <tr><th>25%</th><td>43.750000</td><td>5.175000</td><td>2.800000</td><td>1.600000</td><td>0.300000</td></tr>
+        <tr><th>50%</th><td>86.500000</td><td>5.800000</td><td>3.000000</td><td>4.400000</td><td>1.350000</td></tr>
+        <tr><th>75%</th><td>129.250000</td><td>6.425000</td><td>3.300000</td><td>5.100000</td><td>1.825000</td></tr>
+        <tr class="hl"><th>max</th><td>180.000000</td><td>15.000000</td><td>4.400000</td><td>55.000000</td><td>111.000000</td></tr></table></div>
+      <p class="note">count 데이터의 개수 · mean 평균 · std 표준편차 · min 최솟값 · 25% 하위 25% · 50% 중앙값 · 75% 상위 25% · max 최댓값</p>
+    </div>
+    <p><span class="mono">groupby()</span> 함수를 사용하면 종류별로 통계 정보를 확인할 수 있다.</p>
+    <div class="pa-code">
+<pre>df3.groupby('종류')['꽃받침 길이'].describe()</pre>
+      <div class="pa-out"><table><tr><th>종류</th><th>count</th><th>mean</th><th>std</th><th>min</th><th>25%</th><th>50%</th><th>75%</th><th>max</th></tr>
+        <tr><th>버시컬러</th><td>59.0</td><td>6.105085</td><td>1.289670</td><td>4.9</td><td>5.6</td><td>5.9</td><td>6.35</td><td class="odd">15.0</td></tr>
+        <tr><th>버지니카</th><td>58.0</td><td>6.574138</td><td>0.657096</td><td>4.9</td><td>6.2</td><td>6.5</td><td>6.90</td><td>7.9</td></tr>
+        <tr><th>세토사</th><td>55.0</td><td>5.014545</td><td>0.368891</td><td>4.3</td><td>4.8</td><td>5.0</td><td>5.25</td><td>5.8</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 꽃받침 길이의 평균(mean)은 버지니카, 버시컬러, 세토사 순으로 크다. 75%까지는 이 순서가 유지되다가 최댓값(max)에서 버시컬러, 버지니카, 세토사 순으로 크기가 바뀌는 것을 확인할 수 있다. 이는 <b>이상치가 입력되었을 가능성</b>을 나타내는 것이다.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔎 스스로 해결하기 · 기초 통계량 탐색기 <span class="muted" style="font-weight:400;font-size:.88rem">(69쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">붓꽃 종류별로 꽃받침 너비, 꽃잎 길이, 꽃잎 너비의 기초 통계량을 출력해 보고 결과의 의미를 설명해 보자. 속성을 바꾸면 <span class="mono">df3.groupby('종류')['속성'].describe()</span>의 결과와 히스토그램이 함께 바뀌어요.</p>
+    <div id="statLab"></div>
+    <p class="note" style="color:var(--ink)"><b>🤔 생각해 보기</b> 종류별 count가 <b>버시컬러 59, 버지니카 58, 세토사 55</b>로 서로 달라요. 왜 달라졌을까요? 데이터를 모을 때 주의해야 할 <b>데이터 편향성</b>과는 어떻게 이어질까요? 짝과 이야기해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>2 히스토그램으로 이상치 확인하기</h3>
+    <p style="margin-top:0">붓꽃 종류와 꽃받침 길이, 꽃받침 너비, 꽃잎 길이, 꽃잎 너비 간의 분포를 시각적으로 확인하기 위해 히스토그램을 그려 보자. 위 탐색기의 히스토그램이 이 코드의 결과를 다시 그린 것이에요.</p>
+    <div class="pa-code">
+<pre>!pip install koreanize-matplotlib # 한글 폰트 설정 라이브러리 설치
+import koreanize_matplotlib   # 한글 출력 가능한 그래프 모듈
+import matplotlib.pyplot as plt # 그래프 그리기에 필요한 모듈
+import seaborn as sns # 시각화를 위해 필요한 모듈
+sns.histplot(data = df3, x = '꽃받침 길이', hue = '종류')</pre>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 그림 Ⅱ-3에서 꽃받침 길이와 꽃잎 길이, 꽃잎 너비에서 전체 분포에서 벗어난 이상치가 있음을 확인할 수 있다.</p>
+    </div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">이상치 확인(69쪽): 데이터가 정규 분포를 이루는 경우에는 데이터의 99.7%가 존재하는 ±3σ를 벗어나는 값을 이상치로 처리한다. 하지만 기계학습에 사용되는 데이터는 정규 분포를 이루지 않거나 한쪽으로 치우친 경우가 많다. 이런 경우에는 데이터 변환 작업 또는 데이터의 <b>사분위수 범위</b> 값을 이용해 이상치를 찾는다.</p>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 박스 플롯 -->
+<section class="page" data-name="박스 플롯" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>박스 플롯으로 이상치 확정하고 제거하기</h2><p>교과서 70~71쪽 · 사분위수, 사분위수 범위(IQR), 안 울타리값·밖 울타리값, drop()</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터를 크기순으로 줄 세워 <b>가운데 50%</b>를 상자로 그려요. 상자 길이(IQR)의 <b>1.5배</b>보다 더 멀리 떨어진 점은 이상치로 봐요. 이 기준선이 <b>울타리</b>예요.</span></div>
+  <div class="card">
+    <h3>📖 박스 플롯</h3>
+    <p style="margin-top:0"><b>박스 플롯</b>은 사분위수, 최솟값, 최댓값을 사용해 여러 속성의 분포를 비교할 수 있는 그래프이다. <b>Q1 − 1.5 × IQR(안 울타리값, A) 미만</b>이나 <b>Q3 + 1.5 × IQR(밖 울타리값, B)을 초과</b>하여 수직선을 벗어나는 값을 보통 이상치로 판단한다.</p>
+    <div class="cards3">
+      <div class="kc" style="--k:#e0702b"><h4>Q1 · Q3</h4><p>제1사분위수(Q1)는 하위 25%, 제3사분위수(Q3)는 상위 25% 위치의 값</p></div>
+      <div class="kc" style="--k:#9b4fc4"><h4>IQR (사분위수 범위)</h4><p>Q3 − Q1. 상자의 길이예요.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>수직선(수염)</h4><p>상자의 IQR 거리의 1.5배 범위 안에서 가장 멀리 떨어진 데이터까지 그려서 분포를 표현한다.</p></div>
+    </div>
+    <div class="pa-code" style="margin-top:12px">
+<pre>sns.catplot(data = df3, x = '종류', y = '꽃받침 길이', kind = 'box', hue = '종류')</pre>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 꽃받침 길이에서는 버시컬러와 버지니카, 꽃잎 길이에서는 버지니카, 꽃잎 너비에서는 버시컬러에서 이상치가 있음을 확인할 수 있다.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🖐️ 박스 플롯 끌어 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">처음 화면은 <b>버시컬러의 꽃받침 길이</b>예요. 빨간 점이 이상치이고, 테두리가 굵은 점이 <b>일련번호 161번(15.0)</b>이에요. 이 점을 <b>위아래로 끌거나</b> 아래 슬라이더로 값을 바꿔 보세요. 몇 cm쯤부터 이상치가 아니게 되나요? 다른 점을 누르면 그 점을 고를 수 있고, 종류와 속성도 바꿀 수 있어요.</p>
+    <div id="boxLab"></div>
+  </div>
+  <div class="card">
+    <h3>4 이상치 제거하기 <span class="muted" style="font-weight:400;font-size:.88rem">(71쪽)</span></h3>
+    <p style="margin-top:0">박스 플롯에 이상치로 보이는 값의 인덱스를 찾기 위해서 사분위수 범위, 안 울타리값과 밖 울타리값을 계산한 후 이 범위를 벗어난 값의 인덱스를 찾아 삭제한다.</p>
+    <div class="pa-code">
+      <p><b>① 사분위수 범위</b></p>
+<pre>Q1 = df3.groupby('종류')['꽃받침 길이'].quantile(0.25) # 제1사분위수
+Q3 = df3.groupby('종류')['꽃받침 길이'].quantile(0.75) # 제3사분위수
+IQR = Q3 - Q1 # 사분위수 범위</pre>
+      <div class="pa-out pa-tri"><table><tr><th>종류</th><th>Q1</th><th>Q3</th><th>IQR</th><th>lower (A)</th><th>upper (B)</th></tr>
+        <tr><th>버시컬러</th><td>5.6</td><td>6.35</td><td>0.75</td><td>4.475</td><td>7.475</td></tr>
+        <tr><th>버지니카</th><td>6.2</td><td>6.90</td><td>0.70</td><td>5.150</td><td>7.950</td></tr>
+        <tr><th>세토사</th><td>4.8</td><td>5.25</td><td>0.45</td><td>4.125</td><td>5.925</td></tr></table></div>
+      <p><b>② 안팎 울타리값</b></p>
+<pre>lower = Q1 - 1.5 * IQR; upper = Q3 + 1.5 * IQR</pre>
+      <p><b>③ 이상치 찾기</b> — 버시컬러 데이터만 추출하여 df4에 저장하고, 꽃받침 길이가 안 울타리값(4.475)보다 작거나 밖 울타리값(7.475)보다 큰 데이터를 찾는다.</p>
+<pre>df4 = df3[df3['종류'] == '버시컬러']
+df4[(df4['꽃받침 길이'] &lt; lower['버시컬러']) | (df4['꽃받침 길이'] &gt; upper['버시컬러'])]</pre>
+      <div class="pa-out"><table><tr><th></th><th>일련번호</th><th>꽃받침 길이</th><th>꽃받침 너비</th><th>꽃잎 길이</th><th>꽃잎 너비</th><th>종류</th></tr><tr><th>10</th><td>161</td><td>15.0</td><td>2.9</td><td>4.7</td><td>1.4</td><td>버시컬러</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>해석</b> 버시컬러의 일련번호 161의 꽃받침 길이가 이상치임을 알 수 있다.</p>
+      <p><b>④ 이상치 제거</b> — 위 알고리즘을 함수로 만들어 다른 속성의 이상치도 찾고, 특정 행을 삭제하는 <span class="mono">drop()</span> 함수로 제거한다.</p>
+<pre>df3 = df3.drop(index = [3, 5, 6, 10, 13, 14, 18, 20, 22, 23, 24, 35, 43, 44,
+                        98, 106], axis = 0) # 제거하려는 인덱스 설정</pre>
+    </div>
+    <details class="pa-more">
+      <summary>🔍 더 알아보기 · 이 코드를 실행하면 몇 행이 남을까?</summary>
+      <p><span class="mono">pd.concat([df1, df2])</span>로 합친 표는 <b>원래 인덱스를 그대로</b> 가져와서, Iris1 부분은 0~149, Iris2 부분은 0~29로 <b>번호가 겹쳐요</b>. 그래서 <span class="mono">drop(index=[3, 5, …])</span>은 그 번호를 가진 행을 <b>두 파일 부분에서 모두</b> 지워요. 실제로 실행하면 172행에서 <b>147행</b>이 남고, 종류별 개수는 <b>버시컬러 54, 버지니카 54, 세토사 39</b>가 돼요. 다음 화면의 산점도·히트맵은 교과서와 같이 이 147행으로 그린 거예요.</p>
+      <p>겹치지 않게 하려면 합칠 때 <span class="mono">pd.concat([df1, df2], ignore_index = True)</span>처럼 인덱스를 0~179로 새로 매기는 방법이 있어요. 전처리 과정에서 한 종류의 데이터가 많이 줄어드는 일이 생기지 않았는지 <span class="mono">df3['종류'].value_counts()</span>로 확인하는 습관을 들여요. <small class="muted">(노트북의 「더 알아보기」 셀에서 직접 확인할 수 있어요.)</small></p>
+    </details>
+    <div class="memo"><label>버시컬러 일련번호 161번의 꽃받침 길이 15.0이 이상치로 나왔어요. 이 값을 삭제하기 전에, <b>정말 잘못된 값인지</b> 확인하려면 무엇을 더 알아봐야 할까요? <small>(같은 꽃의 다른 속성값, 같은 종류의 다른 꽃들, 측정·입력 과정 등을 떠올려 보세요)</small></label><textarea data-memo="outlierCheck" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 핵심 속성 -->
+<section class="page" data-name="핵심 속성" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>핵심 속성을 어떻게 알 수 있을까?</h2><p>교과서 72쪽 · 산점도로 속성 간의 관계 알아보기, 히트맵과 상관계수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>붓꽃의 종류를 맞히는 데 <b>가장 도움이 되는 속성</b>이 핵심 속성이에요. 두 속성으로 점을 찍어 보면(산점도) 세 종류가 <b>따로따로 모이는지, 뒤섞이는지</b> 한눈에 보여요.</span></div>
+  <div class="card">
+    <h3>📖 핵심 속성</h3>
+    <p style="margin-top:0">문제를 해결하는 데 가장 큰 영향을 주는 속성이 무엇인지 찾아보기 위해 속성 간의 관계를 살펴보자. 핵심 속성은 학습 결과에 영향을 미치는 「특징」이라고 할 수 있어요. 핵심 속성을 찾아 기계학습을 진행하면, <b>학습과 예측에 필요한 계산량을 줄일 수 있어 효율적</b>이에요.</p>
+    <h3 style="margin-top:14px">1 산점도로 속성 간의 관계 알아보기</h3>
+    <p style="margin-top:0"><b>산점도</b>는 두 개의 속성 간의 관계를 파악하기 위한 시각화 기법으로, x축과 y축을 설정한 좌표평면 위에 속성값을 표시한다.</p>
+    <div class="pa-code">
+<pre>sns.pairplot(df3, hue = '종류', markers = ['o', 's', 'D'])
+plt.show()</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔍 어떤 두 속성이 세 종류를 가장 잘 나눌까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem"><span class="mono">pairplot</span>은 속성을 두 개씩 짝지어 산점도를 한꺼번에 그려요. 여기서는 한 쌍씩 골라 크게 봐요. 여섯 쌍을 모두 살펴본 뒤, 세 종류가 <b>가장 덜 겹치는</b> 쌍을 골라 보세요.</p>
+    <div id="scatLab"></div>
+    <p style="margin:12px 0 6px;font-weight:700">내가 고른 쌍은?</p>
+    <div id="pairVote" class="vote pa-vote6"></div>
+    <div id="pairMsg"></div>
+  </div>
+  <div class="card">
+    <h3>2 히트맵을 활용하여 속성 간의 관계 알아보기</h3>
+    <p style="margin-top:0"><b>히트맵</b>은 속성 간의 관계를 색과 <b>상관계수</b>로 표현하여 시각적인 분석을 가능하게 해 준다. 상관계수는 0부터 ±1 사잇값으로 나타낸다. +는 양의 상관 관계를, −는 음의 상관 관계를 나타낸다.</p>
+    <div class="pa-code">
+<pre>irisData = df3.corr(method = 'pearson', numeric_only = True)
+plt.figure(figsize = (10, 10))
+sns.heatmap(data = irisData, annot = True, fmt = '.2f', linewidth = .5,
+            cmap = 'RdYlGn_r')
+plt.show()</pre>
+    </div>
+    <div id="heatMap"></div>
+    <p class="note" style="color:var(--ink)"><b>해석</b> 히트맵을 보면 꽃잎 길이와 꽃잎 너비의 상관계수가 <b>0.96</b>으로 높게 나타났으므로, 이 두 가지 속성을 핵심 속성으로 선택한다. 상관관계가 높을수록 진한 색으로 나타난다.</p>
+    <p class="note"><b>🤔 생각해 보기</b> 일련번호도 꽃잎 속성과 상관계수가 0.7 정도로 나와요. 하지만 일련번호는 꽃의 특징이 아니라 데이터에 <b>붙인 순서</b>예요. 세토사 → 버시컬러 → 버지니카 순서로 번호를 매겼기 때문에 생긴 관계라서, 핵심 속성으로 고르지 않아요. 정리하면, <b>종류를 가르는 근거는 산점도</b>에서 찾고, <b>히트맵은 속성끼리의 관계</b>를 보여 줘요.</p>
+    <div class="memo"><label>세 종류를 가장 잘 구분하는 속성은 꽃잎 길이와 꽃잎 너비였어요. <b>꽃받침 속성들은 왜 구분에 덜 도움이 되었을까요?</b> 산점도에서 점들이 어떤 모양으로 모였는지와 연결해 설명해 보세요.</label><textarea data-memo="keyAttr" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기 <span class="muted" style="font-weight:400;font-size:.88rem">(73쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>결측치를 처리하는 방법은 결측치가 있는 <button class="blank" data-a="속성 전체를 삭제">?</button>하는 방법, 결측치가 있는 속성을 <button class="blank" data-a="다른 값으로 대체">?</button>하는 방법, 결측치가 있는 <button class="blank" data-a="행을 삭제">?</button>하는 방법이 있다.</li>
+      <li>이상치는 <button class="blank" data-a="기초 통계량">?</button>, 히스토그램, <button class="blank" data-a="박스 플롯">?</button>으로 확인할 수 있다.</li>
+      <li>문제를 해결하는 데 <button class="blank" data-a="핵심 속성">?</button>을 찾기 위해 산점도, <button class="blank" data-a="히트맵">?</button>을 활용하여 상관관계를 확인한다.</li>
+    </ol>
+    <h3 style="margin-top:14px">✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 함께 해결하기 · tips -->
+<section class="page" data-name="tips(선택)" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>선택 · 과제 · 함께 해결하기: tips 데이터의 핵심 속성 찾기</h2><p>교과서 73쪽 · total_bill에 가장 큰 영향을 주는 핵심 속성 찾기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>시간이 남으면 수업 중에, 아니면 과제로</b> 해 보는 선택 화면이에요. 질문폼과 퀴즈에는 들어가지 않아요. 식당 계산서 244장을 모은 <b>tips 데이터</b>로 오늘 배운 순서를 그대로 해 봐요. <b>결측치 확인 → 통계 정보 → 범주형을 숫자로 → 이상치 → 히트맵</b> 순서예요.</span></div>
+  <div class="card">
+    <h3>🍽️ tips 데이터셋</h3>
+    <div class="iv-wrap"><table class="iv"><tr><th>속성</th><th>의미</th><th>인자</th><th>자료형</th></tr>
+      <tr><td class="mono">total_bill</td><td>총 계산 요금(달러)</td><td>3.07~50.81</td><td>실수(float)</td></tr>
+      <tr><td class="mono">tip</td><td>팁(달러)</td><td>1.0~10.0</td><td>실수(float)</td></tr>
+      <tr><td class="mono">sex</td><td>성별</td><td>Male, Female</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">smoker</td><td>흡연 여부</td><td>Yes, No</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">day</td><td>요일</td><td>Thur, Fri, Sat, Sun</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">time</td><td>식사 시간</td><td>Lunch, Dinner</td><td>문자열(str)</td></tr>
+      <tr><td class="mono">size</td><td>식사 인원</td><td>1~6</td><td>정수(int)</td></tr></table></div>
+  </div>
+  <div class="card">
+    <h3>📋 순서대로 완성하기 <span class="muted" style="font-weight:400;font-size:.88rem">(실행 결과는 교과서 소스 파일을 실행한 결과)</span></h3>
+    <div class="pa-code">
+      <p><b>1 데이터 불러오기</b></p>
+<pre>import seaborn as sns
+tips_df = sns.load_dataset('tips')
+tips_df.head()</pre>
+      <p><b>2 속성별 결측치 숫자 확인하기</b> → 일곱 속성 모두 <b>0</b>이에요. 처리할 결측치가 없어요.</p>
+<pre>tips_df.isna().sum()</pre>
+      <p><b>3 통계 정보 확인하기</b></p>
+<pre>tips_df.describe()</pre>
+      <div class="pa-out"><table><tr><th></th><th>total_bill</th><th>tip</th><th>size</th></tr>
+        <tr><th>count</th><td>244.000000</td><td>244.000000</td><td>244.000000</td></tr><tr><th>mean</th><td>19.785943</td><td>2.998279</td><td>2.569672</td></tr>
+        <tr><th>std</th><td>8.902412</td><td>1.383638</td><td>0.951100</td></tr><tr><th>min</th><td>3.070000</td><td>1.000000</td><td>1.000000</td></tr>
+        <tr><th>25%</th><td>13.347500</td><td>2.000000</td><td>2.000000</td></tr><tr><th>50%</th><td>17.795000</td><td>2.900000</td><td>2.000000</td></tr>
+        <tr><th>75%</th><td>24.127500</td><td>3.562500</td><td>3.000000</td></tr><tr><th>max</th><td>50.810000</td><td>10.000000</td><td>6.000000</td></tr></table></div>
+      <p class="note" style="color:var(--ink)"><b>여기서 잠깐!</b> 통계 정보에 sex, smoker, day, time 속성이 보이지 않는 이유는? → 숫자형 데이터에 대한 통계를 계산하므로 <b>범주형 데이터에 대한 통계는 기본적으로 제공하지 않는다</b>. 범주형 데이터도 기계학습에 포함하기 위해서 <span class="mono">get_dummies()</span> 함수를 사용해 0, 1로 부호화하여 숫자로 변경할 수 있다.</p>
+      <p><b>4 범주형 속성을 숫자형으로 변경하기</b> → sex는 sex_Male, sex_Female처럼 <b>값마다 열이 하나씩</b> 생기고 해당하면 1(True), 아니면 0(False)이 들어가요.</p>
+<pre>dummyDf = pd.get_dummies(tips_df) # 범주형을 숫자형으로 변환
+dummyDf</pre>
+      <p><b>5 사분위수로 이상치 확인하여 처리하기</b></p>
+<pre>q1 = dummyDf['total_bill'].quantile(0.25) # 1사분위수
+q3 = dummyDf['total_bill'].quantile(0.75) # 3사분위수
+IQR = q3 - q1 # 사분위수 범위
+lower = q1 - 1.5*IQR # 안울타리값
+upper = q3 + 1.5*IQR # 밖울타리값
+dummyDf[(dummyDf['total_bill'] &lt; lower) | (dummyDf['total_bill'] &gt; upper)]</pre>
+      <div class="pa-out"><pre>Q1: 13.35, Q3:24.13, IQR: 10.78
+lower:-2.82, upper:40.30</pre></div>
+      <p class="note" style="color:var(--ink)">total_bill이 40.30달러보다 큰 <b>9개 행</b>(40.55~50.81달러)이 이상치로 나와요. 단체 손님의 큰 계산서처럼 실제로 있을 수 있는 값인지 생각해 보고 처리 방법을 정해요.</p>
+      <p><b>6 히트맵으로 속성 간의 관계 파악하여 핵심 속성 찾기</b></p>
+<pre>tipData = dummyDf.corr(method = 'pearson')
+sns.heatmap(data = tipData, annot = True, fmt = '.2f', linewidth = .5, cmap = 'RdYlGn_r')</pre>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🎯 먼저 예상하고 확인하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">히트맵을 보기 전에 예상해 보세요. <b>total_bill(총 계산 요금)</b>과 가장 관련이 깊은 속성은 무엇일까요? 고르면 히트맵의 total_bill 줄이 막대로 나타나요.</p>
+    <div id="tipsGuess" class="vote pa-vote6"></div>
+    <div id="tipsBars"></div>
+    <div class="memo"><label>식사 금액(total_bill)이 오르면 팁(tip)도 오르는 경향이 있었어요(상관계수 0.68). 그렇다면 「식사 금액을 올리면 팁이 오른다」고 말할 수 있을까요? 이유와 함께 써 보세요. <small>(시간이 부족하면 나중에 써도 돼요)</small></label><textarea data-memo="tipsCause" rows="3"></textarea><div class="saved"></div></div>
+    <div class="row"><a class="btn ghost sm" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-preprocess-2/assets/tips_keyattr.ipynb" target="_blank" rel="noopener" style="text-decoration:none">tips 노트북 코랩에서 열기 ↗</a><a class="btn ghost sm" href="tips_keyattr.ipynb" download style="text-decoration:none">노트북 파일 받기</a></div>
+  </div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74"><b>결측치</b>는 <span class="mono">isna().sum()</span>으로 확인하고, (가) 열 제거 · (나) 특정 값으로 대체 · (다) 행 제거 중에서 고른다. 열을 지우면 데이터 손실이 크고, 값을 채우면 편향이 생길 수 있어서, <b>데이터의 양이 충분히 많을 때</b>는 (다) 행 제거가 가장 적절하다.</div>
+    <div style="--k:#e0702b"><b>이상치</b>는 기초 통계량(<span class="mono">describe</span>), 히스토그램으로 의심하고, <b>박스 플롯</b>의 안 울타리값(Q1 − 1.5×IQR)과 밖 울타리값(Q3 + 1.5×IQR)으로 확정해 <span class="mono">drop()</span>으로 제거한다. 버시컬러 161번의 꽃받침 길이 15.0이 그 예이다.</div>
+    <div style="--k:#9b4fc4"><b>핵심 속성</b>은 산점도와 히트맵(상관계수)으로 찾는다. 붓꽃은 <b>꽃잎 길이와 꽃잎 너비</b>로 세 종류가 가장 잘 나뉘고 두 속성의 상관계수는 0.96이다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>결측치 처리 방법은 속성 전체 삭제 / 다른 값으로 대체 / 행 삭제 세 가지입니다. 교과서는 행 삭제를 골랐는데 그 이유는 무엇이었나요? 만약 데이터가 30개뿐이었다면 같은 선택을 했을지도 함께 쓰세요.</li>
+      <li>박스 플롯에서 버시컬러 일련번호 161번의 꽃받침 길이가 이상치로 나왔습니다. 이 값을 삭제하기 전에, 정말 잘못된 값인지 확인하려면 무엇을 더 알아봐야 할지 쓰세요.</li>
+      <li>산점도로 확인해 보니 세 품종을 가장 잘 구분하는 속성은 꽃잎 길이와 꽃잎 너비였습니다. 꽃받침 속성들은 왜 구분에 덜 도움이 되었을지 산점도 모양과 연결해 설명하세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

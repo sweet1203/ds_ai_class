@@ -1,0 +1,272 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#1f9d74">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅱ. 인공지능과 학습 · 1. 기계학습</span>
+      <h1>모델 학습과<br>성능 평가를 해 볼까?</h1>
+      <div class="story"><b>시험 문제를 미리 알고 본 시험이라면?</b><br>모의고사 문제와 답을 미리 외우고 시험을 보면 100점이 나올 수도 있어요. 그런데 그 점수로 <b>처음 보는 문제</b>도 잘 풀 수 있다고 믿을 수 있을까요? 기계학습 모델도 똑같아요. 공부(학습)에 쓴 데이터와 시험(평가)에 쓸 데이터를 <b>나누어야</b> 모델의 진짜 실력을 알 수 있어요.</div>
+      <p>오늘은 전처리한 붓꽃 데이터를 <b>훈련 데이터와 테스트 데이터</b>로 나누고, k-최근접 이웃 모델을 <b>학습</b>시킨 뒤, <b>정확도와 혼동행렬</b>로 성능을 평가해요. 정확도가 똑같은 두 모델도 <b>어떤 오류를 내는지</b>에 따라 평가가 달라진다는 것을 계산해 보며 확인해요.</p>
+      <ol>
+        <li>훈련 데이터와 테스트 데이터</li><li>모델 생성과 학습</li><li>정확도와 혼동행렬</li>
+        <li>정확도가 같은 두 모델</li><li>붓꽃 모델 평가·개선·활용</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>✂️</i><div><b>데이터 나누기</b><small>훈련 데이터 · 테스트 데이터</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧠</i><div><b>모델 학습</b><small>model.fit(X_train, y_train)</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>📊</i><div><b>성능 평가</b><small>정확도 · 혼동행렬 · 정밀도 · 재현율</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔧</i><div><b>개선과 활용</b><small>이웃의 수 k 바꾸기 · 새 꽃 판별</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>데이터를 <b>훈련 데이터</b>와 <b>테스트 데이터</b>로 나누는 이유를 실험으로 확인하고, 훈련 데이터로 모델을 <b>학습</b>시킵니다. 테스트 데이터로 <b>정확도</b>를 재고, <b>혼동행렬</b>에서 TP·TN·FP·FN을 읽어 <b>정밀도·재현율·F1-점수</b>를 계산합니다. 마지막으로 붓꽃 모델을 품종마다 다른 관점에서 다시 평가합니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">학습 계획 세우기</span>
+        <p style="margin:0 0 6px;font-size:.9rem">시험 문제를 미리 보고 본 시험의 점수는 내 실력을 보여 줄까요? 내 생각을 한두 문장으로 적어 봐요.</p>
+        <div class="memo"><label>미리 본 문제로 친 시험 점수를 믿을 수 있을까?</label><textarea data-memo="planMemo" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>기계학습</b> · 기계학습을 적용해 문제를 해결하려면 어떤 과정을 거칠까?</li>
+          <li><b>오늘의 질문</b> · 모델의 성능은 어떤 데이터로, 어떤 지표로 평가해야 할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>훈련 데이터를 사용하여 학습을 진행할 수 있다.</li>
+          <li>테스트 데이터를 사용하여 성능을 평가해 개선시킬 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 훈련 데이터 · 테스트 데이터 · 성능 평가 · 혼동행렬 · 모델</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 훈련 데이터와 테스트 데이터부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 훈련·테스트 -->
+<section class="page" data-name="훈련·테스트" data-acc="#1f9d74">
+  <div class="head"><div class="num">01</div><div><h2>훈련 데이터와 테스트 데이터를 어떻게 준비할까?</h2><p>교과서 76쪽 · 독립 변수와 종속 변수, 데이터 나누기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>데이터를 <b>공부용(훈련 데이터)</b>과 <b>시험용(테스트 데이터)</b>으로 <b>겹치지 않게</b> 나눠요. 모델은 훈련 데이터로만 배우고, 한 번도 본 적 없는 테스트 데이터로 실력을 확인해요.</span></div>
+  <div class="card">
+    <h3>📖 독립 변수(X)와 종속 변수(y) 나누기</h3>
+    <p style="margin-top:0">데이터 수집과 전처리가 끝나면 기계학습을 수행할 수 있다. 전처리된 데이터는 독립 변수(X)와 종속 변수(y)로 분리해야 한다. 독립 변수(X)에는 핵심 속성으로 추출한 「꽃잎 길이」, 「꽃잎 너비」 속성을, 종속 변수(y)에는 「종류」 속성을 넣는다.</p>
+<pre class="te-pre">X = df3[['꽃잎 길이', '꽃잎 너비']]  # 독립 변수(핵심 속성)
+y = df3['종류']                      # 종속 변수</pre>
+    <p class="muted" style="font-size:.88rem;margin:0">df3은 결측치와 이상치를 처리한 붓꽃 데이터(147송이)예요. 데이터프레임에서 여러 개의 열을 선택할 때는 대괄호([ ])를 겹쳐서 써요.</p>
+    <div class="cards2" style="margin-top:12px">
+      <div class="kc" style="--k:#1f9d74"><h4>훈련 데이터</h4><p>모델을 학습시키기 위해 사용하는 데이터이다. 기계학습을 통한 <b>모델 생성</b>에 사용한다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>테스트 데이터</h4><p>훈련된 모델의 성능을 평가하기 위해 사용하는 데이터로, 모델이 <b>이전에 본 적이 없는 데이터</b>에 대한 성능을 측정한다.</p></div>
+    </div>
+    <div class="te-split" aria-label="그림 Ⅱ-5 훈련 데이터와 테스트 데이터"><span>전체 데이터</span><div><i class="tr">훈련 데이터 (60~80%)</i><i class="ts">테스트 데이터 (20~40%)</i></div></div>
+    <p style="margin-bottom:6px">이때 X와 y를 훈련 데이터와 테스트 데이터로 <b>중복되지 않게</b> 분리해야 한다. 일반적으로 훈련 데이터의 비율은 <b>60~80%</b> 정도로 하고 테스트 데이터의 비율은 <b>20~40%</b>로 정하지만, 준비한 데이터셋의 수량이나 정확도를 높이기 위해 비율을 조정하기도 한다.</p>
+<pre class="te-pre">from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2,
+                                                    random_state = 7)</pre>
+    <p class="muted" style="font-size:.88rem;margin:0"><b>해석</b> 훈련 데이터와 테스트 데이터를 8:2로 랜덤하게 분리해 X_train, X_test, y_train, y_test에 저장한다. test_size 옵션을 0.2로 지정하면 훈련 데이터 80%, 테스트 데이터 20%로 나눈다는 의미이다.<br><b>더 알아보기</b> random_state에 숫자를 정해 두면 실행할 때마다 랜덤하게 나뉘는 결과가 달라지지 않아요.</p>
+  </div>
+  <div class="card">
+    <h3>✂️ 비율을 바꿔 나누어 보기 <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 붓꽃 데이터 147송이 · k-최근접 이웃, k = 5)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">훈련 비율을 고르면 붓꽃이 훈련 데이터(색 점)와 테스트 데이터(테두리 점)로 나뉘어요. 숫자는 교과서 코드(random_state = 7)를 그대로 실행한 결과예요.</p>
+    <div id="splitGame"></div>
+  </div>
+  <div class="card">
+    <h3>🙈 테스트 데이터까지 학습에 써 버린다면?</h3>
+    <p style="margin-top:0">실수로 <b>테스트 데이터까지 전부 학습</b>에 사용한 모델을 같은 테스트 데이터로 평가하면 정확도가 어떻게 나올까요? 먼저 예상해 보세요.</p>
+    <div id="leakVote" class="vote"></div>
+    <div id="leakGame"></div>
+    <div class="memo"><label>테스트 데이터까지 전부 학습에 사용했다면 정확도는 어떻게 나오나요? 그 숫자를 믿을 수 있을지 <b>이유</b>와 함께 써 보세요.</label><textarea data-memo="leakMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📓 교과서 코드를 코랩에서 실행하기 <span class="muted" style="font-weight:400;font-size:.88rem">(67~81쪽 노트북 · 선택 · 이미 실습했다면 건너뛰기)</span></h3>
+    <p style="margin-top:0">전처리부터 학습·평가·개선까지 교과서 코드가 모두 들어 있어요. 데이터 파일을 올리지 않아도 바로 읽어 오도록 바꿔 두었어요. 위에서부터 차례로 ▶(Shift+Enter)를 눌러 실행해요. 수업 시간에는 건너뛰고, 시간이 남거나 집에서 다시 해 볼 때 써요. 교과서 원본 노트북으로 할 때는 아래 CSV 파일을 받아 그대로 올리면 돼요(파일 이름 Iris1.csv, Iris2.csv).</p>
+    <div class="row"><a class="btn" href="https://colab.research.google.com/github/sweet1203/ds_ai_class/blob/main/lessons/u2-train-eval/assets/iris-knn.ipynb" target="_blank" rel="noopener" style="text-decoration:none">코랩에서 노트북 열기 ↗</a><a class="btn ghost" href="iris-knn.ipynb" download style="text-decoration:none">노트북 파일 받기</a><a class="btn ghost sm" href="iris1.csv" download="Iris1.csv" style="text-decoration:none">Iris1.csv</a><a class="btn ghost sm" href="iris2.csv" download="Iris2.csv" style="text-decoration:none">Iris2.csv</a></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 모델 생성과 학습 -->
+<section class="page" data-name="모델 학습" data-acc="#2f6fd0">
+  <div class="head"><div class="num">02</div><div><h2>기계학습을 통한 모델 생성은 어떻게 할까?</h2><p>교과서 77쪽 · 모델 생성, fit( ), 과적합과 과소적합</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>먼저 알고리즘으로 <b>빈 모델</b>을 만들고, <span class="mono">fit( )</span>에 <b>훈련 데이터와 그 정답</b>을 넣어 학습시켜요. 학습이 너무 지나치면 훈련 데이터에만 딱 맞고, 너무 모자라면 어디에도 잘 맞지 않아요.</span></div>
+  <div class="card">
+    <h3>📖 모델 만들고 학습시키기</h3>
+    <p style="margin-top:0">기계학습 알고리즘은 종류가 다양하고 각 모델마다 데이터를 활용하여 학습하는 방식이 조금씩 다르다. 61쪽 (나) 문제인 붓꽃의 종류를 분류하는 모델에 k-최근접 이웃 알고리즘을 선정하기 위해 KNeighborsClassifier( ) 함수로 분류 모델을 생성하여 model 변수에 저장한다.</p>
+<pre class="te-pre">from sklearn.neighbors import KNeighborsClassifier
+model = KNeighborsClassifier( )   # k-최근접 이웃 모델 생성
+model.fit(X_train, y_train)       # 훈련 데이터와 훈련 데이터의 정답으로 학습</pre>
+    <div class="te-fit"><b>모델 객체.fit(훈련 데이터, 훈련 데이터의 정답)</b><div><span>X_train<small>[[4.2, 1.2], [1.3, 0.3], [5.1, 1.8], …]</small></span><span>y_train<small>['버시컬러', '세토사', '버지니카', …]</small></span></div></div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">여기서 생성한 모델은 사람에 비유하면 <b>아직 학습하지 않은 뇌 구조</b>에 해당한다. · <b>파라미터</b>: 모델이 학습하는 동안 업데이트되는 변수로, 훈련 데이터에 적응하려고 시도하면서 최적의 값을 찾아내는 역할을 한다.</p>
+  </div>
+  <div class="card">
+    <h3>🤖 AI와 함께 지식 키우기 · 과적합과 과소적합</h3>
+    <p style="margin-top:0"><b>과적합(overfitting)</b>은 기계학습에서 모델이 훈련 데이터에 너무 맞춰져서, 새로운 데이터나 실제 상황에서 성능이 나빠지는 현상을 말한다. 반면에 모델이 훈련 데이터의 패턴을 충분히 학습하지 못해 훈련 데이터와 실제 데이터 모두에 대해 성능이 낮아지는 현상을 <b>과소적합(underfitting)</b>이라고 한다.</p>
+    <div class="te-fig3" id="fitFig"></div>
+  </div>
+  <details class="card te-more">
+    <summary>🔬 더 알아보기 · k를 바꾸면 경계가 어떻게 달라질까? <span class="muted" style="font-weight:400;font-size:.88rem">(예시 데이터)</span></summary>
+    <p class="muted" style="font-size:.9rem">두 무리가 구불구불한 경계로 나뉘고 일부는 섞여 있는 <b>연습용 예시 데이터</b>예요. 색 점은 훈련 데이터, 테두리 점은 테스트 데이터예요. k-최근접 이웃의 <b>이웃의 수 k</b>를 바꾸면 배경색(모델이 나누는 영역)이 어떻게 바뀌는지 보세요. 교과서 80쪽처럼 붓꽃 데이터에서는 k가 정확도에 큰 영향을 주지 않았지만, 데이터에 따라서는 크게 달라질 수 있어요.</p>
+    <div id="fitGame"></div>
+  </details>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 정확도·혼동행렬 -->
+<section class="page" data-name="혼동행렬" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>학습 모델의 성능을 평가해 볼까?</h2><p>교과서 78쪽 · 정확도, 혼동행렬(표 Ⅱ-5)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>정확도는 「전체 중 몇 개를 맞혔나」예요. 하지만 <b>무엇을 어떻게 틀렸는지</b>는 알려 주지 않아요. 혼동행렬은 실젯값과 예측값을 표로 엇갈려 놓아 <b>틀린 종류</b>까지 보여 줘요.</span></div>
+  <div class="card">
+    <h3>📖 1 테스트 데이터를 사용하여 정확도 확인하기</h3>
+    <p style="margin-top:0"><b>정확도(accuracy)</b>는 기계학습 모델의 평가 지표 중 하나로 모델의 예측 결과가 실제 정답과 얼마나 일치하는지를 평가하는 것이다. 사이킷런의 분류 모델에서 제공하는 score( ) 함수를 호출하여 측정하며, 이때 사용하는 데이터는 <b>학습에 사용하지 않았던 테스트 데이터</b>이다.</p>
+<pre class="te-pre">acc = model.score(X_test, y_test)               # 모델의 정확도를 계산하여 저장
+print('테스트 데이터 점수: {:.3f}'.format(acc))   # 소수점 셋째 자리까지 출력
+<span class="te-out">테스트 데이터 점수: 0.967</span></pre>
+  </div>
+  <div class="card">
+    <h3>📖 2 혼동행렬로 성능 확인하기 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅱ-5)</span></h3>
+    <p style="margin-top:0">정확도는 가장 직관적으로 모델의 성능을 나타낼 수 있는 평가 지표이지만, 모델의 예측 중 잘못된 것이 얼마나 되며 무엇을 어떻게 잘못 추정하고 있는지 파악하기 어렵다. <b>혼동행렬(confusion matrix)</b>을 활용하면 어떤 부분에 오류가 있는지 더욱 명확하게 파악할 수 있다.</p>
+    <div class="te-cmw"><table class="te-cm">
+      <tr><th colspan="2" rowspan="2"></th><th colspan="2">예측값</th></tr>
+      <tr><th>참</th><th>거짓</th></tr>
+      <tr><th rowspan="2">실젯값</th><th>참</th><td class="ok">TP</td><td class="ng">FN</td></tr>
+      <tr><th>거짓</th><td class="ng">FP</td><td class="ok">TN</td></tr>
+    </table>
+    <ul class="te-terms"><li><b>참 긍정 TP</b> (True Positive)</li><li><b>참 부정 TN</b> (True Negative)</li><li><b>거짓 부정 FN</b> (False Negative) · 실제 참인 것을 거짓으로 예측</li><li><b>거짓 긍정 FP</b> (False Positive) · 실제 거짓인 것을 참으로 예측</li></ul></div>
+    <p class="muted" style="font-size:.88rem;margin-bottom:0">앞 글자(True/False)는 <b>예측이 맞았는지</b>, 뒤 글자(Positive/Negative)는 <b>모델이 무엇이라고 예측했는지</b>를 나타내요.</p>
+  </div>
+  <div class="card">
+    <h3>🩺📧 질병 분류와 스팸 메일 분류의 혼동행렬</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 78쪽 표의 문장이에요. 각 경우가 TP, TN, FP, FN 중 무엇인지 골라 보세요.</p>
+    <div id="cmSort"></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 정확도가 같은 두 모델 -->
+<section class="page" data-name="정밀도·재현율" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>정확도가 같으면 같은 모델일까?</h2><p>교과서 79쪽 · 표 Ⅱ-6·Ⅱ-7, 정밀도·재현율·F1-점수</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>질병 예측 모델과 스팸 메일 분류 모델은 정확도가 <b>0.69로 똑같아요</b>. 그런데 질병은 <b>아픈 사람을 놓치는 것(FN)</b>이, 스팸은 <b>멀쩡한 메일을 스팸으로 버리는 것(FP)</b>이 더 아파요. 그래서 문제마다 봐야 할 지표가 달라요.</span></div>
+  <div class="card">
+    <h3>📖 두 모델의 정확도</h3>
+    <p style="margin-top:0">질병 예측(표 Ⅱ-6)과 스팸 메일 분류(표 Ⅱ-7) 혼동행렬은 모두 TP 9, FN 1, FP 30, TN 60이다. 정확도는 전체 데이터 중에서 정확하게 예측한 건수의 비율로 두 모델의 정확도는 모두 <span class="mono">(9 + 60) / (9 + 60 + 30 + 1) = 0.69</span>로 동일하다. 하지만 문제에 따라서 정확도뿐 아니라 잘못 분류한 <b>FP, FN</b>의 숫자에 대한 고려가 필요할 때가 있다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#d64535"><div class="ic">🩺</div><h4>질병 예측 모델</h4><p>실제 질병인데 질병이 아니라고 예측하는 것은 사람의 생명과 직접 관련된 문제이기 때문에 정확도뿐만 아니라 <b>FN</b>에 대한 고려가 필요하다.</p></div>
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">📧</div><h4>스팸 메일 분류 모델</h4><p>스팸이 아닌데 스팸이라고 분류하여 중요한 메일을 보지 못하게 되면 곤란한 일이 발생할 수 있으므로 <b>FP</b>가 중요한 지표가 될 수 있다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🤖 AI와 함께 지식 키우기 · 분류 모델의 평가 지표</h3>
+    <p style="margin-top:0">해결하고자 하는 문제에 따라 모델의 성능을 평가하는 적절한 평가 지표를 적용하는 것이 중요하다.</p>
+    <div class="te-fx">
+      <div><b>정확도</b><span class="mono">(TP+TN) / (TP+TN+FP+FN)</span><small>전체 중 정확하게 예측한 비율</small></div>
+      <div><b>정밀도(precision)</b><span class="mono">TP / (TP+FP)</span><small>모델이 긍정으로 예측한 것 중 실제로 긍정인 비율. 스팸 메일 분류에서는 정밀도가 중요하다.</small></div>
+      <div><b>재현율(recall)</b><span class="mono">TP / (TP+FN)</span><small>실제로 긍정인 데이터 중에서 모델이 긍정으로 정확하게 예측한 비율. 질병 예측 분류에서는 재현율이 중요하다.</small></div>
+      <div><b>F1-점수</b><span class="mono">2 × 정밀도 × 재현율 / (정밀도 + 재현율)</span><small>정밀도와 재현율의 조화평균. 두 지표는 서로 상충 관계이므로 균형을 찾아야 할 때 사용한다.</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🧮 혼동행렬 계산기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">먼저 교과서 표 그대로 정밀도와 재현율을 계산해 보세요. 그다음 칸의 숫자를 직접 바꾸거나, 아래 <b>「긍정으로 판단하는 기준」</b>을 움직여 FN과 FP가 서로 어떻게 맞바뀌는지 보세요. 기준 슬라이더의 점수는 <b>예시</b>예요(기준 0.50일 때 교과서 표와 같아요).</p>
+    <div id="cmCalc"></div>
+    <div class="memo"><label>정확도가 둘 다 0.69인 <b>질병 진단 모델</b>과 <b>스팸 분류 모델</b>에서 각각 정밀도와 재현율 중 무엇을 더 중요하게 봐야 할까요? 그 예측이 틀렸을 때 생기는 <b>실제 피해</b>를 근거로 써 보세요.</label><textarea data-memo="errMemo" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 붓꽃 평가·개선·활용 -->
+<section class="page" data-name="붓꽃 평가·개선" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>붓꽃 모델 평가하고 개선하기</h2><p>교과서 80~81쪽 · 붓꽃 혼동행렬, 하이퍼 파라미터, 모델 활용, 스스로 해결하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>붓꽃은 품종이 셋이라 혼동행렬이 <b>3×3</b>이에요. 품종 하나를 <b>「긍정(그 품종)」</b>으로 정하고 나머지를 <b>「그 품종이 아님」</b>으로 묶으면 2×2 혼동행렬이 되어 정밀도와 재현율을 구할 수 있어요. 어느 품종을 기준으로 삼느냐에 따라 같은 오류가 FP가 되기도, FN이 되기도, 상관없기도 해요.</span></div>
+  <div class="card">
+    <h3>📖 붓꽃 분류 모델의 혼동행렬</h3>
+    <p style="margin-top:0">테스트 데이터의 독립 변수(X_test)를 어떤 값으로 예측하고 있는지 확인하여 y_test값과 비교해 혼동행렬을 그린다.</p>
+<pre class="te-pre">from sklearn.metrics import confusion_matrix
+predicted = model.predict(X_test)                # 테스트 데이터에 대한 예측값
+classNames = pd.unique(df3['종류'])              # 세토사, 버시컬러, 버지니카
+cm = confusion_matrix(y_test, predicted, labels=classNames)   # 혼동행렬</pre>
+    <p class="muted" style="font-size:.88rem;margin:0"><b>해석</b> 혼동행렬 결과를 출력해 본 결과, 실제로 버지니카를 버시컬러로 잘못 분류한 경우가 1건 발생했음을 알 수 있다.</p>
+  </div>
+  <div class="card">
+    <h3>🔄 스스로 해결하기 · 관점 바꿔 2×2 혼동행렬 만들기 <span class="muted" style="font-weight:400;font-size:.88rem">(81쪽)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 80쪽 혼동행렬(테스트 데이터 30송이)이에요. 기준 품종을 고르면 3×3의 칸들이 TP·FN·FP·TN으로 묶이고 네 지표가 계산돼요. 교과서 81쪽은 <b>버시컬러 기준(14·0·1·15)</b>이에요. 버시컬러부터 눌러 교과서 답과 맞춰 보고, 세토사·버지니카와 비교해요.</p>
+    <div id="viewGame"></div>
+    <div class="memo"><label>같은 모델인데 <b>어느 품종을 기준으로 삼느냐</b>에 따라 정확도·정밀도·재현율이 달라지는 이유는 무엇일까요? 버지니카를 버시컬러로 잘못 분류한 1건이 각 관점에서 어느 칸에 들어가는지를 근거로 써 보세요.</label><textarea data-memo="viewMemo" rows="3"></textarea><div class="saved"></div></div>
+    <details class="te-note"><summary>더 알아보기 · 혼동행렬 그림의 이름표가 어긋날 때</summary><p><span class="mono">confusion_matrix( )</span>에 <span class="mono">labels</span>를 넣지 않으면 행과 열이 품종 이름의 <b>가나다순</b>(버시컬러, 버지니카, 세토사)으로 계산돼요. 그런데 그림의 이름표를 세토사, 버시컬러, 버지니카 순서로 붙이면 「세토사」 줄에 버시컬러의 숫자(14)가 보이는 식으로 어긋나요. 교과서 80쪽 코드처럼 <span class="mono">labels=classNames</span>를 넣어야 이름표와 숫자가 맞아요. 수업용 노트북도 이렇게 고쳐 두었어요.</p></details>
+  </div>
+  <div class="card">
+    <h3>📖 3 모델 개선하기 · 4 모델 활용하기</h3>
+    <p style="margin-top:0">모델의 성능을 개선하기 위하여 KNeighborsClassifier( ) 모델의 <b>하이퍼 파라미터</b>를 조절할 수 있다. k-NN 모델에서는 참고할 이웃의 수(k)를 변경해 보면서 가장 정확도가 높은 이웃의 수를 찾는다.</p>
+    <p class="muted" style="font-size:.88rem;margin-top:0"><b>하이퍼 파라미터</b>: 모델 학습 전에 사용자가 직접 설정해 주는 값으로 학습 중에 업데이트되지 않으며 모델의 성능과 학습 속도에 큰 영향을 미친다. 학습률(learning rate)이나 k-NN에서의 k값 등이 있다.</p>
+    <div class="cards2">
+      <div>
+<pre class="te-pre">for k in range(1, 20):   # 이웃의 수 1~19
+    model = KNeighborsClassifier(n_neighbors = k)
+    model.fit(X_train, y_train)
+    acc.append(model.score(X_test, y_test))</pre>
+        <div id="kPlot"></div>
+        <p class="muted" style="font-size:.86rem;margin:0">그림 Ⅱ-6 · k값의 변화에 따라 정확도는 0.96 이상의 높은 수준으로 일정하게 나타난다.</p>
+      </div>
+      <div>
+<pre class="te-pre">new = [[1.0, 1.5]]          # 꽃잎 길이 1.0, 꽃잎 너비 1.5
+print(model.predict(new))
+<span class="te-out">['세토사']</span></pre>
+        <p style="font-size:.93rem">최적의 학습 모델을 만들어 새로운 데이터를 분류에 이용할 수 있다. 주어진 문제가 기계학습으로 해결할 수 있는 문제라면 수집한 데이터를 전처리하여 학습시킨 후, 성능을 평가하여 모델을 최적화한다. 그리고 이를 다른 문제 해결에도 활용할 수 있다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li><button class="blank" data-a="훈련 데이터">?</button>는 기계학습을 통한 모델 생성에 사용되고 <button class="blank" data-a="테스트 데이터">?</button>는 모델의 성능을 평가하는 데 사용한다.</li>
+      <li><button class="blank" data-a="정확도">?</button>는 모델의 평가 지표 중 하나로 모델의 예측 결과가 실제 레이블과 얼마나 일치하는지 평가한다.</li>
+      <li><button class="blank" data-a="혼동행렬">?</button>은 분류 모델의 예측 결과를 나타낸 것으로 실젯값과 예측값을 비교한다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 성취도 평가</h3>
+    <p style="margin-top:0">혼동행렬을 확인하고 평가 지표를 계산할 수 있는가? 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#1f9d74">데이터는 <b>훈련 데이터</b>(모델 생성)와 <b>테스트 데이터</b>(성능 평가)로 겹치지 않게 나눈다. 테스트 데이터는 모델이 <b>이전에 본 적이 없는 데이터</b>여야 성능을 믿을 수 있다.</div>
+    <div style="--k:#9b4fc4"><b>정확도</b>는 전체 중 맞힌 비율이고, <b>혼동행렬</b>은 TP·TN·FP·FN으로 무엇을 어떻게 틀렸는지 보여 준다. <b>정밀도</b> = TP/(TP+FP), <b>재현율</b> = TP/(TP+FN), <b>F1-점수</b>는 둘의 조화평균이다.</div>
+    <div style="--k:#e0702b">정확도가 같아도 문제에 따라 봐야 할 오류가 다르다. <b>질병 예측은 FN·재현율</b>, <b>스팸 분류는 FP·정밀도</b>가 중요하다. 여러 클래스는 기준 클래스를 정해 2×2로 바꾸어 평가한다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>붓꽃 데이터를 훈련 데이터와 테스트 데이터로 나누어 학습했습니다. 만약 테스트 데이터까지 전부 학습에 사용했다면 정확도가 어떻게 나올지 예상하고, 그 숫자를 믿을 수 있을지 이유와 함께 쓰세요.</li>
+      <li>81쪽 활동에서 버시컬러의 관점으로 혼동행렬을 다시 정의해 정확도·정밀도·재현율을 계산했습니다. 같은 모델인데 어느 품종을 기준으로 삼느냐에 따라 지표가 달라지는 이유를 쓰세요.</li>
+      <li>정확도가 둘 다 0.69로 같은 두 모델이 있습니다 — ① 병에 걸렸는지 판단하는 질병 진단 모델, ② 스팸 메일을 걸러내는 스팸 분류 모델. 정확도가 같아도 조심해야 할 오류는 서로 다릅니다. 각 모델에서 정밀도와 재현율 중 무엇을 더 중요하게 봐야 할지 고르고, 그 예측이 틀렸을 때 생기는 실제 피해를 근거로 설명하세요.</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
