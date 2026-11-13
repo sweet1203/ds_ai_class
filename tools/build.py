@@ -121,7 +121,7 @@ def build_teacher(c):
     dash = rd(ROOT / 'teacher' / 'progress.html')
     dash = dash.replace('__PEP__', os.environ.get('DS_PEP') or c['progressEndpoint']).replace('__LESSONS__', json.dumps(lessons, ensure_ascii=False))
     (SITE / 'teacher' / 'progress' / 'index.html').write_text(dash, encoding='utf-8')
-    hub = rd(ROOT / 'teacher' / 'hub.html').replace('__UNITS__', json.dumps(units, ensure_ascii=False)).replace('__SITE__', c['site'])
+    hub = rd(ROOT / 'teacher' / 'hub.html').replace('__UNITS__', json.dumps(units, ensure_ascii=False)).replace('__ASSESS__', json.dumps(c.get('assessments', []), ensure_ascii=False)).replace('__SITE__', c['site'])
     (SITE / 'teacher' / 'index.html').write_text(hub, encoding='utf-8')
     (SITE / 'index.html').write_text(rd(ROOT / 'teacher' / 'root.html'), encoding='utf-8')
 

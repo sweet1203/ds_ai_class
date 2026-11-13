@@ -42,13 +42,14 @@
 <header><div class="wrap">
   <h1>인공지능 기초 수업 자료</h1>
   <p>선생님용 목록입니다. 「열기」는 미리보기(전송 안 함)로 열리고, 📋은 학생에게 줄 주소를 복사합니다.</p>
-  <div class="top"><a href="progress/">📈 진도 현황</a></div>
+  <div class="top"><a href="progress/">📈 진도 현황</a><span id="assess"></span></div>
   <label class="tg"><input type="checkbox" id="showTodo"> 아직 만들지 않은 차시도 보기</label>
 </div></header>
 <main><div class="wrap" id="list"></div></main>
 <div class="toast" id="toast"></div>
 <script>
-const UNITS=__UNITS__, SITE='__SITE__';
+const UNITS=__UNITS__, SITE='__SITE__', ASSESS=__ASSESS__;
+document.getElementById('assess').innerHTML=ASSESS.map(a=>`<a href="../${a.path}" target="_blank" rel="noopener" title="${a.note||''}">📋 수행평가 · ${a.title}</a><button data-u="${SITE}${a.path}" style="margin-left:4px">📋 주소</button>`).join(' ');
 const ST={ready:'공개',draft:'만드는 중',todo:'아직 없음'};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function draw(){

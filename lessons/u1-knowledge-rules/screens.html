@@ -1,0 +1,277 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 2. 탐색과 추론</span>
+      <h1>인공지능은<br>다음 수를 어떻게 알았지?</h1>
+      <div class="story"><b>사람은 세상의 정보를 모으고 분석해서 지식을 표현해요.</b><br>그런데 우리가 아는 것을 평소 말투 그대로 컴퓨터에 넣으면, 컴퓨터는 그 뜻을 제대로 쓰지 못해요. 컴퓨터가 지식을 쓰려면 <b>명확한 형태로 표현</b>해 주어야 하지요.</div>
+      <p>오늘은 지식을 <b>의미망, 명제 논리, 술어 논리</b>로 표현해 보고, 규칙과 사실을 맞대어 <b>새로운 지식을 추론</b>해 봐요. 마지막에는 테니스 경기 데이터에서 <b>규칙</b>을 뽑아 「오늘 테니스 칠까?」를 판단하는 인공지능을 만들어요.</p>
+      <ol>
+        <li>지식을 어떻게 표현할까</li><li>명제 논리</li><li>명제 논리 추론</li><li>술어 논리</li>
+        <li>규칙으로 인공지능 만들기</li><li>스스로 해결하기 · 개념 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>💬</i><div><b>자연어 지식</b><small>애매하고 불규칙한 사람의 말</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🕸️</i><div><b>지식 표현</b><small>의미망 · 명제 논리 · 술어 논리</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔗</i><div><b>추론</b><small>규칙 + 사실 → 새로운 사실</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🎾</i><div><b>규칙 기반 인공지능</b><small>테니스 경기를 할까?</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>사람의 말로 된 지식이 왜 컴퓨터에 맞지 않는지 살펴보고, 그 지식을 <b>의미망</b>, <b>명제 논리</b>, <b>술어 논리</b>로 바꾸어 적어 봅니다. 그리고 <b>규칙과 사실</b>로 새로운 사실을 이끌어 내는 <b>추론</b>을 해 보고, 데이터에서 규칙을 뽑아 판단 과정이 눈에 보이는 인공지능을 만들어 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>앞에서 배운 <b>탐색</b>은 갈 수 있는 길을 펼쳐 보며 답을 찾았어요. 오늘 배우는 방법은 이미 아는 <b>규칙과 사실</b>을 맞대어 답을 찾아요.</li>
+          <li>규칙으로 판단하는 인공지능은 <b>왜 그렇게 판단했는지</b> 따라가 볼 수 있어요.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li>
+          <li><b>오늘의 질문</b> · 사람이 아는 것을 컴퓨터에게는 어떤 모양으로 적어 주어야 할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>규칙과 사실을 활용하여 지식을 표현할 수 있다.</li>
+          <li>새로운 지식을 추론하여 생성할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 명제 논리 · 명제 논리 추론 · 술어 논리</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 지식을 어떻게 표현할까부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 지식 표현 · 의미망 -->
+<section class="page" data-name="지식 표현" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>인간의 지식을 어떻게 표현할까?</h2><p>교과서 42쪽 · 지식, 자연어, 지식 표현 방법, 의미망</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사람끼리는 「그거 있잖아」라고 해도 대충 알아듣지만, 컴퓨터는 그러지 못해요. 그래서 지식을 컴퓨터에 넣을 때는 <b>누구나 같은 뜻으로 읽히도록 단순하고 명확하며 완전하게</b> 적어 주어야 해요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#e0702b"><div class="ic">💬</div><h4>자연어로 적은 지식</h4><p><b>자연어</b>는 일상적으로 사용하는 말과 글이에요. 자연어는 <b>정형화되지 않고 불규칙적</b>이기 때문에 때때로 애매하게 표현될 때가 있어요. 지식을 명확하게 표현하지 않으면 전달받은 사람이 내용을 잘못 해석하거나 없는 내용을 더하여 재해석할 수 있지요.</p><small>자연어, 그림 기호, 수식, 도면 등의 데이터를 <b>비정형 데이터</b>라고 하는데, 컴퓨터가 이런 데이터를 처리하여 지식을 습득하기는 매우 어렵다.</small></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🧩</div><h4>컴퓨터를 위한 지식 표현</h4><p><b>지식</b>은 어떤 대상에 대해 배우거나 실천을 통해 알게 된 명확한 인식이나 이해를 말해요. 컴퓨터에서 활용하려면 <b>규칙적이고 체계적인 방법</b>을 이용하여 지식을 표현해야 해요.</p><small>지식을 표현하려면 누구나 이해할 수 있게 그 내용이 단순하고 명확하며 완전해야 한다.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🗂️ 컴퓨터에서 활용하기 위해 만든 지식 표현 방법 <span class="muted" style="font-weight:400;font-size:.88rem">(카드를 눌러 뜻 보기)</span></h3>
+    <div id="krepCards" class="tcards"></div>
+  </div>
+  <div class="card">
+    <h3>🕸️ 자연어 지식을 의미망으로 바꾸기 <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 42쪽 예시)</span></h3>
+    <div class="kr-net">
+      <div class="kr-src">
+        <span class="kr-lab">자연어 지식</span>
+        <p>세종대왕은 집현전과 협업하는 조선의 군주였다. 세종대왕은 신하들을 데리고 있었는데 그중 황희와 김종서가 있다. 세종대왕은 훈민정음을 만들었다.</p>
+        <span class="kr-lab">관계(술어)</span>
+        <p class="kr-rels"><b>cowork</b> 협업하다 · <b>is_a</b> ~이다 · <b>has</b> 가지다(데리고 있다) · <b>make</b> 만들다</p>
+        <p class="muted" style="font-size:.86rem">의미망에서 세종대왕, 집현전 등은 일종의 <b>객체(노드)</b>가 되고, cowork, is_a 등은 미리 컴퓨터에 정의해 주고 처리해야 하는 <b>술어</b>에 해당해요.</p>
+      </div>
+      <div>
+        <p class="muted" style="margin:0 0 6px;font-size:.9rem"><b>노드 두 개를 차례로 눌러</b> 관계를 이어 보세요. 순서가 중요해요: <span class="mono">is_a(황희, 신하)</span>라면 <b>황희</b>를 먼저, <b>신하</b>를 나중에 눌러요.</p>
+        <div id="netSvg" class="kr-svg"></div>
+        <div id="netPick" class="kr-pick"></div>
+        <div id="netFb" class="kr-fb"></div>
+      </div>
+    </div>
+    <div class="kr-codebox"><span class="kr-lab">의미망 코딩</span><pre id="netCode" class="kr-code">(아직 연결한 관계가 없어요)</pre></div>
+    <div class="memo"><label>일상 언어(자연어)로 된 지식을 컴퓨터가 바로 이해하기 어려운 까닭은 무엇일까요? 의미망으로 바꾸면 무엇이 달라졌나요?</label><textarea data-memo="natWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 명제 논리 -->
+<section class="page" data-name="명제 논리" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>명제 논리</h2><p>교과서 43쪽 · 논리, 명제, 명제 기호(표 Ⅰ-1), 진리표(표 Ⅰ-2)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>규칙과 사실로 지식을 표현하고 추론할 때 많이 쓰는 방법이 <b>논리</b>예요. 명제 논리에서는 <b>참인지 거짓인지 가릴 수 있는 문장</b> 하나를 p, q 같은 기호 하나로 두고, ~ ∧ ∨ → ↔ 로 이어서 계산해요.</span></div>
+  <div class="card">
+    <h3>📖 논리와 명제</h3>
+    <p><b>논리</b>는 말이나 글에서 사고나 추리 등을 이치에 맞게 이끌어 가는 과정이나 원리이다.</p>
+    <div class="callout"><b>명제</b>는 ‘참’인지 ‘거짓’인지를 판별할 수 있는 문장으로 뜻이 논리적으로 분명해야 한다.</div>
+    <p class="muted" style="font-size:.9rem;margin-bottom:0">예: 「코로나19는 바이러스이다.」 「토마토는 과일이다.」는 참과 거짓을 판별할 수 있으므로 명제이고, 「인공지능이 인간보다 똑똑해질 수 있을까?」는 참과 거짓을 판정할 수 없으므로 명제가 아니에요.</p>
+  </div>
+  <div class="card">
+    <h3>🔎 명제일까, 명제가 아닐까?</h3>
+    <div id="propGame"></div>
+  </div>
+  <div class="card">
+    <h3>🚦 명제 기호와 진리표 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-1, 표 Ⅰ-2)</span></h3>
+    <p style="margin-top:0">p = “신호등이 초록색이다.” &nbsp; q = “자동차가 전진한다.” 아래 버튼으로 p와 q를 참(T)·거짓(F)으로 바꾸면, 진리표에서 그 줄이 밝게 표시되고 각 기호의 참·거짓이 문장과 함께 나와요.</p>
+    <div id="truthCtl" class="row" style="margin-bottom:8px"></div>
+    <div style="overflow-x:auto"><table id="truthTbl" class="kr-tt"></table></div>
+    <div id="truthNow" class="kr-now"></div>
+    <ul class="kr-tips">
+      <li><b>p∧q</b>: ‘p 그리고 q’가 참이려면 둘 다 참이어야 한다. 하나라도 거짓이면 안 된다.</li>
+      <li><b>p∨q</b>: ‘p 또는 q’는 둘 중에 적어도 하나라도 참이면 전체가 참이다.</li>
+      <li><b>p→q</b>: p는 가정이고 q는 결론이다.</li>
+      <li><b>p↔q</b>: 둘 다 참이거나 둘 다 거짓이어야 참이다.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 명제 논리 추론 -->
+<section class="page" data-name="명제 논리 추론" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>명제 논리 추론</h2><p>교과서 44쪽 · 추론, 연역적·귀납적 추론, 긍정 논법, 삼단 논법</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>추론</b>은 이미 알고 있는 지식에서 논리적 결론을 이끌어 내는 것이에요. 명제 논리는 두 개 이상의 지식(명제)에 추론을 활용하여 <b>새로운 지식</b>을 만들어요.</span></div>
+  <div class="card">
+    <h3>📖 추론</h3>
+    <p style="margin-top:0">추론은 이미 알고 있는 지식에서 논리적 결론을 도출하는 행위 또는 과정으로, 어떠한 판단으로부터 다른 판단을 이끌어 낸다. 추론 방법에는 연역적 추론과 귀납적 추론이 있다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🏛️</div><h4>연역적 추론</h4><p>전제에 이미 포함된 결론을 도출해 내는 추론 방식으로, <b>새로운 것을 발견할 수 없다는 한계</b>가 있다.</p><p class="kr-ex">모든 사람은 죽는다. 소크라테스는 사람이다. → 그러므로 소크라테스는 죽는다.</p><small>전제가 참이면 결론도 참이다. 「소크라테스는 사람이다.」가 참이면 이견 없이 소크라테스는 죽는다.</small></div>
+      <div class="kc" style="--k:#e0702b"><div class="ic">🐦</div><h4>귀납적 추론</h4><p>개별적인 특별한 사실이나 현상에서 그러한 사례까지 포함된 <b>일반적 결론</b>을 도출해 내는 방식이다.</p><p class="kr-ex">까마귀 1은 까맣다. 까마귀 2, 3 … 100은 까맣다. → 그러므로 모든 까마귀는 검은색일 것이다.</p><small>하지만 반증이 한 개라도 나타나면 참이 부정된다. 「까마귀 중 한 마리라도 흰색이 있다.」라면 결론이 거짓이 된다.</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔗 명제 논리 추론 규칙 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-3, 표 Ⅰ-4)</span></h3>
+    <p style="margin-top:0">연역적 추론은 두 가지 이상 존재하는 참인 명제를 동치와 <b>추론 규칙</b>(기존의 논리식에서 새로운 논리식을 생성하는 과정)을 활용하여 새로운 명제로 만들어 낸다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#1f9d74"><h4>긍정 논법</h4>
+        <table class="kr-rule"><tr><th>규칙 p→q</th><td>민수가 행복하다면 인공지능을 공부하고 있는 것이다.</td></tr><tr><th>사실 p</th><td>민수가 행복하다.</td></tr><tr class="c"><th>결론 q</th><td>민수는 인공지능을 공부하고 있다.</td></tr></table></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>삼단 논법</h4>
+        <table class="kr-rule"><tr><th>규칙 p→q</th><td>인공지능을 잘하면 프로그래밍을 잘한다.</td></tr><tr><th>사실 q→r</th><td>프로그래밍을 잘하면 수학을 잘한다.</td></tr><tr class="c"><th>결론 p→r</th><td>인공지능을 잘하면 수학을 잘한다.</td></tr></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🕵️ 스스로 해결하기 · 거짓말을 하는 친구는 누구일까? <span class="muted" style="font-weight:400;font-size:.88rem">(44쪽)</span></h3>
+    <p style="margin-top:0">이들 중 <b>한 명은 확실히 거짓말쟁이</b>예요. 거짓말쟁이의 말은 거짓, 나머지 세 명의 말은 참이어야 해요. 한 명을 골라 「이 친구가 거짓말쟁이라면?」 하고 가정해 보고, 네 문장이 모순 없이 들어맞는지 확인해 보세요.</p>
+    <div id="liar"></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 술어 논리 -->
+<section class="page" data-name="술어 논리" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>술어 논리</h2><p>교과서 45쪽 · 명제 논리의 한계, 한정자, 전칭 기호 ∀, 존재 기호 ∃</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>명제 논리는 문장 하나를 통째로 <b>p</b> 하나로 봐요. 그래서 「<b>모든</b> 자동차」인지 「<b>어떤</b> 자동차」인지, 누가 주어인지가 기호 안에 드러나지 않아요. <b>술어 논리</b>는 car(x)처럼 문장을 쪼개고 ∀x(모든), ∃x(어떤)를 붙여 이 부분까지 표현해요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#d64535"><div class="ic">①</div><h4>명제 논리의 한계 · 한정자</h4><p>사람들이 사용하는 명제는 ‘모든’이나 ‘약간’과 같은 <b>한정자</b>를 갖는데, 명제 논리에서는 이것을 표현하지 못한다.</p><small>예: 「모든 자동차는 기계이다.」를 부정할 때, 「모든 자동차가 기계가 아니다.」인지 「일부 자동차가 기계가 아니다.」인지를 표현할 수 없다.</small></div>
+    <div class="kc" style="--k:#d64535"><div class="ic">②</div><h4>명제 논리의 한계 · 주어와 술어</h4><p>명제들이 어떤 것을 주어로 하고, 어떤 것을 술어로 하는지 판단하기 어렵다.</p><small>예: 「자동차가 충돌했다.」에서 주어는 ‘자동차’이지만, 같은 내용을 「충돌한 것은 자동차이다.」로 표현하면 ‘자동차’는 술어이다.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>📖 술어 논리와 한정자 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-5)</span></h3>
+    <p style="margin-top:0">술어 논리는 명제 논리처럼 문장의 참과 거짓만을 따지는 것이 아니고, <b>한정자</b>를 사용하여 문장의 문법적 구조와 의미를 포함한 논리식으로 진릿값을 구한다. 술어는 작성자가 임의로 지정할 수 있다.</p>
+    <table class="kr-q">
+      <tr><th>한정자 명칭</th><th>기호</th><th class="l">설명</th></tr>
+      <tr><td>전칭 기호</td><td class="sym">∀x</td><td class="l"><b>모든</b> x에 대하여</td></tr>
+      <tr><td>존재 기호</td><td class="sym">∃x</td><td class="l"><b>어떤</b> x에 대하여 ~인 x가 적어도 한 개 존재한다.</td></tr>
+    </table>
+    <table class="kr-q" style="margin-top:10px">
+      <tr><th class="l">문장</th><th class="l">술어 논리</th></tr>
+      <tr><td class="l">x는 자동차이다.</td><td class="l mono2">car(x)</td></tr>
+      <tr><td class="l">x는 자율주행 자동차이다.</td><td class="l mono2">selfdrivingcar(x)</td></tr>
+      <tr><td class="l">모든 x는</td><td class="l mono2">∀x</td></tr>
+      <tr><td class="l">모든 자율주행 자동차는 자동차이다.</td><td class="l mono2">∀x {selfdrivingcar(x) → car(x)}</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>✏️ 문장을 술어 논리로 바꾸어 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문장마다 왼쪽에는 명제 논리로 적은 모습, 오른쪽에는 고를 수 있는 술어 논리식이 있어요. 알맞은 것을 골라 보세요. 술어 이름(car, student 등)은 작성자가 정한 것이에요.</p>
+    <div id="predGame"></div>
+  </div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>명제 논리와 술어 논리는 무엇이 다를까요? 「모든」, 「어떤」이 들어간 문장을 예로 들어 설명해 보세요.</label><textarea data-memo="allSome" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 규칙 기반 구현 -->
+<section class="page" data-name="규칙으로 인공지능 만들기" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>규칙과 사실로 인공지능 만들기</h2><p>교과서 46~47쪽 · 기호주의와 연결주의, 테니스 경기 유무 데이터셋(표 Ⅰ-6)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>14일 동안의 날씨 기록(데이터)에서 「이럴 때 테니스 경기를 했다」는 <b>규칙</b>을 뽑아 볼 거예요. 규칙이 만들어지면, 처음 보는 날에도 그 규칙으로 판단할 수 있고 <b>어느 조건 때문에 그렇게 판단했는지</b>도 보여 줄 수 있어요.</span></div>
+  <div class="card">
+    <h3>🤝 기호주의 + 연결주의</h3>
+    <p style="margin-top:0">명제 논리와 술어 논리는 지식을 기호화하여 표현하는 작업에 매우 용이하다. 최근에는 딥러닝을 선두로 한 <b>연결주의</b> 인공지능이 많이 사용되지만, 인공지능의 초기(1960~1970년대)에는 논리를 이용한 <b>기호주의</b> 기계학습이 발달하였다. 이후 학자들은 인공지능의 발달을 위해 딥러닝에 기호주의적 방법을 결합한 <b>하이브리드형 신경망 기술</b>이 필요하다고 했다.</p>
+  </div>
+  <div class="card">
+    <h3>🎾 테니스 경기 유무 데이터셋 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-6 · ○ 경기함, × 경기 안 함)</span></h3>
+    <div style="overflow-x:auto"><table id="tnTable" class="kr-tn"></table></div>
+  </div>
+  <div class="card">
+    <h3>🛠️ 규칙 만들기: 텅 빈 규칙에서 시작하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">각 조건(속성)마다 <b>테니스 경기를 한 날의 비율(정확도)</b>을 계산했어요. 단계마다 정확도가 가장 높은 조건을 눌러 규칙에 더해 보세요. 표에서 그 단계에 살펴보는 날이 밝게 보여요.</p>
+    <div id="tnStep"></div>
+    <div class="kr-rulebox"><span class="kr-lab">지금까지 만든 규칙</span><div id="tnRule" class="kr-code"></div></div>
+    <p class="note">직접 세어 보면 교과서 47쪽 「맑음」·「비」 단계의 분수 가운데 분모가 다르게 적힌 칸이 있어요. 이 화면은 표 Ⅰ-6을 그대로 세어 계산했어요. 표를 보고 직접 세어 확인해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>🤖 「오늘 테니스 칠까?」 규칙으로 판단하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">위에서 규칙을 끝까지 만든 뒤, 날씨 조건을 골라 보세요. 규칙의 어느 부분이 참이 되어 판단했는지 그대로 보여 줘요.</p>
+    <div id="tnTry"></div>
+    <div class="cards2" style="margin-top:12px">
+      <div class="kc" style="--k:#1f9d74"><h4>👍 장점</h4><p>정확도가 높은 결과를 얻을 수 있다. 주어진 데이터에서 논리 표현을 적용하여 지능적 행위에 대한 지식을 얻을 수 있다.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>👎 단점</h4><p>지식을 관리하는 사람이 통계적 작업을 통해 지식을 도출해야 한다.</p></div>
+    </div>
+    <div class="memo"><label>이렇게 규칙으로 판단하면 판단 과정이 눈에 보여요. 이 점이 특히 중요한 상황을 하나 들어 까닭을 써 보세요.</label><textarea data-memo="tennisWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 스스로 해결하기 · 정리 -->
+<section class="page" data-name="스스로 해결하기" data-acc="#0f8a9d">
+  <div class="head"><div class="num">06</div><div><h2>스스로 해결하기 · 주요 개념 정리</h2><p>교과서 47쪽 · 우회전 도로 교통법 규칙, 성취도 평가</p></div></div>
+  <div class="card">
+    <h3>🚗 스스로 해결하기 · 우회전 규칙을 판단하는 인공지능</h3>
+    <p style="margin-top:0">교차로에서 우회전할 때 일시 정지 의무와 우회전 신호 도입 내용이 담긴 도로 교통법이 2023년부터 시행되었어요. 차량의 우회전 규칙은 <b>전방 차량 신호</b>와 <b>횡단보도에 보행자가 있는지 없는지</b>에 따라 서행 또는 정지해야 해요. 교과서 부록(221쪽)의 교차로 통행 방법 그림을 규칙 다섯 개로 옮겼어요. <b>사실</b>을 골라 어떤 <b>규칙</b>이 맞는지, 어떤 <b>결론</b>이 나오는지 확인해 보세요.</p>
+    <div id="turnJudge"></div>
+    <p class="note">교과서는 이 규칙을 논리 언어 프롤로그(prolog)로 프로그래밍해 보게 해요. 선생님이 안내하면 <a href="https://swish.swi-prolog.org" target="_blank" rel="noopener">SWISH 프롤로그 실습 사이트 ↗</a>에서 해 볼 수 있어요.</p>
+    <div class="memo"><label>우회전 규칙 하나를 골라 「규칙 p→q · 사실 p · 결론 q」 꼴(긍정 논법)로 적어 보세요.</label><textarea data-memo="turnRule" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>자연어는 정형화되지 않고 불규칙적이므로, 컴퓨터에서 활용하려면 <button class="blank" data-a="규칙적이고 체계적인">?</button> 방법을 이용하여 지식을 표현해야 한다.</li>
+      <li><button class="blank" data-a="의미망">?</button>은 노드와 노드 간의 관계를 나타내는 구조로, 관계는 링크로 표현한다.</li>
+      <li>명제 논리는 주어진 문장의 <button class="blank" data-a="참 또는 거짓">?</button>을 판별하고, 술어 논리는 문장의 참과 거짓을 판별할 뿐만 아니라, <button class="blank" data-a="한정자">?</button>를 포함한다.</li>
+      <li>규칙과 사실을 활용하여 지식을 표현하고, 새로운 지식을 <button class="blank" data-a="추론">?</button>하여 생성한다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 명제 논리를 이용하여 지식을 표현할 수 있는가? 규칙과 사실을 활용하여 지식을 표현하고 추론하여 새로운 사실을 생성하는 과정을 설명할 수 있는가? 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">07</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">자연어는 정형화되지 않고 불규칙적이라 컴퓨터에 그대로 쓰기 어렵다. 그래서 <b>의미망</b>(노드와 링크), <b>명제 논리</b>, <b>술어 논리</b>처럼 규칙적이고 체계적인 방법으로 지식을 표현한다.</div>
+    <div style="--k:#e0702b"><b>명제 논리</b>는 문장 하나를 통째로 참·거짓으로 판별하고, <b>술어 논리</b>는 ∀x(모든), ∃x(어떤) 같은 <b>한정자</b>와 술어로 문장의 구조와 의미까지 표현한다.</div>
+    <div style="--k:#d64535"><b>규칙과 사실</b>을 맞대면(긍정 논법, 삼단 논법) 새로운 지식을 추론할 수 있다. 데이터에서 뽑은 규칙은 <b>판단 과정이 눈에 보이고</b> 정확도가 높지만, 사람이 통계적 작업으로 지식을 도출해야 한다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>일상 언어로 된 지식을 컴퓨터가 바로 이해하기 어려운 이유를 쓰고, <b>의미망·명제 논리·술어 논리</b> 중 하나로 바꾸면 어떤 점이 달라지는지 설명하기</li>
+      <li>명제 논리와 술어 논리의 차이를 <b>「모든」, 「어떤」</b> 같은 표현과 연결해 설명하기</li>
+      <li>테니스 데이터에서 규칙을 뽑아내는 방식은 <b>판단 과정이 눈에 보인다</b>는 장점이 있다. 이 점이 중요한 상황을 하나 들어 설명하기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

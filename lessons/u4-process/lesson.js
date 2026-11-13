@@ -35,7 +35,7 @@ $('retrain').onclick=()=>{
   R2=testAll(P,N); table('t2',R2,R1); $('s2').textContent=`${nOk(R2)} / ${TESTS.length}`;
   const a=nOk(R1),b=nOk(R2), added=[...SEL].map(i=>`「${CANDS[i][0]}」(${LBL[CANDS[i][1]]})`).join(', ')||'아무것도';
   $('cmpMsg').style.display='block';
-  $('cmpMsg').innerHTML=(SEL.has(2)&&b<=a?'「생각보다」라는 말이 긍정에도 들어가면서 「생각보다 작고 얇아요」를 더 헷갈리게 됐어요. <b>같은 표현이 두 클래스에 섞이면</b> 오히려 나빠질 수 있어요. ':'')+`${added}를 더했더니 같은 테스트 4개 중 <b>${a}개 → ${b}개</b>를 맞혔어요. `+(b===4?'틀린 원인에 맞는 데이터를 골랐어요!':b>a?'나아졌지만 아직 틀린 문장이 있어요. 그 문장의 원인을 다시 살펴봐요.':'나아지지 않았어요. 수행평가였다면 이것도 근거와 함께 그대로 쓰면 돼요.');
+  $('cmpMsg').innerHTML=(SEL.has(2)&&b<=a?'「생각보다」라는 말이 긍정에도 들어가면서 「생각보다 작고 얇아요」를 더 헷갈리게 됐어요. <b>같은 표현이 두 클래스에 섞이면</b> 오히려 나빠질 수 있어요. ':'')+`${added}를 더했더니 같은 테스트 4개 중 <b>${a}개 → ${b}개</b>를 맞혔어요. `+(b===4?'틀린 원인에 맞는 데이터를 골랐어요!':b>a?'나아졌지만 아직 틀린 문장이 있어요. 그 문장의 원인을 다시 살펴봐요.':'나아지지 않았어요. 내 프로젝트였다면 이것도 근거와 함께 그대로 쓰면 돼요.');
   nums();
 };
 $('resetSim').onclick=()=>{SEL.clear();R2=null;$('t2').innerHTML='';$('s2').textContent='—';$('cmpMsg').style.display='none';drawCands();nums();};
@@ -49,6 +49,6 @@ drawCands(); first();
 /* 06 준비물 */
 chips('ready','readyPick',['ML4Kids 학급 계정으로 로그인됨','내 주제 · 입력 · 출력 · 클래스 정함','클래스별 데이터 모을 계획(개수 비슷하게)','테스트 사례 4개 이상 따로 준비','Scratch 연결 방법 알기','근거는 내 이름과 숫자로'],true);
 
-const MEMOLIST=[['why','틀린 사례와 원인'],['improve','개선한 것과 같은 테스트 결과'],['myScratch','내 주제의 Scratch 동작'],['r1','성찰 ① 성능'],['r2','성찰 ② 틀린 원인'],['r3','성찰 ③ 개선과 결과'],['r4','성찰 ④ 한계'],['r5','성찰 ⑤ 사회적 영향'],['readyPick','수행평가 준비 확인']];
+const MEMOLIST=[['why','틀린 사례와 원인'],['improve','개선한 것과 같은 테스트 결과'],['myScratch','내 주제의 Scratch 동작'],['r1','성찰 ① 성능'],['r2','성찰 ② 틀린 원인'],['r3','성찰 ③ 개선과 결과'],['r4','성찰 ④ 한계'],['r5','성찰 ⑤ 사회적 영향'],['readyPick','프로젝트 준비 확인']];
 onShow[5]=nums;
 onShow[6]=()=>memoSummary('msum',MEMOLIST);

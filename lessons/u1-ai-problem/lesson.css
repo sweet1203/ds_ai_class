@@ -1,0 +1,36 @@
+  /* 0 먼저 골라 보기 */
+  .pb-way{grid-template-columns:1fr 1fr;gap:6px}
+  .pb-way button{padding:8px 8px;font-size:.88rem}
+  .pb-cond .kc p{font-weight:700}
+  .pb-meth{margin-bottom:12px}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+  /* 미로 */
+  .mz-size,.mz-steps{margin-bottom:8px}
+  .mz-steps .btn.mz-or{background:#e0702b}
+  .mz-steps .btn.mz-or.ghost{background:#fff;color:#e0702b;border-color:#e0702b}
+  .mz-wrap{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-start;margin-top:6px}
+  .mz-board{flex:1 1 300px;max-width:440px;outline:none}
+  .mz-board:focus-visible{box-shadow:0 0 0 3px var(--acc-soft);border-radius:10px}
+  .mz-svg{display:block;width:100%;height:auto;background:#fff;border-radius:10px;touch-action:manipulation}
+  .mz-cell{fill:#fff;transition:fill .15s;cursor:pointer}
+  .mz-cell.v{fill:#ffe9a8}
+  .mz-cell.e{fill:#cfe0fa}
+  .mz-cell.o{fill:#ffd9c2}
+  .mz-wall{stroke:#0f2742;stroke-linecap:round;fill:none;pointer-events:none}
+  .mz-path{fill:none;stroke:#d64535;stroke-linecap:round;stroke-linejoin:round;opacity:.85;pointer-events:none}
+  .mz-me{fill:#e0702b;stroke:#fff;stroke-width:2;pointer-events:none}
+  .mz-lb{font-weight:900;fill:#0f2742;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+  .mz-side{flex:1 1 220px;min-width:0}
+  .mz-pad{display:grid;grid-template-columns:repeat(3,46px);gap:6px;margin-bottom:10px}
+  .mz-pad button{height:46px;border:2px solid var(--line);background:#fff;border-radius:10px;font:inherit;font-size:1.2rem;font-weight:900;cursor:pointer;color:var(--ink)}
+  .mz-pad button:active{background:var(--acc-soft)}
+  .mz-stat{background:#fbfaf7;border-radius:12px;padding:10px 12px;font-size:.92rem;line-height:1.6}
+  .mz-log{margin-top:10px;background:#fbfaf7;border-radius:12px;padding:8px 12px;font-size:.9rem}
+  .mz-log:empty{display:none}
+  .mz-log ul{margin:4px 0 0;padding-left:20px}
+  .mz-tbl{width:100%;border-collapse:collapse;font-size:.86rem;margin-bottom:10px}
+  .mz-tbl th,.mz-tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left}
+  .mz-tbl th{background:#fbfaf7}

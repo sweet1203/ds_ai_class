@@ -1,0 +1,101 @@
+  /* 공통 */
+  .kr-lab{display:block;font-size:.8rem;font-weight:900;color:var(--muted);margin:6px 0 4px}
+  .kr-fb{min-height:1.4em;margin-top:8px;font-size:.93rem}
+  .kr-end{background:var(--acc-soft);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:.93rem}
+  .kr-code{font-family:ui-monospace,Menlo,monospace;font-size:.88rem;background:#0f2742;color:#e1e9f4;border-radius:10px;padding:10px 12px;margin:0;white-space:pre-wrap;overflow-x:auto;line-height:1.6}
+  .mono2{font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+  .note{font-size:.84rem;color:var(--muted)}
+  /* 01 의미망 */
+  .kr-net{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px;align-items:start}
+  @media (max-width:860px){.kr-net{grid-template-columns:1fr}}
+  .kr-src{background:#fbfaf7;border-radius:12px;padding:10px 14px;font-size:.93rem}
+  .kr-src p{margin:2px 0 8px}
+  .kr-rels b{font-family:ui-monospace,Menlo,monospace;color:var(--acc)}
+  .kr-svg{background:#fbfaf7;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .kr-node{cursor:pointer;outline:none}
+  .kr-node rect{fill:#fff;stroke:#9fb3cc;stroke-width:2;transition:fill .15s,stroke .15s}
+  .kr-node text{font-size:16px;font-weight:700;fill:#16202c;pointer-events:none}
+  .kr-node:hover rect,.kr-node:focus-visible rect{stroke:var(--acc)}
+  .kr-node.on rect{fill:var(--acc);stroke:var(--acc)}
+  .kr-node.on text{fill:#fff}
+  .kr-edge{stroke:#2f6fd0;stroke-width:2.2}
+  .kr-elab{font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:700;fill:#2f6fd0;paint-order:stroke;stroke:#fbfaf7;stroke-width:5px}
+  .kr-pick{margin-top:8px}
+  .kr-pick .btn b{font-family:ui-monospace,Menlo,monospace}
+  .kr-codebox{margin-top:12px}
+  /* 02 진리표 */
+  .kr-tt{min-width:520px}
+  .kr-tt th{font-family:ui-monospace,Menlo,monospace;font-size:.95rem;color:var(--ink);background:#fbfaf7}
+  .kr-tt td{font-weight:700;font-variant-numeric:tabular-nums}
+  .kr-tt td.t{color:#17694f}.kr-tt td.f{color:#9b2c20}
+  .kr-tt tr.on td{background:#fff4d6}
+  .kr-now{display:grid;gap:4px;font-size:.92rem;background:#fbfaf7;border-radius:12px;padding:10px 14px;margin-top:8px}
+  .kr-now .mono{margin-right:4px}
+  .kr-tips{font-size:.9rem;margin:10px 0 0;padding-left:20px}
+  /* 03 추론 */
+  .kr-ex{background:#fbfaf7;border-radius:8px;padding:6px 10px;font-size:.88rem!important}
+  .kr-rule{margin:6px 0 0;font-size:.88rem}
+  .kr-rule th{white-space:nowrap;text-align:left;color:var(--k);font-size:.84rem;width:84px}
+  .kr-rule td{text-align:left}
+  .kr-rule tr.c td,.kr-rule tr.c th{background:color-mix(in srgb,var(--k) 10%,white);font-weight:700}
+  .kr-liar{min-width:560px;font-size:.9rem}
+  .kr-liar th{background:#fbfaf7}
+  .kr-liar tr.bad td{background:#fdecea}
+  .kr-liar small{color:var(--muted);font-weight:400}
+  /* 04 술어 논리 */
+  .kr-q{font-size:.92rem}
+  .kr-q th{background:#fbfaf7}
+  .kr-q .sym{font-size:1.2rem;font-weight:900;color:var(--acc)}
+  .kr-pq{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px}
+  .kr-pq .cnt{font-size:.82rem;color:var(--muted)}
+  .kr-pq .s{font-size:1.15rem;font-weight:900;margin:4px 0 10px}
+  .kr-cmp{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.kr-cmp{grid-template-columns:1fr}}
+  .kr-cmp>div:first-child{background:#fff;border-radius:12px;padding:8px 12px;text-align:center}
+  .kr-cmp small{display:block;color:var(--muted);font-size:.8rem}
+  .big2{display:block;font-size:2rem;color:#5b6776}
+  .kr-pq .opts{display:flex;flex-direction:column;gap:8px}
+  .kr-opt{font-family:ui-monospace,Menlo,monospace;font-size:.95rem;text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+  .kr-opt:hover:not(:disabled){border-color:var(--acc)}
+  .kr-opt.right{background:#e7f6ef;border-color:var(--mint);font-weight:700}
+  .kr-opt.wrong{background:#fdecea;border-color:var(--red);text-decoration:line-through}
+  .kr-opt:disabled{cursor:default}
+  .kr-pq .nx{margin-top:8px}
+  /* 05 테니스 */
+  .kr-tn{min-width:560px;font-size:.88rem}
+  .kr-tn th{background:#fbfaf7}
+  .kr-tn td,.kr-tn th{padding:5px 8px;transition:opacity .2s,background .2s}
+  .kr-tn td.o{color:#17694f;font-weight:900}.kr-tn td.x{color:#9b2c20;font-weight:900}
+  .kr-tn tr.dim td{opacity:.3}
+  .kr-tn tr.hit td{background:#e7f6ef}
+  .kr-steph{font-weight:900;margin-bottom:8px}
+  .kr-tip{background:#fff4d6;border-radius:10px;padding:6px 10px;font-size:.88rem;margin:-2px 0 10px}
+  .kr-tip small{color:var(--muted)}
+  .kr-attrs{display:grid;gap:8px}
+  .kr-attr{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .kr-attr>b{min-width:96px;font-size:.9rem}
+  .kr-ratio{position:relative;overflow:hidden;border:2px solid var(--line);background:#fff;border-radius:10px;padding:5px 12px 9px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink);min-width:110px;text-align:left}
+  .kr-ratio span{font-weight:900;color:var(--acc);margin-left:4px}
+  .kr-ratio i{position:absolute;left:0;bottom:0;height:4px;background:var(--acc)}
+  .kr-ratio:hover{border-color:var(--acc)}
+  .kr-rulebox{margin-top:12px}
+  #tnRule .cl{border-radius:6px;padding:1px 6px}
+  #tnRule .c0{background:rgba(31,157,116,.35)}#tnRule .c1{background:rgba(242,165,22,.35)}#tnRule .c2{background:rgba(47,111,208,.45)}
+  .kr-chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .kr-chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .kr-trace{background:#fbfaf7;border-radius:12px;padding:10px 14px;margin-top:10px}
+  .kr-trace ol{margin:2px 0 8px;padding-left:22px;font-size:.92rem}
+  .kr-trace li{margin:4px 0}
+  .kr-trace li.yes{color:#17694f}
+  .kr-trace li.no{color:#5b6776}
+  .kr-verdict{border-radius:10px;padding:8px 12px;font-size:.95rem}
+  .kr-verdict.y{background:#e7f6ef}.kr-verdict.n{background:#fdecea}
+  /* 06 우회전 */
+  .kr-rules li{line-height:1.9}
+  .kr-rules .cd{border-radius:6px;padding:1px 6px;font-size:.86rem}
+  .kr-rules .cd.t{background:#e7f6ef;color:#17694f}
+  .kr-rules .cd.f{background:#f1f3f6;color:#8a94a3;text-decoration:line-through}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}

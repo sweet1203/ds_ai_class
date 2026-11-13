@@ -1,0 +1,40 @@
+  .cp-feat .kc h4,.cp-st .kc h4{font-size:.98rem}
+  .cp-feat .kc p,.cp-st .kc p{font-size:.88rem;margin:4px 0 0}
+  /* 그림 Ⅰ-4 포함 관계 */
+  .cp-nest .n1,.cp-nest .n2,.cp-nest .n3{border-radius:18px;padding:12px 14px}
+  .cp-nest .n1{background:#e6eefb;border:2px solid #2f6fd0}
+  .cp-nest .n2{background:#e3f4ee;border:2px solid #1f9d74;margin-top:10px}
+  .cp-nest .n3{background:#f3e9f9;border:2px solid #9b4fc4;margin-top:10px}
+  .cp-nest b{display:block;font-size:1.02rem}
+  .cp-nest small{display:block;color:var(--muted);font-size:.86rem}
+  /* 지하철 탐색 */
+  .cp-metro{background:#fbfaf7;border:1px solid var(--line);border-radius:14px;padding:8px}
+  .cp-metro svg{display:block;width:100%;max-width:620px;height:auto;margin:0 auto}
+  .m-st circle{fill:#fff;stroke:#8a94a3;stroke-width:3}
+  .m-st text{font-size:11.5px;fill:var(--ink);font-weight:700;paint-order:stroke;stroke:#fbfaf7;stroke-width:3px}
+  .m-st.vis circle{fill:var(--acc);stroke:var(--acc)}
+  .m-st.goal circle{stroke:#d64535;stroke-width:4}
+  .m-st.cur circle{fill:var(--amber);stroke:var(--navy)}
+  .m-st.nb{cursor:pointer}
+  .m-st.nb circle{stroke:var(--acc);stroke-width:4;animation:mPulse 1.2s infinite}
+  .m-st.nb:hover circle,.m-st.nb:focus circle{fill:var(--acc-soft)}
+  @keyframes mPulse{50%{stroke-width:7}}
+  .m-legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:.8rem;margin-top:4px}
+  .m-legend span::before{content:"";display:inline-block;width:16px;height:5px;border-radius:3px;background:var(--c);margin-right:4px;vertical-align:middle}
+  .cp-tbl{width:100%;border-collapse:collapse;font-size:.92rem}
+  .cp-tbl th,.cp-tbl td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  .cp-tbl th{background:#fbfaf7;width:30%;white-space:nowrap}
+  .cp-tbl th small{display:block;font-weight:400;color:var(--muted);font-size:.78rem;white-space:normal}
+  @media (max-width:480px){.cp-tbl th{white-space:normal}}
+  .cp-msg{min-height:1.4em;margin-top:10px;font-size:.93rem}
+  .cp-msg.ok{background:#e3f4ee;border-radius:12px;padding:10px 14px}
+  .cp-msg.ng{color:var(--red)}
+  /* 점검 · 선택 활동 */
+  .cp-rec{margin-top:10px;background:var(--acc-soft);border-radius:12px;padding:10px 14px;font-size:.93rem}
+  .cp-task{background:#fbfaf7;border-radius:14px;padding:12px 16px;margin-top:12px}
+  .cp-task>p{margin:6px 0}
+  .cp-words{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+  .cp-words b{margin-right:4px}
+  .cp-words span{border:2px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px;font-size:.9rem}
+  .cp-words span.on{border-color:var(--mint);background:var(--mint);color:#fff;font-weight:700}
+  #lensCards .tcard{height:150px}

@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ⅰ단원 도입 · 인공지능의 발자취</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 01 로봇 속 인공지능 */
+  .ir-where{background:var(--acc-soft);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+  .ir-qs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media (max-width:700px){.ir-qs{grid-template-columns:1fr}}
+  .ir-q{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:2px dashed var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s}
+  .ir-q b{font-size:1rem}
+  .ir-q span{font-size:.82rem;color:var(--muted)}
+  .ir-q em{display:none;font-style:normal;font-size:.92rem}
+  .ir-q.on{border-style:solid;border-color:var(--acc);background:#fbfaf7}
+  .ir-q.on span{display:none}.ir-q.on em{display:block}
+  /* 03 연표 순서 맞추기 */
+  .tl-pool{display:flex;flex-wrap:wrap;gap:8px}
+  .tl-card{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;color:var(--ink);text-align:left;max-width:100%}
+  .tl-card i{font-style:normal;margin-right:6px}
+  .tl-card:hover{border-color:var(--acc)}
+  .tl-msg{min-height:1.5em;margin:10px 0 6px;font-size:.93rem}
+  .tl-msg .ok{color:var(--mint);font-weight:900}.tl-msg .ng{color:var(--red);font-weight:900}
+  .tl-track{list-style:none;margin:0;padding:0 0 0 14px;border-left:4px solid var(--acc)}
+  .tl-track li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;animation:fadein .4s both}
+  .tl-track .y{flex:0 0 auto;min-width:92px;background:var(--acc);color:#fff;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;text-align:center}
+  .tl-track b{display:block;font-size:.95rem}
+  .tl-track small{color:var(--muted);font-size:.84rem}
+  @media (max-width:480px){.tl-track li{flex-direction:column;gap:4px}}
+  .tl-end{margin-top:10px}
+  .tl-end:empty{display:none}
+  .tl-end p{margin:0}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 단원 도입</span>
+      <h1>인공지능의 이해,<br>여기서 출발해요</h1>
+      <div class="story"><b>음식을 나르는 로봇, 길을 알려 주는 로봇, 스스로 달리는 자동차</b><br>식당에서는 <b>서빙 로봇</b>이 음식을 나르고, 공항에서는 <b>안내 로봇</b>이 길을 알려 주고, 도로에서는 <b>자율주행 자동차</b>가 달려요. 교과서는 이 세 가지에서 <b>인공지능 원리</b>를 찾을 수 있다고 해요.</div>
+      <p>이 단원에서는 인공지능이 무엇인지, 어떤 원리로 움직이는지, 그리고 <b>탐색과 추론</b>으로 문제를 어떻게 해결하는지 배워요. 오늘은 그 출발점으로, 우리 곁의 인공지능을 찾아보고 인공지능이 <b>어떻게 시작되어 지금까지 왔는지</b> 짧은 이야기로 따라가 봐요.</p>
+      <ol>
+        <li>우리 곁의 인공지능</li><li>인공지능은 어떻게 시작되었을까?</li><li>지식에서 데이터로, 생성형 인공지능까지</li>
+        <li>중학교 정보 ↔ 고등학교 정보</li><li>마무리</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🍽️</i><div><b>서빙 로봇</b><small>식당에서 음식 나르기</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🛫</i><div><b>안내 로봇</b><small>공항에서 길 안내하기</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🚗</i><div><b>자율주행 자동차</b><small>운전자 없이 도로 달리기</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🔎</i><div><b>그 속의 인공지능 원리는?</b><small>이 단원에서 찾아갈 것</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>교과서 그림 속 세 로봇에서 <b>인공지능이 하는 일</b>을 찾아보고, 내 생활 속 인공지능을 떠올립니다. 이어서 「짧은 이야기로 만나는 인공지능」을 따라 <b>튜링 테스트에서 생성형 인공지능까지</b> 인공지능의 발자취를 연표로 정리하고, 이 단원에서 무엇을 배우게 될지 지도를 그려 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">이 단원의 핵심 질문</span>
+        <ul class="uses">
+          <li><b>1. 인공지능의 개념과 원리</b> · 인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?</li>
+          <li><b>2. 탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">이 단원을 배우고 나면</span>
+        <p style="margin:0;font-size:.95rem">인공지능에 대한 이해를 바탕으로 <b>일상생활의 문제를 인공지능의 관점에서 파악</b>하게 됩니다. 이를 바탕으로 <b>지능적 판단을 구현하기 위해 탐색과 추론 방식을 적용하는 능력과 태도</b>를 기를 수 있습니다.</p>
+      </div>
+      <div class="why">
+        <span class="kicker">오늘 할 수 있게 될 것</span>
+        <ul class="can">
+          <li>생활 속 인공지능의 예를 들 수 있다.</li>
+          <li>인공지능의 발자취를 시간 순서로 말할 수 있다.</li>
+          <li>기호주의와 연결주의의 차이를 말할 수 있다.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 우리 곁의 인공지능부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 우리 곁의 인공지능 -->
+<section class="page" data-name="우리 곁의 인공지능" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>우리 곁의 인공지능</h2><p>교과서 12~13쪽 · 서빙 로봇, 안내 로봇, 자율주행 자동차</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>교과서 첫 장의 세 그림은 모두 <b>사람 대신 상황을 알아보고, 할 일을 정하고, 직접 움직이는</b> 기계예요. 그 속에 인공지능 원리가 들어 있어요. 로봇을 하나씩 눌러 그 로봇이 해야 하는 일을 살펴보세요.</span></div>
+  <div class="card">
+    <h3>🔎 이 로봇 속 인공지능은 어디에?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">로봇을 고른 뒤, 아래 세 질문 카드를 눌러 예시를 열어 보세요. 먼저 내 생각을 떠올린 뒤 열면 더 좋아요.</p>
+    <div class="apps" id="robotBtns" style="grid-template-columns:repeat(3,1fr)"></div>
+    <div class="cview" id="robotView"></div>
+  </div>
+  <div class="card">
+    <h3>🗺️ 이 단원에서 배울 내용 <span class="muted" style="font-weight:400;font-size:.88rem">(13쪽)</span></h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">💡</div><h4>1. 인공지능의 개념과 원리</h4><p>인공지능의 개념과 특성, 인공지능의 원리</p><small><b>핵심 질문</b> · 인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?</small></div>
+      <div class="kc" style="--k:#1f9d74"><div class="ic">🧭</div><h4>2. 탐색과 추론</h4><p>탐색을 활용한 문제 해결, 지식의 표현과 추론</p><small><b>핵심 질문</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</small></div>
+    </div>
+    <p class="muted" style="font-size:.9rem;margin-bottom:0">단원 끝에는 <b>협력적 창의·융합 활동</b>(탐색을 이용한 일상생활 문제 해결)이 있고, 이 단원과 관련된 직업으로 <b>인공지능 연구원</b>을 소개해요.</p>
+  </div>
+  <div class="card">
+    <h3>✍️ 내 생활 속 인공지능</h3>
+    <div class="memo"><label>내가 생활에서 만난 인공지능을 하나 적고, 그것이 무엇을 알아보고 · 무엇을 정하고 · 어떻게 움직이는지(또는 답하는지) 써 보세요.</label><textarea data-memo="lifeAI" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 시작 이야기 -->
+<section class="page" data-name="인공지능의 시작" data-acc="#9b4fc4">
+  <div class="head"><div class="num">02</div><div><h2>인공지능은 어떻게 시작되었을까?</h2><p>교과서 14쪽 · 인공지능의 발자취, 짧은 이야기로 만나는 인공지능 ①②</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>「기계도 생각할 수 있을까?」라는 질문에서 인공지능이 시작됐어요. 그 뒤 학자들은 두 갈래로 나뉘었어요. <b>사람이 논리와 규칙을 넣어 주자</b>는 쪽(기호주의)과, <b>뇌를 닮은 신경망이 스스로 학습하게 하자</b>는 쪽(연결주의)이에요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#9b4fc4"><div class="ic">①</div><h4>생각하는 기계와 「인공지능」이라는 이름</h4><p><b>1950년</b> 앨런 튜링은 기계가 인간의 지능(생각)을 모방할 수 있는가에 대해 논의하였다. 이 생각하는 기계에 흥미를 느낀 학자들은 <b>다트머스 회의</b>에서 최초로 <b>「인공지능」 용어를 공식적으로 사용</b>하였으며 개념을 확립하였다.</p><small>튜링이 제안한 판단 방법(튜링 테스트)은 「인공지능의 개념과 특성」에서 자세히 배워요.</small></div>
+    <div class="kc" style="--k:#e0702b"><div class="ic">②</div><h4>기호주의와 연결주의</h4><p>다트머스 회의 이후 <b>논리를 기반으로</b> 인공지능 시스템을 구축하는 민스키의 <b>기호주의</b>가 독주하였으나, 로젠블랫은 <b>퍼셉트론</b>이라 불리는 <b>인공신경망으로 학습시켜 추론</b>하는 <b>연결주의</b> 연구 방식을 선택하였다.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>⚖️ 기호주의일까, 연결주의일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문장을 읽고 어느 쪽 생각에 가까운지 골라 보세요. 핵심은 <b>지식을 사람이 기호(논리·규칙)로 넣어 주느냐</b>, <b>신경망이 데이터로 학습하느냐</b>예요.</p>
+    <div id="symGame"></div>
+  </div>
+  <div class="card">
+    <span class="kicker">더 알아보기</span>
+    <h3>❄️ 퍼셉트론의 문제 발견</h3>
+    <p style="margin-top:0">1969년 마빈 민스키와 시모어 페퍼트는 단순 퍼셉트론이 <b>선형 분리가 가능한 문제</b>(직선 하나로 두 무리를 나눌 수 있는 문제)에는 효과적이지만, <b>XOR 문제</b>처럼 직선 하나로 나눌 수 없는 <b>비선형 문제</b>는 풀 수 없다는 한계를 보였어요. 이 일은 연구가 크게 위축된 <b>「인공지능의 겨울」</b>로 이어지는 계기가 되었어요.</p>
+    <div class="callout">그러나 이후 <b>다층 퍼셉트론</b>과 <b>역전파 알고리즘</b>이 등장하면서 XOR 문제는 해결되었어요. 신경망을 여러 층으로 쌓는 이 생각이 뒤에 <b>딥러닝</b>으로 이어져요.</div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 이후 흐름 · 연표 -->
+<section class="page" data-name="발자취 연표" data-acc="#1f9d74">
+  <div class="head"><div class="num">03</div><div><h2>지식에서 데이터로, 그리고 생성형 인공지능</h2><p>교과서 15쪽 · 짧은 이야기로 만나는 인공지능 ③④⑤, 발자취 연표</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>처음에는 <b>전문가의 지식을 컴퓨터에 담으면</b> 훌륭한 인공지능이 될 거라 생각했어요. 그런데 컴퓨터가 빨라지고 인터넷으로 <b>데이터가 크게 늘자</b>, 데이터로 학습하는 인공지능이 빠르게 발전했어요. 그 결과가 알파고와 <b>생성형 인공지능</b>이에요.</span></div>
+  <div class="cards3">
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">③</div><h4>전문가의 지식을 컴퓨터에</h4><p>사람들은 전문가의 지식을 컴퓨터에 담을 수 있다면 훌륭한 인공지능이 될 수 있다고 생각하였다. 그래서 인간의 지식 전달 방법인 <b>지식 표현</b>과, 지식을 기반으로 결과를 도출하는 방법인 <b>추론</b>을 연구하였다.</p></div>
+    <div class="kc" style="--k:#1f9d74"><div class="ic">④</div><h4>데이터의 증가와 알파고</h4><p><b>1990년대 이후</b> 컴퓨팅 기술의 급속한 발전과 인터넷의 발달로 <b>데이터가 증가</b>하여 인공지능의 발달을 촉진시켰다. 이때 등장한 <b>알파고</b>는 인공지능 대중화를 앞당기는 역할을 하였다.</p><small><b>더 알아보기</b> · 2016년 알파고는 이세돌 기사와의 다섯 번 대국에서 4승 1패를 거두었어요.</small></div>
+    <div class="kc" style="--k:#e0702b"><div class="ic">⑤</div><h4>생성형 인공지능</h4><p>최근에는 인간의 언어를 이해하고 해석하는 <b>생성형 인공지능</b>을 개발하였다. 또 <b>딥러닝 기반의 단백질 구조 예측 모델</b> 개발에 성공하는 등 해결하기 어려웠던 다양한 분야의 문제를 해결할 수 있게 되었다.</p><small><b>더 알아보기 · 생성형 AI</b>: 텍스트, 오디오, 이미지 등 기존 콘텐츠를 활용해 유사한 콘텐츠를 새롭게 만들어 내는 인공지능 기술</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🕰️ 연표 순서 맞추기 <span class="muted" style="font-weight:400;font-size:.88rem">(14~15쪽 아래 연표)</span></h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem"><b>교과서 14~15쪽 아래 연표</b>를 보면서, 사건 카드 중 <b>가장 먼저 일어난 것</b>부터 차례로 눌러 연표를 채워 보세요. 순서가 틀리면 카드가 흔들려요. 카드에 붙는 연도는 교과서 연표의 10년 단위 눈금을 따랐어요.</p>
+    <div id="tlGame"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 가장 큰 전환점은?</h3>
+    <div class="memo"><label>연표에서 인공지능의 흐름을 가장 크게 바꾼 사건 하나를 고르고, 그 까닭을 써 보세요. (예: 무엇이 가능해졌는지, 무엇이 달라졌는지)</label><textarea data-memo="histPick" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 중학교 ↔ 고등학교 · 단원 지도 -->
+<section class="page" data-name="중학교와 이어 보기" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>중학교 정보 ↔ 고등학교 정보</h2><p>교과서 15쪽 · 이미 아는 것과 새로 배울 것 이어 보기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>교과서 속 친구가 「인공지능의 기초 개념과 지능 에이전트를 알고 있니?」라고 묻자, 다른 친구는 「정확하게 설명하지는 못하겠어. 확인해 볼까?」라고 답해요. 나는 어디까지 설명할 수 있는지 점검해 봐요.</span></div>
+  <div class="flow2">
+    <div style="--k:#5b6776"><b>🏫 중학교 정보</b><span>인공지능의 개념과 특성</span></div>
+    <div class="ar">→</div>
+    <div style="--k:#e0702b"><b>🎓 고등학교 정보</b><span>지능 에이전트의 역할</span></div>
+    <div class="ar">→</div>
+    <div style="--k:#2f6fd0"><b>📘 인공지능 기초</b><span>인공지능의 개념과 원리, 탐색과 추론</span></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>✅ 지금 설명할 수 있나요?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">친구에게 30초 동안 설명할 수 있는 것만 골라 보세요. 고르지 못한 것이 이 단원에서 채워 갈 부분이에요.</p>
+    <div id="bridgeCheck"></div>
+  </div>
+  <div class="card">
+    <h3>🧭 두 핵심 질문 중 더 궁금한 것은?</h3>
+    <ul class="uses" style="margin-top:0">
+      <li><b>1. 인공지능의 개념과 원리</b> · 인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?</li>
+      <li><b>2. 탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li>
+    </ul>
+    <div class="memo"><label>더 궁금한 질문을 고르고, 지금 내가 짐작하는 답을 한두 문장으로 적어 보세요. 단원을 마칠 때 다시 비교해 봐요.</label><textarea data-memo="unitQ" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">05</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 내 메모 확인</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">서빙 로봇, 안내 로봇, 자율주행 자동차처럼 <b>인공지능은 이미 우리 생활 곳곳</b>에 있고, 그 속에서 인공지능 원리를 찾을 수 있다.</div>
+    <div style="--k:#9b4fc4">1950년 튜링의 논의와 <b>다트머스 회의</b>(「인공지능」 용어)로 시작해, 논리를 기반으로 하는 <b>기호주의</b>가 앞서다가 최근에는 인공신경망으로 학습시키는 <b>연결주의</b>(딥러닝)가 많이 쓰인다.</div>
+    <div style="--k:#1f9d74">컴퓨팅 기술과 인터넷의 발달로 <b>데이터가 늘면서</b> 기계학습·딥러닝이 발전했고, 알파고를 거쳐 <b>생성형 인공지능</b>에 이르렀다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="card">
+    <p class="muted" style="margin-top:0;font-size:.9rem">📒 「내 생활 속 인공지능」은 앞으로 인공지능의 개념과 원리를 배울 때 계속 예시로 쓸 수 있어요. 빈칸이 있다면 앞 화면으로 돌아가 채워 보세요.</p>
+    <div class="msum" id="msum" style="margin-top:0;padding:0"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u1-intro', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 12~15쪽) — 오답도 교과서 표현에서, 보기 길이는 비슷하게 */
+const QUIZ={
+ 1:[{q:'「1. 인공지능의 개념과 원리」 중단원의 핵심 질문은?',o:['인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?','인공지능은 어떻게 시작되었을까?','인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?'],a:0,w:'교과서 12쪽: 「탐색과 추론을 어떻게 활용할까?」는 「2. 탐색과 추론」의 핵심 질문이고, 「어떻게 시작되었을까?」는 「짧은 이야기로 만나는 인공지능」(14쪽)의 물음이에요.'},
+    {q:'교과서가 말하는 「이 단원을 배우고 나면」 기를 수 있는 것은?',o:['인공지능 모델을 직접 학습시키고 그 성능을 평가하여 개선하는 능력과 태도','인공지능의 사회적 영향을 평가하고 윤리적 문제에 대응하는 능력과 태도','지능적 판단을 구현하기 위해 탐색과 추론 방식을 적용하는 능력과 태도'],a:2,w:'교과서 12쪽: 일상생활의 문제를 인공지능의 관점에서 파악하고, 지능적 판단을 구현하기 위해 탐색과 추론 방식을 적용하는 능력과 태도를 길러요.'}],
+ 2:[{q:'1950년 앨런 튜링이 논의한 것은?',o:['전문가의 지식을 컴퓨터에 담는 방법','기계가 인간의 지능(생각)을 모방할 수 있는가','인공신경망을 여러 층으로 구성하는 방법'],a:1,w:'교과서 14쪽: 튜링은 기계가 인간의 지능(생각)을 모방할 수 있는가에 대해 논의했어요.'},
+    {q:'「인공지능」이라는 용어를 최초로 공식적으로 사용한 곳은?',o:['다트머스 회의','튜링 테스트','퍼셉트론 신경망'],a:0,w:'교과서 14쪽: 생각하는 기계에 흥미를 느낀 학자들이 다트머스 회의에서 「인공지능」 용어를 처음 공식적으로 사용하고 개념을 확립했어요.'},
+    {q:'로젠블랫이 선택한 연결주의 연구 방식에 대한 설명은?',o:['논리를 기반으로 인공지능 시스템을 구축하여 결론을 이끌어 낸다','전문가의 지식을 기호화하여 규칙으로 표현하고 추론한다','퍼셉트론이라 불리는 인공신경망으로 학습시켜 추론한다'],a:2,w:'교과서 14쪽: 「논리를 기반으로 구축」과 「지식을 기호화하여 규칙으로 표현」은 민스키의 기호주의 쪽 설명이에요.'}],
+ 3:[{q:'1990년대 이후 인공지능의 발달을 촉진시킨 것은?',o:['단순 퍼셉트론의 한계를 밝힌 연구 결과','컴퓨팅 기술과 인터넷의 발달로 늘어난 데이터','다트머스 회의에서 확립된 인공지능 개념'],a:1,w:'교과서 15쪽: 컴퓨팅 기술의 급속한 발전과 인터넷의 발달로 데이터가 증가하여 인공지능의 발달을 촉진시켰어요.'},
+    {q:'교과서에서 알파고가 한 역할로 설명한 것은?',o:['「인공지능」 용어를 처음 사용하였다','인공지능 대중화를 앞당겼다','생성형 인공지능을 처음 개발하였다'],a:1,w:'교과서 15쪽: 1990년대 이후 데이터가 늘어난 흐름 속에서 등장한 알파고는 인공지능 대중화를 앞당기는 역할을 했어요.'},
+    {q:'교과서 15쪽에서 최근 개발되었다고 소개한 생성형 인공지능의 모습은?',o:['전문가의 지식을 규칙으로 저장한다','바둑에서 다음 수를 탐색해 고른다','인간의 언어를 이해하고 해석한다'],a:2,w:'최근에는 인간의 언어를 이해하고 해석하는 생성형 인공지능을 개발했어요. 전문가의 지식을 담는 연구는 그보다 앞선 흐름이에요.'}],
+ 4:[{q:'교과서 15쪽에서 중학교 정보의 「인공지능의 개념과 특성」과 이어지는 고등학교 정보의 내용은?',o:['딥러닝의 등장','지능 에이전트의 역할','튜링 테스트와 역 튜링 테스트'],a:1,w:'교과서 15쪽: 중학교 정보(인공지능의 개념과 특성) → 고등학교 정보(지능 에이전트의 역할)로 이어져요.'},
+    {q:'Ⅰ단원의 협력적 창의·융합 활동 주제는?',o:['탐색을 이용한 일상생활 문제 해결','인공지능 연구원의 하루 알아보기','생성형 인공지능으로 콘텐츠 만들기'],a:0,w:'교과서 12쪽: 협력적 창의·융합 활동은 「탐색을 이용한 일상생활 문제 해결」이에요. 인공지능 연구원은 관련 직업으로 소개돼요.'}]
+};
+
+const QK='ds-u1-intro-quiz'+WHO.sfx;
+const MK='ds-u1-intro-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* 01 이 로봇 속 인공지능은 어디에? (12~13쪽 그림) — 예시는 교과서 그림 상황을 바탕으로 만든 설명 */
+const ROBOTS=[
+  {ic:'🍽️',n:'서빙 로봇',where:'식당에서 주방의 음식을 손님 테이블까지 나른다.',
+   q:[['👀 무엇을 알아봐야 할까?','가야 할 테이블의 위치, 앞을 지나가는 사람이나 의자 같은 장애물'],
+      ['🧠 무엇을 정해야 할까?','어느 길로 갈지, 장애물을 만나면 멈출지 돌아갈지'],
+      ['🦾 어떻게 움직일까?','바퀴로 이동해 테이블 앞에 멈추고, 손님에게 음식을 가져가라고 알린다']]},
+  {ic:'🛫',n:'안내 로봇',where:'공항에서 여행객의 질문에 답하고 출발·도착 장소까지 길을 안내한다.',
+   q:[['👀 무엇을 알아봐야 할까?','여행객이 말로 묻는 질문, 로봇 앞에 선 사람, 현재 위치'],
+      ['🧠 무엇을 정해야 할까?','질문에 맞는 답, 목적지까지 가는 길'],
+      ['🦾 어떻게 움직일까?','화면과 음성으로 답을 알려 주고, 필요하면 앞장서서 함께 이동한다']]},
+  {ic:'🚗',n:'자율주행 자동차',where:'운전자의 개입 없이 도로를 달려 목적지까지 간다.',
+   q:[['👀 무엇을 알아봐야 할까?','신호등, 차선, 앞차와 보행자, 내 차의 위치'],
+      ['🧠 무엇을 정해야 할까?','출발할지 멈출지, 차선을 바꿀지, 어느 경로로 갈지'],
+      ['🦾 어떻게 움직일까?','운전대와 엔진, 브레이크를 조절해 실제로 달리고 멈춘다']]},
+];
+tabs('robotBtns','robotView',ROBOTS,r=>`<div class="ir-where"><b>${r.ic} ${r.n}</b> · ${r.where}</div>
+  <div class="ir-qs">${r.q.map(([h,a])=>`<button class="ir-q"><b>${h}</b><span>눌러서 예시 보기</span><em>${a}</em></button>`).join('')}</div>
+  <p class="note">세 질문은 이 단원 「인공지능의 원리」에서 정식 이름을 붙여 다시 배워요.</p>`);
+$('robotView').addEventListener('click',e=>{const b=e.target.closest('.ir-q'); if(b) b.classList.add('on');});
+
+/* 02 기호주의 vs 연결주의 (14쪽, 46쪽 참고) */
+sorter('symGame',{
+  cats:[{n:'🔣 기호주의',k:'#9b4fc4'},{n:'🕸️ 연결주의',k:'#e0702b'}],
+  items:[
+    {t:'논리를 기반으로 인공지능 시스템을 구축한다.',short:'논리 기반 시스템',c:0,ic:'📐',w:'교과서 14쪽: 민스키의 기호주의는 논리를 기반으로 해요.'},
+    {t:'퍼셉트론이라 불리는 인공신경망으로 학습시켜 추론한다.',short:'퍼셉트론으로 학습',c:1,ic:'🧠',w:'교과서 14쪽: 로젠블랫이 선택한 연결주의 연구 방식이에요.'},
+    {t:'전문가의 지식을 컴퓨터에 담아, 지식 표현과 추론으로 결과를 도출한다.',short:'전문가 지식 담기',c:0,ic:'📚',w:'사람이 지식을 기호로 표현해 넣어 주는 방식이라 기호주의 쪽이에요. 교과서 46쪽은 지식을 기호화하여 표현하는 것을 기호주의의 방법으로 설명해요.'},
+    {t:'지식을 「만약 ~이면 ~이다」처럼 기호화하여 규칙으로 표현한다.',short:'규칙으로 기호화',c:0,ic:'🔤',w:'지식을 기호로 바꾸어 표현하니 기호주의예요. 이 단원 「탐색과 추론」에서 자세히 배워요.'},
+    {t:'인공신경망을 여러 층으로 쌓아 데이터로 복잡한 패턴을 학습한다.',short:'여러 층 신경망',c:1,ic:'🧱',w:'다층 퍼셉트론에서 딥러닝으로 이어지는 흐름이에요. 교과서 46쪽은 최근 딥러닝을 선두로 한 연결주의 인공지능이 많이 쓰인다고 해요.'},
+    {t:'딥러닝으로 단백질 구조를 예측하는 모델을 만든다.',short:'단백질 구조 예측',c:1,ic:'🧬',w:'교과서 15쪽의 딥러닝 기반 단백질 구조 예측 모델이에요. 딥러닝은 인공신경망을 쓰니 연결주의 쪽이에요.'},
+  ],
+  end:'다트머스 회의 이후에는 <b>기호주의가 앞서</b> 나갔고(14쪽), 최근에는 딥러닝을 선두로 한 <b>연결주의</b> 인공지능이 많이 쓰여요(46쪽). 교과서는 딥러닝에 기호주의적 방법을 결합한 기술이 필요하다는 학자들의 말도 소개해요.'
+});
+
+/* 03 연표 순서 맞추기 (14~15쪽 아래 연표) */
+(function(){
+  const EV=[
+    {y:'1950',ic:'🧑‍⚖️',t:'앨런 튜링의 튜링 테스트',n:'기계가 인간의 지능(생각)을 모방할 수 있는가를 논의'},
+    {y:'1950년대',ic:'🏛️',t:'다트머스 회의',n:'「인공지능」 용어를 최초로 공식 사용'},
+    {y:'1950년대',ic:'🧠',t:'로젠블랫의 퍼셉트론 신경망',n:'인공신경망으로 학습시키는 연결주의'},
+    {y:'1960년대',ic:'❄️',t:'퍼셉트론의 문제 발견',n:'XOR 같은 비선형 문제를 못 푼다는 한계 → 인공지능의 겨울'},
+    {y:'1980년대',ic:'🧱',t:'다층 퍼셉트론',n:'층을 쌓아 XOR 문제 해결의 길을 엶'},
+    {y:'1990년대',ic:'📈',t:'기계학습 부상',n:'컴퓨팅 기술과 인터넷의 발달로 데이터 증가'},
+    {y:'2000년대',ic:'🕸️',t:'딥러닝의 등장',n:'여러 층의 인공신경망으로 복잡한 패턴 학습'},
+    {y:'2010년대',ic:'⚫',t:'구글 알파고, 바둑 기사 이세돌에게 승리',n:'인공지능 대중화를 앞당김'},
+    {y:'2020년대',ic:'💬',t:'초거대 언어 인공지능 발표',n:'인간의 언어를 이해하고 해석하는 생성형 인공지능'},
+  ];
+  const B=$('tlGame'); let next, miss;
+  function start(){
+    next=0; miss=0;
+    const pool=shuffle(EV.map((_,i)=>i));
+    B.innerHTML=`<div class="tl-pool">${pool.map(i=>`<button class="tl-card" data-i="${i}"><i>${EV[i].ic}</i>${EV[i].t}</button>`).join('')}</div>
+      <div class="tl-msg" aria-live="polite">가장 먼저 일어난 사건은 무엇일까요?</div><ol class="tl-track"></ol><div class="tl-end"></div>`;
+    B.querySelectorAll('.tl-card').forEach(b=>b.onclick=()=>pick(b));
+  }
+  function pick(b){
+    const i=+b.dataset.i, msg=B.querySelector('.tl-msg');
+    if(i!==next){
+      miss++; b.classList.remove('shake'); void b.offsetWidth; b.classList.add('shake');
+      msg.innerHTML=`<span class="ng">아직이에요.</span> 「${EV[i].t}」보다 <b>먼저</b> 일어난 사건이 남아 있어요.`;
+      return;
+    }
+    b.remove();
+    const e=EV[i];
+    B.querySelector('.tl-track').insertAdjacentHTML('beforeend',`<li><span class="y">${e.y}</span><div><b>${e.ic} ${e.t}</b><small>${e.n}</small></div></li>`);
+    next++;
+    if(next<EV.length){ msg.innerHTML=`<span class="ok">맞아요!</span> 그다음은 무엇일까요? (${next} / ${EV.length})`; return; }
+    msg.innerHTML='';
+    B.querySelector('.tl-end').innerHTML=`<p>🎉 연표 완성! 순서를 틀린 횟수: <b>${miss}번</b></p><p style="margin:6px 0 0">흐름을 한 줄로 보면 <b>생각하는 기계라는 질문 → 이름 붙이기 → 신경망의 등장과 한계 → 데이터의 증가 → 딥러닝 → 생성형 인공지능</b>이에요.</p><button class="btn ghost sm" style="margin-top:8px">다시 해 보기</button>`;
+    B.querySelector('.tl-end button').onclick=start;
+  }
+  start();
+})();
+
+/* 04 중학교 정보 ↔ 고등학교 정보 자기 점검 */
+chips('bridgeCheck','bridgeCheck',['인공지능이 무엇인지','인공지능의 특성','지능 에이전트가 하는 일','생활 속 인공지능의 예','기호주의와 연결주의의 차이'],true);
+
+const MEMOLIST=[['lifeAI','내 생활 속 인공지능'],['histPick','연표에서 가장 큰 전환점'],['bridgeCheck','지금 설명할 수 있는 것'],['unitQ','더 궁금한 핵심 질문과 내 짐작']];
+onShow[5]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

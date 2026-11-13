@@ -1,0 +1,26 @@
+  /* 01 로봇 속 인공지능 */
+  .ir-where{background:var(--acc-soft);border-radius:12px;padding:10px 14px;margin-bottom:10px}
+  .ir-qs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media (max-width:700px){.ir-qs{grid-template-columns:1fr}}
+  .ir-q{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:2px dashed var(--line);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;transition:border-color .2s,background .2s}
+  .ir-q b{font-size:1rem}
+  .ir-q span{font-size:.82rem;color:var(--muted)}
+  .ir-q em{display:none;font-style:normal;font-size:.92rem}
+  .ir-q.on{border-style:solid;border-color:var(--acc);background:#fbfaf7}
+  .ir-q.on span{display:none}.ir-q.on em{display:block}
+  /* 03 연표 순서 맞추기 */
+  .tl-pool{display:flex;flex-wrap:wrap;gap:8px}
+  .tl-card{border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 12px;font:inherit;font-size:.92rem;font-weight:700;cursor:pointer;color:var(--ink);text-align:left;max-width:100%}
+  .tl-card i{font-style:normal;margin-right:6px}
+  .tl-card:hover{border-color:var(--acc)}
+  .tl-msg{min-height:1.5em;margin:10px 0 6px;font-size:.93rem}
+  .tl-msg .ok{color:var(--mint);font-weight:900}.tl-msg .ng{color:var(--red);font-weight:900}
+  .tl-track{list-style:none;margin:0;padding:0 0 0 14px;border-left:4px solid var(--acc)}
+  .tl-track li{display:flex;gap:10px;align-items:flex-start;padding:6px 0;animation:fadein .4s both}
+  .tl-track .y{flex:0 0 auto;min-width:92px;background:var(--acc);color:#fff;border-radius:999px;padding:2px 10px;font-size:.8rem;font-weight:700;text-align:center}
+  .tl-track b{display:block;font-size:.95rem}
+  .tl-track small{color:var(--muted);font-size:.84rem}
+  @media (max-width:480px){.tl-track li{flex-direction:column;gap:4px}}
+  .tl-end{margin-top:10px}
+  .tl-end:empty{display:none}
+  .tl-end p{margin:0}

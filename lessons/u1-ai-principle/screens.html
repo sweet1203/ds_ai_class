@@ -1,0 +1,234 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 1. 인공지능의 개념과 원리</span>
+      <h1>인공지능은<br>어떤 원리로 움직일까?</h1>
+      <div class="story"><b>내 카드를 지켜 준 인공지능</b><br>어느 날 휴대폰에 「평소와 다른 결제가 감지되어 승인을 막았습니다」라는 알림이 왔어요. 아무도 지켜보고 있지 않았는데, <b>인공지능은 내 카드의 이상 거래를 어떻게 알고 찾아냈을까요?</b></div>
+      <p>인공지능은 금융, 의료, 교육처럼 우리 생활 곳곳에서 문제를 해결하고 있어요. 오늘은 여러 분야의 활용 사례를 살펴보고, <b>자율주행 자동차</b>를 예로 그 속에 숨어 있는 인공지능의 <b>원리</b>를 찾아봐요.</p>
+      <ol>
+        <li>인공지능을 어떻게 활용하고 있을까?</li><li>인식 · 판단 및 추론 · 행동</li><li>환경과의 상호 작용</li>
+        <li>학습 · 인공지능과 기계학습, 딥러닝</li><li>함께 해결하기 · 사례 속 원리 찾기</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>📷</i><div><b>인식</b><small>주변을 알아보고 정보 수집</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧭</i><div><b>판단 및 추론</b><small>가장 알맞은 결정 내리기</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🚗</i><div><b>행동</b><small>결정한 대로 움직이기</small></div></div>
+      <div class="st pr-base" style="animation-delay:2s"><i>📈</i><div><b>학습 (기반)</b><small>위 세 단계를 모두 받쳐 주는 바탕</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>교육·상업·교통 운송·의료 등 <b>여러 분야의 인공지능 활용 사례</b>를 살펴보고, 자율주행 자동차로 <b>인식 → 판단 및 추론 → 행동</b>과 그 기반이 되는 <b>학습</b>을 이해합니다. <b>인공지능 ⊃ 기계학습 ⊃ 딥러닝</b>의 관계를 정리한 뒤, 직접 찾은 최신 사례 속에서 이 원리를 찾아 말해 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">먼저 짐작해 보기 (20쪽)</span>
+        <p style="margin:0 0 6px;font-size:.9rem">정답이 없어도 괜찮아요. 오늘 수업 끝에 다시 보면서 고쳐 봐요.</p>
+        <div class="memo"><label>인공지능은 내 카드의 이상 거래를 어떻게 알고 찾아냈을까요?</label><textarea data-memo="cardGuess" rows="2"></textarea><div class="saved"></div></div>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>인공지능의 개념과 원리</b> · 인공지능은 우리 생활에 어떤 형태로 나타나고 있을까?</li>
+          <li><b>오늘의 질문</b> · 인공지능은 어떤 원리로 문제를 해결할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>인공지능의 다양한 최신 사례를 탐색할 수 있다.</li>
+          <li>최신 사례 속에서 인공지능의 원리를 말할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 인공지능 원리 · 탐색의 중요성</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 인공지능의 활용부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 활용 분야 -->
+<section class="page" data-name="인공지능의 활용" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>인공지능을 어떻게 활용하고 있을까?</h2><p>교과서 20~21쪽 · 다양한 분야의 인공지능 활용 사례</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능은 <b>다양한 분야에서 개인과 사회 전체의 문제 해결</b>에 쓰이고 있어요. 관련 기술이 발달할수록 쓰이는 곳은 더 넓어질 거예요.</span></div>
+  <div class="card">
+    <h3>📖 다양한 분야의 인공지능</h3>
+    <p style="margin-bottom:0">인공지능은 일상생활뿐 아니라 <b>금융, 의료, 교육</b> 등 현대 사회의 다양한 분야에 활용하고 있다. 앞으로 인공지능 관련 기술이 발달함에 따라 인공지능의 활용 범위가 더 넓어질 전망이다.</p>
+  </div>
+  <div class="card">
+    <h3>🃏 분야 카드를 눌러 교과서 사례를 확인해요</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">카드 앞면은 분야, 뒷면은 교과서에 나온 활용 사례예요. 일곱 장을 모두 뒤집어 보고, 내가 가장 관심 가는 분야를 골라 두세요. 뒤의 「함께 해결하기」에서 그 분야의 최신 사례를 찾아요.</p>
+    <div id="fieldCards" class="tcards"></div>
+  </div>
+  <div class="callout">인공지능은 <b>산업 현장의 생산성</b>을 증대시켜 주고, <b>사무 현장의 업무 효율성</b>을 개선해 주며, 기업의 새로운 제품과 서비스 개발에 활용된다. 또한 의료 현장에서는 <b>질병 진단과 신약 개발</b>에 활용되는 등 다양한 분야에서 기여하고 있다.</div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 인식 · 판단 및 추론 · 행동 -->
+<section class="page" data-name="인식·판단·행동" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>인공지능에는 어떤 원리가 있을까?</h2><p>교과서 22~23쪽 · 자율주행 자동차로 본 인식, 판단 및 추론, 행동</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사람은 눈으로 보고(<b>인식</b>), 머리로 생각해 정하고(<b>판단 및 추론</b>), 몸으로 움직여요(<b>행동</b>). 인공지능은 이 일을 <b>학습을 기반으로 컴퓨터로 구현</b>해요. 다만 컴퓨터는 들어온 정보를 계산할 수 있는 형태로 바꾸기까지 복잡한 과정을 거쳐야 해요.</span></div>
+  <div class="card">
+    <h3>📖 인공지능의 원리</h3>
+    <p style="margin-top:0">인공지능은 <b>학습을 기반으로 인간의 인식, 판단 및 추론, 행동을 컴퓨터로 구현</b>하여 다양한 분야의 문제를 해결하는 데 도움을 준다. 인간은 눈이나 손의 감각으로 사물을 인식하고, 두뇌로 생각해서 결정하고, 몸으로 행동하는 것이 자연스럽게 진행되지만, 컴퓨터는 입력된 정보를 계산이 가능한 형태로 만들기까지 복잡한 과정을 거쳐야 인간과 유사한 인식, 추론, 행동을 하게 된다.</p>
+    <div class="flow2">
+      <div style="--k:#2f6fd0"><b>📷 인식</b><span>사람: 눈·손의 감각</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#9b4fc4"><b>🧭 판단 및 추론</b><span>사람: 두뇌로 생각해 결정</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#e0702b"><b>🚗 행동</b><span>사람: 몸으로 행동</span></div>
+    </div>
+    <p class="note">세 단계 아래에는 <b>학습</b>이 깔려 있어요. 학습은 04에서 자세히 봐요.</p>
+  </div>
+  <div class="cards3 pr-stage">
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">📷</div><h4>인식하는 자동차</h4><p>자동차에 탑재되거나 장착된 <b>카메라, 라이다, 레이더, GPS</b> 등을 이용하여 주변의 사물을 인식하고 다양한 정보를 수집한다.</p>
+      <ul class="pr-sensor">
+        <li><b>카메라</b> 주변 환경의 이미지 데이터로 360도의 넓은 시야 확보</li>
+        <li><b>라이다</b> 비나 안개 같은 기상 조건에서 성능이 떨어지는 카메라의 한계를 보완</li>
+        <li><b>레이더</b> 전파로 좁은 범위의 물체 인식, 보행자 탐지, 충돌 방지</li>
+        <li><b>GPS</b> 차량의 운행 경로와 현재 위치를 알려 줌</li>
+      </ul></div>
+    <div class="kc" style="--k:#9b4fc4"><div class="ic">🧭</div><h4>판단 및 추론하는 자동차</h4><p>인식 단계에서 수집한 <b>지도 정보를 기반으로 가장 최적의 주행 전략을 결정</b>하는 과정이다.</p><p>학습된 지식을 기반으로 한 <b>논리적인 추론</b> 과정을 통해 가장 최적의 경로를 발견하고, 주행에 필요한 결정을 스스로 내린다.</p></div>
+    <div class="kc" style="--k:#e0702b"><div class="ic">🚗</div><h4>행동하는 자동차</h4><p>자동차가 <b>주행할 방향과 엔진의 구동 방식</b> 등을 결정한다.</p><p>운행을 지속적으로 감시하는 <b>운행 감시 체제</b>로 시스템의 고장 여부를 진단하고, 오퍼레이터에게 정보를 제공하거나 경보를 알린다.</p></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🔎 이 문장은 어느 단계일까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 22~23쪽의 설명을 기준으로 골라 봐요.</p>
+    <div id="stageGame"></div>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 환경과의 상호 작용 -->
+<section class="page" data-name="환경과의 상호 작용" data-acc="#e0702b">
+  <div class="head"><div class="num">03</div><div><h2>세 단계는 하나로 이어져 있어요</h2><p>교과서 23쪽 · 환경과의 상호 작용, 학습 데이터</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>자율주행 자동차는 한 번 움직이고 끝나는 게 아니에요. 도로를 달리며 <b>인식 → 판단 및 추론 → 행동</b>을 쉬지 않고 되풀이하고, 그동안 모인 데이터로 다시 <b>학습</b>해요. 그래서 세 단계 중 하나만 어긋나도 전체가 흔들려요.</span></div>
+  <div class="card">
+    <h3>📖 환경과 상호 작용하는 인공지능</h3>
+    <p style="margin-top:0">자율주행 자동차의 인공지능은 <b>환경과의 상호 작용</b>을 통해 최종적으로 구현된다. 자율주행 자동차는 <b>센서와 모터</b>를 갖추고 있으며, 도로 환경과 상호 작용하면서 <b>스스로 학습 데이터를 생성</b>한다. 그리고 수집된 데이터들은 학습에 큰 도움을 준다.</p>
+    <p>인공지능은 데이터를 통해 환경과 수시로 상호 작용한다. 이를 통해 자율주행 자동차는 <b>지속적으로 발전</b>하며 안전하고 효율적인 주행을 이어 나갈 수 있다.</p>
+    <div class="flow2">
+      <div style="--k:#5b6776"><b>🛣️ 도로 환경</b><span>보행자, 신호등, 날씨</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#2f6fd0"><b>📷 인식</b><span>센서로 정보 수집</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#9b4fc4"><b>🧭 판단 및 추론</b><span>최적의 주행 전략</span></div>
+      <div class="ar">→</div>
+      <div style="--k:#e0702b"><b>🚗 행동</b><span>방향·구동 결정</span></div>
+    </div>
+    <p class="note">↻ 행동하면 환경이 바뀌고, 바뀐 환경을 다시 인식해요. 이 과정에서 쌓인 데이터는 <b>학습</b>에 쓰여요.</p>
+  </div>
+  <div class="card">
+    <h3>🛠️ 한 단계를 고장 내 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">횡단보도에 보행자가 들어선 장면이에요. 먼저 「정상 작동」을 본 뒤, 한 단계씩 고장 내서 결과가 어떻게 달라지는지 비교해 보세요. (원리를 보여 주려고 만든 장면이에요.)</p>
+    <div class="row" id="failBtns"></div>
+    <div id="failView"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 내가 만든 고장 장면</h3>
+    <div class="memo"><label>인식 · 판단 및 추론 · 행동 중 한 단계를 고르고, 위와 <b>다른 상황</b>에서 그 단계가 잘못되면 어떤 일이 벌어질지 예를 들어 써 보세요.</label><textarea data-memo="stageFail" rows="3" placeholder="예: (단계)가 잘못되어 …하면, …하게 된다."></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 학습 · 포함 관계 -->
+<section class="page" data-name="학습과 포함 관계" data-acc="#9b4fc4">
+  <div class="head"><div class="num">04</div><div><h2>학습하는 자동차 · 인공지능, 기계학습, 딥러닝</h2><p>교과서 22쪽 · 학습, 그림 Ⅰ-4 인공지능, 기계학습, 딥러닝의 관계도</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>세 단계를 받쳐 주는 것이 <b>학습</b>이에요. 자율주행 자동차는 다양한 데이터로 <b>기계학습과 딥러닝</b>을 해서 가장 알맞은 결정을 내려요. 이 세 낱말은 <b>큰 원 안에 작은 원이 들어 있는 관계</b>예요.</span></div>
+  <div class="card">
+    <h3>📖 학습하는 자동차</h3>
+    <p style="margin-top:0">학습은 자율주행 자동차가 효율적인 주행을 위해 다양한 데이터를 사용하고, <b>기계학습과 딥러닝</b>을 활용하여 가장 최적의 결정을 내리도록 한다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><h4>기계학습</h4><p>컴퓨터가 <b>다량의 데이터를 기반으로 학습하여 규칙을 자동으로 찾아내고</b>, 이를 새로운 데이터에 적용하여 새로운 정보를 얻거나 예측하는 기술이다.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>딥러닝</h4><p>기계학습의 한 분야로, <b>인공신경망을 여러 층으로 구성</b>하여 더 복잡한 특징과 패턴을 학습하는 방법이다. 다양한 분야에서 높은 성능을 발휘하고 있다.</p></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>⭕ 그림 Ⅰ-4 인공지능, 기계학습, 딥러닝의 관계도</h3>
+    <div class="nest" aria-label="인공지능 안에 기계학습, 기계학습 안에 딥러닝이 들어 있는 그림">
+      <div class="n1"><b>인공지능</b><small>Artificial Intelligence · 사고나 학습 등 인간이 가진 지적 능력을 컴퓨터를 통해 구현하는 기술</small>
+        <div class="n2"><b>기계학습</b><small>Machine Learning · 컴퓨터가 스스로 학습하여 인공지능의 성능을 향상시키는 기술</small>
+          <div class="n3"><b>딥러닝</b><small>Deep Learning · 인간의 뉴런과 비슷한 인공신경망 방식으로 기계학습을 구현하는 기술</small></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">딥러닝은 모두 기계학습이고, 기계학습은 모두 인공지능이에요. 그런데 거꾸로도 그럴까요? 아래 게임으로 확인해 봐요.</p>
+  </div>
+  <div class="card">
+    <h3>🎯 가장 작은 원 고르기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">각 프로그램이 들어갈 수 있는 원 중 <b>가장 안쪽 원</b>을 골라요. 사람이 규칙을 적어 주는 방법과 탐색은 뒤에서 자세히 배워요.</p>
+    <div id="nestGame"></div>
+  </div>
+  <div class="card">
+    <div class="memo"><label>「인공지능이지만 기계학습은 아닌 것」의 예를 게임에 나온 것 말고 하나 더 떠올려, 왜 그렇게 생각하는지 함께 써 보세요.</label><textarea data-memo="aiNotMl" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 함께 해결하기 -->
+<section class="page" data-name="함께 해결하기" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>함께 해결하기 · 사례 속 원리 찾기</h2><p>교과서 21쪽 함께 해결하기 · 22~23쪽 원리 적용</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>인공지능을 활용한 <b>최신 사례</b>를 찾아 짝과 이야기해 봐요. 이때 <b>분야를 먼저 정하고</b> 관련된 사례를 찾아요. 찾은 사례를 <b>인식 · 판단 및 추론 · 행동</b>으로 나눠 보면 그 속의 원리가 보여요.</span></div>
+  <div class="card">
+    <h3>① 분야 먼저 정하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">01에서 본 교과서 일곱 분야 중 하나를 골라, 그 분야의 최신 사례를 찾아봐요.</p>
+    <div id="fieldPick"></div>
+  </div>
+  <div class="card">
+    <h3>② 이렇게 풀어 봐요 <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 사례에 예시로 만든 풀이를 붙였어요)</span></h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#2f6fd0"><div class="ic">🎬</div><h4>상업 · 영화 추천 시스템</h4><p>교과서 20쪽: 데이터의 패턴을 이용하여 구독자에게 영화를 추천한다.</p>
+        <ul class="pr-sensor"><li><b>인식</b> 구독자가 본 영화와 매긴 별점 같은 기록을 모은다</li><li><b>판단 및 추론</b> 비슷한 취향의 패턴으로 좋아할 영화를 고른다</li><li><b>행동</b> 고른 영화를 첫 화면에 보여 준다</li></ul><small>인식 · 판단 및 추론 · 행동 풀이는 예시로 만든 것이에요.</small></div>
+      <div class="kc" style="--k:#1f9d74"><div class="ic">🩺</div><h4>의료 · 병변 탐지</h4><p>교과서 21쪽: 의료 데이터 분석을 통해 병변의 탐지 및 분류 등을 지원한다.</p>
+        <ul class="pr-sensor"><li><b>인식</b> 의료 영상 같은 의료 데이터를 받아들인다</li><li><b>판단 및 추론</b> 병변이 있는지, 있다면 어떤 종류인지 따진다</li><li><b>행동</b> 의심되는 부분을 표시해 의사에게 알린다</li></ul><small>인식 · 판단 및 추론 · 행동 풀이는 예시로 만든 것이에요.</small></div>
+    </div>
+    <p class="note">두 예시 모두 쌓인 데이터로 <b>학습</b>하면서 판단이 점점 정확해져요. 처음에 짐작해 본 카드 이상 거래도 같은 방법으로 나눠 볼 수 있어요.</p>
+  </div>
+  <div class="card">
+    <h3>③ 내가 찾은 최신 사례</h3>
+    <div class="memo"><label>분야 · 사례 이름 · 그 인공지능이 하는 일을 적고, 인식 · 판단 및 추론 · 행동이 각각 무엇인지 나눠 써 보세요.</label><textarea data-memo="myCase" rows="5" placeholder="분야:&#10;사례:&#10;하는 일:&#10;인식 / 판단 및 추론 / 행동:"></textarea><div class="saved"></div></div>
+    <p style="margin:12px 0 4px"><b>이 사례가 가장 많이 쓰는 단계는?</b> <span class="muted" style="font-size:.88rem">짝과 서로 다르게 골랐다면 이유를 이야기해 봐요.</span></p>
+    <div id="stagePick" class="vote"></div>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 인공지능을 활용한 다양한 사례를 탐색하여 분석할 수 있는가? 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">인공지능은 교육, 상업, 교통 운송, 의료, 법률 지원, 국방, 제조 등 <b>다양한 분야에서 개인과 사회 전체의 문제 해결</b>에 활용되고 있다.</div>
+    <div style="--k:#1f9d74">인공지능은 <b>학습을 기반으로 인식, 판단 및 추론, 행동을 환경과의 상호 작용으로 구현</b>한다. 자율주행 자동차는 센서로 인식하고, 최적의 주행 전략을 정하고, 방향과 구동 방식을 결정한다.</div>
+    <div style="--k:#9b4fc4"><b>인공지능 ⊃ 기계학습 ⊃ 딥러닝</b>. 기계학습은 데이터로 규칙을 스스로 찾고, 딥러닝은 인공신경망을 여러 층으로 쌓아 학습한다. 그림 Ⅰ-4처럼 기계학습 밖의 인공지능(사람이 적어 준 규칙, 탐색)도 있다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>교과서 일곱 분야 중 하나에서 찾은 <b>최신 사례</b>와, 그 사례가 <b>인식 · 판단(추론) · 행동</b> 중 어느 단계를 가장 많이 쓰는지 쓰기</li>
+      <li>자율주행 자동차의 세 단계 중 하나를 골라, 그 단계가 <b>잘못되면 어떤 일이 벌어질지</b> 예를 들어 쓰기</li>
+      <li><b>인공지능이지만 기계학습은 아닌 것</b>의 예를 하나 떠올려 쓰기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>

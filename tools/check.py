@@ -78,6 +78,8 @@ def check_lesson(c, l):
             for o in it['o']:
                 if re.search(r'(?<![가-힣])(항상|절대|모든)', o):
                     warn(lid, f'QUIZ[{k}][{i}] 선택지 극단어: {o}')
+            if re.search(r'(첫째|둘째|셋째|넷째|첫 번째|두 번째|세 번째|네 번째|앞의 두|앞의 둘|뒤의 두|마지막)(와|과)? ?(셋째 )?보기|앞의 둘|[①②③④]번 보기', it.get('w', '')):
+                err(lid, f'QUIZ[{k}][{i}] 해설이 보기 위치를 가리킴(보기는 섞여 나옴): {it["w"][:40]}')
             if len(set(it['o'])) != len(it['o']):
                 err(lid, f'QUIZ[{k}][{i}] 같은 선택지 중복')
     total = sum(pos)

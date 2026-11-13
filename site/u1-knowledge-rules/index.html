@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>지식의 표현과 규칙 기반 사고</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202c; --muted:#5b6776; --paper:#f3efe7; --card:#fff; --line:#e3ddd2;
+    --navy:#0f2742; --amber:#f2a516; --red:#d64535; --mint:#1f9d74;
+    --acc:#2f6fd0; --acc-soft:#e6eefb;
+    --shadow:0 18px 50px rgba(15,39,66,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:17px;line-height:1.65;
+    background-image:radial-gradient(rgba(15,39,66,.07) 1px,transparent 1px);background-size:22px 22px;display:flex;flex-direction:column}
+  .top{position:sticky;top:0;z-index:10;background:rgba(15,39,66,.97);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 18px;flex-wrap:wrap}
+  .brand{font-family:"Black Han Sans",sans-serif;font-size:1.15rem;letter-spacing:.01em;white-space:nowrap;color:inherit;text-decoration:none}
+  .steps{display:flex;gap:4px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
+  .steps::-webkit-scrollbar{display:none}
+  .steps button{flex:0 0 auto;border:0;background:transparent;color:#9fb3cc;font:inherit;font-size:.82rem;padding:5px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .steps button.on{background:var(--amber);color:var(--navy);font-weight:900}
+  .steps button.done::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#5fd3a5;margin-left:5px;vertical-align:middle}
+  .score{font-size:.85rem;background:rgba(255,255,255,.1);padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .progress{height:4px;background:rgba(15,39,66,.12)}
+  .progress i{display:block;height:100%;background:var(--amber);width:0;transition:width .4s}
+  main{flex:1;width:100%;max-width:1120px;margin:0 auto;padding:26px 20px 30px}
+  .page{display:none}
+  .page.on{display:block;animation:enter .45s cubic-bezier(.2,.7,.2,1) both}
+  .page.on.back{animation-name:enterBack}
+  @keyframes enter{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+  @keyframes enterBack{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+  .head{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+  .num{font-family:"Black Han Sans",sans-serif;font-size:4.2rem;line-height:.85;color:var(--acc);opacity:.9}
+  .head h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.1rem;margin:0;line-height:1.1;letter-spacing:-.01em}
+  .head p{margin:4px 0 0;color:var(--muted)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:22px 24px;margin-bottom:18px;border:1px solid rgba(0,0,0,.04)}
+  .grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+  .grid2.even{grid-template-columns:1fr 1fr}
+  @media (max-width:860px){.grid2,.grid2.even{grid-template-columns:1fr}.num{font-size:3rem}.head h2{font-size:1.6rem}}
+  h3{margin:0 0 8px;font-size:1.1rem}
+  h4{margin:0 0 4px}
+  p{margin:6px 0}
+  a{color:var(--acc)}
+  .muted{color:var(--muted)}
+  .book{display:inline-block;font-size:.8rem;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:1px 10px;margin-top:6px}
+  table{border-collapse:collapse;width:100%;font-size:.93rem;margin:8px 0}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:center}
+  th{color:var(--muted);font-weight:700;font-size:.85rem}
+  td.l,th.l{text-align:left}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+  .chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 14px;font:inherit;font-size:.92rem;cursor:pointer;transition:.15s;color:var(--ink)}
+  .chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .btn{border:0;border-radius:10px;padding:9px 18px;font:inherit;font-weight:700;cursor:pointer;background:var(--acc);color:#fff;transition:transform .1s, box-shadow .2s;box-shadow:0 6px 16px rgba(15,39,66,.18)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:#fff;color:var(--acc);border:2px solid var(--acc);box-shadow:none}
+  .btn.sm{padding:5px 12px;font-size:.88rem}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .ctrl{display:grid;grid-template-columns:70px 1fr 48px;align-items:center;gap:4px 10px;margin:4px 0}
+  .ctrl label{font-weight:900;font-size:.95rem}
+  .ctrl output{font-weight:900;text-align:right;font-variant-numeric:tabular-nums}
+  input[type=range]{width:100%;accent-color:var(--acc)}
+  input[type=text],input[type=number]{font:inherit;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px;background:#fff;color:var(--ink)}
+  .big{font-size:1.5rem;font-weight:900;font-variant-numeric:tabular-nums}
+  .ok{color:var(--mint);font-weight:700}.ng{color:var(--red);font-weight:700}
+  .callout{border-radius:12px;padding:12px 16px;background:var(--acc-soft);border-left:5px solid var(--acc);margin:12px 0}
+  svg{display:block;width:100%;height:auto}
+  .mono{font-family:ui-monospace,Menlo,monospace;font-size:.9em;background:#f1f3f6;padding:1px 6px;border-radius:5px}
+  .cx{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 24px;margin-bottom:18px;border-left:6px solid var(--acc)}
+  .cx>h3{margin:0 0 4px;font-size:1.15rem}
+  .cx>.lead2{color:var(--muted);margin:0 0 12px}
+  .qa{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+  @media (max-width:860px){.qa{grid-template-columns:1fr}}
+  .qa>div{background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .qa b.q{display:block;color:var(--acc);margin-bottom:3px}
+  .vsteps{list-style:none;margin:0;padding:0;counter-reset:v}
+  .vsteps>li{position:relative;padding:9px 0 9px 44px;border-top:1px dashed var(--line)}
+  .vsteps>li:first-child{border-top:0}
+  .vsteps>li::before{counter-increment:v;content:counter(v);position:absolute;left:0;top:9px;width:30px;height:30px;border-radius:50%;background:var(--acc);color:#fff;font-weight:900;display:grid;place-items:center;font-size:.9rem}
+  .vsteps p{margin:2px 0 0;font-size:.93rem}
+  .case{background:#fff8e6;border:2px solid #f6d58a;border-radius:16px;padding:16px 20px;margin-bottom:18px}
+  .case>h3{margin:0 0 8px;font-size:1.05rem;color:#8a5a00}
+  /* 퀴즈 */
+  .quiz{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:16px;padding:20px 22px;margin-top:6px;box-shadow:var(--shadow)}
+  .quiz .qh{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+  .quiz .qh b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.25rem;color:var(--amber)}
+  .quiz .qh span{font-size:.85rem;color:#a9bbd2}
+  .qi{background:rgba(255,255,255,.07);border-radius:12px;padding:12px 14px;margin-top:10px}
+  .qi .qq{font-weight:700;margin-bottom:8px}
+  .qi .opts{display:flex;flex-wrap:wrap;gap:8px}
+  .qi .opts button{font:inherit;font-size:.93rem;border:2px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:10px;padding:6px 14px;cursor:pointer;transition:.15s}
+  .qi .opts button:hover:not(:disabled){border-color:var(--amber)}
+  .qi .opts button.right{background:var(--mint);border-color:var(--mint);font-weight:700}
+  .qi .opts button.wrong{background:var(--red);border-color:var(--red);text-decoration:line-through}
+  .qi .opts button:disabled{cursor:default}
+  .qi .why{margin-top:8px;font-size:.9rem;color:#d7e3f2;display:none}
+  .qi.answered .why{display:block}
+  .qi.answered.correct{box-shadow:inset 4px 0 0 var(--mint)}
+  .qi.answered.incorrect{box-shadow:inset 4px 0 0 var(--red)}
+  .shake{animation:shake .35s}
+  @keyframes shake{20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+  .foot{position:sticky;bottom:0;display:flex;justify-content:space-between;align-items:center;padding:10px 18px;background:rgba(243,239,231,.94);backdrop-filter:blur(6px);border-top:1px solid var(--line)}
+  .foot .btn{min-width:110px}
+  .foot .pg{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums}
+  /* 표지 */
+  .cover{position:relative;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 20% 0%,#24507f 0%,#0f2742 55%,#0a1a2e 100%);color:#fff;min-height:520px;padding:46px 44px;box-shadow:var(--shadow)}
+  .cover canvas{position:absolute;right:0;top:0;height:100%;width:62%;image-rendering:pixelated;opacity:.95}
+  .cover .fade{position:absolute;inset:0;background:linear-gradient(90deg,#0f2742 34%,rgba(15,39,66,.75) 50%,rgba(15,39,66,0) 70%)}
+  .cover .in{position:relative;max-width:560px}
+  .cover .tag{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:.85rem;padding:4px 12px;border-radius:999px}
+  .cover h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:3.1rem;line-height:1.15;margin:16px 0 10px}
+  .cover p{color:#c8d6e8;font-size:1.05rem}
+  .cover ol{margin:18px 0 26px;padding-left:20px;color:#e1e9f4;columns:2;column-gap:28px;font-size:.95rem}
+  @media (max-width:700px){.cover{padding:30px 22px}.cover h1{font-size:2.2rem}.cover ol{columns:1}.cover canvas{width:100%;opacity:.3}.cover .fade{display:none}}
+  .today{margin-top:26px}
+  .kicker{display:inline-block;font-family:"Black Han Sans",sans-serif;font-size:1.15rem;color:var(--navy);margin-bottom:6px;border-bottom:4px solid var(--amber);line-height:1.2}
+  .today-lead{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:22px 26px;margin-bottom:16px}
+  .today-lead p{font-size:1.12rem;margin:6px 0 0}
+  .why3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:26px}
+  @media (max-width:900px){.why3{grid-template-columns:1fr}}
+  .why{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:20px 22px}
+  .why ul{margin:6px 0 0;padding-left:18px;font-size:.95rem}
+  .why li{margin:6px 0}
+  .why ul.can{list-style:none;padding:0}
+  .why ul.can li{padding-left:28px;position:relative}
+  .why ul.can li::before{content:"";position:absolute;left:0;top:4px;width:18px;height:18px;border-radius:50%;background:var(--mint) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5 10.5l3.2 3L15 7' fill='none' stroke='white' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat}
+  .why ul.uses{list-style:none;padding:0}
+  .why ul.uses li{border-left:3px solid var(--amber);padding-left:10px}
+  .glossary-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+  .glossary-head .muted{font-size:.88rem}
+  .glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;align-items:start}
+  @media (max-width:1000px){.glossary{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:560px){.glossary{grid-template-columns:1fr}}
+  .gcard{all:unset;box-sizing:border-box;cursor:pointer;display:block;background:#fff;border-radius:14px;padding:16px 16px 12px;box-shadow:var(--shadow);border-top:6px solid var(--g);position:relative;transition:transform .18s, box-shadow .18s}
+  .gcard:hover,.gcard:focus-visible{transform:translateY(-4px);box-shadow:0 22px 50px rgba(15,39,66,.16)}
+  .gcard:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+  .gcard i{position:absolute;right:14px;top:8px;font-style:normal;font-family:"Black Han Sans",sans-serif;font-size:1.9rem;color:var(--g);opacity:.25}
+  .gcard h4{margin:0 0 6px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;color:var(--g)}
+  .gcard dl{margin:0;font-size:.88rem;line-height:1.45}
+  .gcard dt{font-weight:900;margin-top:7px}
+  .gcard dd{margin:1px 0 0;color:#3c4654}
+  .prob{display:grid;grid-template-columns:60px 1fr 46px;gap:6px;align-items:center;font-size:.88rem;min-width:200px}
+  .prob i{display:block;height:12px;border-radius:6px;background:var(--acc)}
+  .apps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  @media (max-width:860px){.apps{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:2rem;display:block}
+  .apps button b{display:block}
+  .appd{display:none}
+  .appd.on{display:block;animation:enter .35s both}
+  .ex2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+  @media (max-width:640px){.ex2{grid-template-columns:1fr}}
+  .ex2>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;font-size:.93rem;border-left:4px solid var(--acc)}
+  .try{margin-top:12px;background:var(--acc-soft);border-radius:12px;padding:12px 14px;font-size:.92rem}
+  .try ol{margin:4px 0 0;padding-left:20px}
+  /* 3단원 공통 */
+  .easy{display:flex;gap:12px;align-items:flex-start;background:#fffbea;border:2px solid #f6d58a;border-radius:14px;padding:12px 16px;margin:-4px 0 16px;font-size:1rem;line-height:1.6}
+  .easy b.t{flex:0 0 auto;background:#f2a516;color:#0f2742;border-radius:999px;padding:2px 10px;font-size:.82rem;margin-top:2px}
+  .route{position:absolute;right:30px;top:36px;width:min(430px,44%);display:grid;gap:10px}
+  .route .st{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.1);border-radius:14px;padding:10px 14px;color:#fff;opacity:0;transform:translateX(20px);animation:rin .6s forwards}
+  .route .st i{font-style:normal;font-size:1.6rem}
+  .route .st b{display:block;font-size:1.02rem}
+  .route .st small{color:#c8d6e8;font-size:.82rem}
+  .route .ar{color:var(--amber);text-align:center;font-weight:900;opacity:0;animation:rin .5s forwards}
+  @keyframes rin{to{opacity:1;transform:none}}
+  @media (max-width:1080px){.route{position:relative;right:auto;top:auto;width:100%;margin-top:22px}}
+  .story{background:rgba(255,255,255,.08);border-left:4px solid var(--amber);border-radius:10px;padding:10px 14px;margin:14px 0;color:#e1e9f4;font-size:.95rem}
+  .story b{color:#fff}
+  /* 카드 묶음 */
+  .cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .cards2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cards4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+  @media (max-width:900px){.cards3,.cards4{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.cards3,.cards2,.cards4{grid-template-columns:1fr}}
+  .kc{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:14px 16px;border-top:6px solid var(--k,var(--acc))}
+  .kc h4{color:var(--k,var(--acc));font-size:1.05rem;margin:0 0 4px}
+  .kc p{font-size:.92rem;margin:4px 0 0}
+  .kc .ic{font-size:1.7rem;line-height:1}
+  .kc small{display:block;color:var(--muted);font-size:.8rem;margin-top:6px}
+  .tagt{display:inline-block;font-size:.76rem;font-weight:900;border-radius:999px;padding:1px 9px;background:color-mix(in srgb,var(--k,var(--acc)) 14%,white);color:var(--k,var(--acc));margin:6px 4px 0 0}
+  /* 연표 */
+  .tl{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .tl button{flex:1;min-width:92px;border:2px solid var(--line);background:#fff;border-radius:12px;padding:8px 6px;font:inherit;font-weight:900;cursor:pointer;color:var(--ink)}
+  .tl button.on{border-color:var(--acc);background:var(--acc);color:#fff}
+  .tlv{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:640px){.tlv{grid-template-columns:1fr}}
+  .tlv>div{background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:5px solid var(--k)}
+  .tlv h4{color:var(--k)}
+  .tlv .it{margin:6px 0 0;font-size:.93rem}
+  .tlv .it b{display:block}
+  /* 분류 게임 */
+  .sit{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px;text-align:center;min-height:170px}
+  .sit .cnt{font-size:.82rem;color:var(--muted)}
+  .sit .sq{font-size:1.08rem;font-weight:900;margin:6px 0 12px;min-height:52px}
+  .sit .ic{font-size:2rem}
+  .sit .row{justify-content:center}
+  .sit .fb{min-height:24px;margin-top:8px;font-size:.93rem}
+  .sit .cat{border:2px solid var(--k);color:var(--k);background:#fff;font-weight:900}
+  .sit .cat:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  .board{display:grid;grid-template-columns:repeat(var(--n,4),1fr);gap:8px;margin-top:12px}
+  @media (max-width:760px){.board{grid-template-columns:1fr 1fr}}
+  .board>div{background:#fff;border-radius:12px;border-top:5px solid var(--k);padding:8px 10px;font-size:.84rem;min-height:70px}
+  .board>div b{display:block;color:var(--k);font-size:.92rem}
+  .board>div span{display:block;border-top:1px dashed var(--line);padding:3px 0}
+  .board>div span.x{color:var(--red)}
+  /* 뒤집는 카드 */
+  .tcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .tcard{perspective:900px;height:172px;cursor:pointer}
+  .tcard .in{position:relative;width:100%;height:100%;transition:transform .5s;transform-style:preserve-3d}
+  .tcard.flip .in{transform:rotateY(180deg)}
+  .tcard .f,.tcard .b{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;padding:12px 14px;box-shadow:0 6px 16px rgba(15,39,66,.09);overflow:auto}
+  .tcard .f{background:#fff;border-top:6px solid var(--acc);display:flex;flex-direction:column;justify-content:center;text-align:center}
+  .tcard .f i{font-style:normal;font-size:2rem;line-height:1.1}
+  .tcard .f b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.2rem;line-height:1.25;margin-top:4px}
+  .tcard .f small{color:var(--muted);font-size:.78rem;margin-top:6px}
+  .tcard .b{background:var(--acc);color:#fff;transform:rotateY(180deg);font-size:.9rem;line-height:1.5}
+  .tcard .b .x{margin-top:6px;background:rgba(255,255,255,.16);border-radius:8px;padding:5px 8px;font-size:.84rem}
+  /* 사례 탭 */
+  .apps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .apps.a6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:860px){.apps,.apps.a6{grid-template-columns:repeat(3,1fr)}}
+  @media (max-width:480px){.apps,.apps.a6{grid-template-columns:1fr 1fr}}
+  .apps button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border-radius:14px;padding:12px 8px;box-shadow:0 6px 16px rgba(15,39,66,.08);border:3px solid transparent;text-align:center;transition:.2s;font-size:.92rem}
+  .apps button.on{border-color:var(--acc);transform:translateY(-3px)}
+  .apps button .e{font-size:1.8rem;display:block}
+  .apps button b{display:block}
+  .cview{margin-top:14px}
+  .pr{display:grid;grid-template-columns:1fr 1.3fr;gap:12px}
+  @media (max-width:760px){.pr{grid-template-columns:1fr}}
+  .pr>div{border-radius:12px;padding:12px 14px;font-size:.93rem}
+  .pr .p{background:#fdecea;border-left:5px solid var(--red)}
+  .pr .s{background:#e7f6ef;border-left:5px solid var(--mint)}
+  .pr h4{font-size:.95rem}
+  .pr .p h4{color:#9b2c20}.pr .s h4{color:#13684d}
+  .dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:.9rem;margin-top:10px;background:#fbfaf7;border-radius:10px;padding:10px 12px}
+  .dl b{color:var(--acc)}
+  /* 메모 */
+  .memo{margin-top:10px}
+  .memo label{display:block;font-weight:700;font-size:.93rem;margin:10px 0 4px}
+  .memo label small{font-weight:400;color:var(--muted)}
+  .memo input[type=text]{width:100%}
+  textarea{font:inherit;width:100%;min-height:64px;padding:8px 10px;border:1px solid #c5ccd5;border-radius:8px;resize:vertical;color:var(--ink);background:#fff}
+  .saved{font-size:.8rem;color:var(--mint);min-height:1em}
+  /* 투표 */
+  .vote{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  @media (max-width:560px){.vote{grid-template-columns:1fr}}
+  .vote button{all:unset;box-sizing:border-box;cursor:pointer;background:#fff;border:3px solid var(--line);border-radius:14px;padding:12px 14px;text-align:center;font-weight:900}
+  .vote button.on{border-color:var(--acc);background:var(--acc-soft)}
+  .vote button small{display:block;font-weight:400;color:var(--muted);font-size:.84rem}
+  .reveal{display:none;margin-top:12px}
+  .reveal.on{display:block;animation:fadein .4s both}
+  @keyframes fadein{from{opacity:0}to{opacity:1}}
+  .pct{display:grid;grid-template-columns:120px 1fr 50px;gap:8px;align-items:center;margin:6px 0;font-size:.93rem}
+  .pct i{display:block;height:16px;border-radius:8px;background:var(--acc);width:0;transition:width .8s}
+  /* 질문폼 연결 */
+  .formgo{background:linear-gradient(135deg,#0f2742,#1b3d66);color:#fff;border-radius:18px;padding:22px 24px;box-shadow:var(--shadow);margin-top:18px}
+  .formgo .kicker{color:#fff;border-bottom-color:var(--amber)}
+  .formgo h3{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;margin:4px 0 8px}
+  .formgo ol{margin:6px 0 12px;padding-left:22px;color:#e1e9f4}
+  .formgo ol li{margin:6px 0}
+  .formgo p{color:#c8d6e8;font-size:.92rem}
+  .formgo .go{display:inline-block;background:var(--amber);color:var(--navy);font-weight:900;font-size:1.1rem;text-decoration:none;border-radius:12px;padding:12px 22px;margin-top:6px}
+  .formgo .go:hover{filter:brightness(1.05)}
+  .msum{background:#fff;border-radius:14px;padding:12px 16px;margin-top:12px;color:var(--ink);font-size:.9rem}
+  .msum h4{color:var(--navy)}
+  .msum dl{margin:6px 0 0}
+  .msum dt{font-weight:700;margin-top:8px;color:var(--muted);font-size:.84rem}
+  .msum dd{margin:2px 0 0;white-space:pre-wrap}
+  .msum dd.e{color:#aab2bd}
+  .key3{display:grid;gap:10px;margin-bottom:18px}
+  .key3 div{background:#fff;border-radius:14px;box-shadow:var(--shadow);padding:14px 18px;border-left:6px solid var(--k);font-size:1.02rem}
+  .note{font-size:.84rem;color:var(--muted);margin-top:8px}
+  .flow2{display:flex;gap:10px;align-items:stretch;flex-wrap:wrap}
+  .flow2>div{flex:1;min-width:140px;background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .flow2>div b{display:block}
+  .flow2>div span{font-size:.88rem}
+  .flow2>.ar{flex:0 0 auto;min-width:0;background:none;border:0;align-self:center;font-weight:900;color:var(--muted);padding:0}
+  @media (max-width:640px){.flow2>.ar{flex-basis:100%;text-align:center;transform:rotate(90deg)}}
+  .chk{display:flex;flex-wrap:wrap;gap:8px}
+  .chk button{border:2px solid var(--line);background:#fff;border-radius:999px;padding:5px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .chk button.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .tbl td,.tbl th{padding:8px 10px;vertical-align:top}
+  .tbl td{text-align:left;font-size:.92rem}
+  .mx{min-width:560px}
+  .mx th{background:#fbfaf7}
+  .mx td{border:1px solid var(--line);height:74px;width:30%;font-size:.86rem;cursor:pointer;background:#fff;transition:background .2s}
+  .mx td:hover{background:var(--acc-soft)}
+  .mx td.fill{background:#e7f6ef;cursor:default}
+  .mx td.bad{background:#fdecea}
+  .mx th.r{white-space:nowrap}
+  #mxPool button{border-radius:12px;text-align:left;max-width:100%}
+  /* 4단원 */
+  .sdg{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+  @media (max-width:760px){.sdg{grid-template-columns:repeat(3,1fr)}}
+  .sdg button{all:unset;box-sizing:border-box;cursor:pointer;border-radius:10px;padding:8px 6px;color:#fff;background:var(--c);min-height:74px;font-size:.78rem;line-height:1.3;font-weight:700;display:flex;flex-direction:column;gap:2px;transition:transform .15s}
+  .sdg button b{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;line-height:1}
+  .sdg button:hover,.sdg button.on{transform:translateY(-3px);box-shadow:0 6px 14px rgba(0,0,0,.18)}
+  .sdg button.on{outline:3px solid var(--navy)}
+  .sdgv{margin-top:12px;background:#fbfaf7;border-radius:12px;padding:12px 14px;border-left:6px solid var(--c,#0f2742);min-height:60px}
+  .five{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.five{grid-template-columns:1fr}}
+  .five>div{background:#fff;border-radius:14px;box-shadow:0 6px 16px rgba(15,39,66,.08);padding:12px 12px;border-top:6px solid var(--k)}
+  .five b.n{font-family:"Black Han Sans",sans-serif;color:var(--k);font-size:1.2rem}
+  .five h4{margin:2px 0 4px;font-size:.98rem}
+  .five p{font-size:.86rem;margin:4px 0}
+  .five .ml{margin-top:8px;background:color-mix(in srgb,var(--k) 10%,white);border-radius:8px;padding:6px 8px;font-size:.82rem}
+  .quad{display:grid;grid-template-columns:28px 1fr 1fr;grid-template-rows:auto 1fr 1fr;gap:6px;margin-top:8px}
+  .quad .ax{font-size:.78rem;color:var(--muted);display:flex;align-items:center;justify-content:center;text-align:center}
+  .quad .ax.v{writing-mode:vertical-rl}
+  .quad .cell{background:#fbfaf7;border:2px dashed var(--line);border-radius:12px;min-height:84px;padding:6px 8px;font-size:.84rem;cursor:pointer}
+  .quad .cell.best{border-color:var(--mint);background:#e7f6ef}
+  .quad .cell small{display:block;color:var(--muted);font-size:.74rem}
+  .quad .cell span{display:inline-block;background:#fff;border:1px solid var(--line);border-radius:999px;padding:0 8px;margin:2px 2px 0 0}
+  .qbuild{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:1.08rem;font-weight:700;background:#fff8e6;border:2px solid #f6d58a;border-radius:12px;padding:12px 14px}
+  .qbuild input{flex:1;min-width:200px;font:inherit;font-weight:400;padding:6px 10px;border:1px solid #c5ccd5;border-radius:8px}
+  .plan{width:100%}
+  .plan td:first-child{width:150px;font-weight:700;font-size:.9rem;background:#fbfaf7}
+  .plan input{width:100%;font:inherit;padding:5px 8px;border:1px solid #c5ccd5;border-radius:6px}
+  /* 시뮬레이터 */
+  .sim{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media (max-width:760px){.sim{grid-template-columns:1fr}}
+  .sim .cls{background:#fbfaf7;border-radius:12px;padding:10px 12px;border-top:5px solid var(--k)}
+  .sim .cls h4{color:var(--k);display:flex;justify-content:space-between}
+  .sim .cls ul{margin:6px 0 0;padding-left:18px;font-size:.88rem}
+  .sim .cls li.new{color:var(--k);font-weight:700}
+  .cand{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .cand button{border:2px dashed var(--k);background:#fff;border-radius:10px;padding:4px 10px;font:inherit;font-size:.85rem;cursor:pointer;color:var(--ink)}
+  .cand button.on{border-style:solid;background:color-mix(in srgb,var(--k) 15%,white);font-weight:700}
+  .tt td,.tt th{padding:6px 8px;font-size:.88rem}
+  .tt td.r{color:var(--mint);font-weight:900}.tt td.w{color:var(--red);font-weight:900}
+  .score2{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0}
+  .score2 div{flex:1;min-width:140px;background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px 12px;text-align:center}
+  .score2 b{display:block;font-family:"Black Han Sans",sans-serif;font-size:1.8rem;color:var(--acc)}
+  /* 스크래치 블록 */
+  .blocks{font-family:ui-sans-serif,system-ui;font-size:.86rem;display:inline-block}
+  .blk{display:block;border-radius:6px;padding:5px 10px;margin:3px 0;color:#fff;width:max-content;max-width:100%}
+  .blk.ev{background:#ffbf00;color:#333;border-radius:14px 14px 6px 6px}
+  .blk.ctl{background:#ffab19;color:#333}
+  .blk.ml{background:#4c97ff}
+  .blk.lk{background:#9966ff}
+  .blk.in{margin-left:22px}
+  .blk i{font-style:normal;background:rgba(255,255,255,.9);color:#333;border-radius:10px;padding:0 6px;margin:0 2px}
+  .penguin{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+  @media (max-width:560px){.penguin{grid-template-columns:1fr}}
+  .penguin div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .dist td,.dist th{padding:6px 8px;font-size:.88rem;text-align:center}
+  .dist tr.near{background:#fff4d6;font-weight:900}
+  .roles{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  @media (max-width:860px){.roles{grid-template-columns:1fr 1fr}}
+  .roles div{background:#fff;border-radius:12px;box-shadow:0 4px 12px rgba(15,39,66,.08);padding:10px;text-align:center;font-size:.84rem}
+  .roles div i{font-style:normal;font-size:1.6rem;display:block}
+  .roles div b{display:block;font-size:.92rem}
+  .roles div em{display:block;font-style:normal;margin-top:6px;background:#e6eefb;border-radius:8px;padding:4px 6px;color:#1b3d66}
+  .types div{background:#fbfaf7;border-radius:10px;padding:8px 10px;font-size:.86rem;border-left:4px solid var(--k)}
+  .types div b{display:block}
+  .types div small{display:block;color:var(--muted);font-size:.78rem;margin-top:2px}
+  /* 진도 보내기 */
+  .tr-gate{position:fixed;inset:0;z-index:200;background:rgba(15,39,66,.72);display:flex;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px)}
+  .tr-card{background:#fff;border-radius:18px;box-shadow:0 24px 60px rgba(0,0,0,.3);padding:22px 22px 16px;width:100%;max-width:380px;display:flex;flex-direction:column;gap:10px}
+  .tr-card h2{margin:0;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem;color:var(--navy)}
+  .tr-sub{margin:-4px 0 4px;color:var(--muted);font-size:.92rem}
+  .tr-cls{display:flex;gap:8px}
+  .tr-cls label{flex:1;cursor:pointer}
+  .tr-cls input{position:absolute;opacity:0;pointer-events:none}
+  .tr-cls span{display:block;text-align:center;padding:10px 0;border:2px solid var(--line);border-radius:12px;font-weight:900;font-size:1.05rem}
+  .tr-cls input:checked+span{border-color:var(--navy);background:var(--navy);color:#fff}
+  .tr-cls input:focus-visible+span{outline:3px solid var(--amber)}
+  .tr-f{display:flex;align-items:center;gap:10px}
+  .tr-f span{width:40px;font-weight:700}
+  .tr-f input{flex:1;min-width:0;font:inherit;font-size:1.05rem;padding:9px 12px;border:1px solid #c5ccd5;border-radius:10px}
+  .tr-err{color:var(--red);font-weight:700;font-size:.9rem;min-height:1.2em}
+  .tr-card .btn{padding:12px;font-size:1.05rem;background:var(--navy)}
+  .tr-note{margin:2px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;text-align:center}
+  .tr-who,.tr-badge{display:flex;align-items:center;gap:6px;font-size:.82rem;background:rgba(255,255,255,.12);border-radius:999px;padding:3px 4px 3px 12px;white-space:nowrap}
+  .tr-badge{padding:3px 12px;background:var(--amber);color:#111;font-weight:700}
+  .tr-who button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(255,255,255,.18);border-radius:999px;padding:2px 9px}
+  .tr-who button:hover{background:rgba(255,255,255,.3)}
+  .tr-cls[hidden]{display:none}
+  .tr-badge button{all:unset;cursor:pointer;font-size:.74rem;background:rgba(0,0,0,.14);border-radius:999px;padding:2px 9px;margin-left:6px}
+  /* page-guard: 글자 선택·복사 막기 (입력 칸은 편집 가능) */
+  body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+  input,textarea,select,[contenteditable]{-webkit-user-select:text;user-select:text}
+  .pg-toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);background:#0f2742;color:#fff;padding:9px 16px;border-radius:999px;font-size:.9rem;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);opacity:0;transition:opacity .2s;pointer-events:none}
+  .pg-toast.on{opacity:1}
+  /* 공통 */
+  .kr-lab{display:block;font-size:.8rem;font-weight:900;color:var(--muted);margin:6px 0 4px}
+  .kr-fb{min-height:1.4em;margin-top:8px;font-size:.93rem}
+  .kr-end{background:var(--acc-soft);border-radius:12px;padding:12px 14px;margin-top:10px;font-size:.93rem}
+  .kr-code{font-family:ui-monospace,Menlo,monospace;font-size:.88rem;background:#0f2742;color:#e1e9f4;border-radius:10px;padding:10px 12px;margin:0;white-space:pre-wrap;overflow-x:auto;line-height:1.6}
+  .mono2{font-family:ui-monospace,Menlo,monospace;font-size:.92em}
+  .note{font-size:.84rem;color:var(--muted)}
+  /* 01 의미망 */
+  .kr-net{display:grid;grid-template-columns:.8fr 1.2fr;gap:16px;align-items:start}
+  @media (max-width:860px){.kr-net{grid-template-columns:1fr}}
+  .kr-src{background:#fbfaf7;border-radius:12px;padding:10px 14px;font-size:.93rem}
+  .kr-src p{margin:2px 0 8px}
+  .kr-rels b{font-family:ui-monospace,Menlo,monospace;color:var(--acc)}
+  .kr-svg{background:#fbfaf7;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .kr-node{cursor:pointer;outline:none}
+  .kr-node rect{fill:#fff;stroke:#9fb3cc;stroke-width:2;transition:fill .15s,stroke .15s}
+  .kr-node text{font-size:16px;font-weight:700;fill:#16202c;pointer-events:none}
+  .kr-node:hover rect,.kr-node:focus-visible rect{stroke:var(--acc)}
+  .kr-node.on rect{fill:var(--acc);stroke:var(--acc)}
+  .kr-node.on text{fill:#fff}
+  .kr-edge{stroke:#2f6fd0;stroke-width:2.2}
+  .kr-elab{font-family:ui-monospace,Menlo,monospace;font-size:14px;font-weight:700;fill:#2f6fd0;paint-order:stroke;stroke:#fbfaf7;stroke-width:5px}
+  .kr-pick{margin-top:8px}
+  .kr-pick .btn b{font-family:ui-monospace,Menlo,monospace}
+  .kr-codebox{margin-top:12px}
+  /* 02 진리표 */
+  .kr-tt{min-width:520px}
+  .kr-tt th{font-family:ui-monospace,Menlo,monospace;font-size:.95rem;color:var(--ink);background:#fbfaf7}
+  .kr-tt td{font-weight:700;font-variant-numeric:tabular-nums}
+  .kr-tt td.t{color:#17694f}.kr-tt td.f{color:#9b2c20}
+  .kr-tt tr.on td{background:#fff4d6}
+  .kr-now{display:grid;gap:4px;font-size:.92rem;background:#fbfaf7;border-radius:12px;padding:10px 14px;margin-top:8px}
+  .kr-now .mono{margin-right:4px}
+  .kr-tips{font-size:.9rem;margin:10px 0 0;padding-left:20px}
+  /* 03 추론 */
+  .kr-ex{background:#fbfaf7;border-radius:8px;padding:6px 10px;font-size:.88rem!important}
+  .kr-rule{margin:6px 0 0;font-size:.88rem}
+  .kr-rule th{white-space:nowrap;text-align:left;color:var(--k);font-size:.84rem;width:84px}
+  .kr-rule td{text-align:left}
+  .kr-rule tr.c td,.kr-rule tr.c th{background:color-mix(in srgb,var(--k) 10%,white);font-weight:700}
+  .kr-liar{min-width:560px;font-size:.9rem}
+  .kr-liar th{background:#fbfaf7}
+  .kr-liar tr.bad td{background:#fdecea}
+  .kr-liar small{color:var(--muted);font-weight:400}
+  /* 04 술어 논리 */
+  .kr-q{font-size:.92rem}
+  .kr-q th{background:#fbfaf7}
+  .kr-q .sym{font-size:1.2rem;font-weight:900;color:var(--acc)}
+  .kr-pq{background:#fbfaf7;border:2px dashed var(--line);border-radius:14px;padding:14px 16px}
+  .kr-pq .cnt{font-size:.82rem;color:var(--muted)}
+  .kr-pq .s{font-size:1.15rem;font-weight:900;margin:4px 0 10px}
+  .kr-cmp{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:start}
+  @media (max-width:640px){.kr-cmp{grid-template-columns:1fr}}
+  .kr-cmp>div:first-child{background:#fff;border-radius:12px;padding:8px 12px;text-align:center}
+  .kr-cmp small{display:block;color:var(--muted);font-size:.8rem}
+  .big2{display:block;font-size:2rem;color:#5b6776}
+  .kr-pq .opts{display:flex;flex-direction:column;gap:8px}
+  .kr-opt{font-family:ui-monospace,Menlo,monospace;font-size:.95rem;text-align:left;border:2px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--ink)}
+  .kr-opt:hover:not(:disabled){border-color:var(--acc)}
+  .kr-opt.right{background:#e7f6ef;border-color:var(--mint);font-weight:700}
+  .kr-opt.wrong{background:#fdecea;border-color:var(--red);text-decoration:line-through}
+  .kr-opt:disabled{cursor:default}
+  .kr-pq .nx{margin-top:8px}
+  /* 05 테니스 */
+  .kr-tn{min-width:560px;font-size:.88rem}
+  .kr-tn th{background:#fbfaf7}
+  .kr-tn td,.kr-tn th{padding:5px 8px;transition:opacity .2s,background .2s}
+  .kr-tn td.o{color:#17694f;font-weight:900}.kr-tn td.x{color:#9b2c20;font-weight:900}
+  .kr-tn tr.dim td{opacity:.3}
+  .kr-tn tr.hit td{background:#e7f6ef}
+  .kr-steph{font-weight:900;margin-bottom:8px}
+  .kr-tip{background:#fff4d6;border-radius:10px;padding:6px 10px;font-size:.88rem;margin:-2px 0 10px}
+  .kr-tip small{color:var(--muted)}
+  .kr-attrs{display:grid;gap:8px}
+  .kr-attr{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+  .kr-attr>b{min-width:96px;font-size:.9rem}
+  .kr-ratio{position:relative;overflow:hidden;border:2px solid var(--line);background:#fff;border-radius:10px;padding:5px 12px 9px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink);min-width:110px;text-align:left}
+  .kr-ratio span{font-weight:900;color:var(--acc);margin-left:4px}
+  .kr-ratio i{position:absolute;left:0;bottom:0;height:4px;background:var(--acc)}
+  .kr-ratio:hover{border-color:var(--acc)}
+  .kr-rulebox{margin-top:12px}
+  #tnRule .cl{border-radius:6px;padding:1px 6px}
+  #tnRule .c0{background:rgba(31,157,116,.35)}#tnRule .c1{background:rgba(242,165,22,.35)}#tnRule .c2{background:rgba(47,111,208,.45)}
+  .kr-chip{border:2px solid var(--line);background:#fff;border-radius:999px;padding:4px 13px;font:inherit;font-size:.9rem;cursor:pointer;color:var(--ink)}
+  .kr-chip.on{border-color:var(--acc);background:var(--acc);color:#fff;font-weight:700}
+  .kr-trace{background:#fbfaf7;border-radius:12px;padding:10px 14px;margin-top:10px}
+  .kr-trace ol{margin:2px 0 8px;padding-left:22px;font-size:.92rem}
+  .kr-trace li{margin:4px 0}
+  .kr-trace li.yes{color:#17694f}
+  .kr-trace li.no{color:#5b6776}
+  .kr-verdict{border-radius:10px;padding:8px 12px;font-size:.95rem}
+  .kr-verdict.y{background:#e7f6ef}.kr-verdict.n{background:#fdecea}
+  /* 06 우회전 */
+  .kr-rules li{line-height:1.9}
+  .kr-rules .cd{border-radius:6px;padding:1px 6px;font-size:.86rem}
+  .kr-rules .cd.t{background:#e7f6ef;color:#17694f}
+  .kr-rules .cd.f{background:#f1f3f6;color:#8a94a3;text-decoration:line-through}
+  /* 빈칸 */
+  .blanks li{margin:8px 0;line-height:1.9}
+  .blank{font:inherit;font-weight:700;border:0;border-bottom:2px dashed var(--acc);background:var(--acc-soft);color:var(--acc);border-radius:6px 6px 0 0;padding:0 10px;min-width:64px;cursor:pointer}
+  .blank.on{border-bottom-style:solid;background:#fff4d6;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="top">
+  <span class="brand">인공지능 기초</span>
+  <nav class="steps" id="steps"></nav>
+  <div class="score" id="score"></div>
+</div>
+<div class="progress"><i id="prog"></i></div>
+
+<main id="main">
+
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 2. 탐색과 추론</span>
+      <h1>인공지능은<br>다음 수를 어떻게 알았지?</h1>
+      <div class="story"><b>사람은 세상의 정보를 모으고 분석해서 지식을 표현해요.</b><br>그런데 우리가 아는 것을 평소 말투 그대로 컴퓨터에 넣으면, 컴퓨터는 그 뜻을 제대로 쓰지 못해요. 컴퓨터가 지식을 쓰려면 <b>명확한 형태로 표현</b>해 주어야 하지요.</div>
+      <p>오늘은 지식을 <b>의미망, 명제 논리, 술어 논리</b>로 표현해 보고, 규칙과 사실을 맞대어 <b>새로운 지식을 추론</b>해 봐요. 마지막에는 테니스 경기 데이터에서 <b>규칙</b>을 뽑아 「오늘 테니스 칠까?」를 판단하는 인공지능을 만들어요.</p>
+      <ol>
+        <li>지식을 어떻게 표현할까</li><li>명제 논리</li><li>명제 논리 추론</li><li>술어 논리</li>
+        <li>규칙으로 인공지능 만들기</li><li>스스로 해결하기 · 개념 정리</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>💬</i><div><b>자연어 지식</b><small>애매하고 불규칙한 사람의 말</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🕸️</i><div><b>지식 표현</b><small>의미망 · 명제 논리 · 술어 논리</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔗</i><div><b>추론</b><small>규칙 + 사실 → 새로운 사실</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🎾</i><div><b>규칙 기반 인공지능</b><small>테니스 경기를 할까?</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>사람의 말로 된 지식이 왜 컴퓨터에 맞지 않는지 살펴보고, 그 지식을 <b>의미망</b>, <b>명제 논리</b>, <b>술어 논리</b>로 바꾸어 적어 봅니다. 그리고 <b>규칙과 사실</b>로 새로운 사실을 이끌어 내는 <b>추론</b>을 해 보고, 데이터에서 규칙을 뽑아 판단 과정이 눈에 보이는 인공지능을 만들어 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">왜 배울까</span>
+        <ul>
+          <li>앞에서 배운 <b>탐색</b>은 갈 수 있는 길을 펼쳐 보며 답을 찾았어요. 오늘 배우는 방법은 이미 아는 <b>규칙과 사실</b>을 맞대어 답을 찾아요.</li>
+          <li>규칙으로 판단하는 인공지능은 <b>왜 그렇게 판단했는지</b> 따라가 볼 수 있어요.</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li>
+          <li><b>오늘의 질문</b> · 사람이 아는 것을 컴퓨터에게는 어떤 모양으로 적어 주어야 할까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>규칙과 사실을 활용하여 지식을 표현할 수 있다.</li>
+          <li>새로운 지식을 추론하여 생성할 수 있다.</li>
+        </ul>
+        <p style="font-size:.88rem;margin-top:8px" class="muted">핵심 요소: 명제 논리 · 명제 논리 추론 · 술어 논리</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 지식을 어떻게 표현할까부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 지식 표현 · 의미망 -->
+<section class="page" data-name="지식 표현" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>인간의 지식을 어떻게 표현할까?</h2><p>교과서 42쪽 · 지식, 자연어, 지식 표현 방법, 의미망</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>사람끼리는 「그거 있잖아」라고 해도 대충 알아듣지만, 컴퓨터는 그러지 못해요. 그래서 지식을 컴퓨터에 넣을 때는 <b>누구나 같은 뜻으로 읽히도록 단순하고 명확하며 완전하게</b> 적어 주어야 해요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#e0702b"><div class="ic">💬</div><h4>자연어로 적은 지식</h4><p><b>자연어</b>는 일상적으로 사용하는 말과 글이에요. 자연어는 <b>정형화되지 않고 불규칙적</b>이기 때문에 때때로 애매하게 표현될 때가 있어요. 지식을 명확하게 표현하지 않으면 전달받은 사람이 내용을 잘못 해석하거나 없는 내용을 더하여 재해석할 수 있지요.</p><small>자연어, 그림 기호, 수식, 도면 등의 데이터를 <b>비정형 데이터</b>라고 하는데, 컴퓨터가 이런 데이터를 처리하여 지식을 습득하기는 매우 어렵다.</small></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🧩</div><h4>컴퓨터를 위한 지식 표현</h4><p><b>지식</b>은 어떤 대상에 대해 배우거나 실천을 통해 알게 된 명확한 인식이나 이해를 말해요. 컴퓨터에서 활용하려면 <b>규칙적이고 체계적인 방법</b>을 이용하여 지식을 표현해야 해요.</p><small>지식을 표현하려면 누구나 이해할 수 있게 그 내용이 단순하고 명확하며 완전해야 한다.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🗂️ 컴퓨터에서 활용하기 위해 만든 지식 표현 방법 <span class="muted" style="font-weight:400;font-size:.88rem">(카드를 눌러 뜻 보기)</span></h3>
+    <div id="krepCards" class="tcards"></div>
+  </div>
+  <div class="card">
+    <h3>🕸️ 자연어 지식을 의미망으로 바꾸기 <span class="muted" style="font-weight:400;font-size:.88rem">(교과서 42쪽 예시)</span></h3>
+    <div class="kr-net">
+      <div class="kr-src">
+        <span class="kr-lab">자연어 지식</span>
+        <p>세종대왕은 집현전과 협업하는 조선의 군주였다. 세종대왕은 신하들을 데리고 있었는데 그중 황희와 김종서가 있다. 세종대왕은 훈민정음을 만들었다.</p>
+        <span class="kr-lab">관계(술어)</span>
+        <p class="kr-rels"><b>cowork</b> 협업하다 · <b>is_a</b> ~이다 · <b>has</b> 가지다(데리고 있다) · <b>make</b> 만들다</p>
+        <p class="muted" style="font-size:.86rem">의미망에서 세종대왕, 집현전 등은 일종의 <b>객체(노드)</b>가 되고, cowork, is_a 등은 미리 컴퓨터에 정의해 주고 처리해야 하는 <b>술어</b>에 해당해요.</p>
+      </div>
+      <div>
+        <p class="muted" style="margin:0 0 6px;font-size:.9rem"><b>노드 두 개를 차례로 눌러</b> 관계를 이어 보세요. 순서가 중요해요: <span class="mono">is_a(황희, 신하)</span>라면 <b>황희</b>를 먼저, <b>신하</b>를 나중에 눌러요.</p>
+        <div id="netSvg" class="kr-svg"></div>
+        <div id="netPick" class="kr-pick"></div>
+        <div id="netFb" class="kr-fb"></div>
+      </div>
+    </div>
+    <div class="kr-codebox"><span class="kr-lab">의미망 코딩</span><pre id="netCode" class="kr-code">(아직 연결한 관계가 없어요)</pre></div>
+    <div class="memo"><label>일상 언어(자연어)로 된 지식을 컴퓨터가 바로 이해하기 어려운 까닭은 무엇일까요? 의미망으로 바꾸면 무엇이 달라졌나요?</label><textarea data-memo="natWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 명제 논리 -->
+<section class="page" data-name="명제 논리" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>명제 논리</h2><p>교과서 43쪽 · 논리, 명제, 명제 기호(표 Ⅰ-1), 진리표(표 Ⅰ-2)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>규칙과 사실로 지식을 표현하고 추론할 때 많이 쓰는 방법이 <b>논리</b>예요. 명제 논리에서는 <b>참인지 거짓인지 가릴 수 있는 문장</b> 하나를 p, q 같은 기호 하나로 두고, ~ ∧ ∨ → ↔ 로 이어서 계산해요.</span></div>
+  <div class="card">
+    <h3>📖 논리와 명제</h3>
+    <p><b>논리</b>는 말이나 글에서 사고나 추리 등을 이치에 맞게 이끌어 가는 과정이나 원리이다.</p>
+    <div class="callout"><b>명제</b>는 ‘참’인지 ‘거짓’인지를 판별할 수 있는 문장으로 뜻이 논리적으로 분명해야 한다.</div>
+    <p class="muted" style="font-size:.9rem;margin-bottom:0">예: 「코로나19는 바이러스이다.」 「토마토는 과일이다.」는 참과 거짓을 판별할 수 있으므로 명제이고, 「인공지능이 인간보다 똑똑해질 수 있을까?」는 참과 거짓을 판정할 수 없으므로 명제가 아니에요.</p>
+  </div>
+  <div class="card">
+    <h3>🔎 명제일까, 명제가 아닐까?</h3>
+    <div id="propGame"></div>
+  </div>
+  <div class="card">
+    <h3>🚦 명제 기호와 진리표 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-1, 표 Ⅰ-2)</span></h3>
+    <p style="margin-top:0">p = “신호등이 초록색이다.” &nbsp; q = “자동차가 전진한다.” 아래 버튼으로 p와 q를 참(T)·거짓(F)으로 바꾸면, 진리표에서 그 줄이 밝게 표시되고 각 기호의 참·거짓이 문장과 함께 나와요.</p>
+    <div id="truthCtl" class="row" style="margin-bottom:8px"></div>
+    <div style="overflow-x:auto"><table id="truthTbl" class="kr-tt"></table></div>
+    <div id="truthNow" class="kr-now"></div>
+    <ul class="kr-tips">
+      <li><b>p∧q</b>: ‘p 그리고 q’가 참이려면 둘 다 참이어야 한다. 하나라도 거짓이면 안 된다.</li>
+      <li><b>p∨q</b>: ‘p 또는 q’는 둘 중에 적어도 하나라도 참이면 전체가 참이다.</li>
+      <li><b>p→q</b>: p는 가정이고 q는 결론이다.</li>
+      <li><b>p↔q</b>: 둘 다 참이거나 둘 다 거짓이어야 참이다.</li>
+    </ul>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 명제 논리 추론 -->
+<section class="page" data-name="명제 논리 추론" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>명제 논리 추론</h2><p>교과서 44쪽 · 추론, 연역적·귀납적 추론, 긍정 논법, 삼단 논법</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span><b>추론</b>은 이미 알고 있는 지식에서 논리적 결론을 이끌어 내는 것이에요. 명제 논리는 두 개 이상의 지식(명제)에 추론을 활용하여 <b>새로운 지식</b>을 만들어요.</span></div>
+  <div class="card">
+    <h3>📖 추론</h3>
+    <p style="margin-top:0">추론은 이미 알고 있는 지식에서 논리적 결론을 도출하는 행위 또는 과정으로, 어떠한 판단으로부터 다른 판단을 이끌어 낸다. 추론 방법에는 연역적 추론과 귀납적 추론이 있다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#9b4fc4"><div class="ic">🏛️</div><h4>연역적 추론</h4><p>전제에 이미 포함된 결론을 도출해 내는 추론 방식으로, <b>새로운 것을 발견할 수 없다는 한계</b>가 있다.</p><p class="kr-ex">모든 사람은 죽는다. 소크라테스는 사람이다. → 그러므로 소크라테스는 죽는다.</p><small>전제가 참이면 결론도 참이다. 「소크라테스는 사람이다.」가 참이면 이견 없이 소크라테스는 죽는다.</small></div>
+      <div class="kc" style="--k:#e0702b"><div class="ic">🐦</div><h4>귀납적 추론</h4><p>개별적인 특별한 사실이나 현상에서 그러한 사례까지 포함된 <b>일반적 결론</b>을 도출해 내는 방식이다.</p><p class="kr-ex">까마귀 1은 까맣다. 까마귀 2, 3 … 100은 까맣다. → 그러므로 모든 까마귀는 검은색일 것이다.</p><small>하지만 반증이 한 개라도 나타나면 참이 부정된다. 「까마귀 중 한 마리라도 흰색이 있다.」라면 결론이 거짓이 된다.</small></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🔗 명제 논리 추론 규칙 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-3, 표 Ⅰ-4)</span></h3>
+    <p style="margin-top:0">연역적 추론은 두 가지 이상 존재하는 참인 명제를 동치와 <b>추론 규칙</b>(기존의 논리식에서 새로운 논리식을 생성하는 과정)을 활용하여 새로운 명제로 만들어 낸다.</p>
+    <div class="cards2">
+      <div class="kc" style="--k:#1f9d74"><h4>긍정 논법</h4>
+        <table class="kr-rule"><tr><th>규칙 p→q</th><td>민수가 행복하다면 인공지능을 공부하고 있는 것이다.</td></tr><tr><th>사실 p</th><td>민수가 행복하다.</td></tr><tr class="c"><th>결론 q</th><td>민수는 인공지능을 공부하고 있다.</td></tr></table></div>
+      <div class="kc" style="--k:#2f6fd0"><h4>삼단 논법</h4>
+        <table class="kr-rule"><tr><th>규칙 p→q</th><td>인공지능을 잘하면 프로그래밍을 잘한다.</td></tr><tr><th>사실 q→r</th><td>프로그래밍을 잘하면 수학을 잘한다.</td></tr><tr class="c"><th>결론 p→r</th><td>인공지능을 잘하면 수학을 잘한다.</td></tr></table></div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>🕵️ 스스로 해결하기 · 거짓말을 하는 친구는 누구일까? <span class="muted" style="font-weight:400;font-size:.88rem">(44쪽)</span></h3>
+    <p style="margin-top:0">이들 중 <b>한 명은 확실히 거짓말쟁이</b>예요. 거짓말쟁이의 말은 거짓, 나머지 세 명의 말은 참이어야 해요. 한 명을 골라 「이 친구가 거짓말쟁이라면?」 하고 가정해 보고, 네 문장이 모순 없이 들어맞는지 확인해 보세요.</p>
+    <div id="liar"></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 술어 논리 -->
+<section class="page" data-name="술어 논리" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>술어 논리</h2><p>교과서 45쪽 · 명제 논리의 한계, 한정자, 전칭 기호 ∀, 존재 기호 ∃</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>명제 논리는 문장 하나를 통째로 <b>p</b> 하나로 봐요. 그래서 「<b>모든</b> 자동차」인지 「<b>어떤</b> 자동차」인지, 누가 주어인지가 기호 안에 드러나지 않아요. <b>술어 논리</b>는 car(x)처럼 문장을 쪼개고 ∀x(모든), ∃x(어떤)를 붙여 이 부분까지 표현해요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#d64535"><div class="ic">①</div><h4>명제 논리의 한계 · 한정자</h4><p>사람들이 사용하는 명제는 ‘모든’이나 ‘약간’과 같은 <b>한정자</b>를 갖는데, 명제 논리에서는 이것을 표현하지 못한다.</p><small>예: 「모든 자동차는 기계이다.」를 부정할 때, 「모든 자동차가 기계가 아니다.」인지 「일부 자동차가 기계가 아니다.」인지를 표현할 수 없다.</small></div>
+    <div class="kc" style="--k:#d64535"><div class="ic">②</div><h4>명제 논리의 한계 · 주어와 술어</h4><p>명제들이 어떤 것을 주어로 하고, 어떤 것을 술어로 하는지 판단하기 어렵다.</p><small>예: 「자동차가 충돌했다.」에서 주어는 ‘자동차’이지만, 같은 내용을 「충돌한 것은 자동차이다.」로 표현하면 ‘자동차’는 술어이다.</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>📖 술어 논리와 한정자 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-5)</span></h3>
+    <p style="margin-top:0">술어 논리는 명제 논리처럼 문장의 참과 거짓만을 따지는 것이 아니고, <b>한정자</b>를 사용하여 문장의 문법적 구조와 의미를 포함한 논리식으로 진릿값을 구한다. 술어는 작성자가 임의로 지정할 수 있다.</p>
+    <table class="kr-q">
+      <tr><th>한정자 명칭</th><th>기호</th><th class="l">설명</th></tr>
+      <tr><td>전칭 기호</td><td class="sym">∀x</td><td class="l"><b>모든</b> x에 대하여</td></tr>
+      <tr><td>존재 기호</td><td class="sym">∃x</td><td class="l"><b>어떤</b> x에 대하여 ~인 x가 적어도 한 개 존재한다.</td></tr>
+    </table>
+    <table class="kr-q" style="margin-top:10px">
+      <tr><th class="l">문장</th><th class="l">술어 논리</th></tr>
+      <tr><td class="l">x는 자동차이다.</td><td class="l mono2">car(x)</td></tr>
+      <tr><td class="l">x는 자율주행 자동차이다.</td><td class="l mono2">selfdrivingcar(x)</td></tr>
+      <tr><td class="l">모든 x는</td><td class="l mono2">∀x</td></tr>
+      <tr><td class="l">모든 자율주행 자동차는 자동차이다.</td><td class="l mono2">∀x {selfdrivingcar(x) → car(x)}</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h3>✏️ 문장을 술어 논리로 바꾸어 보기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">문장마다 왼쪽에는 명제 논리로 적은 모습, 오른쪽에는 고를 수 있는 술어 논리식이 있어요. 알맞은 것을 골라 보세요. 술어 이름(car, student 등)은 작성자가 정한 것이에요.</p>
+    <div id="predGame"></div>
+  </div>
+  <div class="card">
+    <div class="memo" style="margin-top:0"><label>명제 논리와 술어 논리는 무엇이 다를까요? 「모든」, 「어떤」이 들어간 문장을 예로 들어 설명해 보세요.</label><textarea data-memo="allSome" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 규칙 기반 구현 -->
+<section class="page" data-name="규칙으로 인공지능 만들기" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>규칙과 사실로 인공지능 만들기</h2><p>교과서 46~47쪽 · 기호주의와 연결주의, 테니스 경기 유무 데이터셋(표 Ⅰ-6)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>14일 동안의 날씨 기록(데이터)에서 「이럴 때 테니스 경기를 했다」는 <b>규칙</b>을 뽑아 볼 거예요. 규칙이 만들어지면, 처음 보는 날에도 그 규칙으로 판단할 수 있고 <b>어느 조건 때문에 그렇게 판단했는지</b>도 보여 줄 수 있어요.</span></div>
+  <div class="card">
+    <h3>🤝 기호주의 + 연결주의</h3>
+    <p style="margin-top:0">명제 논리와 술어 논리는 지식을 기호화하여 표현하는 작업에 매우 용이하다. 최근에는 딥러닝을 선두로 한 <b>연결주의</b> 인공지능이 많이 사용되지만, 인공지능의 초기(1960~1970년대)에는 논리를 이용한 <b>기호주의</b> 기계학습이 발달하였다. 이후 학자들은 인공지능의 발달을 위해 딥러닝에 기호주의적 방법을 결합한 <b>하이브리드형 신경망 기술</b>이 필요하다고 했다.</p>
+  </div>
+  <div class="card">
+    <h3>🎾 테니스 경기 유무 데이터셋 <span class="muted" style="font-weight:400;font-size:.88rem">(표 Ⅰ-6 · ○ 경기함, × 경기 안 함)</span></h3>
+    <div style="overflow-x:auto"><table id="tnTable" class="kr-tn"></table></div>
+  </div>
+  <div class="card">
+    <h3>🛠️ 규칙 만들기: 텅 빈 규칙에서 시작하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">각 조건(속성)마다 <b>테니스 경기를 한 날의 비율(정확도)</b>을 계산했어요. 단계마다 정확도가 가장 높은 조건을 눌러 규칙에 더해 보세요. 표에서 그 단계에 살펴보는 날이 밝게 보여요.</p>
+    <div id="tnStep"></div>
+    <div class="kr-rulebox"><span class="kr-lab">지금까지 만든 규칙</span><div id="tnRule" class="kr-code"></div></div>
+    <p class="note">직접 세어 보면 교과서 47쪽 「맑음」·「비」 단계의 분수 가운데 분모가 다르게 적힌 칸이 있어요. 이 화면은 표 Ⅰ-6을 그대로 세어 계산했어요. 표를 보고 직접 세어 확인해 보세요.</p>
+  </div>
+  <div class="card">
+    <h3>🤖 「오늘 테니스 칠까?」 규칙으로 판단하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">위에서 규칙을 끝까지 만든 뒤, 날씨 조건을 골라 보세요. 규칙의 어느 부분이 참이 되어 판단했는지 그대로 보여 줘요.</p>
+    <div id="tnTry"></div>
+    <div class="cards2" style="margin-top:12px">
+      <div class="kc" style="--k:#1f9d74"><h4>👍 장점</h4><p>정확도가 높은 결과를 얻을 수 있다. 주어진 데이터에서 논리 표현을 적용하여 지능적 행위에 대한 지식을 얻을 수 있다.</p></div>
+      <div class="kc" style="--k:#d64535"><h4>👎 단점</h4><p>지식을 관리하는 사람이 통계적 작업을 통해 지식을 도출해야 한다.</p></div>
+    </div>
+    <div class="memo"><label>이렇게 규칙으로 판단하면 판단 과정이 눈에 보여요. 이 점이 특히 중요한 상황을 하나 들어 까닭을 써 보세요.</label><textarea data-memo="tennisWhy" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 스스로 해결하기 · 정리 -->
+<section class="page" data-name="스스로 해결하기" data-acc="#0f8a9d">
+  <div class="head"><div class="num">06</div><div><h2>스스로 해결하기 · 주요 개념 정리</h2><p>교과서 47쪽 · 우회전 도로 교통법 규칙, 성취도 평가</p></div></div>
+  <div class="card">
+    <h3>🚗 스스로 해결하기 · 우회전 규칙을 판단하는 인공지능</h3>
+    <p style="margin-top:0">교차로에서 우회전할 때 일시 정지 의무와 우회전 신호 도입 내용이 담긴 도로 교통법이 2023년부터 시행되었어요. 차량의 우회전 규칙은 <b>전방 차량 신호</b>와 <b>횡단보도에 보행자가 있는지 없는지</b>에 따라 서행 또는 정지해야 해요. 교과서 부록(221쪽)의 교차로 통행 방법 그림을 규칙 다섯 개로 옮겼어요. <b>사실</b>을 골라 어떤 <b>규칙</b>이 맞는지, 어떤 <b>결론</b>이 나오는지 확인해 보세요.</p>
+    <div id="turnJudge"></div>
+    <p class="note">교과서는 이 규칙을 논리 언어 프롤로그(prolog)로 프로그래밍해 보게 해요. 선생님이 안내하면 <a href="https://swish.swi-prolog.org" target="_blank" rel="noopener">SWISH 프롤로그 실습 사이트 ↗</a>에서 해 볼 수 있어요.</p>
+    <div class="memo"><label>우회전 규칙 하나를 골라 「규칙 p→q · 사실 p · 결론 q」 꼴(긍정 논법)로 적어 보세요.</label><textarea data-memo="turnRule" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>📝 주요 개념 정리하기</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">빈칸에 들어갈 말을 먼저 떠올린 뒤 눌러서 확인하세요.</p>
+    <ol class="blanks">
+      <li>자연어는 정형화되지 않고 불규칙적이므로, 컴퓨터에서 활용하려면 <button class="blank" data-a="규칙적이고 체계적인">?</button> 방법을 이용하여 지식을 표현해야 한다.</li>
+      <li><button class="blank" data-a="의미망">?</button>은 노드와 노드 간의 관계를 나타내는 구조로, 관계는 링크로 표현한다.</li>
+      <li>명제 논리는 주어진 문장의 <button class="blank" data-a="참 또는 거짓">?</button>을 판별하고, 술어 논리는 문장의 참과 거짓을 판별할 뿐만 아니라, <button class="blank" data-a="한정자">?</button>를 포함한다.</li>
+      <li>규칙과 사실을 활용하여 지식을 표현하고, 새로운 지식을 <button class="blank" data-a="추론">?</button>하여 생성한다.</li>
+    </ol>
+  </div>
+  <div class="card">
+    <h3>✅ 스스로 점검하기</h3>
+    <p style="margin-top:0">교과서 성취도 평가: 명제 논리를 이용하여 지식을 표현할 수 있는가? 규칙과 사실을 활용하여 지식을 표현하고 추론하여 새로운 사실을 생성하는 과정을 설명할 수 있는가? 할 수 있게 된 것을 골라 보세요.</p>
+    <div id="selfCheck"></div>
+  </div>
+  <div class="quiz" data-quiz="6"></div>
+</section>
+
+<!-- 7 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">07</div><div><h2>마무리</h2><p>오늘 배운 것 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0">자연어는 정형화되지 않고 불규칙적이라 컴퓨터에 그대로 쓰기 어렵다. 그래서 <b>의미망</b>(노드와 링크), <b>명제 논리</b>, <b>술어 논리</b>처럼 규칙적이고 체계적인 방법으로 지식을 표현한다.</div>
+    <div style="--k:#e0702b"><b>명제 논리</b>는 문장 하나를 통째로 참·거짓으로 판별하고, <b>술어 논리</b>는 ∀x(모든), ∃x(어떤) 같은 <b>한정자</b>와 술어로 문장의 구조와 의미까지 표현한다.</div>
+    <div style="--k:#d64535"><b>규칙과 사실</b>을 맞대면(긍정 논법, 삼단 논법) 새로운 지식을 추론할 수 있다. 데이터에서 뽑은 규칙은 <b>판단 과정이 눈에 보이고</b> 정확도가 높지만, 사람이 통계적 작업으로 지식을 도출해야 한다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>일상 언어로 된 지식을 컴퓨터가 바로 이해하기 어려운 이유를 쓰고, <b>의미망·명제 논리·술어 논리</b> 중 하나로 바꾸면 어떤 점이 달라지는지 설명하기</li>
+      <li>명제 논리와 술어 논리의 차이를 <b>「모든」, 「어떤」</b> 같은 표현과 연결해 설명하기</li>
+      <li>테니스 데이터에서 규칙을 뽑아내는 방식은 <b>판단 과정이 눈에 보인다</b>는 장점이 있다. 이 점이 중요한 상황을 하나 들어 설명하기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="../forms/07-1.html" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
+
+</main>
+
+<div class="foot">
+  <button class="btn ghost" id="prev">← 이전</button>
+  <span class="pg" id="pg"></span>
+  <button class="btn" id="next">다음 →</button>
+</div>
+
+<script>
+const NS='http://www.w3.org/2000/svg';
+const $=id=>document.getElementById(id);
+function el(tag,attrs,parent,text){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(text!=null)e.textContent=text;if(parent)parent.appendChild(e);return e;}
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const fmt=n=>n.toLocaleString('ko-KR');
+
+
+
+const LESSON='u1-knowledge-rules', PEP='https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec';
+
+/* 진도 보내기 ①: 누가 쓰는지 확인 (반·학번마다 퀴즈·메모를 따로 저장) */
+const WHO=(function(){
+  if(!PEP) return {off:true,sfx:''};
+  if(/[?&]preview(=|&|$)/.test(location.search)) return {preview:true,sfx:'@preview'};
+  let w=null; try{w=JSON.parse(sessionStorage.getItem('aiw-who')||'null');}catch(e){}
+  if(w&&w.teacher) return {preview:true,teacher:true,sfx:'@preview'};
+  if(!w||!/^\d{5}$/.test(w.no||'')) return {need:true,sfx:'@none'};
+  return {cls:w.cls,no:w.no,name:w.name,sfx:'@'+w.no};
+})();
+/* 퀴즈 (교과서 42~47쪽) — 화면마다 2문항, 오답도 교과서 표현에서 */
+const QUIZ={
+ 1:[{q:'교과서에서 자연어가 컴퓨터에 입력하여 활용하기에 적합하지 않다고 한 까닭은?',o:['단순하고 명확하며 완전하기 때문에','규칙적이고 체계적인 방법으로 표현되기 때문에','정형화되지 않고 불규칙적이어서 때때로 애매하게 표현되기 때문에'],a:2,w:'교과서 42쪽: 자연어는 정형화되지 않고 불규칙적이라 애매하게 표현될 때가 있어요. 단순·명확·완전, 규칙적·체계적은 컴퓨터를 위한 지식 표현이 갖추어야 할 점이에요.'},
+    {q:'노드와 노드 간의 관계를 나타내는 구조로, 관계를 링크로 표현하는 지식 표현 방법은?',o:['프레임','의미망','명제 논리'],a:1,w:'교과서 42쪽: 의미망은 지식을 연결된 형태로 구현할 수 있어 지식을 표현하는 데 적합해요. 프레임은 각 노드의 정보를 자세하게 기술해 의미망의 부족한 설명을 보완한 것이에요.'}],
+ 2:[{q:'다음 중 명제가 아닌 것은?',o:['토마토는 과일이다.','코로나19는 바이러스이다.','인공지능이 인간보다 똑똑해질 수 있을까?'],a:2,w:'교과서 43쪽: 「인공지능이 인간보다 똑똑해질 수 있을까?」는 참과 거짓을 판정할 수 없으므로 명제가 아니에요.'},
+    {q:'진리표에서 p가 참(T), q가 거짓(F)일 때 거짓(F)이 되는 것은?',o:['p∧q','~q','p∨q'],a:0,w:'p∧q는 둘 다 참이어야 참이에요. ~q는 q가 거짓이니 참, p∨q는 하나라도 참이면 참이에요.'}],
+ 3:[{q:'전제에 이미 포함된 결론을 도출해 내는 추론 방식으로, 새로운 것을 발견할 수 없다는 한계를 가진 것은?',o:['술어 논리','연역적 추론','귀납적 추론'],a:1,w:'교과서 44쪽: 연역적 추론의 한계예요. 귀납적 추론은 개별 사실에서 일반적 결론을 이끌어 내요.'},
+    {q:'「인공지능을 잘하면 프로그래밍을 잘한다.」와 「프로그래밍을 잘하면 수학을 잘한다.」에 삼단 논법을 적용한 결론은?',o:['인공지능을 잘하면 수학을 잘한다.','수학을 잘하면 인공지능을 잘한다.','프로그래밍을 잘하면 인공지능을 잘한다.'],a:0,w:'p→q, q→r에서 p→r을 얻어요(표 Ⅰ-4). 화살표 방향을 거꾸로 하면 안 돼요.'}],
+ 4:[{q:'「어떤 x에 대하여 ~인 x가 적어도 한 개 존재한다.」를 나타내는 기호는?',o:['∀x','∃x','p→q'],a:1,w:'∃x는 존재 기호, ∀x는 「모든 x에 대하여」를 뜻하는 전칭 기호예요(표 Ⅰ-5).'},
+    {q:'「모든 자율주행 자동차는 자동차이다.」를 술어 논리로 바르게 나타낸 것은?',o:['∃x {selfdrivingcar(x) → car(x)}','∀x {car(x) → selfdrivingcar(x)}','∀x {selfdrivingcar(x) → car(x)}'],a:2,w:'「모든」이므로 ∀x, 「자율주행 자동차이면 자동차이다」이므로 selfdrivingcar(x) → car(x)예요. 화살표를 거꾸로 하면 「모든 자동차는 자율주행 자동차이다」가 돼요.'}],
+ 5:[{q:'날씨 = 비, 바람의 세기 = 강함인 날, 최종 규칙으로 판단한 결과는?',o:['날씨 = 흐림에 해당하여 경기를 한다.','비이고 바람이 약한 경우에 해당하여 경기를 한다.','규칙의 조건이 모두 거짓이라 「경기를 한다」는 결론이 나오지 않는다.'],a:2,w:'(날씨 = 흐림), (맑음 ∧ 습도 = 보통), (비 ∧ 바람 = 약함) 중 어느 것도 참이 아니에요. 표의 6일, 14일이 이런 날이고 실제로 경기를 하지 않았어요.'},
+    {q:'교과서가 말한, 데이터에서 논리 표현으로 지식을 얻는 방법의 단점은?',o:['정확도가 높은 결과를 얻을 수 없다.','지식을 관리하는 사람이 통계적 작업을 통해 지식을 도출해야 한다.','테니스를 친 날을 설명하지 못한다.'],a:1,w:'교과서 47쪽: 사람이 통계적 작업으로 지식을 도출해야 하는 단점이 있지만, 정확도가 높은 결과를 얻을 수 있는 장점이 있어요.'}],
+ 6:[{q:'교과서 주요 개념 정리: 「명제 논리는 주어진 문장의 참 또는 거짓을 판별하고, 술어 논리는 ______.」',o:['참과 거짓은 판별하지 않고 한정자를 사용한다.','문장의 참과 거짓을 판별할 뿐만 아니라, 한정자를 포함한다.','주어와 술어를 구분하지 않고 문장을 하나의 식으로 본다.'],a:1,w:'「주어와 술어를 구분하지 않고 문장을 하나의 식으로 본다」는 명제 논리의 설명이에요. 술어 논리도 참과 거짓을 판별해요.'},
+    {q:'교과서에서 학자들이 인공지능의 발달을 위해 필요하다고 한 기술은?',o:['논리를 이용한 기호주의 기계학습으로 되돌아가는 기술','딥러닝을 선두로 한 연결주의 인공지능을 그대로 쓰는 기술','딥러닝에 기호주의적 방법을 결합한 하이브리드형 신경망 기술'],a:2,w:'교과서 46쪽: 두 가지 장점을 가진 하이브리드형 신경망 기술이 필요하다고 했어요.'}]
+};
+
+const QK='ds-u1-knowledge-rules-quiz'+WHO.sfx;
+const MK='ds-u1-knowledge-rules-memo'+WHO.sfx;
+let QS={}; try{QS=JSON.parse(localStorage.getItem(QK)||'{}')||{};}catch(e){QS={};}
+function saveQ(){try{localStorage.setItem(QK,JSON.stringify(QS));}catch(e){}}
+const TOTALQ=Object.values(QUIZ).reduce((a,b)=>a+b.length,0);
+function qperm(n,key){ let h=2166136261; for(const c of key){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0;}
+  const p=[...Array(n).keys()]; for(let i=n-1;i>0;i--){h=Math.imul(h^(h>>>15),2246822507)>>>0; h=(h+0x6D2B79F5)>>>0; const j=h%(i+1); [p[i],p[j]]=[p[j],p[i]];} return p; }
+function renderQuiz(box){
+  const k=box.dataset.quiz; box.innerHTML=`<div class="qh"><b>개념 퀴즈</b><span>${QUIZ[k].length}문제 · 고르면 바로 채점</span></div>`;
+  QUIZ[k].forEach((it,i)=>{
+    const id=k+'-'+i, d=document.createElement('div'); d.className='qi';
+    /* 보기 순서는 학생마다 섞되(새로 고쳐도 같은 순서), 저장·채점은 원래 번호로 */
+    const perm=qperm(it.o.length, QK+'|'+id);
+    d.innerHTML=`<div class="qq">${i+1}. ${it.q}</div><div class="opts">${perm.map(j=>`<button data-j="${j}">${it.o[j]}</button>`).join('')}</div><div class="why"></div>`;
+    const btn=j=>d.querySelector(`button[data-j="${j}"]`);
+    const mark=(j,anim)=>{
+      const bs=d.querySelectorAll('button'); bs.forEach(b=>b.disabled=true);
+      btn(it.a).classList.add('right'); if(j!==it.a){btn(j).classList.add('wrong'); if(anim) d.classList.add('shake');}
+      d.classList.add('answered', j===it.a?'correct':'incorrect');
+      d.querySelector('.why').textContent=(j===it.a?'정답. ':'정답은 「'+it.o[it.a]+'」. ')+it.w;
+    };
+    d.querySelectorAll('button').forEach(b=>b.onclick=()=>{const j=+b.dataset.j;QS[id]=j;saveQ();mark(j,true);updScore();});
+    if(QS[id]!=null && QS[id]<it.o.length) mark(QS[id],false);
+    box.appendChild(d);
+  });
+}
+
+/* 페이지 이동 */
+const pages=[...document.querySelectorAll('.page')];
+const stepBtns=pages.map((p,i)=>{const b=document.createElement('button');b.textContent=i?`${i}. ${p.dataset.name}`:'시작';b.onclick=()=>go(i);$('steps').appendChild(b);return b;});
+function updScore(){
+  let ok=0; for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{if(QS[k+'-'+i]===it.a) ok++;});
+  $('score').textContent=`퀴즈 ${ok} / ${TOTALQ}`;
+  pages.forEach((p,i)=>{const q=p.querySelector('[data-quiz]'); if(!q) return; const k=q.dataset.quiz; stepBtns[i].classList.toggle('done',QUIZ[k].every((_,j)=>QS[k+'-'+j]!=null));});
+  let h='<tr><th class="l">개념</th><th>맞힌 문제</th></tr>';
+  for(const k in QUIZ){const n=QUIZ[k].length, c=QUIZ[k].filter((it,i)=>QS[k+'-'+i]===it.a).length, a=QUIZ[k].filter((_,i)=>QS[k+'-'+i]!=null).length;
+    h+=`<tr><td class="l">${k}. ${pages[k].dataset.name}</td><td>${a?`<b class="${c===n?'ok':''}">${c} / ${n}</b>`:'<span class="muted">아직 안 풂</span>'}</td></tr>`;}
+  h+=`<tr><td class="l"><b>합계</b></td><td><b>${ok} / ${TOTALQ}</b></td></tr>`;
+  $('result').innerHTML=h;
+}
+let cur=-1;
+const onShow={};
+function go(i){
+  i=Math.max(0,Math.min(pages.length-1,i)); if(i===cur) return;
+  const back=i<cur; if(cur>=0) pages[cur].classList.remove('on','back');
+  pages[i].classList.add('on'); pages[i].classList.toggle('back',back);
+  document.documentElement.style.setProperty('--acc',pages[i].dataset.acc);
+  document.documentElement.style.setProperty('--acc-soft',pages[i].dataset.acc+'1a');
+  stepBtns.forEach((b,j)=>b.classList.toggle('on',j===i));
+  const sb=$('steps'), btn=stepBtns[i]; sb.scrollLeft=btn.offsetLeft-sb.clientWidth/2+btn.clientWidth/2;
+  $('prog').style.width=(i/(pages.length-1)*100)+'%';
+  $('pg').textContent=`${i} / ${pages.length-1}`;
+  $('prev').style.visibility=i?'visible':'hidden'; $('next').style.visibility=i<pages.length-1?'visible':'hidden';
+  cur=i; try{history.replaceState(null,'','#p'+i);}catch(e){} window.scrollTo(0,0);
+  if(onShow[i]) onShow[i]();
+}
+$('prev').onclick=()=>go(cur-1); $('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{if(e.defaultPrevented)return; if(e.target.matches&&e.target.matches('input,select,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1);});
+document.querySelectorAll('.gcard').forEach(g=>g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();g.click();}}));
+document.querySelectorAll('[data-quiz]').forEach(renderQuiz);
+$('quizReset').onclick=()=>{QS={};saveQ();document.querySelectorAll('[data-quiz]').forEach(renderQuiz);updScore();};
+
+
+/* 공용 부품: 메모·카드·분류 게임·탭·투표·칩 */
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];}return a;};
+const store={get(k,d){try{const v=JSON.parse(localStorage.getItem(k));return v==null?d:v;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+
+/* 메모: data-memo가 있는 입력칸은 이 기기에 저장 */
+let MEMO=store.get(MK,{});
+function bindMemos(){
+  document.querySelectorAll('[data-memo]').forEach(t=>{
+    const k=t.dataset.memo; if(MEMO[k]!=null) t.value=MEMO[k];
+    let tm; t.addEventListener('input',()=>{MEMO[k]=t.value; clearTimeout(tm); tm=setTimeout(()=>{store.set(MK,MEMO); const s=t.parentElement.querySelector('.saved'); if(s){s.textContent='이 기기에 저장됨'; setTimeout(()=>s.textContent='',1400);} t.dispatchEvent(new Event('memo'));},300);});
+  });
+}
+function memoSummary(box,list){
+  const h=list.map(([k,label])=>{const v=(MEMO[k]||'').trim(); return `<dt>${esc(label)}</dt><dd class="${v?'':'e'}">${v?esc(v):'(아직 안 씀)'}</dd>`;}).join('');
+  $(box).innerHTML=`<h4>오늘 화면에 적어 둔 내 메모</h4><dl>${h}</dl>`;
+}
+
+/* 뒤집는 카드 */
+function flipCards(box,items){
+  $(box).innerHTML=items.map(c=>`<div class="tcard" tabindex="0"><div class="in"><div class="f"><i>${c.ic||''}</i><b>${c.f}</b>${c.s?`<small>${c.s}</small>`:''}</div><div class="b">${c.b}${c.x?`<div class="x">${c.x}</div>`:''}</div></div></div>`).join('');
+  $(box).querySelectorAll('.tcard').forEach(t=>{const f=()=>t.classList.toggle('flip'); t.onclick=f; t.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f();}};});
+}
+
+/* 분류 게임: 문장을 보고 알맞은 묶음 고르기 */
+function sorter(box,cfg){
+  const B=$(box);
+  function start(){
+    const order=shuffle(cfg.items.map((_,i)=>i)); let pos=0, ok=0; const placed=cfg.cats.map(()=>[]);
+    B.innerHTML=`<div class="sit"><div class="cnt"></div><div class="ic"></div><div class="sq"></div><div class="row btns">${cfg.cats.map((c,j)=>`<button class="btn sm cat" style="--k:${c.k}" data-j="${j}">${c.n}</button>`).join('')}</div><div class="fb"></div><div class="row nx" style="margin-top:8px"></div></div><div class="board" style="--n:${cfg.cats.length}">${cfg.cats.map(c=>`<div style="--k:${c.k}"><b>${c.n}</b></div>`).join('')}</div>`;
+    const sq=B.querySelector('.sq'), ic=B.querySelector('.ic'), cnt=B.querySelector('.cnt'), fb=B.querySelector('.fb'), nx=B.querySelector('.nx'), btns=[...B.querySelectorAll('.cat')], cols=[...B.querySelectorAll('.board>div')];
+    function show(){
+      if(pos>=order.length){cnt.textContent=''; ic.textContent='🎉'; sq.innerHTML=`${order.length}개 중 <b>${ok}개</b>를 바로 맞혔어요.`; fb.innerHTML=cfg.end||''; btns.forEach(b=>b.style.display='none'); nx.innerHTML='<button class="btn ghost sm">처음부터 다시</button>'; nx.firstChild.onclick=start; return;}
+      const it=cfg.items[order[pos]]; cnt.textContent=`${pos+1} / ${order.length}`; ic.textContent=it.ic||''; sq.innerHTML=it.t; fb.textContent=''; nx.innerHTML=''; btns.forEach(b=>{b.disabled=false;b.style.display='';});
+    }
+    btns.forEach(b=>b.onclick=()=>{
+      const it=cfg.items[order[pos]], j=+b.dataset.j, right=j===it.c; if(right) ok++;
+      btns.forEach(x=>x.disabled=true);
+      fb.innerHTML=(right?'<span class="ok">맞아요!</span> ':`<span class="ng">아쉬워요.</span> 정답은 <b>${cfg.cats[it.c].n}</b>. `)+(it.w||'');
+      const s=document.createElement('span'); s.innerHTML=it.short||it.t; if(!right) s.className='x'; cols[it.c].appendChild(s);
+      nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{pos++;show();}; nx.firstChild.focus();
+    });
+    show();
+  }
+  start();
+}
+
+/* 탭 보기: 버튼을 누르면 내용 바꾸기 */
+function tabs(btnBox,viewBox,items,render){
+  $(btnBox).innerHTML=items.map((it,i)=>`<button data-i="${i}"><span class="e">${it.ic||''}</span><b>${it.n}</b></button>`).join('');
+  const bs=[...$(btnBox).querySelectorAll('button')];
+  const pick=i=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); $(viewBox).innerHTML=render(items[i],i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i)); pick(0);
+}
+
+/* 투표: 고르면 결과 보이기 (이 기기에만 저장) */
+function vote(box,key,opts,onPick){
+  const B=$(box); B.innerHTML=opts.map((o,i)=>`<button data-i="${i}">${o[0]}${o[1]?`<small>${o[1]}</small>`:''}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')];
+  const pick=(i,save)=>{bs.forEach((b,j)=>b.classList.toggle('on',i===j)); if(save){MEMO[key]=opts[i][0]; store.set(MK,MEMO);} onPick&&onPick(i);};
+  bs.forEach(b=>b.onclick=()=>pick(+b.dataset.i,true));
+  const prev=opts.findIndex(o=>o[0]===MEMO[key]); if(prev>=0) pick(prev,false);
+}
+function chips(box,key,opts,multi){
+  const B=$(box); B.classList.add('chk'); B.innerHTML=opts.map(o=>`<button>${o}</button>`).join('');
+  const bs=[...B.querySelectorAll('button')]; let sel=(MEMO[key]||'').split(' · ').filter(Boolean);
+  const draw=()=>bs.forEach(b=>b.classList.toggle('on',sel.includes(b.textContent)));
+  bs.forEach(b=>b.onclick=()=>{const t=b.textContent; if(multi) sel=sel.includes(t)?sel.filter(x=>x!==t):[...sel,t]; else sel=sel.includes(t)?[]:[t]; MEMO[key]=sel.join(' · '); store.set(MK,MEMO); draw(); B.dispatchEvent(new Event('memo'));});
+  draw();
+}
+/* 받침에 따라 조사 고르기: jo('신하','을','를') */
+const jo=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-0xAC00; return w+(c>=0&&c<11172&&c%28?a:b);};
+
+/* 01 지식 표현 방법 (교과서 42쪽 날개 용어 · 43~45쪽) */
+flipCards('krepCards',[
+  {ic:'📋',f:'규칙 기반 전문가 시스템',s:'rule-based expert system',b:'특정 영역의 문제를 해결하기 위해 수준 높은 지식을 적용한 인공지능 시스템이다.',x:'지식을 「만약 ~이면 ~이다」 꼴의 규칙으로 담아요.'},
+  {ic:'🕸️',f:'의미망',s:'semantic network',b:'노드와 노드 간의 관계를 나타내는 구조로, 관계는 링크로 표현한다.',x:'지식을 연결된 형태로 구현할 수 있기 때문에 지식을 표현하는 데 적합하다.'},
+  {ic:'🗃️',f:'프레임',s:'frame',b:'설명이 다소 부족하다는 노드의 단점을 보완한 것으로, 각 노드의 정보가 자세하게 기술되어 있다.'},
+  {ic:'🔣',f:'명제 논리',s:'02에서 배워요',b:'참인지 거짓인지를 판별할 수 있는 문장(명제)을 p, q 같은 기호와 ~ ∧ ∨ → ↔ 로 표현한다.'},
+  {ic:'∀',f:'술어 논리',s:'04에서 배워요',b:'한정자(∀, ∃)와 술어를 사용하여 문장의 문법적 구조와 의미를 포함한 논리식으로 표현한다.'},
+]);
+
+/* 01 의미망 잇기: 두 노드를 차례로 눌러 관계 고르기 (교과서 42쪽 그림) */
+(function(){
+  const N={sj:['세종대왕',190,165],jh:['집현전',90,55],gj:['군주',320,55],sh:['신하',400,165],hh:['황희',530,95],kj:['김종서',530,240],hm:['훈민정음',190,280]};
+  const FACTS=[['cowork','sj','jh'],['is_a','sj','gj'],['has','sj','sh'],['is_a','hh','sh'],['is_a','kj','sh'],['make','sj','hm']];
+  const REL={cowork:'협업하다',is_a:'~이다',has:'가지다',make:'만들다'};
+  const box=$('netSvg'), pick=$('netPick'), fb=$('netFb');
+  const svg=el('svg',{viewBox:'0 0 620 320',role:'img','aria-label':'의미망 만들기 판'},box);
+  const defs=el('defs',{},svg), mk=el('marker',{id:'krArrow',viewBox:'0 0 10 10',refX:'9',refY:'5',markerWidth:'7',markerHeight:'7',orient:'auto-start-reverse'},defs);
+  el('path',{d:'M0 0 L10 5 L0 10 z',fill:'#2f6fd0'},mk);
+  const gE=el('g',{},svg), gN=el('g',{},svg);
+  const size={}, nodeG={};
+  let sel=null, done=[];
+  for(const k in N){
+    const [t,x,y]=N[k], w=t.length*17+26, h=38; size[k]=[w/2,h/2];
+    const g=el('g',{class:'kr-node',tabindex:'0',role:'button','aria-label':t},gN);
+    el('rect',{x:x-w/2,y:y-h/2,width:w,height:h,rx:19},g);
+    el('text',{x,y,dy:'.35em','text-anchor':'middle'},g,t);
+    g.addEventListener('click',()=>tap(k));
+    g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();tap(k);}});
+    nodeG[k]=g;
+  }
+  function edgePt(a,b){ /* a 상자의 테두리에서 b 쪽으로 나가는 점 */
+    const [x1,y1]=[N[a][1],N[a][2]], [x2,y2]=[N[b][1],N[b][2]], dx=x2-x1, dy=y2-y1, [hw,hh]=size[a];
+    const t=Math.min(dx?hw/Math.abs(dx):1e9, dy?hh/Math.abs(dy):1e9)+.04;
+    return [x1+dx*t, y1+dy*t];
+  }
+  function drawEdge(r,a,b){
+    const [x1,y1]=edgePt(a,b), [x2,y2]=edgePt(b,a);
+    el('line',{x1,y1,x2,y2,class:'kr-edge','marker-end':'url(#krArrow)'},gE);
+    el('text',{x:(x1+x2)/2,y:(y1+y2)/2-6,'text-anchor':'middle',class:'kr-elab'},gE,r);
+  }
+  const nm=k=>N[k][0];
+  function mark(){ for(const k in nodeG) nodeG[k].classList.toggle('on',k===sel); }
+  function code(){
+    $('netCode').textContent=done.length?done.map(([r,a,b])=>`${r}(${nm(a)}, ${nm(b)})`).join('\n'):'(아직 연결한 관계가 없어요)';
+  }
+  function tap(k){
+    if(done.length===FACTS.length) return;
+    if(sel===null){ sel=k; mark(); pick.innerHTML=''; fb.innerHTML=`<b>${nm(k)}</b>에서 시작해요. 이어질 노드를 눌러 주세요. (같은 노드를 다시 누르면 취소)`; return; }
+    if(sel===k){ sel=null; mark(); fb.textContent=''; pick.innerHTML=''; return; }
+    const a=sel, b=k;
+    pick.innerHTML=`<span class="kr-lab">${nm(a)} → ${nm(b)} : 어떤 관계일까요?</span><div class="row">${Object.keys(REL).map(r=>`<button class="btn sm ghost" data-r="${r}"><b>${r}</b> ${REL[r]}</button>`).join('')}<button class="btn sm ghost" data-r="">취소</button></div>`;
+    fb.textContent='';
+    pick.querySelectorAll('button').forEach(bt=>bt.onclick=()=>choose(a,b,bt.dataset.r));
+  }
+  function choose(a,b,r){
+    sel=null; mark(); pick.innerHTML='';
+    if(!r){ fb.textContent=''; return; }
+    if(done.some(f=>f[1]===a&&f[2]===b)){ fb.innerHTML='이미 이어 둔 관계예요. 다른 노드를 이어 보세요.'; return; }
+    const f=FACTS.find(f=>f[1]===a&&f[2]===b), rev=FACTS.find(f=>f[1]===b&&f[2]===a);
+    if(f&&f[0]===r){
+      done.push(f); drawEdge(r,a,b); code();
+      fb.innerHTML=`<span class="ok">맞아요!</span> <span class="mono">${r}(${nm(a)}, ${nm(b)})</span> · ${done.length} / ${FACTS.length}`;
+      if(done.length===FACTS.length){ fb.innerHTML=`<div class="kr-end">🎉 자연어 문장 세 개가 <b>노드 7개와 링크 6개</b>, <b>코딩 6줄</b>이 되었어요. 문장에서는 「그중 황희와 김종서가 있다」처럼 누가 무엇인지 해석해야 했지만, 의미망에서는 <b>관계가 이름(술어)과 방향으로 정해져</b> 있어요. 그래서 컴퓨터는 「신하」 노드로 들어오는 is_a 링크를 따라가 황희, 김종서를 찾을 수 있어요.<br><button class="btn sm ghost" id="netAgain" style="margin-top:8px">처음부터 다시</button></div>`; $('netAgain').onclick=reset; }
+      return;
+    }
+    if(f){ fb.innerHTML=`<span class="ng">관계 이름을 다시 골라 보세요.</span> 자연어 문장에서 <b>${jo(nm(a),'과','와')}</b> <b>${nm(b)}</b> 사이에 어떤 말이 쓰였는지 찾아봐요.`; return; }
+    if(rev){ fb.innerHTML=`<span class="ng">방향을 바꿔 보세요.</span> 두 노드는 이어지지만, 의미망 코딩은 <span class="mono">관계(주인공, 대상)</span> 순서예요. <b>${jo(nm(b),'을','를')}</b> 먼저 누르고 <b>${jo(nm(a),'을','를')}</b> 나중에 눌러요.`; return; }
+    fb.innerHTML=`<span class="ng">교과서 의미망에는 없는 링크예요.</span> 교과서 그림처럼 문장에 관계 말(협업하다·~이다·데리고 있다·만들다)로 직접 나온 것만 이어 봐요.`;
+  }
+  function reset(){ done=[]; sel=null; while(gE.firstChild) gE.removeChild(gE.firstChild); mark(); code(); fb.textContent=''; pick.innerHTML=''; }
+  code();
+})();
+
+/* 02 명제일까? */
+sorter('propGame',{
+  cats:[{n:'✅ 명제',k:'#1f9d74'},{n:'❌ 명제가 아님',k:'#d64535'}],
+  items:[
+    {t:'코로나19는 바이러스이다.',short:'코로나19는 바이러스이다.',c:0,ic:'🦠',w:'교과서 43쪽 사례: 참과 거짓을 판별할 수 있으므로 명제예요.'},
+    {t:'토마토는 과일이다.',short:'토마토는 과일이다.',c:0,ic:'🍅',w:'교과서 43쪽 사례: 참과 거짓을 판별할 수 있으므로 명제예요.'},
+    {t:'인공지능이 인간보다 똑똑해질 수 있을까?',short:'똑똑해질 수 있을까?',c:1,ic:'❓',w:'교과서 43쪽 사례: 묻는 문장이라 참과 거짓을 판정할 수 없어요.'},
+    {t:'신호등이 초록색이다.',short:'신호등이 초록색이다.',c:0,ic:'🚦',w:'교과서 43쪽의 p예요. 지금 신호등을 보면 참인지 거짓인지 가릴 수 있어요.'},
+    {t:'2는 홀수이다.',short:'2는 홀수이다.',c:0,ic:'2️⃣',w:'거짓인 문장이에요. 하지만 「거짓」이라고 판별할 수 있으니 명제예요.'},
+    {t:'창문을 닫아라.',short:'창문을 닫아라.',c:1,ic:'🪟',w:'시키는 문장이라 참·거짓을 따질 수 없어요.'},
+    {t:'이 노래는 정말 좋다.',short:'이 노래는 정말 좋다.',c:1,ic:'🎵',w:'좋은지는 사람마다 달라 참·거짓을 판별할 수 없어요. 뜻이 논리적으로 분명하지 않아요.'},
+  ],
+  end:'명제를 가르는 기준은 「참인가?」가 아니라 <b>「참인지 거짓인지 판별할 수 있는가?」</b>예요. 거짓인 문장도 명제예요.'
+});
+
+/* 02 진리표 (표 Ⅰ-2) */
+(function(){
+  let p=true, q=true;
+  const T=b=>b?'T':'F';
+  const COLS=[['~p',(p,q)=>!p,'신호등이 초록색이 아니다.'],['~q',(p,q)=>!q,'자동차가 전진하지 않는다.'],['p∧q',(p,q)=>p&&q,'신호등이 초록색이다. 그리고 자동차가 전진한다.'],['p∨q',(p,q)=>p||q,'신호등이 초록색이다. 또는 자동차가 전진한다.'],['p→q',(p,q)=>!p||q,'만약 신호등이 초록색이면 자동차가 전진한다.'],['p↔q',(p,q)=>p===q,'신호등이 초록색이면 자동차가 전진하고, 자동차가 전진하면 신호등이 초록색이다.']];
+  const ROWS=[[true,true],[true,false],[false,true],[false,false]];
+  function draw(){
+    $('truthCtl').innerHTML=`<button class="btn sm ${p?'':'ghost'}" id="tP">p 「신호등이 초록색이다.」 ${p?'참(T)':'거짓(F)'}</button><button class="btn sm ${q?'':'ghost'}" id="tQ">q 「자동차가 전진한다.」 ${q?'참(T)':'거짓(F)'}</button>`;
+    $('tP').onclick=()=>{p=!p;draw();}; $('tQ').onclick=()=>{q=!q;draw();};
+    $('truthTbl').innerHTML='<tr><th>p</th><th>q</th>'+COLS.map(c=>`<th>${c[0]}</th>`).join('')+'</tr>'+
+      ROWS.map(([a,b])=>`<tr class="${a===p&&b===q?'on':''}"><td>${T(a)}</td><td>${T(b)}</td>${COLS.map(c=>`<td class="${c[1](a,b)?'t':'f'}">${T(c[1](a,b))}</td>`).join('')}</tr>`).join('');
+    $('truthNow').innerHTML=COLS.filter(c=>c[0]!=='~q').map(c=>{const v=c[1](p,q);return `<div><b class="mono">${c[0]}</b> ${c[2]} <span class="${v?'ok':'ng'}">→ ${v?'참':'거짓'}</span></div>`;}).join('');
+  }
+  draw();
+})();
+
+/* 03 스스로 해결하기: 거짓말쟁이 찾기 (교과서 44쪽) */
+(function(){
+  const P=[['진영','유미는 거짓말쟁이입니다.',L=>L==='유미'],['유미','거짓말쟁이는 서연이입니다.',L=>L==='서연'],['승우','나는 거짓말쟁이가 아닙니다.',L=>L!=='승우'],['서연','유미는 거짓말을 합니다.',L=>L==='유미']];
+  const B=$('liar'), tried=new Set();
+  function draw(L){
+    let h=`<div class="row" style="margin-bottom:10px">${P.map(([n])=>`<button class="btn sm ${n===L?'':'ghost'}" data-n="${n}">${jo(n,'이','가')} 거짓말쟁이라면?</button>`).join('')}</div>`;
+    if(L){
+      tried.add(L);
+      let bad=0;
+      const rows=P.map(([n,s,f])=>{const v=f(L), must=n!==L, ok=v===must; if(!ok) bad++;
+        return `<tr class="${ok?'':'bad'}"><td><b>${n}</b>${n===L?' <small>(거짓말쟁이로 가정)</small>':''}</td><td class="l">「${s}」</td><td>${v?'참':'거짓'}</td><td>${must?'참이어야 함':'거짓이어야 함'}</td><td>${ok?'<span class="ok">들어맞음</span>':'<span class="ng">모순</span>'}</td></tr>`;}).join('');
+      h+=`<div style="overflow-x:auto"><table class="kr-liar"><tr><th>친구</th><th class="l">한 말</th><th>가정하면 이 말은</th><th>이 친구의 말은</th><th>판정</th></tr>${rows}</table></div>`;
+      h+=`<div class="kr-fb">${bad?`<span class="ng">모순 ${bad}곳</span> · ${jo(L,'이','가')} 거짓말쟁이라고 하면 앞뒤가 맞지 않아요. 다른 친구로 가정해 보세요.`:`<span class="ok">모순 없음!</span> ${jo(L,'이','가')} 거짓말쟁이라고 하면 네 문장이 모두 들어맞아요.${tried.size<4?' 다른 친구로 가정해도 들어맞는지 마저 확인해 보세요.':''}`}</div>`;
+      if(tried.size===4) h+=`<div class="kr-end">네 가지 가정을 모두 따져 보니 모순이 없는 경우는 <b>유미</b>뿐이에요. 문장 하나하나를 참·거짓으로 따지고, 「거짓말쟁이는 한 명」이라는 규칙과 맞대어 <b>새로운 사실(거짓말쟁이는 유미)</b>을 이끌어 냈어요. 이것이 추론이에요.</div>`;
+    }
+    B.innerHTML=h;
+    B.querySelectorAll('button[data-n]').forEach(b=>b.onclick=()=>draw(b.dataset.n));
+  }
+  draw(null);
+})();
+
+/* 04 술어 논리로 바꾸기 */
+(function(){
+  const IT=[
+    {s:'현준은 학생이다.',p:'p',o:['student(현준)','∀x student(x)','∃x student(x)'],a:0,w:'특정한 한 사람(현준)에 대한 문장이라 한정자가 필요 없어요. 술어 student에 현준을 넣어요.'},
+    {s:'모든 자율주행 자동차는 자동차이다.',p:'q',o:['∀x {car(x) → selfdrivingcar(x)}','∀x {selfdrivingcar(x) → car(x)}','∃x {selfdrivingcar(x) ∧ car(x)}'],a:1,w:'교과서 45쪽 예시예요. 「모든」이므로 ∀x, 「x가 자율주행 자동차이면 x는 자동차이다」이므로 selfdrivingcar(x) → car(x)예요.'},
+    {s:'어떤 자동차는 자율주행 자동차이다.',p:'r',o:['∀x {car(x) → selfdrivingcar(x)}','selfdrivingcar(자동차)','∃x {car(x) ∧ selfdrivingcar(x)}'],a:2,w:'「어떤」이므로 존재 기호 ∃x를 써요. 「자동차이면서 자율주행 자동차인 x가 적어도 한 개 있다」는 뜻이라 ∧로 이어요. ∀x를 쓰면 모든 자동차가 자율주행 자동차라는 뜻이 돼요.'},
+    {s:'모든 학생은 인공지능 기초를 배운다.',p:'s',o:['∃x {student(x) ∧ learnai(x)}','∀x {student(x) → learnai(x)}','learnai(학생)'],a:1,w:'「모든」이므로 ∀x, 「x가 학생이면 x는 인공지능 기초를 배운다」로 읽어요.'},
+    {s:'어떤 학생은 프로그래밍을 잘한다.',p:'t',o:['∃x {student(x) ∧ goodcoding(x)}','∀x {student(x) → goodcoding(x)}','goodcoding(학생)'],a:0,w:'「어떤」이므로 ∃x예요. 프로그래밍을 잘하는 학생이 적어도 한 명 있다는 뜻이에요.'},
+  ];
+  const B=$('predGame'); let i=0, ok=0;
+  function show(){
+    if(i>=IT.length){
+      B.innerHTML=`<div class="kr-end">🎉 ${IT.length}문장 중 <b>${ok}개</b>를 바로 맞혔어요.<div style="overflow-x:auto"><table class="kr-q" style="margin-top:8px"><tr><th class="l">문장</th><th>명제 논리</th><th class="l">술어 논리</th></tr>${IT.map(t=>`<tr><td class="l">${t.s}</td><td class="mono2">${t.p}</td><td class="l mono2">${t.o[t.a]}</td></tr>`).join('')}</table></div><p style="margin-bottom:0">명제 논리에서는 다섯 문장이 모두 <b>기호 하나</b>일 뿐이라 「모든」과 「어떤」의 차이가 보이지 않아요. 술어 논리에서는 <b>∀x, ∃x</b>와 술어 덕분에 그 차이가 식에 드러나요.</p><button class="btn ghost sm" id="predAgain">처음부터 다시</button></div>`;
+      $('predAgain').onclick=()=>{i=0;ok=0;show();}; return;
+    }
+    const t=IT[i], ord=shuffle(t.o.map((_,j)=>j));
+    B.innerHTML=`<div class="kr-pq"><div class="cnt">${i+1} / ${IT.length}</div><div class="s">「${t.s}」</div>
+      <div class="kr-cmp"><div><span class="kr-lab">명제 논리로 적으면</span><b class="mono2 big2">${t.p}</b><small>문장 전체가 기호 하나예요.</small></div>
+      <div><span class="kr-lab">술어 논리로 적으면?</span><div class="opts">${ord.map(j=>`<button class="kr-opt" data-j="${j}">${t.o[j]}</button>`).join('')}</div></div></div>
+      <div class="kr-fb"></div><div class="row nx"></div></div>`;
+    let first=true;
+    B.querySelectorAll('.kr-opt').forEach(b=>b.onclick=()=>{
+      const j=+b.dataset.j, f=B.querySelector('.kr-fb');
+      if(j===t.a){ if(first) ok++; B.querySelectorAll('.kr-opt').forEach(x=>x.disabled=true); b.classList.add('right'); f.innerHTML='<span class="ok">맞아요!</span> '+t.w;
+        const nx=B.querySelector('.nx'); nx.innerHTML='<button class="btn sm">다음 →</button>'; nx.firstChild.onclick=()=>{i++;show();}; nx.firstChild.focus(); }
+      else { first=false; b.classList.add('wrong'); b.disabled=true; f.innerHTML='<span class="ng">다시 생각해 봐요.</span> 「모든」인지 「어떤」인지, 무엇이 무엇을 포함하는지 살펴봐요.'; }
+    });
+  }
+  show();
+})();
+
+/* 05 테니스 경기 유무 데이터셋 (표 Ⅰ-6) → 규칙 만들기 */
+(function(){
+  const A=['날씨','기온','습도','바람의 세기'];
+  const V=[['맑음','흐림','비'],['더움','온화함','추움'],['높음','보통'],['강함','약함']];
+  const D=[[1,'맑음','더움','높음','약함',0],[2,'맑음','더움','높음','강함',0],[3,'흐림','더움','높음','약함',1],[4,'비','온화함','높음','약함',1],[5,'비','추움','보통','약함',1],[6,'비','추움','보통','강함',0],[7,'흐림','추움','보통','강함',1],[8,'맑음','온화함','높음','약함',0],[9,'맑음','추움','보통','약함',1],[10,'비','온화함','보통','약함',1],[11,'맑음','온화함','보통','강함',1],[12,'흐림','온화함','높음','강함',1],[13,'흐림','더움','보통','약함',1],[14,'비','온화함','높음','강함',0]];
+  const STEPS=[
+    {title:'1단계 · 14일 전체에서 살펴보기',only:null,skip:[],ans:[0,'흐림'],clause:'(날씨 = 흐림)',why:'날씨가 흐린 날은 4일 모두 테니스 경기를 했어요(4/4). 논리로 표현하면 「테니스 경기를 한다. ← (날씨 = 흐림)」이에요.'},
+    {title:'2단계 · 날씨가 ‘맑음’인 5일만 살펴보기',tip:'정확도가 같으면 <b>경기를 한 날을 더 많이 설명하는 조건</b>을 골라요.<br><small>교과서 47쪽은 기온 = 추움을 1/2로 적어 습도 = 보통만 2/2예요. 표를 직접 세면 추움은 1/1이에요.</small>',only:[0,'맑음'],skip:[0],ans:[2,'보통'],clause:'{(날씨 = 맑음) ∧ (습도 = 보통)}',why:'날씨가 맑은 날 중 습도가 ‘보통’인 날(9일, 11일)은 모두 경기를 했어요(2/2). 이제 규칙은 「흐리거나, 맑고 습도가 보통인 경우」예요.'},
+    {title:'3단계 · 날씨가 ‘비’인 5일만 살펴보기',only:[0,'비'],skip:[0],ans:[3,'약함'],clause:'{(날씨 = 비) ∧ (바람 = 약함)}',why:'비가 온 날 중 바람이 ‘약함’인 날(4일, 5일, 10일)은 모두 경기를 했어요(3/3).'},
+  ];
+  let step=0, clauses=[], tries=0;
+  const rowsOf=s=>D.filter(r=>!s.only||r[1+s.only[0]]===s.only[1]);
+  const fire=r=>[r[1]==='흐림', r[1]==='맑음'&&r[3]==='보통', r[1]==='비'&&r[4]==='약함'];
+  const predict=r=>fire(r).slice(0,clauses.length).some(Boolean);
+  function table(){
+    const s=STEPS[step], inSet=s?new Set(rowsOf(s).map(r=>r[0])):null, fin=clauses.length===3;
+    $('tnTable').innerHTML=`<tr><th>Day</th>${A.map(a=>`<th>${a}</th>`).join('')}<th>경기 유무</th>${fin?'<th>규칙의 판단</th>':''}</tr>`+D.map(r=>{
+      const cov=clauses.length&&predict(r), cls=[inSet&&!inSet.has(r[0])?'dim':'', cov?'hit':''].join(' ');
+      return `<tr class="${cls}"><td>${r[0]}</td>${r.slice(1,5).map(v=>`<td>${v}</td>`).join('')}<td class="${r[5]?'o':'x'}">${r[5]?'○':'×'}</td>${fin?`<td>${predict(r)?'○':'×'} ${predict(r)===!!r[5]?'<span class="ok">✓</span>':'<span class="ng">✗</span>'}</td>`:''}</tr>`;}).join('');
+  }
+  function rule(){
+    $('tnRule').innerHTML='테니스 경기를 한다. ← '+(clauses.length?clauses.map((c,i)=>`<span class="cl c${i}">${c}</span>`).join(' ∨ '):'<span class="muted">(텅 빈 규칙)</span>');
+  }
+  function ratioBtns(s){
+    const rows=rowsOf(s);
+    return A.map((a,ai)=>s.skip.includes(ai)?'':`<div class="kr-attr"><b>${a}</b>${V[ai].map(v=>{const sub=rows.filter(r=>r[1+ai]===v); if(!sub.length) return ''; const y=sub.filter(r=>r[5]).length;
+      return `<button class="kr-ratio" data-a="${ai}" data-v="${v}">${v} <span>${y}/${sub.length}</span><i style="width:${Math.round(y/sub.length*100)}%"></i></button>`;}).join('')}</div>`).join('');
+  }
+  function draw(msg){
+    table(); rule();
+    const B=$('tnStep');
+    if(step>=STEPS.length){
+      B.innerHTML=`<div class="kr-end">🎉 규칙 완성! 이 규칙은 데이터에서 테니스를 친 <b>9일 모두</b>에 적용할 수 있고, 경기를 하지 않은 5일에는 하나도 맞지 않아요. 표의 「규칙의 판단」 칸에서 14일이 모두 ✓인지 확인해 보세요. 이렇게 주어진 데이터에서 논리 표현을 적용하여 <b>지능적 행위에 대한 지식</b>을 얻을 수 있어요.<br><button class="btn ghost sm" id="tnAgain" style="margin-top:8px">규칙 처음부터 다시 만들기</button></div>`;
+      $('tnAgain').onclick=()=>{step=0;clauses=[];tries=0;draw();tryDraw();}; return;
+    }
+    const s=STEPS[step];
+    B.innerHTML=`<div class="kr-steph">${s.title} — 정확도가 가장 높은 조건은?</div>${s.tip?`<div class="kr-tip">${s.tip}</div>`:''}<div class="kr-attrs">${ratioBtns(s)}</div><div class="kr-fb">${msg||''}</div>`;
+    B.querySelectorAll('.kr-ratio').forEach(b=>b.onclick=()=>choose(+b.dataset.a,b.dataset.v));
+  }
+  function choose(ai,v){
+    const s=STEPS[step];
+    if(ai===s.ans[0]&&v===s.ans[1]){ clauses.push(s.clause); step++; tries=0; draw(); if(step<STEPS.length) $('tnStep').querySelector('.kr-fb').innerHTML=`<span class="ok">좋아요!</span> 앞 단계: ${s.why}`; tryDraw(); return; }
+    tries++;
+    let m;
+    if(step===1&&ai===1&&v==='추움') m='<span class="ng">정확도는 1/1로 같은 100%지만</span>, 경기를 한 맑은 날 중 <b>하루(9일)</b>만 설명해요. 정확도가 같을 때는 경기를 한 날(9일, 11일)을 더 많이 설명하는 조건을 골라요.';
+    else m=`<span class="ng">다시 비교해 보세요.</span> 분수가 1에 가까울수록(막대가 길수록) 정확도가 높아요.${tries>=2?` 힌트: <b>${A[s.ans[0]]}</b> 쪽을 보세요.`:''}`;
+    $('tnStep').querySelector('.kr-fb').innerHTML=m;
+  }
+  /* 「오늘 테니스 칠까?」 판단기 */
+  const pickV=['맑음','더움','높음','약함'];
+  function tryDraw(){
+    const B=$('tnTry');
+    const g=A.map((a,ai)=>`<div class="kr-attr"><b>${a}</b>${V[ai].map(v=>`<button class="kr-chip ${pickV[ai]===v?'on':''}" data-a="${ai}" data-v="${v}">${v}</button>`).join('')}</div>`).join('');
+    const r=[0,...pickV,0], f=fire(r), names=['(날씨 = 흐림)','{(날씨 = 맑음) ∧ (습도 = 보통)}','{(날씨 = 비) ∧ (바람 = 약함)}'];
+    const n=clauses.length;
+    const lines=names.map((c,i)=>i<n?`<li class="${f[i]?'yes':'no'}">${c} → <b>${f[i]?'참':'거짓'}</b></li>`:`<li class="muted">${c} — 아직 규칙에 없어요</li>`).join('');
+    const yes=f.slice(0,n).some(Boolean), same=D.find(d=>d[1]===pickV[0]&&d[2]===pickV[1]&&d[3]===pickV[2]&&d[4]===pickV[3]);
+    B.innerHTML=`<div class="kr-attrs">${g}</div><div class="kr-trace"><span class="kr-lab">규칙을 따라가 보면</span><ol>${lines}</ol>
+      <div class="kr-verdict ${yes?'y':'n'}">${n?(yes?'🎾 <b>테니스 경기를 한다.</b> — 위에서 참이 된 조건이 근거예요.':'🙅 규칙의 조건이 모두 거짓이라 「테니스 경기를 한다」는 결론이 나오지 않아요. → <b>경기를 하지 않는다</b>고 판단해요.'):'규칙을 먼저 만들어 보세요.'}</div>
+      <p class="note" style="margin-bottom:0">기온은 규칙에 쓰이지 않았어요.${same?` 표의 ${same[0]}일과 같은 날씨예요(실제 ${same[5]?'○':'×'}).`:' 표에 없는 날씨 조합이에요. 규칙으로 처음 보는 날도 판단할 수 있어요.'}</p></div>`;
+    B.querySelectorAll('.kr-chip').forEach(b=>b.onclick=()=>{pickV[+b.dataset.a]=b.dataset.v; tryDraw();});
+  }
+  draw(); tryDraw();
+})();
+
+/* 06 우회전 규칙 판단기 (교과서 47쪽 · 부록 221쪽 교차로 통행 방법) */
+(function(){
+  const S={sig:'적색',fcw:'녹색',rcw:'녹색',ped:'없음'};
+  const OPT=[['sig','전방 차량 신호',['적색','녹색']],['fcw','전방 횡단보도 신호',['녹색','적색']],['rcw','우회전 후 횡단보도 신호',['녹색','적색']],['ped','우회전 후 횡단보도의 보행자',['있음','없음']]];
+  const R=[
+    {n:'①',c:[['sig','적색'],['fcw','녹색']],t:'일시 정지 후, 보행자가 없으면 우회전 가능'},
+    {n:'②',c:[['sig','적색'],['fcw','적색']],t:'일시 정지 후, 우회전 가능'},
+    {n:'③',c:[['sig','녹색'],['ped','있음']],t:'횡단보도 앞에서 일시 정지 후, 보행자 횡단 종료 후 우회전 가능'},
+    {n:'④',c:[['sig','녹색'],['ped','없음']],t:'서행하며 우회전 가능'},
+    {n:'⑤',c:[['sig','녹색'],['rcw','적색']],t:'서행하며 우회전 가능'},
+  ];
+  const LB={sig:'전방 차량 신호',fcw:'전방 횡단보도',rcw:'우회전 후 횡단보도',ped:'우회전 후 횡단보도의 보행자'};
+  function draw(){
+    const B=$('turnJudge');
+    const ctl=OPT.map(([k,l,vs])=>`<div class="kr-attr"><b>${l}</b>${vs.map(v=>`<button class="kr-chip ${S[k]===v?'on':''}" data-k="${k}" data-v="${v}">${v}</button>`).join('')}</div>`).join('');
+    const hit=[];
+    const rows=R.map(r=>{const ok=r.c.every(([k,v])=>S[k]===v); if(ok) hit.push(r);
+      return `<li class="${ok?'yes':'no'}"><b>규칙 ${r.n}</b> 만약 ${r.c.map(([k,v])=>`<span class="cd ${S[k]===v?'t':'f'}">${LB[k]} = ${v}</span>`).join(' ∧ ')} 이면 → ${r.t}</li>`;}).join('');
+    let v=hit.length?hit.map(r=>`<div>규칙 ${r.n}에 맞아요 → <b>${r.t}</b></div>`).join(''):'<div>맞는 규칙이 없어요.</div>';
+    if(hit.length>1&&new Set(hit.map(r=>r.t.slice(0,4))).size>1) v+='<p class="note" style="margin-bottom:0">규칙 두 개가 함께 맞았는데 결론이 달라요. 이 판단기는 교과서 그림을 단순하게 옮긴 것이라 이런 경우가 생겨요. 실제 시스템이라면 어느 규칙을 먼저 따를지(보행자 보호가 먼저)도 사람이 규칙으로 정해 주어야 해요.</p>';
+    B.innerHTML=`<div class="kr-attrs">${ctl}</div><div class="kr-trace"><span class="kr-lab">사실을 규칙과 맞대어 보면</span><ol class="kr-rules">${rows}</ol><div class="kr-verdict y">${v}</div></div>`;
+    B.querySelectorAll('.kr-chip').forEach(b=>b.onclick=()=>{S[b.dataset.k]=b.dataset.v; draw();});
+  }
+  draw();
+})();
+
+/* 06 빈칸 · 스스로 점검 */
+document.querySelectorAll('.blank').forEach(b=>b.onclick=()=>{ b.textContent=b.dataset.a; b.classList.add('on'); });
+chips('selfCheck','selfCheckPick',['자연어 지식을 의미망으로 바꿀 수 있다','문장이 명제인지 구분할 수 있다','긍정 논법·삼단 논법으로 결론을 이끌 수 있다','「모든」「어떤」을 술어 논리로 나타낼 수 있다','데이터에서 규칙을 뽑아 판단할 수 있다'],true);
+
+const MEMOLIST=[['natWhy','일상 언어가 어려운 까닭 · 의미망으로 바꾸면'],['allSome','명제 논리와 술어 논리의 차이(모든·어떤)'],['tennisWhy','판단 과정이 보이는 것이 중요한 상황'],['turnRule','우회전 규칙을 긍정 논법으로'],['selfCheckPick','스스로 점검: 할 수 있게 된 것']];
+onShow[7]=()=>memoSummary('msum',MEMOLIST);
+
+/* 진도 보내기 ②: 화면 이동·퀴즈·메모·창 이탈을 선생님 시트로 */
+(function(){
+  if(WHO.off) return;
+  const box=document.createElement('div');
+  if(WHO.preview){
+    box.className='tr-badge';
+    box.innerHTML=WHO.teacher?'교사 모드 · 전송 안 함 <button type="button">끝내기</button>':'미리보기 · 진도 전송 안 함';
+    (document.querySelector('.top')||document.body).appendChild(box);
+    const b=box.querySelector('button'); if(b) b.onclick=()=>{ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); };
+    return;
+  }
+
+  if(WHO.need){
+    let last={}; try{last=JSON.parse(localStorage.getItem('aiw-last')||'{}')||{};}catch(e){}
+    box.className='tr-gate';
+    box.innerHTML=`<form class="tr-card" autocomplete="off">
+      <h2>수업 시작 전에</h2>
+      <p class="tr-sub">학번과 이름을 써 주세요.</p>
+      <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
+      <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
+      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-err"></div>
+      <button class="btn" type="submit">시작하기 →</button>
+      <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
+    </form>`;
+    document.body.appendChild(box);
+    const f=box.querySelector('form'), err=box.querySelector('.tr-err'), go2=f.querySelector('button[type=submit]'), clsBox=box.querySelector('.tr-cls');
+    f.no.addEventListener('input',()=>{f.no.value=f.no.value.replace(/\D/g,'').slice(0,5);});
+    const TEACH=t=>{let h=2166136261;for(const c of t){h^=c.codePointAt(0);h=Math.imul(h,16777619)>>>0;}return h.toString(36);}, TEACH_H='853zuh';
+    const enter=w=>{ try{sessionStorage.setItem('aiw-who',JSON.stringify(w)); if(!w.teacher) localStorage.setItem('aiw-last',JSON.stringify({no:w.no,name:w.name}));}catch(e){} location.reload(); };
+    const busy=on=>{ go2.disabled=on; go2.textContent=on?'명단에서 확인하는 중…':'시작하기 →'; };
+    f.onsubmit=async e=>{
+      e.preventDefault(); err.textContent='';
+      const no=f.no.value.trim(), name=f.name.value.replace(/\s+/g,'').trim();
+      if(TEACH(no+'|'+name)===TEACH_H) return enter({teacher:true});
+      if(!/^\d{5}$/.test(no)){err.textContent='학번 다섯 자리를 숫자로 써 주세요.';f.no.focus();return;}
+      if(name.length<2){err.textContent='이름을 써 주세요.';f.name.focus();return;}
+      /* 명단에서 확인이 안 될 때만 반을 직접 고른다 */
+      if(!clsBox.hidden){
+        const cls=(f.querySelector('input[name=cls]:checked')||{}).value;
+        if(!cls){err.textContent='반을 골라 주세요.';return;}
+        return enter({cls,no,name});
+      }
+      busy(true);
+      try{
+        const r=await fetch(PEP,{method:'POST',body:JSON.stringify({op:'who',no,name})});
+        const d=await r.json();
+        if(d.ok) return enter({cls:d.cls,no,name});
+        busy(false);
+        if(d.err==='notfound'){ err.textContent='명단에서 찾지 못했어요. 학번과 이름을 다시 확인해 주세요. 계속 안 되면 선생님께 말해 주세요.'; return; }
+        throw new Error(d.err);
+      }catch(x){
+        busy(false);
+        if(clsBox.hidden){ clsBox.hidden=false; err.textContent='명단을 확인하지 못했어요. 내 반을 골라 주세요.'; }
+      }
+    };
+    setTimeout(()=>{ (f.no.value?(f.name.value?go2:f.name):f.no).focus(); },50);
+    return;
+  }
+
+  /* 이름 표시 + 바꾸기 */
+  box.className='tr-who';
+  box.innerHTML=`<span>${esc(WHO.cls)} ${esc(WHO.no)} <b>${esc(WHO.name)}</b></span><button type="button" title="다른 학생으로 바꾸기">바꾸기</button>`;
+  (document.querySelector('.top')||document.body).appendChild(box);
+  box.querySelector('button').onclick=()=>{ if(confirm('다른 학생으로 바꿀까요? (지금까지 한 것은 이 학번으로 저장돼 있어요)')){ try{sessionStorage.removeItem('aiw-who');}catch(e){} location.reload(); } };
+
+  const SK=QK+'-seen', AK=QK+'-away';
+  const seen=new Set(store.get(SK,[]));
+  const A=store.get(AK,{n:0,s:0});
+  let awayAt=null, lastAct=Date.now(), sent=0, lastSent=0, tmr=null, dirty=false;
+
+  function snap(){
+    let ok=0, done=0;
+    for(const k in QUIZ) QUIZ[k].forEach((it,i)=>{const v=QS[k+'-'+i]; if(v!=null){done++; if(v===it.a) ok++;}});
+    const ML=(typeof MEMOLIST!=='undefined')?MEMOLIST:[];
+    return {op:'put',lesson:LESSON,title:document.title,cls:WHO.cls,no:WHO.no,name:WHO.name,
+      scr:cur,names:pages.map((p,i)=>i?p.dataset.name:'시작'),seen:[...seen].sort((a,b)=>a-b),
+      qOk:ok,qDone:done,qTot:TOTALQ,
+      memo:ML.map(([k,l])=>[l,String(MEMO[k]==null?'':MEMO[k]).slice(0,1500)]),
+      away:awayAt?1:0,leaves:A.n,awaySec:Math.round(A.s+(awayAt?(Date.now()-awayAt)/1000:0)),idle:Math.round((Date.now()-lastAct)/1000),n:++sent};
+  }
+  function flush(){
+    if(!dirty) return; dirty=false; lastSent=Date.now();
+    const body=JSON.stringify(snap());
+    try{ if(navigator.sendBeacon && navigator.sendBeacon(PEP,new Blob([body],{type:'text/plain'}))) return; }catch(e){}
+    try{ fetch(PEP,{method:'POST',mode:'no-cors',body,keepalive:true}).catch(()=>{}); }catch(e){}
+  }
+  /* 너무 자주 보내지 않기: 보통 15초, 창 이탈·복귀는 3초 간격 */
+  function send(urgent){
+    dirty=true; clearTimeout(tmr);
+    const gap=urgent?3000:15000, wait=Math.max(0,gap-(Date.now()-lastSent));
+    tmr=setTimeout(flush,wait);
+  }
+
+  const _go=go; go=function(i){ _go(i); if(!seen.has(cur)){seen.add(cur); store.set(SK,[...seen]);} send(true); };
+  const _upd=updScore; updScore=function(){ _upd(); send(); };
+  const _set=store.set; store.set=function(k,v){ _set(k,v); if(k===MK) send(); };
+
+  function leave(){ if(awayAt) return; awayAt=Date.now(); A.n++; _set(AK,A); send(true); }
+  function back(){ if(!awayAt) return; A.s+=(Date.now()-awayAt)/1000; awayAt=null; _set(AK,A); send(true); }
+  document.addEventListener('visibilitychange',()=>{ document.hidden?leave():(document.hasFocus()&&back()); });
+  window.addEventListener('blur',()=>setTimeout(()=>{ if(!document.hasFocus()) leave(); },300));
+  window.addEventListener('focus',back);
+  window.addEventListener('pagehide',()=>{ dirty=true; flush(); });
+  ['pointerdown','keydown','input','wheel','touchstart'].forEach(t=>document.addEventListener(t,()=>{lastAct=Date.now();},{capture:true,passive:true}));
+  /* 화면에 머물러 있으면 2분마다 한 번 신호 */
+  setInterval(()=>{ if(!document.hidden) send(); },120000);
+})();
+
+/* 시작 */
+bindMemos();
+updScore();
+const h0=parseInt((location.hash.match(/^#p(\d+)$/)||[])[1],10);
+go(isNaN(h0)?0:h0);
+</script>
+<script>
+/* page-guard: 복사·잘라내기·드래그·오른쪽 클릭 막기 (복사 버튼은 그대로 동작) */
+(function(){
+  var t=null, tm=null, MSG='수업 자료는 복사할 수 없어요. 내 말로 정리해 보세요.';
+  function say(){ if(!t){t=document.createElement('div');t.className='pg-toast';document.body.appendChild(t);} t.textContent=MSG; t.classList.add('on'); clearTimeout(tm); tm=setTimeout(function(){t.classList.remove('on');},1800); }
+  function inField(e){ return e.target && e.target.closest && e.target.closest('input,textarea,select,[contenteditable]'); }
+  ['copy','cut'].forEach(function(type){ document.addEventListener(type,function(e){ e.preventDefault(); say(); },true); });
+  document.addEventListener('contextmenu',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('selectstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('dragstart',function(e){ if(!inField(e)) e.preventDefault(); },true);
+  document.addEventListener('keydown',function(e){ var k=(e.key||'').toLowerCase(); if((e.ctrlKey||e.metaKey)&&(k==='c'||k==='x')){ e.preventDefault(); say(); } if((e.ctrlKey||e.metaKey)&&k==='a'&&!inField(e)) e.preventDefault(); },true);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,265 @@
+<!-- 0 시작 -->
+<section class="page" data-name="시작" data-acc="#2f6fd0">
+  <div class="cover">
+    <div class="in">
+      <span class="tag">인공지능 기초 · Ⅰ. 인공지능의 이해 · 2. 탐색과 추론</span>
+      <h1>「탐색과 추론」<br>정리하고 써먹기</h1>
+      <div class="story"><b>내비게이션은 어떻게 길을 찾을까?</b><br>이 단원을 시작할 때 던진 질문이에요. 그동안 우리는 길을 펼쳐 보며 찾는 <b>탐색</b>(깊이 우선·너비 우선·언덕 등반·최상 우선·A*)과, 규칙과 사실로 새 지식을 이끌어 내는 <b>추론</b>(명제 논리·술어 논리)을 배웠어요.</div>
+      <p>오늘은 배운 것을 <b>AI 역량 키우기</b>로 점검하고, 같은 탐색 트리를 두 가지 방법으로 직접 따라가 보고, 마지막에는 모둠이 함께 <b>주차장에서 자동차를 빼내는 문제</b>를 탐색으로 해결해요.</p>
+      <ol>
+        <li>탐색과 추론 한눈에</li><li>틱택토와 미니맥스</li><li>보충 · 같은 트리, 다른 순서</li>
+        <li>심화 · 술어 논리</li><li>협력적 창의·융합 활동</li><li>마무리 · 질문폼</li>
+      </ol>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" style="background:var(--amber);color:var(--navy);box-shadow:none" onclick="go(1)">시작하기 →</button>
+        <button class="btn" style="background:transparent;border:2px solid rgba(255,255,255,.5);box-shadow:none" onclick="document.getElementById('intro').scrollIntoView({behavior:'smooth'})">오늘 할 일 보기 ↓</button>
+      </div>
+    </div>
+    <div class="route" aria-hidden="true">
+      <div class="st" style="animation-delay:.2s"><i>🗺️</i><div><b>맹목적 탐색</b><small>깊이 우선 · 너비 우선</small></div></div>
+      <div class="ar" style="animation-delay:.6s">↓</div>
+      <div class="st" style="animation-delay:.8s"><i>🧭</i><div><b>정보 이용 탐색 · 게임 트리</b><small>언덕 등반 · 최상 우선 · A* / 미니맥스</small></div></div>
+      <div class="ar" style="animation-delay:1.2s">↓</div>
+      <div class="st" style="animation-delay:1.4s"><i>🔗</i><div><b>지식의 표현과 추론</b><small>명제 논리 · 술어 논리 · 규칙</small></div></div>
+      <div class="ar" style="animation-delay:1.8s">↓</div>
+      <div class="st" style="animation-delay:2s"><i>🚗</i><div><b>일상생활 문제 해결</b><small>주차장 탈출 문제</small></div></div>
+    </div>
+  </div>
+
+  <div id="intro" class="today">
+    <div class="today-lead">
+      <span class="kicker">오늘 우리는</span>
+      <p>맹목적 탐색과 정보 이용 탐색의 차이를 정리하고, <b>같은 탐색 트리</b>를 깊이 우선 탐색과 너비 우선 탐색으로 직접 따라가며 방문 순서를 비교합니다. 그리고 모둠이 함께 <b>주차장 탈출 문제</b>를 정의하고, 해결 방안을 세우고, 컴퓨터의 탐색 결과와 견주어 봅니다.</p>
+    </div>
+    <div class="why3">
+      <div class="why">
+        <span class="kicker">AI 역량 키우기</span>
+        <ul>
+          <li><b>지식·이해</b> · 탐색 방법별 차이점을 구분하고 설명하기</li>
+          <li><b>과정·기능</b> · 탐색 알고리즘을 이용하여 문제 해결하기</li>
+          <li><b>가치·태도</b> · 인공지능 구현에서 탐색과 추론이 중요함을 인식하기</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">핵심 질문</span>
+        <ul class="uses">
+          <li><b>탐색과 추론</b> · 인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</li>
+          <li><b>오늘의 질문</b> · 같은 문제라도 탐색 방법에 따라 결과가 왜 달라질까?</li>
+        </ul>
+      </div>
+      <div class="why">
+        <span class="kicker">배우고 나면 할 수 있는 것</span>
+        <ul class="can">
+          <li>탐색 방법별 차이점을 구분하고 설명할 수 있다.</li>
+          <li>탐색 알고리즘을 이용하여 일상생활 문제를 해결할 수 있다.</li>
+        </ul>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px"><button class="btn" style="background:var(--navy)" onclick="go(1)">01 탐색과 추론 한눈에부터 시작하기 →</button></div>
+  </div>
+</section>
+
+<!-- 1 한눈에 -->
+<section class="page" data-name="탐색과 추론 한눈에" data-acc="#2f6fd0">
+  <div class="head"><div class="num">01</div><div><h2>탐색과 추론 한눈에</h2><p>교과서 48쪽 AI 역량 키우기 · 지식·이해 (31~47쪽 다시 보기)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>탐색은 가능한 길을 펼쳐 보며 목표를 찾는 방법이에요. 이때 <b>정해진 순서만</b> 따르면 맹목적 탐색, <b>목표에 가까워 보이는 정도(정보)</b>를 쓰면 정보 이용 탐색이에요. 추론은 길을 펼치는 대신 <b>규칙과 사실을 맞대어</b> 새로운 사실을 이끌어 내요.</span></div>
+  <div class="cards3">
+    <div class="kc" style="--k:#5b6776"><div class="ic">🗺️</div><h4>맹목적 탐색</h4><p>상태 공간에 관한 정보 없이 기계적인 순서로 모든 상태를 탐색하는 방법으로, 분기점에서 어떤 순서로 분기할지 미리 정해 두고 탐색한다.</p><small>깊이 우선 탐색 · 너비 우선 탐색 (32~35쪽)</small></div>
+    <div class="kc" style="--k:#2f6fd0"><div class="ic">🧭</div><h4>정보 이용 탐색</h4><p>내재된 정보를 활용하여 효과적인 탐색을 통해 최적의 해나 근삿값을 보다 빨리 찾아내는 탐색이다.</p><small>언덕 등반 · 최상 우선 · A* (36~40쪽)<br>게임 트리: 미니맥스 (41쪽 AI와 함께 지식 키우기)</small></div>
+    <div class="kc" style="--k:#9b4fc4"><div class="ic">🔗</div><h4>지식의 표현과 추론</h4><p>규칙과 사실을 활용하여 지식을 표현하고, 새로운 지식을 추론하여 생성한다.</p><small>의미망 · 명제 논리 · 술어 논리 · 규칙 (42~47쪽)</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>🧩 맹목적 탐색일까, 정보 이용 탐색일까?</h3>
+    <div id="kindGame"></div>
+  </div>
+  <div class="card">
+    <h3>✍️ 지식·이해 · 맹목적 탐색과 정보 이용 탐색의 차이점을 작성해 보자 <span class="muted" style="font-weight:400;font-size:.88rem">(48쪽 활동 1)</span></h3>
+    <div class="memo" style="margin-top:0"><label>무엇을 보고 다음 노드를 고르는지, 정보가 없을 때와 있을 때 어떻게 다른지를 넣어 써 보세요.</label><textarea data-memo="diffMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="1"></div>
+</section>
+
+<!-- 2 틱택토 · 미니맥스 -->
+<section class="page" data-name="틱택토와 미니맥스" data-acc="#1f9d74">
+  <div class="head"><div class="num">02</div><div><h2>틱택토와 미니맥스</h2><p>교과서 48쪽 AI 역량 키우기 · 과정·기능 (41쪽 미니맥스 알고리즘)</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>상대가 있는 게임은 <b>게임 트리</b>로 탐색해요. 상대가 어떤 선택을 하느냐가 중요하므로, 가장 안전하게는 <b>상대가 늘 최선의 선택을 한다고 가정</b>하고 수를 골라요. 처음 두는 쪽 MAX는 큰 값을, 다음에 두는 쪽 MIN은 작은 값을 골라요.</span></div>
+  <div class="card">
+    <h3>📖 미니맥스 알고리즘 <span class="muted" style="font-weight:400;font-size:.88rem">(41쪽 그림 Ⅰ-18)</span></h3>
+    <p style="margin-top:0">탐색 트리는 다양한 문제 해결에 쓰이지만, 바둑이나 틱택토처럼 <b>상대가 있는 게임</b>은 <b>게임 트리</b>를 이용해요. 게임 트리의 목표 상태는 게임에서 승리하는 것이고, 상대가 어떤 선택을 하느냐에 큰 영향을 받아요.</p>
+    <div class="rv-mm">
+      <svg viewBox="0 0 420 230" role="img" aria-label="게임 트리 그림 Ⅰ-18">
+        <g class="mm-e"><line x1="210" y1="34" x2="110" y2="104"/><line x1="210" y1="34" x2="310" y2="104"/><line x1="110" y1="104" x2="60" y2="184"/><line x1="110" y1="104" x2="160" y2="184"/><line x1="310" y1="104" x2="260" y2="184"/><line x1="310" y1="104" x2="360" y2="184"/></g>
+        <g class="mm-l"><text x="150" y="66">a1</text><text x="262" y="66">a2</text><text x="72" y="148">b1</text><text x="140" y="148">b2</text><text x="272" y="148">c1</text><text x="340" y="148">c2</text></g>
+        <g class="mm-n max"><rect x="186" y="16" width="48" height="36" rx="8"/><text x="210" y="34" dy=".35em">4</text></g>
+        <g class="mm-n min"><circle cx="110" cy="104" r="20"/><text x="110" y="104" dy=".35em">4</text></g>
+        <g class="mm-n min"><circle cx="310" cy="104" r="20"/><text x="310" y="104" dy=".35em">3</text></g>
+        <g class="mm-n leaf"><circle cx="60" cy="184" r="17"/><text x="60" y="184" dy=".35em">4</text></g>
+        <g class="mm-n leaf"><circle cx="160" cy="184" r="17"/><text x="160" y="184" dy=".35em">7</text></g>
+        <g class="mm-n leaf"><circle cx="260" cy="184" r="17"/><text x="260" y="184" dy=".35em">3</text></g>
+        <g class="mm-n leaf"><circle cx="360" cy="184" r="17"/><text x="360" y="184" dy=".35em">9</text></g>
+        <g class="mm-t"><text x="14" y="38">MAX</text><text x="14" y="108">MIN</text><text x="14" y="222">단말 노드</text></g>
+      </svg>
+      <ol class="rv-mmsteps">
+        <li>처음 두는 쪽이 <b>MAX</b>, 다음에 두는 쪽이 <b>MIN</b>이다. 각자 선택지가 2개이고, 한 수씩 두면 게임이 끝난다.</li>
+        <li>단말 노드의 평가 함숫값은 3~9 사이로 가정한다. 값이 <b>클수록 MAX</b>, <b>작을수록 MIN</b>이 승리한다.</li>
+        <li>단말에서 거꾸로 올라간다. MIN은 작을수록 좋으므로 b1·b2 중 <b>4</b>, c1·c2 중 <b>3</b>을 고른다.</li>
+        <li>처음 MAX는 4와 3 중 큰 값 <b>4</b>를 선택한다(a1). 상대(MIN)가 최선의 선택을 한다고 가정한 가장 안전한 수다.</li>
+      </ol>
+    </div>
+  </div>
+  <div class="card">
+    <h3>⭕❌ 컴퓨터와 틱택토 한 판</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 규칙: 한 사람이 먼저 원하는 위치에 ○, 다른 한 사람이 빈칸에 ✕, 번갈아 가며 3개를 직선으로 먼저 잇는 사람이 이겨요. 짝과 먼저 여러 번 해 본 뒤, 미니맥스로 두는 컴퓨터와 겨뤄 보세요. 나는 <b>○(MAX)</b>, 컴퓨터는 <b>✕(MIN)</b>이에요.</p>
+    <div class="rv-ttt">
+      <div id="tttBoard" class="rv-board" role="grid" aria-label="틱택토 판"></div>
+      <div class="rv-tttside">
+        <div id="tttMsg" class="rv-msg"></div>
+        <label class="rv-tog"><input type="checkbox" id="tttShow"> 컴퓨터의 생각 보기 (칸마다 미니맥스 값)</label>
+        <p class="note"><b>+1</b>(○ 승리) · <b>0</b>(무승부) · <b>−1</b>(✕ 승리)은 <b>이 화면에서 정한 평가 함숫값</b>이에요(교과서 그림은 3~9를 써요). 칸마다 적힌 값은 그 칸에 둔 뒤 서로 끝까지 최선을 다했을 때의 결과예요. ○(MAX)는 큰 값, ✕(MIN)는 작은 값을 골라요.</p>
+        <button class="btn sm ghost" id="tttNew">새 게임</button>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>💬 가치·태도 · 내 실력 점검하기 <span class="muted" style="font-weight:400;font-size:.88rem">(48쪽)</span></h3>
+    <p style="margin-top:0">인공지능을 구현하는 방법으로서 탐색과 추론 방식을 이해하고, 이를 바탕으로 문제를 해결하는 자세에 대해 짝과 이야기해 보세요. 그리고 아래 평가 기준 중 「예」라고 답할 수 있는 것을 골라요.</p>
+    <div id="selfCheck"></div>
+    <p class="note">모두 「예」라면 04 심화 활동을, 「아니요」가 있다면 03 보충 활동을 먼저 해요. 03의 방문 순서 비교는 질문폼에 쓰이니 <b>모두 함께</b> 해요.</p>
+  </div>
+  <div class="quiz" data-quiz="2"></div>
+</section>
+
+<!-- 3 보충 · DFS/BFS -->
+<section class="page" data-name="같은 트리, 다른 순서" data-acc="#9b4fc4">
+  <div class="head"><div class="num">03</div><div><h2>보충 · 같은 트리, 다른 순서</h2><p>교과서 49쪽 선택 활동(보충) · 32~35쪽 깊이 우선 탐색, 너비 우선 탐색</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>같은 트리에서 같은 목표 E를 찾아도, <b>어느 노드를 먼저 방문하느냐</b>는 탐색 방법마다 달라요. 깊이 우선 탐색은 한 갈래를 끝까지 내려가 보고, 너비 우선 탐색은 한 층을 다 본 뒤 다음 층으로 내려가요.</span></div>
+  <div class="cards2">
+    <div class="kc" style="--k:#9b4fc4"><div class="ic">⬇️</div><h4>깊이 우선 탐색 (DFS)</h4><p>갈 수 있는 길이 있는 한 앞으로 계속 전진하여 탐색한다. 막다른 길에 다다르면 이전 상태 중 다른 경로로 갈 수 있는 분기점까지 되돌아가 다시 탐색한다.</p><small>활용: 미로 탐색</small></div>
+    <div class="kc" style="--k:#e0702b"><div class="ic">↔️</div><h4>너비 우선 탐색 (BFS)</h4><p>분기점과 연결된 동일한 깊이의 상태 공간을 탐색한 후 다음 단계로 나아간다. 한 층을 내려가기 전에 그 층에 있는 모든 노드를 방문한다.</p><small>활용: 웹 크롤러, SNS 친구 찾기</small></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>👆 노드를 방문 순서대로 눌러 보자</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">초기 상태 A에서 시작해 목표 상태 <b>E</b>를 찾아요. 분기점에서는 <b>알파벳순</b>으로 탐색해요. 방법을 고른 뒤 A부터 차례로 눌러 보세요. 목표 E를 방문하면 탐색을 멈춰요.</p>
+    <div class="row" id="treeMode" style="margin-bottom:8px"></div>
+    <div class="rv-tree">
+      <div id="treeSvg" class="rv-svg"></div>
+      <div class="rv-treeside">
+        <div id="treeOrder" class="rv-order"></div>
+        <div id="treeFb" class="rv-fb"></div>
+        <button class="btn sm ghost" id="treeReset">이 방법 처음부터</button>
+      </div>
+    </div>
+    <div id="treeCmp"></div>
+  </div>
+  <div class="card">
+    <h3>🎯 목표를 바꾸면 누가 먼저 찾을까?</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">같은 트리에서 목표 노드만 바꿔 보세요. 두 방법이 몇 번째 방문에서 목표를 찾는지 비교해요.</p>
+    <div class="row" id="goalPick"></div>
+    <div id="goalCmp" style="overflow-x:auto"></div>
+    <div class="memo"><label>두 방문 순서를 적고, 순서가 달라지는 까닭을 써 보세요. 목표 E를 더 빨리 찾은 쪽은 어디인지, 그 결과가 목표의 깊이와 위치에 따라 달라지는지도 근거를 들어 써요.</label><textarea data-memo="orderMemo" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="quiz" data-quiz="3"></div>
+</section>
+
+<!-- 4 심화 · 술어 논리 -->
+<section class="page" data-name="심화 · 술어 논리" data-acc="#e0702b">
+  <div class="head"><div class="num">04</div><div><h2>심화 · 문장을 술어 논리로</h2><p>교과서 49쪽 선택 활동(심화) · 45쪽 술어 논리 · 내 계획 점검하기</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>술어 논리에서는 <b>∀x</b>(모든 x에 대하여), <b>∃x</b>(어떤 x에 대하여 ~인 x가 적어도 한 개 존재한다)와 작성자가 정한 술어로 문장을 나타내요. 이렇게 적어 두면 컴퓨터가 규칙과 사실을 맞대어 <b>새로운 사실</b>을 추론할 수 있어요.</span></div>
+  <div class="card">
+    <h3>✏️ 주어진 문장을 술어 논리로 표현해 보자</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">교과서 예시 답안이 정한 술어: x는 사자이다. <span class="mono">lion(x)</span> · x는 포유류이다. <span class="mono">mammal(x)</span> · x는 초원에 산다. <span class="mono">livemeadow(x)</span><br>예시 답안은 술어까지만 보여 줘요. 아래 보기의 ∀x, ∃x가 붙은 식은 <b>이 화면에서 완성한 식</b>이에요.</p>
+    <div id="predGame"></div>
+  </div>
+  <div class="card">
+    <h3>📝 내가 직접 문장을 만들어 술어 논리로 표현해 보자</h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#e0702b"><h4>교과서 예시 · 내가 만든 문장</h4><p>모든 장돌뱅이는 장을 돌아다닌다.<br>허생원은 장돌뱅이이다.<br>동이는 장돌뱅이이다.<br>허생원은 동이의 아빠이다.</p></div>
+      <div class="kc" style="--k:#e0702b"><h4>교과서 예시 · 술어 논리</h4><p class="mono2">∀x(merchant(x)→marketround(x))<br>merchant(허생원)<br>merchant(동이)<br>father(허생원, 동이)</p></div>
+    </div>
+    <div class="memo"><label>내가 만든 문장 2~3개와 그 술어 논리를 적어 보세요. (「모든」 또는 「어떤」이 들어간 문장을 하나 이상 넣어요.)</label><textarea data-memo="myPred" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>🔁 내 계획 점검하기 · 핵심 질문에 답하기 <span class="muted" style="font-weight:400;font-size:.88rem">(49쪽)</span></h3>
+    <p style="margin-top:0"><b>인공지능으로 문제를 해결할 때 탐색과 추론을 어떻게 활용할까?</b> 단원을 시작할 때 세운 학습 계획을 떠올리며 짝과 이야기해 보세요. 오늘 활동을 마치면 마무리 화면의 정리와 내 생각을 비교해 봐요.</p>
+  </div>
+  <div class="quiz" data-quiz="4"></div>
+</section>
+
+<!-- 5 협력적 창의·융합 활동 -->
+<section class="page" data-name="창의·융합 활동" data-acc="#d64535">
+  <div class="head"><div class="num">05</div><div><h2>탐색을 이용한 일상생활 문제 해결</h2><p>교과서 50~51쪽 · 협력적 창의·융합 활동</p></div></div>
+  <div class="easy"><b class="t">쉽게 말하면</b><span>자동차가 많아지면서 주차 문제가 심각해졌어요. 가까운 미래에는 자율주행 자동차가 스스로 좁은 공간에 들어가 주차할 수도 있지요. 오늘은 모둠이 함께 <b>♥ 표시한 자동차를 출구로 빼내는 문제</b>를 탐색 문제로 바꾸어 풀어 봐요.</span></div>
+  <div class="card">
+    <h3>1. 문제 파악하기</h3>
+    <p style="margin-top:0"><span class="tagt" style="--k:#1f9d74">핵심</span> 자동차들이 아래처럼 주차되어 있을 때, ♥ 표시한 자동차가 출구로 나가려면 어떻게 해야 할지 해결할 문제를 정의해 보자. 모둠명과 모둠원의 역할도 정해요.</p>
+    <div class="callout"><b>조건</b> · 그림 속 주차 공간에서 자동차는 <b>회전할 수 없고 전진과 후진만</b> 할 수 있다.</div>
+    <div class="rv-park">
+      <div>
+        <div id="parkBoard" class="rv-lot" aria-label="주차장 판"></div>
+        <div class="row" id="parkCtl" style="margin-top:8px"></div>
+      </div>
+      <div class="rv-parkside">
+        <div id="parkMsg" class="rv-msg"></div>
+        <span class="rv-lab">탐색 경로 (움직인 기록)</span>
+        <div id="parkLog" class="rv-log"></div>
+        <p class="note">자동차를 눌러 고른 뒤 버튼으로 한 칸씩 움직여요. 교과서 예시 답안처럼 위에서부터 노란색(Y), 초록색(G), 핑크색(♥), 파란색(B), 아이보리(I), 보라색(P), 빨간색(R)으로 부르고, 오른쪽·위쪽으로 가면 +, 왼쪽·아래쪽으로 가면 −로 적어요.</p>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <h3>2. 해결 방안 세우기 · 3. 탐색 트리 만들기 <span class="tagt" style="--k:#1f9d74">핵심</span></h3>
+    <div class="cards2">
+      <div class="kc" style="--k:#d64535"><h4>방법</h4><p>• 탐색 알고리즘 중 어떤 방법이 적합할지 모둠원들과 구상한다.<br>• 맹목적 탐색과 정보 이용 탐색 방법 두 가지를 모두 고려한다.</p><small>예: 노란색 자동차를 한 칸 후진한다. → (Y,−1)</small></div>
+      <div class="kc" style="--k:#d64535"><h4>탐색 트리로 보기</h4><p><b>초기 상태</b>는 지금 판, <b>목표 상태</b>는 ♥ 자동차가 출구로 나간 판, 자동차 한 대를 움직이는 것이 <b>한 번의 이동</b>이에요. 한 판에서 움직일 수 있는 방법마다 자식 노드가 생겨요.</p></div>
+    </div>
+    <div class="memo"><label>우리 모둠이 정의한 문제(초기 상태 · 목표 상태 · 할 수 있는 동작)와 해결 방안을 써 보세요. 맹목적 탐색과 정보 이용 탐색 중 무엇을 쓸지, 까닭도 적어요.</label><textarea data-memo="parkPlan" rows="4"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>🤖 컴퓨터에게 맡겨 보기 · 깊이 우선 탐색 vs 너비 우선 탐색</h3>
+    <p class="muted" style="margin-top:0;font-size:.9rem">같은 판을 컴퓨터가 두 가지 맹목적 탐색으로 풀어요. 자동차 한 대를 움직이는 것을 한 번의 이동으로 세고, 한 번 본 판은 다시 펼치지 않아요. 분기점의 순서는 Y, G, ♥, B, I, P, R 자동차 순, 전진 먼저로 정했어요. 맹목적 탐색에서 배운 것처럼 <b>너비 우선은 살펴볼 판을 큐(먼저 들어온 판부터 꺼냄)</b>에, <b>깊이 우선은 되돌아갈 길 목록</b>에 두고 탐색해요.</p>
+    <div class="row"><button class="btn sm" id="solveDfs">깊이 우선 탐색으로 풀기</button><button class="btn sm" id="solveBfs">너비 우선 탐색으로 풀기</button></div>
+    <div id="solveOut" style="overflow-x:auto"></div>
+    <div class="memo"><label>깊이 우선 탐색이 더 알맞은 상황과 너비 우선 탐색이 더 알맞은 상황을 하나씩 예로 들어 써 보세요.</label><textarea data-memo="fitMemo" rows="3"></textarea><div class="saved"></div></div>
+  </div>
+  <div class="card">
+    <h3>4. 프로그램으로 구현하기 <span class="tagt" style="--k:#d64535">심화 · 선택</span> · 평가하기</h3>
+    <p class="note" style="margin-top:0">시간이 모자라면 1~3단계와 「컴퓨터에게 맡겨 보기」까지가 핵심이에요. 4단계와 평가표는 다음 시간이나 과제로 이어서 해도 돼요.</p>
+    <p style="margin-top:0">앞서 선택한 탐색 방법을 의사 코드 또는 프로그램을 사용하여 구현해 보자. 교과서 자료실의 파이썬 코드를 선생님이 안내하면 내려받아 확인해요.</p>
+    <div style="overflow-x:auto"><table class="rv-eval">
+      <tr><th>평가 영역</th><th class="l">평가 기준</th><th>자기 평가</th><th>동료 평가</th></tr>
+      <tr><td>문제 파악하기</td><td class="l">주어진 주제가 해결하려는 목표에 적합한가?</td><td>☐</td><td>☐</td></tr>
+      <tr><td>해결 방안 세우기</td><td class="l">해결 방안이 구체적이고 해결 가능한가?</td><td>☐</td><td>☐</td></tr>
+      <tr><td>탐색 트리 만들기</td><td class="l">문제 해결을 위한 트리를 탐색할 수 있는가?</td><td>☐</td><td>☐</td></tr>
+      <tr><td>프로그램으로 구현하기</td><td class="l">프로그램은 선택한 탐색 방법에 맞게 오류 없이 잘 구현하였는가?</td><td>☐</td><td>☐</td></tr>
+    </table></div>
+    <p class="note">이 활동으로 길러진 역량: 지식 정보 처리 · 창의적 사고 · 협력적 소통 · 공동체 역량</p>
+  </div>
+  <div class="quiz" data-quiz="5"></div>
+</section>
+
+<!-- 6 마무리 -->
+<section class="page" data-name="마무리" data-acc="#0f2742">
+  <div class="head"><div class="num">06</div><div><h2>마무리</h2><p>「탐색과 추론」 정리 · 질문폼</p></div></div>
+  <div class="key3">
+    <div style="--k:#2f6fd0"><b>맹목적 탐색</b>은 정보와 상관없이 정해진 순서로 모든 상태를 탐색하고, <b>정보 이용 탐색</b>은 내재된 정보(평가 함수)를 활용하여 최적의 해나 근삿값을 보다 빨리 찾아낸다.</div>
+    <div style="--k:#9b4fc4">같은 트리라도 <b>깊이 우선 탐색</b>은 한 갈래를 끝까지, <b>너비 우선 탐색</b>은 한 층씩 방문하므로 순서가 다르고, 누가 목표를 먼저 찾는지는 <b>목표의 깊이와 위치</b>에 따라 달라진다.</div>
+    <div style="--k:#d64535">인공지능은 가능한 해결책을 찾기 위해 <b>탐색</b>하고, 탐색 과정에서 얻은 정보와 규칙·사실을 바탕으로 <b>추론</b>하여 새로운 지식이나 결론을 이끌어 낸다.</div>
+  </div>
+  <div class="card">
+    <h3>개념 퀴즈 결과</h3>
+    <table id="result"></table>
+    <button class="btn ghost" id="quizReset">퀴즈 다시 풀기</button>
+  </div>
+  <div class="formgo">
+    <span class="kicker">생각 정리 과제</span>
+    <h3>질문폼에 내 생각 쓰기</h3>
+    <ol>
+      <li>같은 탐색 트리에서 <b>깊이 우선 탐색과 너비 우선 탐색의 방문 순서</b>를 각각 적어 보고, 두 순서가 달라지는 이유를 설명하기</li>
+      <li>목표 노드를 <b>더 빨리 찾은 탐색</b>은 어느 쪽인지, 이 결과가 항상 같을지 트리의 깊이와 목표 위치에 따라 달라질지 근거를 들어 쓰기</li>
+      <li>깊이 우선 탐색이 더 알맞은 상황과 너비 우선 탐색이 더 알맞은 상황을 <b>각각 하나씩</b> 예로 들어 설명하기</li>
+    </ol>
+    <p>질문폼에는 붙여넣기가 되지 않아요. 아래 메모를 보면서 직접 다시 써 주세요.</p>
+    <a class="go" href="{{FORM_URL}}" target="_blank" rel="noopener">질문폼 열기 →</a>
+    <div class="msum" id="msum"></div>
+  </div>
+</section>
