@@ -1,7 +1,7 @@
 # ds_ai_class — 인공지능 기초 수업 코스웨어
 
 씨마스 『인공지능 기초』(3학점 48시간) 수업용 코스웨어 사이트. 학기 단위로 운영한다.
-사이트: `https://ds-ai-class.vercel.app/` · 선생님 목록: `/teacher/` · 진도 현황: `/teacher/progress/`
+사이트: `https://dsaiclass.vercel.app/` · 선생님 목록: `/teacher/` · 진도 현황: `/teacher/progress/`
 
 > 이 저장소는 공개다. **학생 명단·답변·점수, 수행평가 채점 기준 상세와 현장 문항, 정답 해설은 넣지 않는다.**
 

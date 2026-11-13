@@ -1,7 +1,7 @@
 {
  "_설명": "학기 운영표. status: ready=학생 공개, draft=만드는 중(교사 목록에만), todo=아직 없음. no=이번 학기 차시 번호(화면·주소에는 안 씀).",
  "course": "인공지능 기초",
- "site": "https://ds-ai-class.vercel.app/",
+ "site": "https://dsaiclass.vercel.app/",
  "progressEndpoint": "https://script.google.com/macros/s/AKfycbzxTRMQLvqJWHnVSZdl624HbQhcDPQDOMcK0calY9RpjQBvxp8CwcDeDypKctm5Gzotcw/exec",
  "teacherHash": "853zuh",
  "_teacherHash": "교사 모드(학번·이름) 확인값. 바꾸려면 tools/teacher_hash.py 로 새 값을 만든다",
