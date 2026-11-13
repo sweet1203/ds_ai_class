@@ -78,5 +78,5 @@ chips('localTech','localTechPick',['컴퓨터 비전','음성 인식','자연어
 chips('sdgPick','sdgIssue',['빈곤','기후 변화','에너지 자원 고갈','물 부족','불평등','멸종 위기 동물','사이버 범죄','지속 가능한 농업','지속 가능한 생산과 소비']);
 
 /* 06 마무리 */
-const MEMOLIST=[['want','내가 사용해 보고 싶은 인공지능'],['wantChange','많은 사람이 쓰면 생길 변화'],['job','직업 카드 · 직업명'],['jobDo','하는 일'],['jobPlus','인공지능이 대신하거나 도와줄 일'],['jobMinus','걱정되는 점, 사람이 해야 할 일'],['jobLitPick','기를 인공지능 소양'],['local','우리 학교·지역 문제'],['localHow','인공지능을 활용한 해결 방법'],['localTechPick','필요한 기술'],['localData','필요한 데이터'],['localAd','홍보 한 줄'],['keyQ','핵심 질문에 대한 내 답']];
+const MEMOLIST=[['want','내가 사용해 보고 싶은 인공지능'],['wantChange','많은 사람이 쓰면 생길 변화'],['job','직업 카드 · 직업명'],['jobDo','하는 일'],['jobDept','관련 학과'],['jobPlus','인공지능이 대신하거나 도와줄 일'],['jobMinus','걱정되는 점, 사람이 해야 할 일'],['jobLitPick','기를 인공지능 소양'],['local','우리 학교·지역 문제'],['localHow','인공지능을 활용한 해결 방법'],['localTechPick','필요한 기술'],['localData','필요한 데이터'],['localAd','홍보 한 줄'],['sdgIssue','심화 · 고른 사회 문제'],['newJob','심화 · 새로운 직업과 하는 일'],['keyQ','핵심 질문에 대한 내 답']];
 onShow[6]=()=>memoSummary('msum',MEMOLIST);
