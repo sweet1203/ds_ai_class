@@ -175,7 +175,7 @@
      "title": "딥러닝 ① 퍼셉트론 · 신경망 구조",
      "pages": "90~92",
      "form": "ai-15-2-2-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "16-2",
@@ -183,7 +183,7 @@
      "title": "딥러닝 ② 활성화 함수 · 학습 과정 · 손실 함수",
      "pages": "92~94",
      "form": "ai-15-dl-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "16-3",
@@ -191,7 +191,7 @@
      "title": "딥러닝 ③ 경사 하강법 · 배치와 에포크",
      "pages": "93~94",
      "form": "ai-15-dl-3",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "17",
@@ -199,7 +199,7 @@
      "title": "손글씨 숫자 분류: ML4Kids → 파이썬 MNIST",
      "pages": "96~101",
      "form": "ai-15-2-2-1-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "18",
@@ -207,7 +207,7 @@
      "title": "컴퓨터 비전",
      "pages": "102~109",
      "form": "ai-16-2-2-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "19",
@@ -215,7 +215,7 @@
      "title": "음성 인식",
      "pages": "110~113",
      "form": "ai-17-2-2-3",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "20",
@@ -223,7 +223,7 @@
      "title": "자연어 처리",
      "pages": "114~119",
      "form": "ai-18-2-2-4",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "21",
@@ -231,7 +231,7 @@
      "title": "2단원 정리",
      "pages": "120~121",
      "form": "ai-19-2-2-5",
-     "status": "draft"
+     "status": "ready"
     }
    ]
   },
