@@ -16,7 +16,7 @@
 | `teacher/` | 선생님 목록(`hub.html`), 진도 현황판(`progress.html`) |
 | `assessments/` | 수행평가 아이디어 모음과 학기별 안내 |
 | `apps_script/Code.gs` | 진도 수집기(학교 계정 시트에 붙은 Apps Script) 사본 |
-| `tools/` | `build.py` 빌드 · `check.py` 점검 · `preview.py` 로컬 미리보기 |
+| `tools/` | `build.py` 빌드 · `check.py` 점검 · `preview.py` 로컬 미리보기 · `new_course.py` 새 과목 뼈대 |
 | `site/` | 빌드 결과(배포되는 폴더). 직접 고치지 않는다 |
 
 ## 자주 하는 일
@@ -35,4 +35,4 @@ python3 tools/build.py                 # ← 미리보기 뒤 배포 전에는 �
 - 내용과 용어는 교과서를 따른다. 퀴즈 정답 위치는 고르게, 선택지에 극단어(항상·절대·모든) 피하기.
 - 수집기 코드를 고치면 Apps Script에서 **배포 관리 → 수정 → 새 버전**(「새 배포」 금지 — 주소가 바뀜).
 
-자세한 것: [docs/차시_작성_규칙.md](docs/차시_작성_규칙.md) · [docs/학기_시작_체크리스트.md](docs/학기_시작_체크리스트.md)
+자세한 것: [docs/차시_작성_규칙.md](docs/차시_작성_규칙.md) · [docs/학기_시작_체크리스트.md](docs/학기_시작_체크리스트.md) · [docs/새_과목_만들기.md](docs/새_과목_만들기.md)

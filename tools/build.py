@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""ds_ai_class 빌드: course.json + lessons/ + forms/ + teacher/ → site/
+"""코스웨어 빌드 (과목 이름·주소는 course.json): course.json + lessons/ + forms/ + teacher/ → site/
 
     python3 tools/build.py            전체 빌드
     python3 tools/build.py u1-ai-concept   차시 하나만 (질문폼·교사 페이지는 항상 다시 만듦)
@@ -63,7 +63,7 @@ def build_lesson(c, unit, l):
         css += rd(d / 'lesson.css')
     top = rd(FW / 'shell_top.html').replace(
         '<a class="brand" href="../" title="수업 자료실로">← 수업 자료실</a>',
-        '<span class="brand">인공지능 기초</span>')
+        f'<span class="brand">{html.escape(c["course"])}</span>')
     quiz = rd(d / 'quiz.js')
     assert 'const QK' not in quiz and 'const MK' not in quiz, 'quiz.js에는 QUIZ만 둡니다'
     pep = os.environ.get('DS_PEP') or c.get('progressEndpoint', '')
@@ -71,7 +71,7 @@ def build_lesson(c, unit, l):
     keys = f"const QK='ds-{l['id']}-quiz'+WHO.sfx;\nconst MK='ds-{l['id']}-memo'+WHO.sfx;\n"
     extra = rd(d / 'pre.js') if (d / 'pre.js').exists() else ''
     js = (rd(FW / 'core_head.js') + extra + pre + quiz + '\n' + keys + rd(FW / 'core.js') + rd(FW / 'widgets.js')
-          + rd(d / 'lesson.js') + rd(FW / 'track.js').replace('__TEACH_H__', c.get('teacherHash', '')) + INIT)
+          + rd(d / 'lesson.js') + rd(FW / 'track.js').replace('__TEACH_H__', c.get('teacherHash', '')).replace('__CLASSES__', json.dumps(c.get('classes', []), ensure_ascii=False)) + INIT)
     out = head + css + top + sub(rd(d / 'screens.html')) + rd(FW / 'shell_foot.html') + js
     out += rd(FW / 'guard.html') + '</body>\n</html>\n'
     o = SITE / l['id']
@@ -121,9 +121,9 @@ def build_teacher(c):
     dash = rd(ROOT / 'teacher' / 'progress.html')
     dash = dash.replace('__PEP__', os.environ.get('DS_PEP') or c['progressEndpoint']).replace('__LESSONS__', json.dumps(lessons, ensure_ascii=False))
     (SITE / 'teacher' / 'progress' / 'index.html').write_text(dash, encoding='utf-8')
-    hub = rd(ROOT / 'teacher' / 'hub.html').replace('__UNITS__', json.dumps(units, ensure_ascii=False)).replace('__ASSESS__', json.dumps(c.get('assessments', []), ensure_ascii=False)).replace('__SITE__', c['site'])
+    hub = rd(ROOT / 'teacher' / 'hub.html').replace('__UNITS__', json.dumps(units, ensure_ascii=False)).replace('__ASSESS__', json.dumps(c.get('assessments', []), ensure_ascii=False)).replace('__SITE__', c['site']).replace('__COURSE__', html.escape(c['course']))
     (SITE / 'teacher' / 'index.html').write_text(hub, encoding='utf-8')
-    (SITE / 'index.html').write_text(rd(ROOT / 'teacher' / 'root.html'), encoding='utf-8')
+    (SITE / 'index.html').write_text(rd(ROOT / 'teacher' / 'root.html').replace('__COURSE__', html.escape(c['course'])), encoding='utf-8')
 
 
 def main(argv):

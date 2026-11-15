@@ -19,7 +19,7 @@
       <p class="tr-sub">학번과 이름을 써 주세요.</p>
       <label class="tr-f"><span>학번</span><input name="no" inputmode="numeric" maxlength="5" placeholder="예: 20101" value="${esc(last.no||'')}"></label>
       <label class="tr-f"><span>이름</span><input name="name" maxlength="10" placeholder="이름" value="${esc(last.name||'')}"></label>
-      <div class="tr-cls" hidden>${['인C','인F','인G'].map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
+      <div class="tr-cls" hidden>${__CLASSES__.map(c=>`<label><input type="radio" name="cls" value="${c}"><span>${c}</span></label>`).join('')}</div>
       <div class="tr-err"></div>
       <button class="btn" type="submit">시작하기 →</button>
       <p class="tr-note">어느 화면까지 왔는지, 퀴즈와 메모가 선생님께 전달돼요.<br>다른 친구 이름으로 들어가지 마세요.</p>
