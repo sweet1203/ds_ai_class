@@ -277,7 +277,7 @@
      "title": "인공지능과 지속가능발전목표 · 문제 정의",
      "pages": "170~177",
      "form": "ai-31-4-1-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "26",
@@ -285,7 +285,7 @@
      "title": "인공지능 프로젝트 수행 과정",
      "pages": "178~189",
      "form": "ai-32-4-1-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "30",
@@ -293,7 +293,7 @@
      "title": "정형 데이터 프로젝트 ① 문제 정의와 데이터 준비",
      "pages": "190~196",
      "form": "ai-33-4-2",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "31",
@@ -301,7 +301,7 @@
      "title": "정형 데이터 프로젝트 ② 모델 학습과 성능 개선",
      "pages": "197~201",
      "form": "ai-33-4-2-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "32",
@@ -309,7 +309,7 @@
      "title": "비정형 데이터 프로젝트 ① 이미지 분류",
      "pages": "202~213",
      "form": "ai-34-4-3",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "33",
@@ -317,7 +317,7 @@
      "title": "비정형 데이터 프로젝트 ② 데이터 편향성 해결",
      "pages": "214~217",
      "form": "ai-34-4-3-1",
-     "status": "draft"
+     "status": "ready"
     },
     {
      "no": "34",
@@ -325,7 +325,7 @@
      "title": "마무리 · 4단원 정리",
      "pages": "218~219",
      "form": "ai-35-u4-summary",
-     "status": "draft"
+     "status": "ready"
     }
    ]
   }
