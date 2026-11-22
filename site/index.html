@@ -4,14 +4,129 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>인공지능 기초</title>
+<title>인공지능 기초 · 수업 안내</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f2742;color:#fff;font-family:"Noto Sans KR",system-ui,sans-serif;text-align:center;padding:16px}
-  h1{font-size:2rem;margin:0 0 8px}
-  p{color:#c8d6e8;margin:0}
+  :root{--ink:#16202c;--muted:#5b6776;--paper:#f3efe7;--card:#fff;--line:#e3ddd2;--navy:#0f2742;--amber:#f2a516}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:16px;line-height:1.6}
+  a{color:inherit}
+  .wrap{max-width:1040px;margin:0 auto}
+  /* header */
+  header{background:var(--navy);color:#fff;padding:34px 16px 30px}
+  .brandrow{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+  .kicker{color:var(--amber);font-weight:700;font-size:.9rem;letter-spacing:.04em;margin:0}
+  header h1{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:2.4rem;margin:6px 0 10px;line-height:1.15}
+  header .lead{margin:0;color:#c8d6e8;font-size:1rem;max-width:640px}
+  .tlink{color:#c8d6e8;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:7px 13px;text-decoration:none;font-size:.86rem;font-weight:700;white-space:nowrap}
+  .tlink:hover{background:rgba(255,255,255,.16)}
+  .jump{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+  .jump a{background:var(--amber);color:var(--navy);border-radius:999px;padding:8px 16px;text-decoration:none;font-weight:700;font-size:.92rem}
+  .jump a.ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.35)}
+  main{padding:0 16px 70px}
+  /* how to use */
+  .how{margin:-18px auto 0;position:relative;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .how .c{background:var(--card);border-radius:14px;box-shadow:0 6px 20px rgba(15,39,66,.08);padding:16px 16px 18px}
+  .how .c .ic{font-size:1.5rem}
+  .how .c h3{margin:6px 0 4px;font-size:1.02rem}
+  .how .c p{margin:0;color:var(--muted);font-size:.9rem}
+  .note{margin:14px auto 0;background:#fff7e6;border:1px solid #f3dfae;border-radius:12px;padding:12px 16px;color:#7a5600;font-size:.9rem}
+  .note b{color:#5e4300}
+  /* lessons */
+  .sec-h{margin:40px 0 4px;font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.5rem}
+  .sec-sub{margin:0 0 6px;color:var(--muted);font-size:.9rem}
+  .unit{margin:26px 0 10px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .unit h2{font-family:"Black Han Sans",sans-serif;font-weight:400;font-size:1.3rem;margin:0;color:var(--k)}
+  .unit .cnt{color:var(--muted);font-size:.82rem}
+  .les{display:grid;grid-template-columns:54px 1fr auto;gap:12px;align-items:center;background:var(--card);border-radius:13px;box-shadow:0 4px 14px rgba(15,39,66,.06);padding:12px 14px;margin-bottom:8px;border-left:6px solid var(--k)}
+  .les.soon{opacity:.62;border-left-style:dashed;box-shadow:none;background:#faf7f1}
+  .no{font-family:"Black Han Sans",sans-serif;font-size:1.3rem;color:var(--k);text-align:center}
+  .les h3{margin:0;font-size:1.02rem;font-weight:700}
+  .les small{color:var(--muted);font-size:.8rem}
+  .st{display:inline-block;font-size:.72rem;border-radius:999px;padding:1px 9px;margin-left:7px;vertical-align:2px;background:#eef0f3;color:#5b6776}
+  .act{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+  .act a,.act button{font:inherit;font-size:.86rem;font-weight:700;border-radius:10px;padding:7px 14px;text-decoration:none;cursor:pointer;white-space:nowrap;border:1.5px solid var(--k)}
+  .act a.open{background:var(--k);color:#fff}
+  .act button.copy{background:#fff;color:var(--k)}
+  .act a.open:hover{filter:brightness(1.08)}
+  .act button.copy:hover{background:color-mix(in srgb,var(--k) 12%,white)}
+  footer{border-top:1px solid var(--line);margin-top:40px;padding:22px 16px 50px;color:var(--muted);font-size:.85rem}
+  footer a{color:var(--navy);font-weight:700}
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:var(--navy);color:#fff;padding:10px 18px;border-radius:999px;opacity:0;transition:.2s;pointer-events:none;font-size:.9rem;z-index:9}
+  .toast.on{opacity:1}
+  @media (max-width:720px){
+    header h1{font-size:2rem}
+    .how{grid-template-columns:1fr}
+    .les{grid-template-columns:44px 1fr}
+    .act{grid-column:1/-1;justify-content:flex-start}
+  }
 </style>
 </head>
 <body>
-<div><h1>인공지능 기초</h1><p>선생님이 알려 준 수업 페이지로 들어가 주세요.</p></div>
+<header><div class="wrap">
+  <div class="brandrow">
+    <div>
+      <p class="kicker">수업 안내 · 학습 공간</p>
+      <h1>인공지능 기초</h1>
+    </div>
+    <a class="tlink" href="teacher/" title="선생님용 자료 목록">👩‍🏫 교사용</a>
+  </div>
+  <p class="lead">아래 차시 카드를 눌러 바로 수업에 들어갈 수 있어요. 공부한 내용과 진도는 자동으로 저장되니, 중간에 나가도 이어서 할 수 있습니다.</p>
+  <div class="jump">
+    <a href="#lessons">📚 차시 바로가기</a>
+    <a class="ghost" href="#how">이용 방법 보기</a>
+  </div>
+</div></header>
+
+<main><div class="wrap">
+
+  <section id="how" class="how">
+    <div class="c"><div class="ic">📚</div><h3>1. 차시 선택</h3><p>배울 차시 카드의 <b>「열기」</b>를 눌러 수업 화면으로 들어가요.</p></div>
+    <div class="c"><div class="ic">✍️</div><h3>2. 활동·질문</h3><p>화면 속 퀴즈와 체험을 해 보고, 끝에서 질문·배운 점을 남겨요.</p></div>
+    <div class="c"><div class="ic">🔖</div><h3>3. 주소 저장</h3><p><b>📋 주소복사</b>로 차시 주소를 복사해 저장하거나 친구와 나눠요.</p></div>
+  </section>
+
+  <div class="note">💡 <b>진도는 자동 저장돼요.</b> 퀴즈·메모는 이 브라우저에 남으니, 가능하면 늘 같은 기기·브라우저로 접속하세요. 화면이 멈추면 새로고침 후 이어서 하면 됩니다.</div>
+
+  <h2 class="sec-h" id="lessons">차시 안내</h2>
+  <p class="sec-sub">단원별 차시 목록입니다. <b>공개</b>된 차시는 바로 열 수 있고, 준비 중인 차시는 순차적으로 열립니다.</p>
+  <div id="list"></div>
+
+</div></main>
+
+<footer><div class="wrap">
+  이 사이트는 「인공지능 기초」 수업을 위한 학습 공간입니다 · 외부 검색에는 노출되지 않습니다.<br>
+  선생님이신가요? <a href="teacher/">교사용 자료 목록 열기 →</a>
+</div></footer>
+
+<div class="toast" id="toast"></div>
+<script>
+const UNITS=[{"name": "Ⅰ. 인공지능의 이해", "color": "#2f6fd0", "lessons": [{"no": "01", "id": "u1-intro", "title": "Ⅰ단원 도입", "pages": "12~15", "form": null, "status": "ready"}, {"no": "02", "id": "u1-ai-concept", "title": "인공지능의 개념과 특성", "pages": "16~19", "form": "ai-01-1-1-1", "status": "ready"}, {"no": "03-1", "id": "u1-ai-principle", "title": "인공지능의 원리", "pages": "20~23", "form": "ai-02-1-1-2", "status": "ready"}, {"no": "03-2", "id": "u1-ai-problem", "title": "인공지능의 문제 해결", "pages": "24~25", "form": "ai-02-1-1-2-1", "status": "ready"}, {"no": "04", "id": "u1-competency", "title": "AI 역량 키우기", "pages": "26~27", "form": "ai-03-1-1-3", "status": "ready"}, {"no": "05", "id": "u1-blind-search", "title": "맹목적 탐색", "pages": "28~35", "form": "ai-04-1-2-1", "status": "ready"}, {"no": "06", "id": "u1-informed-search", "title": "정보 이용 탐색", "pages": "36~41", "form": "ai-04-1-2-1-1", "status": "ready"}, {"no": "07", "id": "u1-knowledge-rules", "title": "지식의 표현과 규칙 기반 사고", "pages": "42~47", "form": "07-1", "status": "ready"}, {"no": "08", "id": "u1-review", "title": "「탐색과 추론」 정리 · 협력적 창의·융합 활동", "pages": "48~51", "form": "08-1", "status": "ready"}]}, {"name": "Ⅱ-1. 기계학습", "color": "#1f9d74", "lessons": [{"no": "09", "id": "u2-ml-process", "title": "기계학습과 문제 해결 과정", "pages": "54~61", "form": "ai-09-2-1-1", "status": "ready"}, {"no": "10", "id": "u2-data-collect", "title": "데이터 수집 방법", "pages": "62~63", "form": "ai-10-2-1-2", "status": "ready"}, {"no": "11", "id": "u2-preprocess-bias", "title": "데이터 편향성 · 데이터 전처리(1)", "pages": "64~67", "form": "ai-10-2-1-2-1", "status": "ready"}, {"no": "12", "id": "u2-preprocess-2", "title": "데이터 전처리(2): 결측치 · 이상치 · 핵심 속성", "pages": "68~73", "form": "ai-11-2-1-3-3", "status": "ready"}, {"no": "13", "id": "u2-ml-types", "title": "기계학습의 3가지 유형", "pages": "74~75", "form": "ai-12-2-1-4", "status": "ready"}, {"no": "14", "id": "u2-train-eval", "title": "모델 학습과 성능 평가", "pages": "76~81", "form": "ai-13-2-1-5", "status": "ready"}, {"no": "15", "id": "u2-algorithms", "title": "기계학습 알고리즘", "pages": "82~85", "form": "ai-13-2-1-5-1", "status": "ready"}, {"no": "15", "id": "u2-regression", "title": "선형 회귀 알고리즘 실습", "pages": "86~87", "form": "ai-13-2-1-5-2", "status": "ready"}]}, {"name": "Ⅱ-2. 딥러닝과 인공지능 서비스", "color": "#9b4fc4", "lessons": [{"no": "16-1", "id": "u2-dl-1", "title": "딥러닝 ① 퍼셉트론 · 신경망 구조", "pages": "90~92", "form": "ai-15-2-2-1", "status": "ready"}, {"no": "16-2", "id": "u2-dl-2", "title": "딥러닝 ② 활성화 함수 · 학습 과정 · 손실 함수", "pages": "92~94", "form": "ai-15-dl-2", "status": "ready"}, {"no": "16-3", "id": "u2-dl-3", "title": "딥러닝 ③ 경사 하강법 · 배치와 에포크", "pages": "93~94", "form": "ai-15-dl-3", "status": "ready"}, {"no": "17", "id": "u2-dl-digits", "title": "손글씨 숫자 분류: ML4Kids → 파이썬 MNIST", "pages": "96~101", "form": "ai-15-2-2-1-2", "status": "ready"}, {"no": "18", "id": "u2-vision", "title": "컴퓨터 비전", "pages": "102~109", "form": "ai-16-2-2-2", "status": "ready"}, {"no": "19", "id": "u2-speech", "title": "음성 인식", "pages": "110~113", "form": "ai-17-2-2-3", "status": "ready"}, {"no": "20", "id": "u2-nlp", "title": "자연어 처리", "pages": "114~119", "form": "ai-18-2-2-4", "status": "ready"}, {"no": "21", "id": "u2-review", "title": "2단원 정리", "pages": "120~121", "form": "ai-19-2-2-5", "status": "ready"}]}, {"name": "Ⅲ. 인공지능의 사회적 영향", "color": "#e0702b", "lessons": [{"no": "22", "id": "u3-society", "title": "인공지능과 사회 변화 · 진로", "pages": "132~145", "form": "ai-22-3-1-1", "status": "ready"}, {"no": "23", "id": "u3-coexist-bias", "title": "인간과 인공지능의 공존 · 편향과 딜레마", "pages": "146~155", "form": "ai-23-3-1-2", "status": "ready"}, {"no": "24", "id": "u3-responsibility", "title": "사회적 책임 · 3단원 정리", "pages": "156~165", "form": "ai-24-3-1-3", "status": "ready"}]}, {"name": "Ⅳ. 인공지능 프로젝트", "color": "#d64535", "lessons": [{"no": "25", "id": "u4-sdgs", "title": "인공지능과 지속가능발전목표 · 문제 정의", "pages": "170~177", "form": "ai-31-4-1-1", "status": "ready"}, {"no": "26", "id": "u4-process", "title": "인공지능 프로젝트 수행 과정", "pages": "178~189", "form": "ai-32-4-1-2", "status": "ready"}, {"no": "30", "id": "u4-structured-1", "title": "정형 데이터 프로젝트 ① 문제 정의와 데이터 준비", "pages": "190~196", "form": "ai-33-4-2", "status": "ready"}, {"no": "31", "id": "u4-structured-2", "title": "정형 데이터 프로젝트 ② 모델 학습과 성능 개선", "pages": "197~201", "form": "ai-33-4-2-1", "status": "ready"}, {"no": "32", "id": "u4-unstructured-1", "title": "비정형 데이터 프로젝트 ① 이미지 분류", "pages": "202~213", "form": "ai-34-4-3", "status": "ready"}, {"no": "33", "id": "u4-unstructured-2", "title": "비정형 데이터 프로젝트 ② 데이터 편향성 해결", "pages": "214~217", "form": "ai-34-4-3-1", "status": "ready"}, {"no": "34", "id": "u4-review", "title": "마무리 · 4단원 정리", "pages": "218~219", "form": "ai-35-u4-summary", "status": "ready"}]}], SITE='https://dsaiclass.vercel.app/';
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const list=document.getElementById('list');
+list.innerHTML=UNITS.map(u=>{
+  const L=u.lessons.filter(l=>l.status!=='todo');
+  if(!L.length) return '';
+  const openN=u.lessons.filter(l=>l.status==='ready').length;
+  return `<div class="unit" style="--k:${u.color}"><h2>${esc(u.name)}</h2><span class="cnt">${openN} / ${L.length} 공개</span></div>`+
+    L.map(l=>{
+      const ready=l.status==='ready', url=SITE+l.id+'/';
+      return `<div class="les ${ready?'':'soon'}" style="--k:${u.color}">
+        <div class="no">${esc(l.no)}</div>
+        <div><h3>${esc(l.title)}${ready?'':'<span class="st">준비 중</span>'}</h3>${l.pages?`<small>교과서 ${esc(l.pages)}쪽</small>`:''}</div>
+        <div class="act">${ready?`<a class="open" href="${esc(l.id)}/">열기</a><button class="copy" data-u="${esc(url)}">📋 주소복사</button>`:''}</div>
+      </div>`;
+    }).join('');
+}).join('') || '<div class="note">아직 공개된 차시가 없어요. 곧 열립니다 🙂</div>';
+
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('button[data-u]'); if(!b) return;
+  try{await navigator.clipboard.writeText(b.dataset.u); toast('차시 주소를 복사했어요');}
+  catch(x){prompt('주소를 복사하세요',b.dataset.u);}
+});
+function toast(t){const el=document.getElementById('toast'); el.textContent=t; el.classList.add('on'); clearTimeout(toast._t); toast._t=setTimeout(()=>el.classList.remove('on'),1500);}
+</script>
 </body>
 </html>
